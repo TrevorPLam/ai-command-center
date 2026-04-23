@@ -92,7 +92,7 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 |----|------|-------------|
 | **C-01** | Background Color | `#050507` (blue-shifted near-black) via `--background` CSS var |
 | **C-02** | Motion Library | `motion` v12 — `import { motion } from "motion/react"` |
-| **C-03** | Virtualisation | `react-window` for any list >50 items |
+| **C-03** | Virtualisation | `@tanstack/react-virtual` (`useVirtualizer`) for all virtualized lists. This aligns with the TanStack ecosystem already in use (Query, Table). Existing `react-window` patterns in the Chat and News modules are acceptable implementations but should be considered technical debt to migrate when those modules are revisited. |
 | **C-04** | Design Tokens | CSS custom properties + `@theme inline` mapping, `oklch()` required |
 | **C-05** | Glass Scope | `.noise-overlay` only for shells, drawers, command palette |
 | **C-06** | Reduced Motion | `useReducedMotion()` from `motion/react` — checked before every animation |
@@ -123,6 +123,7 @@ The new structure is: FND-000 through FND-013 (14 tasks).
   - Define light tokens in `:root {}` and dark tokens in `@layer theme { :root { @variant dark { ... } } }`
 - [ ] **FND-000C**: Define semantic color tokens following shadcn/ui naming conventions (`--background`, `--foreground`, `--muted`, `--card`, `--border`, `--input`, `--ring`, `--primary`, `--secondary`, `--accent`, `--destructive`)
   - Set `--background` to `oklch(9.8% 0.006 264)` (renders as `#050507`)
+  - Set `--ring` (accent) to `oklch(62% 0.19 264)` (renders as `#0066ff` - electric blue)
 - [ ] **FND-000D**: Add `@layer base` block: apply `background-color` to `body`, set `color-scheme` on `:root`
 - [ ] **FND-000E**: Add the `.noise-overlay` utility in `@layer utilities`
   - Uses a CSS `url("data:image/svg+xml,...")` noise pattern
@@ -130,7 +131,13 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 - [ ] **FND-000F**: Add `@property` declarations for animated conic-gradient borders (used by AmbientStatusBanner)
 - [ ] **FND-000G**: Create `ThemeProvider` component using `next-themes` with `attribute="class"`, `defaultTheme="dark"`, `enableSystem`
 - [ ] **FND-000H**: Create `ThemeToggle` component (icon button, keyboard accessible, 24×24px minimum hit area)
-- [ ] **FND-000I**: Create `src/lib/tokens.ts` — typed re-export of token names as TypeScript constants for safe consumption outside CSS
+- [ ] **FND-000I**: Create `src/lib/tokens.ts` — typed re-export of token names as TypeScript constants for safe consumption outside CSS:
+  ```ts
+  export const tokens = {
+    background: 'oklch(9.8% 0.006 264)',
+    accent: 'oklch(62% 0.19 264)',
+  } as const;
+  ```
 
 ### Definition of Done
 - No `tailwind.config.ts` file exists anywhere in the project
@@ -199,11 +206,11 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 ### Subtasks
 - [ ] **FND-002A**: Install Tailwind v4 + Vite plugin: `pnpm add tailwindcss @tailwindcss/vite`
 - [ ] **FND-002B**: Install shadcn/ui runtime deps: `pnpm add class-variance-authority clsx tailwind-merge lucide-react`
-- [ ] **FND-002C**: Install animation: `pnpm add motion`
-- [ ] **FND-002D**: Install state + data: `pnpm add zustand immer @tanstack/react-query`
+- [ ] **FND-002C**: Install animation: `pnpm add motion@12.38.0`
+- [ ] **FND-002D**: Install state + data: `pnpm add zustand@5.0.12 immer @tanstack/react-query@5.99.2`
 - [ ] **FND-002E**: Install routing: `pnpm add react-router`
   - **CRITICAL:** The package is `react-router`, NOT `react-router-dom`. v7 merged the two.
-- [ ] **FND-002F**: Install virtualisation: `pnpm add react-window` + `pnpm add -D @types/react-window`
+- [ ] **FND-002F**: Install virtualisation: `pnpm add @tanstack/react-virtual@3.13.24`
 - [ ] **FND-002G**: Install theme: `pnpm add next-themes`
 - [ ] **FND-002H**: Install dev deps: `pnpm add -D tw-animate-css @types/node`
   - `tw-animate-css` replaces the deprecated `tailwindcss-animate`
@@ -211,6 +218,8 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 - [ ] **FND-002J**: Create `components.json` with **empty** `tailwind.config` field (required for shadcn v4 compat)
 - [ ] **FND-002K**: Add first shadcn component: `pnpm dlx shadcn@latest add button` — verify it renders
 - [ ] **FND-002L**: Install React Query DevTools: `pnpm add -D @tanstack/react-query-devtools`
+
+> **Note:** These versions are confirmed as of April 23, 2026. Verify against the npm registry during implementation and update if patches have been released.
 
 ### Definition of Done
 - All packages installed with no peer dependency warnings

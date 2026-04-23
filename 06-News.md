@@ -1,7 +1,9 @@
-# 06-News — Personal AI Command Center Frontend (Enhanced v3)
+# 06-News — News Feed & Reader Module
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+
+> **Migration Note**: Earlier versions of this specification referenced `react-window`'s `VariableSizeList` for virtualization. The corrected approach uses `@tanstack/react-virtual` (`useVirtualizer`) with `measureElement` for automatic dynamic height updates. This aligns with the TanStack ecosystem already in use (Query, Table). The scroll anchoring contract and IntersectionObserver sentinel pattern remain intact.
 
 
 ## 🔬 Research Findings — News Module
@@ -20,7 +22,7 @@
 | **Web Share API requires navigator.share check before calling.** On unsupported browsers (Firefox desktop), calling `navigator.share()` throws. The clipboard fallback must be explicit and tested separately. | MDN Web Share API | NEWS-004: `if (navigator.share) { ... } else { navigator.clipboard.writeText(url) }` |
 | **Pause-feed + new article accumulation pattern:** when `isPaused`, new fetched articles go into a `pendingArticles` buffer; a sticky "N new articles — tap to load" banner triggers flushing. This matches WCAG 2.2 auto-update control. | WCAG 2.2, Twitter/X UX pattern | NEWS-003: implement pending buffer |
 | **Trust tier badges and sentiment dots must have text labels**, not just color — color-alone is a WCAG 1.4.1 failure. | WCAG 1.4.1 | NEWS-004: badge reads "High trust", dot reads "Positive" (visually hidden label + `aria-label`) |
-| **Card virtualization: `VariableSizeList` requires stable `itemSize` per index.** Cards with expandable summaries change height after render. Either fix card heights or switch to `AutoSizer` + dynamic `resetAfterIndex` on expand. | react-window docs | NEWS-003: call `listRef.current.resetAfterIndex(expandedIndex)` on expand/collapse |
+| **Card virtualization: `useVirtualizer` with `measureElement` handles dynamic heights.** Cards with expandable summaries change height after render. TanStack Virtual's `measureElement` automatically re-measures items when their dimensions change, eliminating the need for manual `resetAfterIndex` calls. | TanStack Virtual docs | NEWS-003: use `measureElement` ref on each card wrapper for automatic height updates |
 | **Deduplication via URL normalization** (strip `utm_*` params, normalize protocol) is more reliable than raw URL equality for catching the same article from multiple sources. | dev.to 2026 | NEWS-003: normalize URLs in dedup logic |
 | **`@tanstack/react-query` `staleTime` for news feed should be short (30–60 seconds)** for real-time topics, but the `gcTime` should remain longer (5–10 minutes) to preserve feed scroll position on tab switch. | TanStack Query best practices | NEWS-000: `staleTime: 30_000`, `gcTime: 600_000` |
 | **Article search must highlight matched terms.** Plain filter-and-display without highlighting leaves users confused about why a result matched. Use `mark.js` or a simple regex-based highlighter. | Feedly, Inoreader UX 2025 | NEWS-007: matched terms wrapped in `<mark>` elements |
@@ -35,7 +37,7 @@
 | **NEWS-C03** | Offline / Local Storage | Dexie for bookmarks + read status. `useLiveQuery` for reactive reads. Bulk ops for batch saves. |
 | **NEWS-C04** | Auto-Update Control | When `isPaused`, new articles buffer in `pendingArticles`. Sticky banner shows count. Flush on user action. |
 | **NEWS-C05** | Accessibility (Cards) | `role="article"`, trust tier and sentiment must have text labels (not color alone). Web Share fallback explicit. |
-| **NEWS-C06** | Virtualization | `VariableSizeList` for feed. Sentinel for IO outside the list container. `resetAfterIndex` on height-changing card actions. |
+| **NEWS-C06** | Virtualization | `useVirtualizer` from `@tanstack/react-virtual` for feed. Sentinel for IO outside the virtual list container. `measureElement` on each card wrapper for automatic height updates. |
 | **NEWS-C07** | Reader Mode | `@mozilla/readability` for content extraction. Font, theme, line-height user prefs in Zustand. |
 | **NEWS-C08** | Audio | Controlled by dedicated `audioEnabled` preference — never gated on `useReducedMotion`. |
 
@@ -401,34 +403,47 @@
 - [ ] **NEWS-003E** Build `NewsFeed` component:
   ```tsx
   const { visibleArticles, fetchNextPage, hasNextPage, isFetchingNextPage, isError, isPending } = useNewsFeed()
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   // During initial load: show skeleton cards
   if (isPending) return <FeedSkeleton count={5} />
   if (isError) return <FeedError onRetry={() => refetch()} />
   if (visibleArticles.length === 0) return <FeedEmptyState />
 
+  const virtualizer = useVirtualizer({
+    count: visibleArticles.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 200,           // Rough estimate for news card
+    measureElement: (el) => el.getBoundingClientRect().height,
+    overscan: 3,
+  })
+
   return (
     <>
       <NewArticlesBanner />
-      <AutoSizer>
-        {({ height, width }) => (
-          <VariableSizeList
-            ref={listRef}
-            height={height}
-            width={width}
-            itemCount={visibleArticles.length}
-            itemSize={getItemSize}  // memoized lookup by index
-            overscanCount={3}
-          >
-            {({ index, style }) => (
-              <div style={style}>
-                <NewsCard article={visibleArticles[index]} onHeightChange={() => listRef.current?.resetAfterIndex(index)} />
-              </div>
-            )}
-          </VariableSizeList>
-        )}
-      </AutoSizer>
-      {/* Sentinel: OUTSIDE the VariableSizeList container */}
+      <div ref={scrollRef} style={{ height: '100%', overflow: 'auto' }}>
+        <div style={{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }}>
+          {virtualizer.getVirtualItems().map((virtualItem) => (
+            <div
+              key={virtualItem.key}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                transform: `translateY(${virtualItem.start}px)`,
+              }}
+            >
+              <NewsCard
+                article={visibleArticles[virtualItem.index]}
+                ref={virtualizer.measureElement}
+                data-index={virtualItem.index}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Sentinel: OUTSIDE the virtualized list container */}
       <div ref={sentinelRef} style={{ height: 1 }} />
       {isFetchingNextPage && <FeedLoadingRow />}
     </>

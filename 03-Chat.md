@@ -2,6 +2,8 @@
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+>
+> **Migration Note**: Earlier versions of this specification referenced `react-window` for virtualization. The corrected approach uses `@tanstack/react-virtual` (`useVirtualizer`) to align with the TanStack ecosystem already in use (Query, Table). The scroll anchoring contract and IntersectionObserver sentinel pattern remain intact.
 
 ---
 
@@ -312,7 +314,7 @@
 
 - [ ] **CHAT-005A**: Install `@tanstack/react-virtual`:
   ```sh
-  pnpm add @tanstack/react-virtual
+  pnpm add @tanstack/react-virtual@3.13.24
   ```
 
 - [ ] **CHAT-005B**: Implement `useVirtualizer` in `MessageList`:
