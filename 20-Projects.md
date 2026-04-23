@@ -1,14 +1,27 @@
-Below is the fully refreshed and expanded Projects task list. It retains every task from the previous version, adds all the new tasks identified from the Karbon research, and maintains the exact formatting conventions you established (status indicators, priority levels, subtask structure, Definition of Done, Acceptance Criteria, related files, etc.).
-
----
-
-# 04-Projects — Personal AI Command Center Frontend (Enhanced v4)
+# 20‑Projects — Personal AI Command Center Frontend (Enhanced v4)
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 > **Source Research**: Karbon accounting practice management software — feature analysis conducted April 2026. Karbon combines email, tasks, workflows, Kanban boards, My Week personal planning, automators, AI agents, time/budget tracking, document management, and Practice Intelligence into one platform.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 🧱 Cross-Cutting Foundations
 
@@ -46,8 +59,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
-## 🗃️ Task PROJ-000: Mock Data Layer
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
+
+## 🗂️ Task PROJ-000: Mock Data Layer
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
 
 ### Related Files
 `src/mocks/factories/projects.ts` · `src/mocks/factories/triage.ts` · `src/mocks/handlers/projects.ts` · `src/mocks/handlers/triage.ts` · `src/mocks/handlers/automations.ts` · `src/queries/projects.ts`
@@ -133,7 +149,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 🔧 Task PROJ-001: Project State — Zustand `projectSlice`
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-005 (Zustand)
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-005 (Zustand)
 
 ### Related Files
 `src/stores/slices/projectSlice.ts` · `src/stores/slices/triageSlice.ts` · `src/stores/index.ts`
@@ -215,8 +233,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
+
 ## 🗂️ Task PROJ-002: Projects Page Layout, Route & View Switcher
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** PROJ-000, PROJ-001, FND-007 (Router)
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** PROJ-000, PROJ-001, FND-007 (Router)
 
 ### Related Files
 `src/pages/ProjectsPage.tsx` · `src/components/projects/ViewSwitcher.tsx` · `src/components/projects/ProjectFilterBar.tsx` · `src/router/routes.ts`
@@ -291,8 +312,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
-## 📋 Task PROJ-003: Project List View — TanStack Table + Virtual
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** PROJ-000, PROJ-001, PROJ-002
+
+## 🗂️ Task PROJ-003: Project List View — TanStack Table + Virtual
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** PROJ-000, PROJ-001, PROJ-002
 
 ### Related Files
 `src/components/projects/ProjectListView.tsx` · `src/components/projects/ProjectListColumns.tsx`
@@ -370,7 +394,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 📌 Task PROJ-004: Kanban View
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** PROJ-000, PROJ-001
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** PROJ-000, PROJ-001
 
 ### Related Files
 `src/components/projects/ProjectKanbanView.tsx` · `src/components/projects/KanbanColumn.tsx` · `src/components/projects/KanbanCard.tsx`
@@ -430,7 +456,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 📅 Task PROJ-005: Timeline (Gantt) View
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** PROJ-000, PROJ-001
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** PROJ-000, PROJ-001
 
 ### Related Files
 `src/components/projects/ProjectTimelineView.tsx`
@@ -488,7 +516,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 📆 Task PROJ-006: My Week View
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** PROJ-000, PROJ-001
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** PROJ-000, PROJ-001
 
 ### Related Files
 `src/components/projects/MyWeekView.tsx` · `src/components/projects/WeekLane.tsx` · `src/components/projects/ColleagueWeekDropdown.tsx`
@@ -549,8 +579,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
-## 📊 Task PROJ-007: Workload View
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** PROJ-000, PROJ-001
+
+## 🗂️ Task PROJ-007: Workload View
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** PROJ-000, PROJ-001
 
 ### Related Files
 `src/components/projects/WorkloadView.tsx`
@@ -593,7 +626,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 📄 Task PROJ-008: Project Detail Page & Header
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** PROJ-000, PROJ-001
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** PROJ-000, PROJ-001
 
 ### Related Files
 `src/pages/ProjectDetailPage.tsx` · `src/components/projects/ProjectHeader.tsx` · `src/components/projects/ProjectTabNav.tsx`
@@ -639,8 +674,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
-## ✅ Task PROJ-009: Project Task List & Inline Creation
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** PROJ-008
+
+## 🗂️ Task PROJ-009: Project Task List & Inline Creation
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** PROJ-008
 
 ### Related Files
 `src/components/projects/ProjectTaskList.tsx` · `src/components/projects/TaskRow.tsx` · `src/components/projects/TaskSection.tsx`
@@ -692,8 +730,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
+
 ## 🗂️ Task PROJ-010: Task Detail Drawer
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** PROJ-009, PROJ-001
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** PROJ-009, PROJ-001
 
 ### Related Files
 `src/components/projects/TaskDetailDrawer.tsx` · `src/components/projects/TaskChecklist.tsx` · `src/components/projects/TaskComments.tsx`
@@ -754,8 +795,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
-## 📋 Task PROJ-011: Quick Peek Overlay
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** PROJ-000, PROJ-001, PROJ-004
+
+## 🗂️ Task PROJ-011: Quick Peek Overlay
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** PROJ-000, PROJ-001, PROJ-004
 
 ### Related Files
 `src/components/projects/QuickPeekOverlay.tsx`
@@ -787,7 +831,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 📚 Task PROJ-012: Project Template Library
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** PROJ-000, PROJ-002
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** PROJ-000, PROJ-002
 
 ### Related Files
 `src/components/projects/ProjectTemplateLibrary.tsx`
@@ -825,7 +871,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 🔁 Task PROJ-013: Recurring Work Scheduler
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** PROJ-000, PROJ-008
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** PROJ-000, PROJ-008
 
 ### Related Files
 `src/components/projects/RecurringWorkDialog.tsx` · `src/components/projects/RecurringScheduleList.tsx` · `@/shared/recurrence/RecurrenceEngine.ts` · `@/shared/recurrence/helpers.ts` · `@/shared/recurrence/RecurrenceEditor.tsx`
@@ -862,7 +910,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 💾 Task PROJ-014: Saved Views
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** PROJ-002, PROJ-001
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** PROJ-002, PROJ-001
 
 ### Related Files
 `src/components/projects/SavedViewsManager.tsx` · `src/components/projects/SaveViewDialog.tsx`
@@ -900,7 +950,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 🤝 Task PROJ-015: External Task Assignment (Client Tasks)
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** PROJ-009, PROJ-010
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** PROJ-009, PROJ-010
 
 ### Related Files
 `src/components/projects/ClientTaskConfig.tsx` · `src/components/projects/ClientTaskReminderSettings.tsx`
@@ -932,7 +984,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 📁 Task PROJ-016: Document Panel
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** PROJ-008
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** PROJ-008
 
 ### Related Files
 `src/components/projects/DocumentPanel.tsx` · `src/components/projects/DocumentUploader.tsx` · `src/components/projects/DocumentFolderTree.tsx`
@@ -966,7 +1020,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## ⚙️ Task PROJ-017: Workflow Automation Engine — Rule Builder
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** PROJ-000, PROJ-008
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** PROJ-000, PROJ-008
 
 ### Related Files
 `src/components/projects/AutomationRulesPanel.tsx` · `src/components/projects/AutomationRuleBuilder.tsx` · `src/components/projects/GlobalAutomatorsSettings.tsx`
@@ -1020,7 +1076,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 📥 Task PROJ-018: Triage Inbox — Shell & Item Rendering
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** PROJ-000, PROJ-001, TASK-002
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** PROJ-000, PROJ-001, TASK-002
 
 ### Related Files
 `src/pages/TriagePage.tsx` · `src/components/triage/TriageStream.tsx` · `src/components/triage/TriageItem.tsx` · `src/components/triage/TriageActionTray.tsx`
@@ -1072,8 +1130,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
-## 🎯 Task PROJ-019: Triage Inbox — Action Tray & Item Actions
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** PROJ-018
+
+## 🗂️ Task PROJ-019: Triage Inbox — Action Tray & Item Actions
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** PROJ-018
 
 ### Related Files
 `src/components/triage/TriageActionTray.tsx` · `src/components/triage/TriageDelegationSettings.tsx`
@@ -1121,7 +1182,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 🔗 Task PROJ-020: Triage Inbox — Integration Hub
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** PROJ-018, PROJ-019, TASK-006, TASK-007
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** PROJ-018, PROJ-019, TASK-006, TASK-007
 
 ### Related Files
 `src/components/triage/TriageIntegrationHub.tsx` · `src/hooks/useTriage.ts`
@@ -1160,7 +1223,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 🔍 Task PROJ-021: Global Search
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** PROJ-000, TASK-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** PROJ-000, TASK-002
 
 ### Related Files
 `src/components/search/GlobalSearchDialog.tsx` · `src/components/search/SearchResultItem.tsx`
@@ -1203,7 +1268,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## ⏱️ Task PROJ-022: Time & Budget Tracking Panel
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** PROJ-000, PROJ-008
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** PROJ-000, PROJ-008
 
 ### Related Files
 `src/components/projects/TimeBudgetPanel.tsx` · `src/components/projects/TimeEntryForm.tsx`
@@ -1244,7 +1311,9 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 ---
 
 ## 📅 Task PROJ-023: Filing Deadlines Configuration
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** PROJ-000
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** PROJ-000
 
 ### Related Files
 `src/components/settings/FilingDeadlinesSettings.tsx` · `src/components/projects/FilingDeadlineBadge.tsx`
@@ -1278,8 +1347,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
-## 📊 Task PROJ-024: Practice Intelligence Dashboard (AI Agents)
-**Priority:** 🟢 Low | **Est. Effort:** 3 hours | **Depends On:** PROJ-000, TASK-006, TASK-007
+
+## 🗂️ Task PROJ-024: Practice Intelligence Dashboard (AI Agents)
+**Priority:** 🟢 Low
+**Est. Effort:** 3 hours
+**Depends On:** PROJ-000, TASK-006, TASK-007
 
 ### Related Files
 `src/components/intelligence/PracticeIntelligenceDashboard.tsx` · `src/components/intelligence/AIAgentActivity.tsx` · `src/components/intelligence/FIFOQueue.tsx`
@@ -1320,8 +1392,11 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 
 ---
 
-## ✅ Task PROJ-025: Final Polish — Projects Module
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** All PROJ tasks above
+
+## 🗂️ Task PROJ-025: Final Polish — Projects Module
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** All PROJ tasks above
 
 ### Related Files
 All project components.
@@ -1356,7 +1431,7 @@ All project components.
 
 ---
 
-## 📊 Updated Dependency Graph
+## 📊 Dependency Graph
 
 ```
 PROJ-000 (Mock Data + Query Keys + Mutations + Triage + Automations)

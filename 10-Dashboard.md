@@ -1,8 +1,26 @@
-# 02-Dashboard — Personal AI Command Center Frontend (Enhanced v2)
+# 10‑Dashboard — Personal AI Command Center Frontend (Enhanced v2)
 
-> **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done. **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+> **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
+> **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 📐 Reasoning Memo
 
@@ -35,20 +53,20 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ## 🧱 Cross-Cutting Foundations for Dashboard
 
-| ID | Requirement |
-|----|-------------|
-| **DASH-C01** | All scroll-triggered animations: `viewport={{ once: true }}` |
-| **DASH-C02** | Animate only `transform` and `opacity` — never layout properties |
-| **DASH-C03** | `staggerChildren` in parent `transition`; `delayChildren` for initial delay |
-| **DASH-C04** | `react-window` mandatory for ActivityFeed. `VariableSizeList`. Row wrapped in `memo()` |
-| **DASH-C05** | Filter updates via `useTransition` + single `startTransition` — not debounce |
-| **DASH-C06** | Optimistic updates: `onMutate` → `cancelQueries` → snapshot → immutable `setQueryData` → `onError` rollback → `onSettled` invalidate |
-| **DASH-C07** | ActivityFeed: `role="log"` + `aria-live="polite"` |
-| **DASH-C08** | Countdown timer: `useMotionValue` + `useSpring` with `skipInitialAnimation: true` |
-| **DASH-C09** | RightPanel on `/` route: `AttentionQueue`. Injected via route-scoped context. |
-| **DASH-C10** | `@faker-js/faker` with `faker.seed(12345)` for all test factories |
-| **DASH-C11** | MSW handlers maintain in-memory state; mutations must persist within session |
-| **DASH-C12** | `LayoutGroup` wrapper required on any component that uses `layoutId` in a reusable pattern |
+| ID | Area | Requirement |
+|----|------|-------------|
+| **DASH-C01** | Animation | All scroll-triggered animations: `viewport={{ once: true }}` |
+| **DASH-C02** | Animation | Animate only `transform` and `opacity` — never layout properties |
+| **DASH-C03** | Animation | `staggerChildren` in parent `transition`; `delayChildren` for initial delay |
+| **DASH-C04** | Virtualization | `react-window` mandatory for ActivityFeed. `VariableSizeList`. Row wrapped in `memo()` |
+| **DASH-C05** | State | Filter updates via `useTransition` + single `startTransition` — not debounce |
+| **DASH-C06** | Data Fetching | Optimistic updates: `onMutate` → `cancelQueries` → snapshot → immutable `setQueryData` → `onError` rollback → `onSettled` invalidate |
+| **DASH-C07** | Accessibility | ActivityFeed: `role="log"` + `aria-live="polite"` |
+| **DASH-C08** | Animation | Countdown timer: `useMotionValue` + `useSpring` with `skipInitialAnimation: true` |
+| **DASH-C09** | Layout | RightPanel on `/` route: `AttentionQueue`. Injected via route-scoped context. |
+| **DASH-C10** | Testing | `@faker-js/faker` with `faker.seed(12345)` for all test factories |
+| **DASH-C11** | Mock Data | MSW handlers maintain in-memory state; mutations must persist within session |
+| **DASH-C12** | Animation | `LayoutGroup` wrapper required on any component that uses `layoutId` in a reusable pattern |
 
 ### 🎯 Motion Tier Assignment
 
@@ -64,8 +82,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
+
 ## 🗂️ Task DASH-000: Domain Contract Layer — Types, Zod Schemas & queryOptions
-**Priority:** 🔴 High | **Est. Effort:** 45 min | **Depends On:** FND-006 (TanStack Query)
+**Priority:** 🔴 High
+**Est. Effort:** 0.75 hours
+**Depends On:** FND-006 (TanStack Query)
 
 > Types and schemas must exist before factories can be typed and before queryOptions can be written. This is the contract that everything else implements against.
 
@@ -177,8 +198,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🏭 Task DASH-001: Mock Data Factories, MSW Handlers & Custom Hooks
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** DASH-000, FND-004 (Testing Infra)
+
+## 🗂️ Task DASH-001: Mock Data Factories, MSW Handlers & Custom Hooks
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** DASH-000, FND-004 (Testing Infra)
 
 ### Related Files
 - `src/mocks/factories/dashboard.ts` · `src/mocks/handlers/dashboard.ts` · `src/hooks/useDashboard.ts`
@@ -378,8 +402,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🟢 Task DASH-002: Dashboard Page Layout & Route Configuration
-**Priority:** 🔴 High | **Est. Effort:** 30 min | **Depends On:** FND-007 (Router), FND-008 (Provider Tree)
+
+## 🗂️ Task DASH-002: Dashboard Page Layout & Route Configuration
+**Priority:** 🔴 High
+**Est. Effort:** 0.5 hours
+**Depends On:** FND-007 (Router), FND-008 (Provider Tree)
 
 ### Related Files
 - `src/pages/Dashboard.tsx` · `src/router/routes.ts` · `src/layouts/AppShell.tsx`
@@ -428,8 +455,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🟢 Task DASH-003: AmbientStatusBanner
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** DASH-001, DASH-002
+
+## 🗂️ Task DASH-003: AmbientStatusBanner
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** DASH-001, DASH-002
 
 ### Related Files
 - `src/components/dashboard/AmbientStatusBanner.tsx` · `src/hooks/useAgentStatus.ts`
@@ -478,8 +508,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🟢 Task DASH-004: AgentFleetPanel & AgentCard
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** DASH-001, DASH-002
+
+## 🗂️ Task DASH-004: AgentFleetPanel & AgentCard
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** DASH-001, DASH-002
 
 ### Related Files
 - `src/components/dashboard/AgentFleetPanel.tsx` · `src/components/dashboard/AgentCard.tsx`
@@ -559,8 +592,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🟢 Task DASH-005: ActivityFeed & ActivityEntry
-**Priority:** 🔴 High | **Est. Effort:** 3.5 hours | **Depends On:** DASH-001, DASH-002
+
+## 🗂️ Task DASH-005: ActivityFeed & ActivityEntry
+**Priority:** 🔴 High
+**Est. Effort:** 3.5 hours
+**Depends On:** DASH-001, DASH-002
 
 ### Related Files
 - `src/components/dashboard/ActivityFeed.tsx` · `src/components/dashboard/ActivityEntry.tsx`
@@ -657,8 +693,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🟢 Task DASH-006: AttentionQueue & DecisionPacket
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** DASH-001, DASH-002
+
+## 🗂️ Task DASH-006: AttentionQueue & DecisionPacket
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** DASH-001, DASH-002
 
 ### Related Files
 - `src/components/dashboard/AttentionQueue.tsx` · `src/components/dashboard/DecisionPacket.tsx`
@@ -743,7 +782,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 ---
 
 ## 🟠 Task DASH-007: AgentDetailDrawer
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** DASH-004
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** DASH-004
 
 ### Related Files
 - `src/components/agents/AgentDetailDrawer.tsx` · `src/stores/slices/uiSlice.ts` (update)

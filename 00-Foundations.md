@@ -1,10 +1,27 @@
-# 01-Foundations — Personal AI Command Center Frontend (Enhanced v2)
+# 00‑Foundations — Personal AI Command Center Frontend (Enhanced v2)
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 > **Versioning Note**: This document supersedes v1. See the Reasoning Memo below for all structural decisions.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 📐 Reasoning Memo: Why This Version Is Structured Differently
 
@@ -166,8 +183,11 @@ function MyDraggableComponent() {
 
 ---
 
-## 🎨 Task FND-000: Design Tokens & CSS-First Theme System
-**Priority:** 🔴 High | **Est. Effort:** 45 min | **Depends On:** None
+
+## 🗂️ Task FND-000: Design Tokens & CSS-First Theme System
+**Priority:** 🔴 High
+**Est. Effort:** 0.75 hours
+**Depends On:** None
 
 > **Note:** This task merges the former FND-000 and FND-002 from v1. They covered the same concern and the split created redundant work.
 
@@ -227,8 +247,11 @@ function MyDraggableComponent() {
 
 ---
 
-## 🟢 Task FND-001: Project Scaffold & Vite Configuration
-**Priority:** 🔴 High | **Est. Effort:** 30 min | **Depends On:** None
+
+## 🗂️ Task FND-001: Project Scaffold & Vite Configuration
+**Priority:** 🔴 High
+**Est. Effort:** 0.5 hours
+**Depends On:** None
 
 ### Related Files
 - `package.json` · `vite.config.ts` · `tsconfig.json` · `tsconfig.node.json` · `index.html`
@@ -265,8 +288,11 @@ function MyDraggableComponent() {
 
 ---
 
-## 🟢 Task FND-002: Core Dependencies Installation
-**Priority:** 🔴 High | **Est. Effort:** 20 min | **Depends On:** FND-001
+
+## 🗂️ Task FND-002: Core Dependencies Installation
+**Priority:** 🔴 High
+**Est. Effort:** 0.3333333333333333 hours
+**Depends On:** FND-001
 
 > **Note:** Separating dependency installation from project scaffold allows a clean commit boundary and prevents "I installed something and now Vite won't start" debugging sessions.
 
@@ -310,7 +336,9 @@ function MyDraggableComponent() {
 ---
 
 ## 🛡️ Task FND-003: Code Quality Toolchain
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-001
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-001
 
 > **Why its own task:** ESLint 9's flat config is a non-trivial setup. Getting it wrong early means accumulating lint debt across all future component files. This must be established and verified *before writing any component code.*
 
@@ -373,7 +401,9 @@ function MyDraggableComponent() {
 ---
 
 ## 🧪 Task FND-004: Testing Infrastructure
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-001, FND-002
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-001, FND-002
 
 > **Note:** This task sets up the *infrastructure* only. Writing tests is a subtask within each subsequent feature task. If infrastructure is not set up before FND-009, developers will write untestable components and defer testing — which is where coverage debt begins.
 
@@ -455,7 +485,9 @@ function MyDraggableComponent() {
 ---
 
 ## 🔧 Task FND-005: Zustand Store Architecture (Slices Pattern)
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-002
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-002
 
 ### Related Files
 - `src/stores/index.ts` · `src/stores/slices/uiSlice.ts` · `src/stores/slices/projectSlice.ts` · `src/stores/slices/budgetSlice.ts` · `src/stores/slices/newsSlice.ts`
@@ -525,8 +557,11 @@ function MyDraggableComponent() {
 
 ---
 
-## 🔌 Task FND-006: TanStack Query v5 Configuration
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-002
+
+## 🗂️ Task FND-006: TanStack Query v5 Configuration
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-002
 
 ### Related Files
 - `src/lib/queryClient.ts` · `src/queries/` directory · `src/hooks/use*.ts`
@@ -635,7 +670,9 @@ function MyDraggableComponent() {
 ---
 
 ## �️ Task FND-006.5: API Client & Mock Data Infrastructure
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-006, FND-004
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-006, FND-004
 
 ### Related Files
 - `src/api/client.ts` · `src/mocks/factories/` · `src/lib/formatters.ts`
@@ -656,7 +693,9 @@ function MyDraggableComponent() {
 ---
 
 ## �🗺️ Task FND-007: React Router v7 Route Architecture
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-002
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-002
 
 > **Note:** This task was missing from v1. React Router v7 requires an explicit architectural decision between its three modes. The wrong choice is difficult to reverse.
 
@@ -712,7 +751,9 @@ function MyDraggableComponent() {
 ---
 
 ## 🏗️ Task FND-008: App Entry Point & Provider Composition Tree
-**Priority:** 🔴 High | **Est. Effort:** 30 min | **Depends On:** FND-005, FND-006, FND-007
+**Priority:** 🔴 High
+**Est. Effort:** 0.5 hours
+**Depends On:** FND-005, FND-006, FND-007
 
 > **Note:** Provider order matters. Wrong order causes subtle bugs that are hard to trace. This task makes provider composition an explicit architectural decision with its own definition of done.
 
@@ -760,7 +801,9 @@ function MyDraggableComponent() {
 ---
 
 ## 🧭 Task FND-009: Global Layout — Sidebar Shell
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-005, FND-008
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-005, FND-008
 
 ### Related Files
 - `src/components/layout/Sidebar.tsx` · `src/components/layout/NavItem.tsx`
@@ -806,7 +849,9 @@ function MyDraggableComponent() {
 ---
 
 ## 🔔 Task FND-010: Global Layout — StatusBar Shell
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-008
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-008
 
 ### Related Files
 - `src/components/layout/StatusBar.tsx`
@@ -835,8 +880,11 @@ function MyDraggableComponent() {
 
 ---
 
-## 📐 Task FND-011: Global Layout — RightPanel Shell
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-005, FND-008
+
+## 🗂️ Task FND-011: Global Layout — RightPanel Shell
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-005, FND-008
 
 ### Related Files
 - `src/components/layout/RightPanel.tsx`
@@ -868,7 +916,9 @@ function MyDraggableComponent() {
 ---
 
 ## ⌨️ Task FND-012: Global Layout — CommandPalette Shell
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-005, FND-008
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-005, FND-008
 
 ### Related Files
 - `src/components/layout/CommandPalette.tsx` · `src/hooks/useKeyboardShortcut.ts` · `src/hooks/useIntentHandler.ts` · `src/stores/slices/uiSlice.ts`
@@ -948,7 +998,9 @@ function MyDraggableComponent() {
 ---
 
 ## ♿ Task FND-013: Accessibility Foundation & Focus Management
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-009 through FND-012
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-009 through FND-012
 
 ### Related Files
 - `src/hooks/useFocusRestoration.ts` · `src/components/ui/SkipLink.tsx` · All layout components
@@ -987,7 +1039,9 @@ function MyDraggableComponent() {
 ---
 
 ## 🎤 Task FND-014: Global Layout — Voice Shell
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** FND-005, FND-008, FND-012
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** FND-005, FND-008, FND-012
 
 ### Related Files
 - `src/components/layout/VoiceShell.tsx` · `src/hooks/useKeyboardShortcut.ts` · `src/hooks/useWebSpeech.ts` · `src/stores/slices/uiSlice.ts`
@@ -1065,7 +1119,7 @@ function MyDraggableComponent() {
 
 ---
 
-## 📊 Dependency Graph (Updated)
+## 📊 Dependency Graph
 
 ```
 FND-000 (Tokens & Theme)

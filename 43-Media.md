@@ -1,9 +1,26 @@
-# 18-Media — Media Library & AI Generation Module
+# 43‑Media — Personal AI Command Center Frontend
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 📐 Reasoning Memo
 
@@ -57,7 +74,7 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | Media grid item entrance | **Quiet** | `opacity: 0→1`, `scale: 0.95→1`, 150ms fade, staggered by row |
 | Generation progress indicator | **Alive** | Animated gradient border, spring pulse on status change |
@@ -69,8 +86,11 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 
 ---
 
-## 🗃️ Task MEDIA-000: Media Domain Model & Utilities
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-001 (TypeScript Base)
+
+## 🗂️ Task MEDIA-000: Media Domain Model & Utilities
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-001 (TypeScript Base)
 
 ### Related Files
 - `src/types/media.ts` · `src/schemas/media.ts` · `src/utils/media.ts`
@@ -184,8 +204,11 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 
 ---
 
-## 🗃️ Task MEDIA-001: Media State Management (Zustand)
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** MEDIA-000
+
+## 🗂️ Task MEDIA-001: Media State Management (Zustand)
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** MEDIA-000
 
 ### Related Files
 - `src/stores/mediaSlice.ts` · `src/stores/index.ts`
@@ -267,8 +290,11 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 
 ---
 
-## 🗃️ Task MEDIA-002: Mock Data Layer
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** MEDIA-000, FND-004 (Testing)
+
+## 🗂️ Task MEDIA-002: Mock Data Layer
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** MEDIA-000, FND-004 (Testing)
 
 ### Related Files
 - `src/mocks/factories/media.ts` · `src/mocks/handlers/media.ts` · `src/queries/media.ts`
@@ -330,7 +356,9 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 ---
 
 ## 🖼️ Task MEDIA-003: Media Library Page & Grid View
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** MEDIA-001, MEDIA-002
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** MEDIA-001, MEDIA-002
 
 ### Related Files
 - `src/pages/MediaPage.tsx` · `src/components/media/MediaGrid.tsx` · `src/components/media/MediaCard.tsx`
@@ -427,8 +455,11 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 
 ---
 
-## 🎨 Task MEDIA-004: AI Generation Panel & Queue
-**Priority:** 🔴 High | **Est. Effort:** 3.5 hours | **Depends On:** MEDIA-001, MEDIA-002
+
+## 🗂️ Task MEDIA-004: AI Generation Panel & Queue
+**Priority:** 🔴 High
+**Est. Effort:** 3.5 hours
+**Depends On:** MEDIA-001, MEDIA-002
 
 ### Related Files
 - `src/components/media/GenerationPanel.tsx` · `src/components/media/GenerationForm.tsx` · `src/components/media/GenerationQueue.tsx`
@@ -533,7 +564,9 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 ---
 
 ## 📁 Task MEDIA-005: Albums & Organization
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** MEDIA-001, MEDIA-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** MEDIA-001, MEDIA-002
 
 ### Related Files
 - `src/components/media/AlbumSidebar.tsx` · `src/components/media/AlbumCard.tsx` · `src/components/media/AlbumDetail.tsx`
@@ -616,7 +649,9 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 ---
 
 ## 🔍 Task MEDIA-006: Search, Filters & Duplicate Detection
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** MEDIA-001, MEDIA-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-001, MEDIA-002
 
 ### Related Files
 - `src/components/media/MediaFilters.tsx` · `src/components/media/MediaSearch.tsx` · `src/components/media/DuplicateDrawer.tsx`
@@ -688,7 +723,9 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 ---
 
 ## 🖼️ Task MEDIA-007: Media Detail View & Editor
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** MEDIA-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** MEDIA-002
 
 ### Related Files
 - `src/components/media/MediaDetailDrawer.tsx` · `src/components/media/MediaEditor.tsx`
@@ -772,8 +809,11 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 
 ---
 
-## 📊 Task MEDIA-008: Storage Management & Analytics
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** MEDIA-002
+
+## 🗂️ Task MEDIA-008: Storage Management & Analytics
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-002
 
 ### Related Files
 - `src/components/media/StorageAnalytics.tsx` · `src/components/media/StorageCleanup.tsx`
@@ -830,8 +870,11 @@ The Media module is designed as a hybrid of Google Photos (media library, organi
 
 ---
 
-## 🚀 Task MEDIA-009: Route Configuration & Integration
-**Priority:** 🔴 High | **Est. Effort:** 45 min | **Depends On:** FND-007 (Router), MEDIA-002
+
+## 🗂️ Task MEDIA-009: Route Configuration & Integration
+**Priority:** 🔴 High
+**Est. Effort:** 0.75 hours
+**Depends On:** FND-007 (Router), MEDIA-002
 
 ### Related Files
 - `src/router/routes.ts` · `src/pages/MediaPage.tsx`
@@ -899,7 +942,9 @@ The module balances traditional media management (Google Photos-style organizati
 Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML (2025-2026), the following additional tasks should be added to complete the Media module:
 
 ### 📋 Task MEDIA-010: People Detection & Facial Recognition
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** MEDIA-000, MEDIA-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** MEDIA-000, MEDIA-002
 
 **Rationale:** Apple Photos and Google Photos both feature People Albums with automatic facial recognition and grouping. This is a core organizational feature for personal media libraries.
 
@@ -922,7 +967,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🎬 Task MEDIA-011: Slideshow & Video Creation
-**Priority:** 🟠 Medium | **Est. Effort:** 3.5 hours | **Depends On:** MEDIA-002, MEDIA-003
+**Priority:** 🟠 Medium
+**Est. Effort:** 3.5 hours
+**Depends On:** MEDIA-002, MEDIA-003
 
 **Rationale:** Apple Photos and Google Photos both offer advanced slideshow creation with music, transitions, and themes. This is a key feature for sharing memories.
 
@@ -946,7 +993,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🖼️ Task MEDIA-012: Advanced AI Editing Tools
-**Priority:** 🟠 Medium | **Est. Effort:** 4 hours | **Depends On:** MEDIA-002, MEDIA-004
+**Priority:** 🟠 Medium
+**Est. Effort:** 4 hours
+**Depends On:** MEDIA-002, MEDIA-004
 
 **Rationale:** Adobe Lightroom (Generative Upscale, prompt-based editing) and Runway ML (object removal/addition) offer advanced AI editing capabilities beyond basic adjustments.
 
@@ -981,7 +1030,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🎭 Task MEDIA-013: Live Photos Support
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** MEDIA-000, MEDIA-003
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-000, MEDIA-003
 
 **Rationale:** Apple Photos' Live Photos capture motion and sound, providing a richer media experience. This requires special handling in the media model.
 
@@ -1003,7 +1054,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 📚 Task MEDIA-014: Memories & Auto-Curated Collections
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** MEDIA-000, MEDIA-005
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** MEDIA-000, MEDIA-005
 
 **Rationale:** Apple Photos' "Memories" and Google Photos' curated collections automatically group photos by events, dates, and themes, reducing manual organization.
 
@@ -1029,7 +1082,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🎨 Task MEDIA-015: Mood Boards & Creative Collections
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** MEDIA-000, MEDIA-005
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-000, MEDIA-005
 
 **Rationale:** Adobe Lightroom's Firefly boards integration allows creating mood boards for creative projects. This is valuable for designers and content creators.
 
@@ -1052,7 +1107,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🎤 Task MEDIA-016: Voice Cloning & Audio for Videos
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** MEDIA-004
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-004
 
 **Rationale:** Runway ML's custom voice cloning enables adding narration to AI-generated videos. This enhances video creation workflows.
 
@@ -1077,7 +1134,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🎞️ Task MEDIA-017: Character Animation & Lip Sync
-**Priority:** 🟢 Low | **Est. Effort:** 2.5 hours | **Depends On:** MEDIA-004
+**Priority:** 🟢 Low
+**Est. Effort:** 2.5 hours
+**Depends On:** MEDIA-004
 
 **Rationale:** Runway ML's Act-Two model enables performance-driven character animation with pose and lip sync. This is advanced video generation capability.
 
@@ -1102,7 +1161,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🖨️ Task MEDIA-018: Photo Books & Printing Integration
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** MEDIA-005
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-005
 
 **Rationale:** Apple Photos and Google Photos both offer photo book creation and printing services. This is a valuable export/print feature.
 
@@ -1125,7 +1186,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🔒 Task MEDIA-019: Privacy & Access Controls
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** MEDIA-000, MEDIA-005
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** MEDIA-000, MEDIA-005
 
 **Rationale:** Apple Photos includes privacy features like hiding photos and access control for shared albums. This is essential for personal media libraries.
 
@@ -1153,7 +1216,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🎨 Task MEDIA-020: Advanced Presets & Filters
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** MEDIA-007
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** MEDIA-007
 
 **Rationale:** Adobe Lightroom offers film-inspired presets and adaptive profiles. Enhancing the basic editor with professional presets improves editing capabilities.
 
@@ -1179,7 +1244,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 📱 Task MEDIA-021: QR Code Sharing & Mobile Features
-**Priority:** 🟢 Low | **Est. Effort:** 1 hour | **Depends On:** MEDIA-005
+**Priority:** 🟢 Low
+**Est. Effort:** 1 hour
+**Depends On:** MEDIA-005
 
 **Rationale:** Adobe Lightroom shares albums via QR code for easy mobile access. This improves sharing workflows.
 
@@ -1201,7 +1268,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 ---
 
 ### 🔌 Task MEDIA-022: Third-Party Extensions
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** MEDIA-007
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-007
 
 **Rationale:** Apple Photos supports third-party editing extensions. This allows integrating external editing tools.
 
@@ -1224,7 +1293,8 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 
 ---
 
-## 📊 Task Priority Summary
+
+## 🗂️ Task Priority Summary
 
 **High Priority (Core Features):**
 - MEDIA-010: People Detection & Facial Recognition
@@ -1254,7 +1324,9 @@ Based on research of Google Photos, Apple Photos, Adobe Lightroom, and Runway ML
 Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 2026, and Runway Gen-4/Gen-4.5, the following additional features should be added:
 
 ### 🎬 Task MEDIA-023: Spatial Photos & 3D Depth Effects
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** MEDIA-000, MEDIA-003
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-000, MEDIA-003
 
 **Rationale:** Apple Photos iOS 26 introduced "Spatialize photos" allowing users to view photos with depth and pan around different dimensions. This creates immersive viewing experiences.
 
@@ -1276,7 +1348,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 🎫 Task MEDIA-024: Event Details & Metadata Integration
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** MEDIA-000, MEDIA-005
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-000, MEDIA-005
 
 **Rationale:** Apple Photos iOS 26 shows event details for concerts and sports (venue, scores, artist songs). This enriches media context and discovery.
 
@@ -1298,7 +1372,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 🤖 Task MEDIA-025: AI-Assisted Culling & Best Shot Selection
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** MEDIA-000, MEDIA-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** MEDIA-000, MEDIA-002
 
 **Rationale:** Adobe Lightroom 2025 introduced "Assisted Culling" to select best photos from large albums using AI. This is critical for photographers handling thousands of shots.
 
@@ -1329,7 +1405,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 🧹 Task MEDIA-026: AI Dust Spot & Defect Removal
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** MEDIA-007, MEDIA-012
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** MEDIA-007, MEDIA-012
 
 **Rationale:** Adobe Lightroom 2025 added dust spot detection and removal for sensor/lens dust. This is essential for photographers with DSLR/mirrorless cameras.
 
@@ -1354,7 +1432,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 🎨 Task MEDIA-027: Color Labels & Advanced Organization
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** MEDIA-000, MEDIA-005
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** MEDIA-000, MEDIA-005
 
 **Rationale:** Adobe Lightroom 2025 added color labels for organization, search, and filtering. This provides visual categorization beyond albums.
 
@@ -1377,7 +1457,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 📝 Task MEDIA-028: Batch File Renaming
-**Priority:** 🟢 Low | **Est. Effort:** 1 hour | **Depends On:** MEDIA-003
+**Priority:** 🟢 Low
+**Est. Effort:** 1 hour
+**Depends On:** MEDIA-003
 
 **Rationale:** Adobe Lightroom 2025 added batch file renaming with custom templates. This is essential for professional photo organization.
 
@@ -1406,7 +1488,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 🌄 Task MEDIA-029: Landscape Enhancement & Scene Editing
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** MEDIA-007, MEDIA-012
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-007, MEDIA-012
 
 **Rationale:** Adobe Lightroom 2025 added Scene Enhance to edit landscape elements (mountains, water, ground, sky) and snow detection. This provides targeted landscape editing.
 
@@ -1431,7 +1515,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 👤 Task MEDIA-030: People Removal & Reflection Removal
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** MEDIA-007, MEDIA-012
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-007, MEDIA-012
 
 **Rationale:** Adobe Lightroom 2025 added People Removal (remove extra people) and Reflections Removal (remove window/glass reflections). These are common photo cleanup needs.
 
@@ -1460,7 +1546,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### ✨ Task MEDIA-031: AI Portrait Editing & Facial Retouching
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** MEDIA-007, MEDIA-010
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** MEDIA-007, MEDIA-010
 
 **Rationale:** Google Photos 2026 added AI-powered portrait editing (skin smoothing, eye brightening, teeth whitening) with intensity sliders. This is a mainstream consumer feature.
 
@@ -1488,7 +1576,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 🎥 Task MEDIA-032: Advanced Video Generation Controls
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** MEDIA-004
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** MEDIA-004
 
 **Rationale:** Runway Gen-4/Gen-4.5 offers Video to Video, Keyframes, and Image to Video workflows with advanced control modes. These are essential for professional video generation.
 
@@ -1522,7 +1612,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 🔊 Task MEDIA-033: Native Audio Generation for Videos
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** MEDIA-004, MEDIA-016
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** MEDIA-004, MEDIA-016
 
 **Rationale:** Runway Gen-4.5 added native audio generation integrated with video. This enables soundtracks and sound effects for AI-generated videos.
 
@@ -1548,7 +1640,9 @@ Based on research of Apple Photos iOS 26, Adobe Lightroom 2025, Google Photos 20
 ---
 
 ### 🎨 Task MEDIA-034: Color Variance & Consistency Tools
-**Priority:** 🟢 Low | **Est. Effort:** 1 hour | **Depends On:** MEDIA-007
+**Priority:** 🟢 Low
+**Est. Effort:** 1 hour
+**Depends On:** MEDIA-007
 
 **Rationale:** Adobe Lightroom 2025 added Color Variance slider to adjust tone and color for consistent look across photos. This is valuable for series and albums.
 

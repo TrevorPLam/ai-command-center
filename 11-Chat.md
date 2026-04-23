@@ -1,4 +1,4 @@
-# 03-Chat — Personal AI Command Center Frontend (Enhanced v3)
+# 11‑Chat — Personal AI Command Center Frontend (Enhanced v3)
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
@@ -6,6 +6,23 @@
 > **Migration Note**: Earlier versions of this specification referenced `react-window` for virtualization. The corrected approach uses `@tanstack/react-virtual` (`useVirtualizer`) to align with the TanStack ecosystem already in use (Query, Table). The scroll anchoring contract and IntersectionObserver sentinel pattern remain intact.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 🧱 Cross-Cutting Foundations
 
@@ -38,8 +55,11 @@
 
 ---
 
-## 🗃️ Task CHAT-001: Chat Page Layout & Route Configuration
-**Priority:** 🔴 High | **Est. Effort:** 45 min | **Depends On:** FND-007 (Router), FND-008 (Provider Tree)
+
+## 🗂️ Task CHAT-001: Chat Page Layout & Route Configuration
+**Priority:** 🔴 High
+**Est. Effort:** 0.75 hours
+**Depends On:** FND-007 (Router), FND-008 (Provider Tree)
 
 ### Related Files
 `src/pages/ChatPage.tsx` · `src/components/chat/ChatLayout.tsx` · `src/router/routes.ts`
@@ -76,8 +96,11 @@
 
 ---
 
-## 🧠 Task CHAT-002: Chat State Management — `useChatReducer`, Query Config & MSW Setup
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** FND-006 (TanStack Query)
+
+## 🗂️ Task CHAT-002: Chat State Management — `useChatReducer`, Query Config & MSW Setup
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** FND-006 (TanStack Query)
 
 ### Related Files
 `src/queries/chat.ts` · `src/hooks/useChatReducer.ts` · `src/hooks/useChatMessages.ts` · `src/mocks/handlers/chat.ts`
@@ -181,7 +204,9 @@
 ---
 
 ## 🧵 Task CHAT-003: Thread List
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** CHAT-001, CHAT-002
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** CHAT-001, CHAT-002
 
 ### Related Files
 `src/components/chat/ThreadList.tsx` · `src/components/chat/ThreadListItem.tsx`
@@ -235,7 +260,9 @@
 ---
 
 ## 💬 Task CHAT-004: Message Display — MessageBubble & MessageList
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CHAT-002
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** CHAT-002
 
 ### Related Files
 `src/components/chat/MessageList.tsx` · `src/components/chat/MessageBubble.tsx`
@@ -303,7 +330,9 @@
 ---
 
 ## 📜 Task CHAT-005: Virtual Scroll & Scroll Behavior
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CHAT-004
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** CHAT-004
 
 ### Related Files
 `src/hooks/useChatScroll.ts` · `src/components/chat/MessageList.tsx` (integration)
@@ -385,7 +414,9 @@
 ---
 
 ## ⌨️ Task CHAT-006: ChatInput & LED Border
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** CHAT-002
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** CHAT-002
 
 ### Related Files
 `src/components/chat/ChatInput.tsx`
@@ -453,7 +484,9 @@
 ---
 
 ## 📡 Task CHAT-007: Streaming — `useSSEStream` Hook
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CHAT-002, CHAT-006
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** CHAT-002, CHAT-006
 
 ### Related Files
 `src/hooks/useSSEStream.ts`
@@ -550,7 +583,9 @@
 ---
 
 ## 🔡 Task CHAT-008: Slash Command Menu
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** CHAT-006
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** CHAT-006
 
 ### Related Files
 `src/components/chat/SlashMenu.tsx` · `src/data/slashCommands.ts`
@@ -596,7 +631,9 @@
 ---
 
 ## 🔧 Task CHAT-009: ToolCallDisclosure
-**Priority:** 🟠 Medium | **Est. Effort:** 1 hour | **Depends On:** CHAT-004
+**Priority:** 🟠 Medium
+**Est. Effort:** 1 hour
+**Depends On:** CHAT-004
 
 ### Related Files
 `src/components/chat/ToolCallDisclosure.tsx`
@@ -635,7 +672,9 @@
 ---
 
 ## 🚩 Task CHAT-010: CheckpointBanner
-**Priority:** 🟠 Medium | **Est. Effort:** 1 hour | **Depends On:** CHAT-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 1 hour
+**Depends On:** CHAT-002
 
 ### Related Files
 `src/components/chat/CheckpointBanner.tsx`
@@ -927,7 +966,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-011: Collaboration Canvas — Split-Pane Editor, Diff Viewer & Inline Apply
 
-**Priority:** 🔴 High | **Est. Effort:** 10 hours | **Depends On:** CHAT-001 (Chat Layout), CHAT-009 (ToolCallDisclosure)
+**Priority:** 🔴 High
+**Est. Effort:** 10 hours
+**Depends On:** CHAT-001 (Chat Layout), CHAT-009 (ToolCallDisclosure)
 
 **Why this matters:** ChatGPT Canvas and Claude Artifacts represent the state of the art in AI-human collaboration. Canvas focuses on inline editing with diff preview; Artifacts focuses on live rendering. This task implements the **Canvas pattern** (editor + diff + apply) that your command center currently lacks.
 
@@ -1022,7 +1063,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-012: Live Artifacts — Sandboxed React/SVG Rendering Engine
 
-**Priority:** 🔴 High | **Est. Effort:** 10 hours | **Depends On:** CHAT-011 (Canvas)
+**Priority:** 🔴 High
+**Est. Effort:** 10 hours
+**Depends On:** CHAT-011 (Canvas)
 
 **Why this matters:** Claude Artifacts renders HTML, React, and SVG in a live preview pane. This is what turns your command center from a text-display tool into a **visual creation studio**. Users can ask the AI to build dashboards, charts, interactive components, and see them rendered immediately.
 
@@ -1113,7 +1156,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-013: Canvas Version Snapshots & Rollback
 
-**Priority:** 🟠 Medium | **Est. Effort:** 4 hours | **Depends On:** CHAT-011 (Canvas)
+**Priority:** 🟠 Medium
+**Est. Effort:** 4 hours
+**Depends On:** CHAT-011 (Canvas)
 
 **Why this matters:** Claude Code's `/rewind` checkpoint feature auto-captures file state before every AI edit, allowing users to rewind to any point. This is a trust-building UX pattern — users experiment more freely when they know they can always undo.
 
@@ -1176,7 +1221,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-014: Media Attachments — File Upload, Image Preview & In-Context Editing
 
-**Priority:** 🟠 Medium | **Est. Effort:** 4 hours | **Depends On:** CHAT-006 (ChatInput)
+**Priority:** 🟠 Medium
+**Est. Effort:** 4 hours
+**Depends On:** CHAT-006 (ChatInput)
 
 **Why this matters:** ChatGPT has true multimodal input (images, audio, video). Claude excels at image/PDF understanding. Your command center currently has no attachment capability — users can only send text. This task closes that gap.
 
@@ -1246,7 +1293,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-015: MCP Integration — Settings UI & Tool Registry
 
-**Priority:** 🔴 High | **Est. Effort:** 6 hours | **Depends On:** CHAT-001 (Layout), TASK-005 (Hooks/Stores)
+**Priority:** 🔴 High
+**Est. Effort:** 6 hours
+**Depends On:** CHAT-001 (Layout), TASK-005 (Hooks/Stores)
 
 **Why this matters:** MCP is the "USB-C of AI integrations" — 5,800+ servers, 97M+ monthly SDK downloads, adopted by Anthropic, OpenAI, Google, and Microsoft. Without MCP, your command center cannot connect to Gmail, GitHub, Slack, or any external tool. This task builds the **frontend configuration shell**; the real protocol client will be wired in a future Agent Backend phase.
 
@@ -1336,7 +1385,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-016: Agent Terminal & Activity Replay (MCP Shell)
 
-**Priority:** 🟠 Medium | **Est. Effort:** 5 hours | **Depends On:** CHAT-015 (MCP Settings)
+**Priority:** 🟠 Medium
+**Est. Effort:** 5 hours
+**Depends On:** CHAT-015 (MCP Settings)
 
 **Why this matters:** Claude Code shows a terminal view of every command the AI executes, with ANSI-colored output and timestamps. ChatGPT's new "Computer Use" feature gives visual feedback when the agent is controlling the screen. Users need to **see what the AI is doing** to build trust in autonomous operations.
 
@@ -1406,7 +1457,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-017: Slash Command Toolbar — MCP Tool Discovery
 
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** CHAT-008 (SlashMenu), CHAT-015 (MCP Settings)
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** CHAT-008 (SlashMenu), CHAT-015 (MCP Settings)
 
 **Why this matters:** When MCP servers are connected, users need to **discover** what tools are available. The slash command menu (typing `/` in empty input) is the natural discovery surface. Claude's UI shows available tools in a dropdown; your slash menu should do the same.
 
@@ -1463,7 +1516,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-018: Personal Knowledge Base — Client-Side RAG Engine
 
-**Priority:** 🔴 High | **Est. Effort:** 14 hours | **Depends On:** TASK-003 (UI Components), TASK-005 (Hooks/Stores)
+**Priority:** 🔴 High
+**Est. Effort:** 14 hours
+**Depends On:** TASK-003 (UI Components), TASK-005 (Hooks/Stores)
 
 **Why this matters:** Claude Projects allows users to upload a 50MB knowledge library that gets ingested into a vector DB and referenced automatically in conversations. ChatGPT has cross-chat memory. Without a knowledge base, your AI only knows what's in the current conversation context. This task implements a **fully client-side RAG system** using in-browser embeddings and vector search — no server required.
 
@@ -1593,7 +1648,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-019: Memory Manager — Cross-Conversation Context Summaries
 
-**Priority:** 🟠 Medium | **Est. Effort:** 5 hours | **Depends On:** CHAT-018 (Knowledge Base), CHAT-002 (Chat State)
+**Priority:** 🟠 Medium
+**Est. Effort:** 5 hours
+**Depends On:** CHAT-018 (Knowledge Base), CHAT-002 (Chat State)
 
 **Why this matters:** ChatGPT remembers user preferences, writing style, and project context across conversations. Claude Projects keeps document context persistent. Your command center needs a memory system that maintains continuity between sessions — otherwise every conversation starts from zero.
 
@@ -1682,7 +1739,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-020: Agent Studio — Custom Agent Builder
 
-**Priority:** 🟠 Medium | **Est. Effort:** 6 hours | **Depends On:** TASK-006 (AgentFleetPanel), CHAT-018 (Knowledge Base)
+**Priority:** 🟠 Medium
+**Est. Effort:** 6 hours
+**Depends On:** TASK-006 (AgentFleetPanel), CHAT-018 (Knowledge Base)
 
 **Why this matters:** ChatGPT's GPT Builder lets users create custom AI personas with specific system prompts, knowledge files, and tool access. Your current `AgentFleetPanel` displays hardcoded agents. The Agent Studio empowers users to create their own.
 
@@ -1756,7 +1815,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ### Task CHAT-021: Agent-to-Agent (A2A) Flow Orchestrator
 
-**Priority:** 🔴 High | **Est. Effort:** 14 hours | **Depends On:** CHAT-020 (Agent Studio), TASK-006 (AgentFleetPanel)
+**Priority:** 🔴 High
+**Est. Effort:** 14 hours
+**Depends On:** CHAT-020 (Agent Studio), TASK-006 (AgentFleetPanel)
 
 **Why this matters:** This is your **strategic differentiator**. Neither ChatGPT nor Claude has a visual agent orchestration interface. ChatGPT runs agents in linear sequence; Claude's agent teams are implicit. A visual DAG editor where users connect agents (Researcher → Writer → Editor → QA) is a unique capability that positions your command center above both platforms.
 
@@ -1878,7 +1939,9 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ## 📚 Task CHAT-022: Prompt Library — Management & Quick Insert
 
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** CHAT-006 (ChatInput), CHAT-008 (SlashMenu)
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** CHAT-006 (ChatInput), CHAT-008 (SlashMenu)
 
 **Why this matters:** A prompt library allows users to save, organize, and quickly reuse frequently used prompts. This is a productivity feature that reduces repetitive typing and ensures consistency in prompt engineering. Users can access their library while typing in the chat input.
 
@@ -1999,7 +2062,7 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ---
 
-## 📊 Dependency Graph (Full Chat Module)
+## 📊 Dependency Graph
 
 ```
 CHAT-001 (Page Layout & Route)

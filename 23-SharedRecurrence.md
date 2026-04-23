@@ -1,7 +1,26 @@
-# 17‑SharedRecurrence — Shared Recurrence Engine Specification
+# 23‑SharedRecurrence — Personal AI Command Center Frontend
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High (Phase 1 — Shared Infrastructure Extraction)
+
+---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 📐 Reasoning Memo
 
@@ -44,9 +63,12 @@ All modules will reference this shared specification instead of implementing cus
 
 ---
 
-## 🗃️ Task REC-000: RecurrenceEngine Implementation
 
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-001 (TypeScript Base), FND-002 (Dependencies)
+## 🗂️ Task REC-000: RecurrenceEngine Implementation
+
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-001 (TypeScript Base), FND-002 (Dependencies)
 
 ### Related Files
 `src/shared/recurrence/RecurrenceEngine.ts` · `src/shared/recurrence/types.ts` · `src/shared/recurrence/helpers.ts`
@@ -265,9 +287,12 @@ All modules will reference this shared specification instead of implementing cus
 
 ---
 
-## 🎨 Task REC-001: RecurrenceEditor Component
 
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** REC-000
+## 🗂️ Task REC-001: RecurrenceEditor Component
+
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** REC-000
 
 ### Related Files
 `src/shared/recurrence/RecurrenceEditor.tsx` · `src/shared/recurrence/RecurrenceEditorStore.ts` · `src/shared/recurrence/RecurrenceEditorContext.tsx`
@@ -480,7 +505,9 @@ All modules will reference this shared specification instead of implementing cus
 
 ### Task REC-002: Calendar Module Integration
 
-**Priority:** 🔴 High | **Est. Effort:** 0.5 hours | **Depends On:** REC-000, REC-001
+**Priority:** 🔴 High
+**Est. Effort:** 0.5 hours
+**Depends On:** REC-000, REC-001
 
 **Files to Update:** `05-Calendar.md` (CAL-013)
 
@@ -494,7 +521,9 @@ All modules will reference this shared specification instead of implementing cus
 
 ### Task REC-003: Budget Module Integration
 
-**Priority:** 🔴 High | **Est. Effort:** 0.5 hours | **Depends On:** REC-000, REC-001
+**Priority:** 🔴 High
+**Est. Effort:** 0.5 hours
+**Depends On:** REC-000, REC-001
 
 **Files to Update:** `07-Budget.md` (BUDG-010)
 
@@ -508,7 +537,9 @@ All modules will reference this shared specification instead of implementing cus
 
 ### Task REC-004: Projects Module Integration
 
-**Priority:** 🔴 High | **Est. Effort:** 0.5 hours | **Depends On:** REC-000, REC-001
+**Priority:** 🔴 High
+**Est. Effort:** 0.5 hours
+**Depends On:** REC-000, REC-001
 
 **Files to Update:** `04-Projects.md` (PROJ-013)
 
@@ -522,7 +553,9 @@ All modules will reference this shared specification instead of implementing cus
 
 ### Task REC-005: Lists Module Integration
 
-**Priority:** 🔴 High | **Est. Effort:** 0.5 hours | **Depends On:** REC-000, REC-001
+**Priority:** 🔴 High
+**Est. Effort:** 0.5 hours
+**Depends On:** REC-000, REC-001
 
 **Files to Update:** `10-Lists.md` (LIST-010)
 

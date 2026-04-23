@@ -1,11 +1,26 @@
-Based on research into the latest calendar application patterns (2025–2026), react-big-calendar's resource management capabilities, RFC 5545 iCalendar standards, browser notification APIs, and WCAG 2.2 accessibility requirements, I've produced a fully refreshed and enhanced calendar task list. The following document integrates all original tasks plus new parent tasks and enhancements, using the exact formatting you provided.
-
----
-
-# 05‑Calendar — Personal AI Command Center Frontend (Enhanced v4)
+# 21‑Calendar — Personal AI Command Center Frontend (Enhanced v4)
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+
+---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 **Calendar library: `react-big-calendar ^1.19.4`.** This library meets all feature requirements: Month/Week/Day/Agenda/Resource views, drag‑and‑drop via `withDragAndDrop`, date‑fns localization, and time‑zone handling. No alternative library is under consideration for the MVP.
 
@@ -41,6 +56,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 | **Reminder snooze workflow** — event reminders must support "Snooze 5 min" and "Dismiss". State stored locally, mute until next reminder time. | Apple Calendar / Google Calendar UX | CAL‑005: snooze functionality in reminder service |
 
 
+
+---
+
 ## 🧱 Cross‑Cutting Foundations
 
 | ID | Area | Requirement |
@@ -62,7 +80,7 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | Month view event chips | **Quiet** | `boxShadow` fade on hover (≤150ms) |
 | Current time indicator | **Alive** | Motion `keyframes` pulse; `useReducedMotion` guard |
@@ -74,8 +92,11 @@ Based on research into the latest calendar application patterns (2025–2026), r
 | Reminder toast | **Alive** | Slide‑in from bottom; `useReducedMotion` guard |
 
 
-## 🗃️ Task CAL‑000: Mock Data Layer
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND‑004 (Testing Infra), FND‑006 (TanStack Query)
+
+## 🗂️ Task CAL‑000: Mock Data Layer
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND‑004 (Testing Infra), FND‑006 (TanStack Query)
 
 ### Related Files
 `src/mocks/factories/calendar.ts` · `src/mocks/handlers.ts` · `src/queries/calendar.ts`
@@ -186,7 +207,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 🔧 Task CAL‑001: Calendar Page Layout & State Management
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** FND‑007 (Router), CAL‑000
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** FND‑007 (Router), CAL‑000
 
 ### Related Files
 `src/pages/CalendarPage.tsx` · `src/stores/slices/calendarSlice.ts` · `src/router/routes.ts` · `src/components/calendar/CalendarSkeleton.tsx`
@@ -311,7 +334,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 🗓️ Task CAL‑002: Multi‑Calendar Support & Calendar List Sidebar
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** CAL‑001, CAL‑000
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** CAL‑001, CAL‑000
 
 ### Related Files
 `src/components/calendar/CalendarList.tsx` · `src/components/calendar/AddCalendarModal.tsx` · `src/components/calendar/ResourceWeekView.tsx`
@@ -379,7 +404,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 🔗 Task CAL‑003: External Calendar Integration & Webcal Subscriptions
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** CAL‑002, CAL‑006
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** CAL‑002, CAL‑006
 
 ### Related Files
 `src/components/calendar/CalendarShareModal.tsx` · `src/utils/webcal.ts`
@@ -433,7 +460,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 👥 Task CAL‑004: Attendee Invitations & RSVP Management
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** CAL‑008, CAL‑011
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** CAL‑008, CAL‑011
 
 ### Related Files
 `src/components/calendar/AttendeeInput.tsx` · `src/components/calendar/RSVPButtons.tsx` · `src/hooks/useAttendeeStatus.ts`
@@ -482,7 +511,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 🔔 Task CAL‑005: Reminder Service & Browser Notifications
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** CAL‑001, CAL‑000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** CAL‑001, CAL‑000
 
 ### Related Files
 `src/services/reminderService.ts` · `src/components/calendar/ReminderToast.tsx` · `src/hooks/useNotificationPermission.ts`
@@ -542,7 +573,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 📤 Task CAL‑006: iCal Import & Export (Enhanced)
-**Priority:** 🟢 Low | **Est. Effort:** 3 hours | **Depends On:** CAL‑000, CAL‑013, CAL‑002
+**Priority:** 🟢 Low
+**Est. Effort:** 3 hours
+**Depends On:** CAL‑000, CAL‑013, CAL‑002
 
 ### Related Files
 `src/utils/ical.ts` · `src/components/calendar/ImportExportPanel.tsx`
@@ -625,8 +658,11 @@ Based on research into the latest calendar application patterns (2025–2026), r
 - ❌ Exporting local timezone datetimes — all DTSTART/DTEND must be UTC (`Z` suffix)
 
 
-## 📊 Task CAL‑007: Bulk Event Actions
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** CAL‑004 (Agenda View), CAL‑000
+
+## 🗂️ Task CAL‑007: Bulk Event Actions
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** CAL‑004 (Agenda View), CAL‑000
 
 ### Related Files
 `src/components/calendar/BulkActionBar.tsx` · `src/hooks/useBulkEventSelection.ts`
@@ -699,7 +735,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## ✏️ Task CAL‑008: Event Composer Modal (Enhanced)
-**Priority:** 🔴 High | **Est. Effort:** 3.5 hours | **Depends On:** CAL‑001, CAL‑000, CAL‑012
+**Priority:** 🔴 High
+**Est. Effort:** 3.5 hours
+**Depends On:** CAL‑001, CAL‑000, CAL‑012
 
 ### Related Files
 `src/components/calendar/EventComposer.tsx` · `src/schemas/eventSchema.ts`
@@ -825,7 +863,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 📅 Task CAL‑009: Month View (Enhanced)
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** CAL‑001, CAL‑012
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** CAL‑001, CAL‑012
 
 ### Related Files
 `src/components/calendar/MonthView.tsx` · `src/components/calendar/EventChip.tsx` · `src/components/calendar/MoreEventsPopover.tsx`
@@ -900,7 +940,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## ⏱️ Task CAL‑010: Week & Day Views (Enhanced)
-**Priority:** 🔴 High | **Est. Effort:** 3.5 hours | **Depends On:** CAL‑001, CAL‑012
+**Priority:** 🔴 High
+**Est. Effort:** 3.5 hours
+**Depends On:** CAL‑001, CAL‑012
 
 ### Related Files
 `src/components/calendar/WeekView.tsx` · `src/components/calendar/DayView.tsx` · `src/components/calendar/CurrentTimeIndicator.tsx`
@@ -972,7 +1014,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 🔍 Task CAL‑011: Event Detail Drawer (Enhanced)
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CAL‑001, CAL‑000, CAL‑014
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** CAL‑001, CAL‑000, CAL‑014
 
 ### Related Files
 `src/components/calendar/EventDetailDrawer.tsx`
@@ -1018,8 +1062,11 @@ Based on research into the latest calendar application patterns (2025–2026), r
 - Focus management and focus trap working
 
 
-## 📋 Task CAL‑012: Agenda View (Enhanced)
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** CAL‑001, CAL‑019
+
+## 🗂️ Task CAL‑012: Agenda View (Enhanced)
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** CAL‑001, CAL‑019
 
 ### Related Files
 `src/components/calendar/AgendaView.tsx` · `src/components/calendar/AgendaEventRow.tsx`
@@ -1056,7 +1103,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 🔁 Task CAL‑013: Recurring Event Edit Flows
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CAL‑005, CAL‑006, CAL‑000
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** CAL‑005, CAL‑006, CAL‑000
 
 ### Related Files
 `src/components/calendar/RecurringEditModal.tsx` · `@/shared/recurrence/RecurrenceEngine.ts` · `@/shared/recurrence/helpers.ts`
@@ -1099,7 +1148,9 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 
 ## 🌍 Task CAL‑014: Timezone Display Preferences & Working Hours
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** CAL‑001
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** CAL‑001
 
 ### Related Files
 `src/components/calendar/TimezoneSelector.tsx` · `src/components/calendar/WorkingHoursConfig.tsx`

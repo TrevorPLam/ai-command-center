@@ -1,7 +1,26 @@
-# 09-Workflow — Personal AI Command Center Frontend (v1)
+# 12‑Workflow — Personal AI Command Center Frontend (v1)
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+
+---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 > **Research Note**: This specification is based on comprehensive analysis of leading 2026 workflow automation platforms including n8n, Zapier, Make, Vellum AI, and enterprise AI orchestration frameworks. The module implements a node-based visual canvas for agent orchestration, human-in-the-loop workflows, and automation chain management.
 
@@ -38,7 +57,7 @@
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | Node drag/resize | **Alive** | Spring physics with glow effect during drag |
 | Connection line drawing | **Quiet** | Smooth bezier curve animation (≤200ms) |
@@ -50,8 +69,11 @@
 
 ---
 
-## 🗃️ Task FLOW-000: Workflow Domain Model & Mock Data
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-001 (TypeScript Base), FND-004 (Testing)
+
+## 🗂️ Task FLOW-000: Workflow Domain Model & Mock Data
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-001 (TypeScript Base), FND-004 (Testing)
 
 ### Related Files
 - `src/domain/workflow/types.ts` · `src/domain/workflow/schemas.ts` · `src/mocks/factories/workflow.ts`
@@ -135,8 +157,11 @@
 
 ---
 
-## 🎨 Task FLOW-001: Visual Canvas Engine (React Flow)
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** FLOW-000, FND-003 (UI Components)
+
+## 🗂️ Task FLOW-001: Visual Canvas Engine (React Flow)
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** FLOW-000, FND-003 (UI Components)
 
 ### Related Files
 - `src/components/workflow/WorkflowCanvas.tsx` · `src/components/workflow/CustomNodeTypes.tsx` · `src/components/workflow/NodePalette.tsx`
@@ -188,7 +213,9 @@
 ---
 
 ## ⚙️ Task FLOW-002: Agent Orchestration Engine
-**Priority:** 🔴 High | **Est. Effort:** 4 hours | **Depends On:** FLOW-000
+**Priority:** 🔴 High
+**Est. Effort:** 4 hours
+**Depends On:** FLOW-000
 
 ### Related Files
 - `src/services/workflowExecutor.ts` · `src/services/agentManager.ts` · `src/services/eventBus.ts`
@@ -247,7 +274,9 @@
 ---
 
 ## 👤 Task FLOW-003: Human-in-the-Loop System
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** FLOW-001, FLOW-002
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** FLOW-001, FLOW-002
 
 ### Related Files
 - `src/components/workflow/ApprovalPanel.tsx` · `src/components/workflow/ManualInputDialog.tsx` · `src/services/notificationService.ts`
@@ -290,7 +319,9 @@
 ---
 
 ## 🔍 Task FLOW-004: Workflow Templates & Patterns
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** FLOW-001
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** FLOW-001
 
 ### Related Files
 - `src/components/workflow/TemplateLibrary.tsx` · `src/components/workflow/TemplateEditor.tsx` · `src/data/workflowTemplates.ts`
@@ -349,8 +380,11 @@
 
 ---
 
-## 📊 Task FLOW-005: Execution Monitoring & Debugging
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** FLOW-002
+
+## 🗂️ Task FLOW-005: Execution Monitoring & Debugging
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** FLOW-002
 
 ### Related Files
 - `src/components/workflow/ExecutionViewer.tsx` · `src/components/workflow/ExecutionLog.tsx` · `src/components/workflow/PerformanceMetrics.tsx`
@@ -398,7 +432,9 @@
 ---
 
 ## 🔄 Task FLOW-006: Version Control & Environments
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** FLOW-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** FLOW-000
 
 ### Related Files
 - `src/services/workflowVersioning.ts` · `src/components/workflow/EnvironmentManager.tsx` · `src/components/workflow/DeploymentPanel.tsx`
@@ -451,7 +487,9 @@
 ---
 
 ## 🔐 Task FLOW-007: Security & Compliance
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** FLOW-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** FLOW-002
 
 ### Related Files
 - `src/services/workflowSecurity.ts` · `src/components/workflow/SecurityPanel.tsx` · `src/services/auditLogger.ts`
@@ -494,7 +532,9 @@
 ---
 
 ## 📱 Task FLOW-008: Workflow Page Layout & Integration
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FLOW-001, FND-007 (Router)
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FLOW-001, FND-007 (Router)
 
 ### Related Files
 - `src/pages/WorkflowPage.tsx` · `src/components/workflow/WorkflowLayout.tsx` · `src/router/routes.ts`
@@ -537,7 +577,9 @@
 ---
 
 ## 🧪 Task FLOW-009: Testing & Quality Assurance
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** All FLOW tasks
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** All FLOW tasks
 
 ### Related Files
 - `src/tests/workflow/*.test.tsx` · `src/tests/workflow/integration.test.ts` · `vitest.config.ts`

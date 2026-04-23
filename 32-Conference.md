@@ -1,10 +1,27 @@
-# 12-Conference — Personal AI Command Center Frontend
+# 32‑Conference — Personal AI Command Center Frontend
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 > **Source Research**: Virtual roundtable platforms, video conferencing systems, and collaborative meeting spaces — feature analysis conducted April 2026. Modern conference applications combine HD video streaming, role-based participation, session recording, real-time collaboration tools, and advanced engagement features to create immersive roundtable experiences.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 🧱 Cross-Cutting Foundations
 
@@ -38,8 +55,11 @@
 
 ---
 
-## 🗃️ Task CONF-001: Conference Page Layout & Navigation
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-007 (Router), FND-008 (Provider Tree)
+
+## 🗂️ Task CONF-001: Conference Page Layout & Navigation
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-007 (Router), FND-008 (Provider Tree)
 
 ### Related Files
 `src/pages/ConferencePage.tsx` · `src/components/conference/ConferenceLayout.tsx` · `src/router/routes.ts`
@@ -83,8 +103,11 @@
 
 ---
 
-## 🗃️ Task CONF-002: Roundtable Video Grid & Active Speaker Detection
-**Priority:** 🔴 High | **Est. Effort:** 4 hours | **Depends On:** CONF-001
+
+## 🗂️ Task CONF-002: Roundtable Video Grid & Active Speaker Detection
+**Priority:** 🔴 High
+**Est. Effort:** 4 hours
+**Depends On:** CONF-001
 
 ### Related Files
 `src/components/conference/RoundtableGrid.tsx` · `src/components/conference/ParticipantTile.tsx` · `src/hooks/useActiveSpeaker.ts`
@@ -131,8 +154,11 @@
 
 ---
 
-## 🗃️ Task CONF-003: Role-Based Access Control & Permissions
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** CONF-001
+
+## 🗂️ Task CONF-003: Role-Based Access Control & Permissions
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** CONF-001
 
 ### Related Files
 `src/components/conference/RoleBadge.tsx` · `src/hooks/useConferenceRoles.ts` · `src/lib/conferencePermissions.ts`
@@ -179,8 +205,11 @@
 
 ---
 
-## 🗃️ Task CONF-004: Session Recording & Output Capture
-**Priority:** 🟠 Medium | **Est. Effort:** 4 hours | **Depends On:** CONF-002
+
+## 🗂️ Task CONF-004: Session Recording & Output Capture
+**Priority:** 🟠 Medium
+**Est. Effort:** 4 hours
+**Depends On:** CONF-002
 
 ### Related Files
 `src/components/conference/RecordingControls.tsx` · `src/hooks/useRecording.ts` · `src/lib/outputCapture.ts`
@@ -227,8 +256,11 @@
 
 ---
 
-## 🗃️ Task CONF-005: Engagement Tools (Chat, Q&A, Polls, Whiteboard)
-**Priority:** 🔴 High | **Est. Effort:** 5 hours | **Depends On:** CONF-003
+
+## 🗂️ Task CONF-005: Engagement Tools (Chat, Q&A, Polls, Whiteboard)
+**Priority:** 🔴 High
+**Est. Effort:** 5 hours
+**Depends On:** CONF-003
 
 ### Related Files
 `src/components/conference/ChatPanel.tsx` · `src/components/conference/QAPanel.tsx` · `src/components/conference/PollPanel.tsx` · `src/components/conference/Whiteboard.tsx`
@@ -280,8 +312,11 @@
 
 ---
 
-## 🗃️ Task CONF-006: Scenario Templates & Role-Playing Framework
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** CONF-005
+
+## 🗂️ Task CONF-006: Scenario Templates & Role-Playing Framework
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** CONF-005
 
 ### Related Files
 `src/components/conference/ScenarioTemplates.tsx` · `src/lib/scenarios.ts` · `src/hooks/useScenario.ts`
@@ -332,8 +367,11 @@
 
 ---
 
-## 🗃️ Task CONF-007: Breakout Rooms & Sub-Conferences
-**Priority:** 🟠 Medium | **Est. Effort:** 4 hours | **Depends On:** CONF-006
+
+## 🗂️ Task CONF-007: Breakout Rooms & Sub-Conferences
+**Priority:** 🟠 Medium
+**Est. Effort:** 4 hours
+**Depends On:** CONF-006
 
 ### Related Files
 `src/components/conference/BreakoutRoomManager.tsx` · `src/components/conference/BreakoutRoom.tsx` · `src/hooks/useBreakoutRooms.ts`
@@ -380,8 +418,11 @@
 
 ---
 
-## 🗃️ Task CONF-008: Conference Analytics & Reporting
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** CONF-007
+
+## 🗂️ Task CONF-008: Conference Analytics & Reporting
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** CONF-007
 
 ### Related Files
 `src/components/conference/AnalyticsDashboard.tsx` · `src/components/conference/SessionReport.tsx` · `src/hooks/useConferenceAnalytics.ts`
@@ -428,8 +469,11 @@
 
 ---
 
-## 🗃️ Task CONF-009: Conference Settings & Configuration
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** CONF-008
+
+## 🗂️ Task CONF-009: Conference Settings & Configuration
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** CONF-008
 
 ### Related Files
 `src/components/conference/ConferenceSettings.tsx` · `src/components/conference/DeviceSettings.tsx` · `src/hooks/useConferenceSettings.ts`
@@ -476,8 +520,11 @@
 
 ---
 
-## 🗃️ Task CONF-010: Conference Integration & Mock Data
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CONF-009
+
+## 🗂️ Task CONF-010: Conference Integration & Mock Data
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** CONF-009
 
 ### Related Files
 `src/mocks/handlers/conference.ts` · `src/lib/mockData/conference.ts` · `src/hooks/useConferenceMock.ts`

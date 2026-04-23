@@ -1,7 +1,26 @@
-# 11-Contacts — Personal AI Command Center Frontend
+# 31‑Contacts — Personal AI Command Center Frontend
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+
+---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 🔬 Research Findings — Contacts Module
 
@@ -37,7 +56,7 @@
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | New contact entry | **Alive** | `y: -8→0`, `opacity: 0→1`, spring `stiffness: 300, damping: 30` |
 | Contact deletion | **Alive** | `x: 0→100%`, `opacity: 1→0`, `height: auto→0` with `AnimatePresence` |
@@ -49,8 +68,11 @@
 | Enrichment loading | **Quiet** | Pulse animation on contact card during AI processing |
 | Bulk action bar | **Alive** | `y: 100%→0` slide-up with `AnimatePresence` |
 
-## 🗃️ Task CONT-000: Contacts Domain Model & Mock Data
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
+
+## 🗂️ Task CONT-000: Contacts Domain Model & Mock Data
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
 
 ### Related Files
 `src/domain/contacts/types.ts` · `src/schemas/contactSchema.ts` · `src/mocks/factories/contacts.ts` · `src/mocks/handlers/contacts.ts` · `src/queries/contacts.ts`
@@ -188,7 +210,9 @@
 - ❌ Skipping `cancelQueries` in `onMutate` — creates race conditions when a background refetch overwrites the optimistic state
 
 ## 🔧 Task CONT-001: Contacts State Management & Privacy Controls
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-005 (Zustand), CONT-000
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-005 (Zustand), CONT-000
 
 ### Related Files
 `src/stores/slices/contactsSlice.ts` · `src/hooks/useContactPrivacy.ts`
@@ -276,7 +300,9 @@
 - ❌ Not using atomic selectors — causes re-renders on every contact change
 
 ## 📱 Task CONT-002: Contacts Page Layout & Quick Capture
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** FND-007 (Router), CONT-001
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** FND-007 (Router), CONT-001
 
 ### Related Files
 `src/pages/ContactsPage.tsx` · `src/components/contacts/ContactsLayout.tsx` · `src/components/contacts/QuickAddModal.tsx` · `src/components/contacts/ContactSidebar.tsx` · `src/router/routes.ts`
@@ -355,7 +381,9 @@
 - ❌ Missing phonetic search — users can't find contacts with misspelled names
 
 ## 👤 Task CONT-003: Contact Details & Field Management
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** CONT-002, CONT-000
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** CONT-002, CONT-000
 
 ### Related Files
 `src/components/contacts/ContactDetail.tsx` · `src/components/contacts/ContactField.tsx` · `src/components/contacts/FieldEditor.tsx` · `src/components/contacts/ContactAvatar.tsx`
@@ -430,7 +458,9 @@
 - ❌ Not handling avatar upload errors — confusing UX
 
 ## 🌐 Task CONT-004: AI-Powered Contact Enrichment
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** CONT-003, CONT-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** CONT-003, CONT-000
 
 ### Related Files
 `src/components/contacts/EnrichmentPanel.tsx` · `src/hooks/useContactEnrichment.ts` · `src/services/enrichmentService.ts`
@@ -505,7 +535,9 @@
 - ❌ Not providing user control over enrichment — feels invasive
 
 ## 🕸️ Task CONT-005: Relationship Mapping & Network Visualization
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** CONT-004, CONT-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** CONT-004, CONT-000
 
 ### Related Files
 `src/components/contacts/RelationshipGraph.tsx` · `src/components/contacts/RelationshipList.tsx` · `src/hooks/useContactRelationships.ts`
@@ -569,7 +601,9 @@
 - ❌ Not integrating with other modules — missed opportunities
 
 ## 🔗 Task CONT-006: Cross-Module Integration & Autocomplete
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CONT-001, other modules
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** CONT-001, other modules
 
 ### Related Files
 `src/components/contacts/ContactAutocomplete.tsx` · `src/hooks/useContactReferences.ts` · `src/integrations/calendarIntegration.ts` · `src/integrations/projectsIntegration.ts`
@@ -633,7 +667,9 @@
 - ❌ Not handling contact updates across modules — stale data
 
 ## 📞 Task CONT-007: Communication Timeline & Interaction Tracking
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** CONT-003, CONT-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** CONT-003, CONT-000
 
 ### Related Files
 `src/components/contacts/CommunicationTimeline.tsx` · `src/components/contacts/InteractionItem.tsx` · `src/hooks/useContactInteractions.ts`
@@ -698,7 +734,9 @@
 - ❌ Not aggregating from multiple sources — fragmented view
 
 ## 🏷️ Task CONT-008: Tag System & Smart Lists
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** CONT-002, CONT-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** CONT-002, CONT-000
 
 ### Related Files
 `src/components/contacts/TagManager.tsx` · `src/components/contacts/SmartLists.tsx` · `src/hooks/useContactTags.ts`
@@ -762,7 +800,9 @@
 - ❌ No tag analytics — missed optimization opportunities
 
 ## 📥📤 Task CONT-009: Import/Export & Data Portability
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** CONT-008, CONT-000
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** CONT-008, CONT-000
 
 ### Related Files
 `src/components/contacts/ImportDialog.tsx` · `src/components/contacts/ExportDialog.tsx` · `src/utils/contactImportExport.ts`
@@ -837,7 +877,9 @@
 - ❌ Not handling duplicates — data quality issues
 
 ## 📱 Task CONT-010: Offline Support & Data Sync
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CONT-000, CONT-001
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** CONT-000, CONT-001
 
 ### Related Files
 `src/lib/db/contacts.ts` · `src/hooks/useOfflineContacts.ts` · `src/components/contacts/OfflineStatusBar.tsx`
@@ -905,8 +947,11 @@
 - ❌ No visual indication of sync status — users unsure if changes saved
 - ❌ Not handling enrichment queue offline — missed enrichment opportunities
 
-## ✅ Task CONT-011: Quality Gates, Testing & Accessibility
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** All CONT tasks
+
+## 🗂️ Task CONT-011: Quality Gates, Testing & Accessibility
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** All CONT tasks
 
 ### Related Files
 `src/tests/contacts/*.test.tsx` · `src/tests/contacts/accessibility.test.tsx` · `package.json` (scripts)
@@ -962,7 +1007,9 @@
 - ❌ Not testing privacy controls — data protection risks
 
 ## ⚙️ Task CONT-012: Workflow Automation & Follow-Up Reminders
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** CONT-007, CONT-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** CONT-007, CONT-000
 
 ### Related Files
 `src/components/contacts/WorkflowBuilder.tsx` · `src/components/contacts/ReminderPanel.tsx` · `src/hooks/useContactWorkflows.ts` · `src/services/workflowService.ts`
@@ -1042,8 +1089,11 @@
 - ❌ Not supporting recurring reminders — limits usefulness
 - ❌ No workflow testing capability — difficult to debug
 
-## 📊 Task CONT-013: Contact Analytics Dashboard
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** CONT-005, CONT-007
+
+## 🗂️ Task CONT-013: Contact Analytics Dashboard
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** CONT-005, CONT-007
 
 ### Related Files
 `src/components/contacts/AnalyticsDashboard.tsx` · `src/components/contacts/NetworkInsights.tsx` · `src/hooks/useContactAnalytics.ts`
@@ -1115,7 +1165,9 @@
 - ❌ Not providing recommendations — data without action
 
 ## 🔗 Task CONT-014: Social Media Integration
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** CONT-004, CONT-000
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-004, CONT-000
 
 ### Related Files
 `src/components/contacts/SocialMediaPanel.tsx` · `src/services/socialMediaService.ts` · `src/hooks/useSocialMedia.ts`
@@ -1187,7 +1239,9 @@
 - ❌ Over-fetching social data — performance and privacy issues
 
 ## ⭐ Task CONT-015: Contact Scoring & Prioritization
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** CONT-007, CONT-000
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-007, CONT-000
 
 ### Related Files
 `src/components/contacts/ContactScoring.tsx` · `src/services/scoringService.ts` · `src/hooks/useContactScoring.ts`
@@ -1264,8 +1318,11 @@
 - ❌ Over-weighting single criteria — skewed results
 - ❌ Not updating scores regularly — stale prioritization
 
-## 🎨 Task CONT-016: Custom Fields & Contact Templates
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** CONT-003, CONT-000
+
+## 🗂️ Task CONT-016: Custom Fields & Contact Templates
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** CONT-003, CONT-000
 
 ### Related Files
 `src/components/contacts/CustomFieldEditor.tsx` · `src/components/contacts/ContactTemplateManager.tsx` · `src/hooks/useCustomFields.ts`
@@ -1348,7 +1405,9 @@
 - ❌ Templates not flexible enough — limited usefulness
 
 ## 📧 Task CONT-017: Email Sequences & Outreach Automation
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** CONT-012, CONT-000
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** CONT-012, CONT-000
 
 ### Related Files
 `src/components/contacts/EmailSequenceBuilder.tsx` · `src/services/emailSequenceService.ts` · `src/hooks/useEmailSequences.ts`
@@ -1428,8 +1487,11 @@
 - ❌ Not tracking sequence errors — silent failures
 - ❌ Too complex sequence builder — poor UX
 
-## 📋 Task CONT-018: Advanced Duplicate Management
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** CONT-009, CONT-000
+
+## 🗂️ Task CONT-018: Advanced Duplicate Management
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** CONT-009, CONT-000
 
 ### Related Files
 `src/components/contacts/DuplicateManager.tsx` · `src/services/duplicateService.ts` · `src/hooks/useDuplicateDetection.ts`
@@ -1502,7 +1564,9 @@
 - ❌ Not allowing custom rules — inflexible detection
 
 ## 📜 Task CONT-019: Contact History & Audit Trail
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** CONT-003, CONT-000
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-003, CONT-000
 
 ### Related Files
 `src/components/contacts/ContactHistory.tsx` · `src/services/auditService.ts` · `src/hooks/useContactHistory.ts`
@@ -1570,7 +1634,9 @@
 - ❌ Storing sensitive data in audit — privacy risk
 
 ## ⭐ Task CONT-020: Contact Favorites & Quick Access
-**Priority:** 🟢 Low | **Est. Effort:** 1 hour | **Depends On:** CONT-002, CONT-001
+**Priority:** 🟢 Low
+**Est. Effort:** 1 hour
+**Depends On:** CONT-002, CONT-001
 
 ### Related Files
 `src/components/contacts/FavoritesPanel.tsx` · `src/hooks/useContactFavorites.ts`
@@ -1633,7 +1699,9 @@
 - ❌ Missing bulk operations — tedious for power users
 
 ## 🔍 Task CONT-021: Advanced Search & Saved Queries
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** CONT-002, CONT-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-002, CONT-000
 
 ### Related Files
 `src/components/contacts/AdvancedSearch.tsx` · `src/components/contacts/SavedQueries.tsx` · `src/hooks/useContactSearch.ts`
@@ -1695,7 +1763,9 @@
 - ❌ Not caching search results — performance issues
 
 ## 📁 Task CONT-022: Contact Groups & Collections
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** CONT-008, CONT-000
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-008, CONT-000
 
 ### Related Files
 `src/components/contacts/GroupManager.tsx` · `src/hooks/useContactGroups.ts`
@@ -1777,7 +1847,9 @@
 - ❌ Not supporting group operations — manual work
 
 ## 📝 Task CONT-023: Rich Text Notes & Attachments
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** CONT-003, CONT-000
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-003, CONT-000
 
 ### Related Files
 `src/components/contacts/RichTextNoteEditor.tsx` · `src/hooks/useContactNotes.ts`
@@ -1847,7 +1919,9 @@
 - ❌ Not supporting @mentions — poor collaboration
 
 ## 👥 Task CONT-024: Contact Sharing & Permissions
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** CONT-001, CONT-000
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** CONT-001, CONT-000
 
 ### Related Files
 `src/components/contacts/ShareDialog.tsx` · `src/services/permissionService.ts` · `src/hooks/useContactSharing.ts`
@@ -1918,7 +1992,9 @@
 - ❌ No expiration on shares — permanent access
 
 ## 🌡️ Task CONT-025: Activity Heatmaps & Engagement Patterns
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** CONT-007, CONT-013
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-007, CONT-013
 
 ### Related Files
 `src/components/contacts/ActivityHeatmap.tsx` · `src/hooks/useActivityHeatmap.ts`
@@ -1972,8 +2048,11 @@
 - ❌ Missing context for patterns — data without meaning
 - ❌ Not responsive on mobile — poor UX
 
-## ✅ Task CONT-026: Contact Validation & Data Quality
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** CONT-003, CONT-000
+
+## 🗂️ Task CONT-026: Contact Validation & Data Quality
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-003, CONT-000
 
 ### Related Files
 `src/components/contacts/DataQualityPanel.tsx` · `src/services/validationService.ts` · `src/hooks/useContactValidation.ts`
@@ -2054,7 +2133,9 @@
 - ❌ Not providing fix suggestions — manual work required
 
 ## 💾 Task CONT-027: Backup & Restore
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** CONT-009, CONT-010
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** CONT-009, CONT-010
 
 ### Related Files
 `src/components/contacts/BackupManager.tsx` · `src/services/backupService.ts` · `src/hooks/useContactBackup.ts`

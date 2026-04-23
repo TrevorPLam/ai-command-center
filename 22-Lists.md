@@ -1,13 +1,26 @@
-Based on comprehensive research into modern list and note-taking applications (Notion, Todoist, Microsoft To Do, Google Keep, Apple Notes, Obsidian, and Things 3), I have identified the key features, interaction patterns, and technical requirements for a dedicated Lists module. This module serves as a flexible organization system for everything from quick grocery lists to structured project ideas and reading lists.
-
----
-
-# 10-Lists — Personal AI Command Center Frontend (Enhanced v1)
+# 22‑Lists — Personal AI Command Center Frontend (Enhanced v1)
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 🔬 Research Findings — Lists Module
 
@@ -50,7 +63,7 @@ Based on comprehensive research into modern list and note-taking applications (N
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | New item entry | **Alive** | `y: -8→0`, `opacity: 0→1`, spring `stiffness: 300, damping: 30` |
 | Item deletion | **Alive** | `x: 0→100%`, `opacity: 1→0`, `height: auto→0` with `AnimatePresence` |
@@ -65,8 +78,11 @@ Based on comprehensive research into modern list and note-taking applications (N
 
 ---
 
-## 🗃️ Task LIST-000: Lists Domain Model & Mock Data
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
+
+## 🗂️ Task LIST-000: Lists Domain Model & Mock Data
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
 
 ### Related Files
 `src/domain/lists/types.ts` · `src/schemas/listSchema.ts` · `src/mocks/factories/lists.ts` · `src/mocks/handlers/lists.ts` · `src/queries/lists.ts`
@@ -180,7 +196,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🔧 Task LIST-001: Lists State Management & Templates
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-005 (Zustand), LIST-000
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-005 (Zustand), LIST-000
 
 ### Related Files
 `src/stores/slices/listsSlice.ts` · `src/data/listTemplates.ts` · `src/hooks/useListTemplates.ts`
@@ -273,8 +291,11 @@ Based on comprehensive research into modern list and note-taking applications (N
 
 ---
 
-## 📋 Task LIST-002: Lists Page Layout & Quick Capture
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-007 (Router), LIST-001
+
+## 🗂️ Task LIST-002: Lists Page Layout & Quick Capture
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-007 (Router), LIST-001
 
 ### Related Files
 `src/pages/ListsPage.tsx` · `src/components/lists/ListsLayout.tsx` · `src/components/lists/QuickAddModal.tsx` · `src/components/lists/ListSidebar.tsx` · `src/router/routes.ts`
@@ -356,7 +377,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 📝 Task LIST-003: List Items & Content Types
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** LIST-002, LIST-000
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** LIST-002, LIST-000
 
 ### Related Files
 `src/components/lists/ListItem.tsx` · `src/components/lists/ListItemContent.tsx` · `src/components/lists/NestedItemTree.tsx` · `src/components/lists/ItemToolbar.tsx`
@@ -430,8 +453,11 @@ Based on comprehensive research into modern list and note-taking applications (N
 
 ---
 
-## 🎨 Task LIST-004: View Modes (List/Board/Grid)
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** LIST-003
+
+## 🗂️ Task LIST-004: View Modes (List/Board/Grid)
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** LIST-003
 
 ### Related Files
 `src/components/lists/views/ListView.tsx` · `src/components/lists/views/BoardView.tsx` · `src/components/lists/views/GridView.tsx` · `src/components/lists/ViewSwitcher.tsx`
@@ -498,7 +524,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🔀 Task LIST-005: Drag, Drop & Bulk Operations
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** LIST-004
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** LIST-004
 
 ### Related Files
 `src/components/lists/SortableListItem.tsx` · `src/components/lists/BulkActionBar.tsx` · `src/hooks/useListDnd.ts`
@@ -562,7 +590,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🌐 Task LIST-006: Offline Support & Data Sync
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** LIST-000, LIST-001
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** LIST-000, LIST-001
 
 ### Related Files
 `src/lib/db/lists.ts` · `src/hooks/useOfflineLists.ts` · `src/components/lists/OfflineStatusBar.tsx`
@@ -637,7 +667,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 👥 Task LIST-007: Sharing & Collaboration
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** LIST-006
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** LIST-006
 
 ### Related Files
 `src/components/lists/ShareDialog.tsx` · `src/components/lists/CollaborationIndicators.tsx` · `src/hooks/useListSharing.ts`
@@ -699,7 +731,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🔍 Task LIST-008: Search & Advanced Filtering
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** LIST-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** LIST-002
 
 ### Related Files
 `src/components/lists/SearchBar.tsx` · `src/components/lists/FilterPanel.tsx` · `src/hooks/useListSearch.ts`
@@ -764,7 +798,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## ⏰ Task LIST-009: Reminders System
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** LIST-003
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** LIST-003
 
 ### Related Files
 `src/components/lists/ReminderPicker.tsx` · `src/hooks/useReminders.ts` · `src/lib/notifications.ts`
@@ -828,7 +864,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🔄 Task LIST-010: Recurring Tasks
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** LIST-009
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** LIST-009
 
 ### Related Files
 `src/components/lists/RecurrencePicker.tsx` · `@/shared/recurrence/RecurrenceEngine.ts` · `@/shared/recurrence/helpers.ts` · `@/shared/recurrence/RecurrenceEditor.tsx` · `@/shared/recurrence/types.ts` · `src/hooks/useRecurringTasks.ts`
@@ -878,8 +916,11 @@ Based on comprehensive research into modern list and note-taking applications (N
 
 ---
 
-## 🎯 Task LIST-011: Priority Levels
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** LIST-003
+
+## 🗂️ Task LIST-011: Priority Levels
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** LIST-003
 
 ### Related Files
 `src/components/lists/PriorityPicker.tsx` · `src/components/lists/PriorityBadge.tsx` · `src/stores/slices/listsSlice.ts`
@@ -941,7 +982,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 📅 Task LIST-012: Calendar Integration
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** LIST-009
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** LIST-009
 
 ### Related Files
 `src/components/lists/CalendarView.tsx` · `src/lib/calendarSync.ts` · `src/hooks/useCalendarIntegration.ts`
@@ -1000,7 +1043,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 📍 Task LIST-013: Location-Based Reminders
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** LIST-009
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** LIST-009
 
 ### Related Files
 `src/components/lists/LocationPicker.tsx` · `src/lib/geofencing.ts` · `src/hooks/useLocationReminders.ts`
@@ -1059,7 +1104,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 📱 Task LIST-014: Widget Support
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** LIST-002
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** LIST-002
 
 ### Related Files
 `src/components/widgets/ListWidget.tsx` · `src/lib/widget.ts` · `src/hooks/useWidget.ts`
@@ -1118,7 +1165,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 📧 Task LIST-015: Email-to-Task Conversion
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** LIST-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** LIST-002
 
 ### Related Files
 `src/lib/emailParser.ts` · `src/components/lists/EmailImportModal.tsx` · `src/hooks/useEmailImport.ts`
@@ -1177,7 +1226,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## ↩️ Task LIST-016: Undo/Redo Functionality
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** LIST-001
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** LIST-001
 
 ### Related Files
 `src/stores/slices/listsSlice.ts` · `src/lib/undoRedo.ts` · `src/components/lists/UndoToast.tsx`
@@ -1239,7 +1290,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 📜 Task LIST-017: Activity Log/History
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** LIST-006
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** LIST-006
 
 ### Related Files
 `src/components/lists/ActivityLog.tsx` · `src/lib/activityLog.ts` · `src/hooks/useActivityLog.ts`
@@ -1304,8 +1357,11 @@ Based on comprehensive research into modern list and note-taking applications (N
 
 ---
 
-## 📊 Task LIST-018: Statistics/Analytics Dashboard
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** LIST-017
+
+## 🗂️ Task LIST-018: Statistics/Analytics Dashboard
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** LIST-017
 
 ### Related Files
 `src/components/lists/AnalyticsDashboard.tsx` · `src/hooks/useListAnalytics.ts` · `src/components/charts/CompletionChart.tsx`
@@ -1365,7 +1421,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🎤 Task LIST-019: Voice Input
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** LIST-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** LIST-002
 
 ### Related Files
 `src/components/lists/VoiceInputButton.tsx` · `src/lib/speechRecognition.ts` · `src/hooks/useVoiceInput.ts`
@@ -1424,7 +1482,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🔥 Task LIST-020: Habit Tracking
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** LIST-010
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** LIST-010
 
 ### Related Files
 `src/components/lists/HabitTracker.tsx` · `src/lib/habits.ts` · `src/hooks/useHabits.ts`
@@ -1490,7 +1550,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🤖 Task LIST-021: Smart Suggestions
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** LIST-017
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** LIST-017
 
 ### Related Files
 `src/components/lists/SuggestionPanel.tsx` · `src/lib/suggestions.ts` · `src/hooks/useSuggestions.ts`
@@ -1549,7 +1611,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 📎 Task LIST-022: File Attachments
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** LIST-003
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** LIST-003
 
 ### Related Files
 `src/components/lists/FileAttachment.tsx` · `src/lib/fileStorage.ts` · `src/hooks/useFileAttachments.ts`
@@ -1615,7 +1679,9 @@ Based on comprehensive research into modern list and note-taking applications (N
 ---
 
 ## 🔄 Task LIST-023: Custom Sorting
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** LIST-003
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** LIST-003
 
 ### Related Files
 `src/components/lists/SortOptions.tsx` · `src/hooks/useListSorting.ts` · `src/stores/slices/listsSlice.ts`
@@ -1677,8 +1743,11 @@ Based on comprehensive research into modern list and note-taking applications (N
 
 ---
 
-## 🎯 Task LIST-024: Focus Mode
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** LIST-002
+
+## 🗂️ Task LIST-024: Focus Mode
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** LIST-002
 
 ### Related Files
 `src/components/lists/FocusMode.tsx` · `src/hooks/useFocusMode.ts` · `src/stores/slices/listsSlice.ts`

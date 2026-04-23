@@ -1,15 +1,29 @@
-Below is the complete updated task document, fully reproduced and enhanced, with all changes integrated.
+# 00‑Polish-Validation — Personal AI Command Center Frontend (Enhanced v3)
 
-***
-
-# 09-Polish & Validation — Personal AI Command Center Frontend (Enhanced v3)
-
-> **Status indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.  
+> **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.  
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.  
 > **Versioning Note**: This document supersedes `09-Polish-Validation-Enhanced-v2.md`.
 
-***
+---
 
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
+
+---
 ## Cross‑Cutting Foundations for Polish & Validation
 
 | ID | Area | Requirement |
@@ -24,11 +38,13 @@ Below is the complete updated task document, fully reproduced and enhanced, with
 | **POL-C08** | Security & Privacy | No secrets in frontend bundles, XSS‑safe rendering, robust auth/session handling, and basic CSP/security headers documented. [domainoptic](https://domainoptic.com/security/react/) |
 | **POL-C09** | Observability | Client‑side error logging and Core Web Vitals RUM wired into analytics; dashboards can show whether a release is healthy. [vettedoutsource](https://vettedoutsource.com/blog/production-readiness-checklist/) |
 
-***
+---
 
-## Task POL‑001: Performance & Bundle Optimization
+## 🗂️ Task POL‑001: Performance & Bundle Optimization
 
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** All previous modules
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** All previous modules
 
 Focus: offline bundle analysis and targeted optimizations to meet Core Web Vitals and bundle budgets.
 
@@ -92,11 +108,13 @@ Focus: offline bundle analysis and targeted optimizations to meet Core Web Vital
 - ❌ Leaving repeated heavy libraries in multiple chunks instead of centralizing them via `manualChunks`.  
 - ❌ Not measuring after changes; performance work without numbers is incomplete. [github](https://github.com/gorrion-io/production-readiness-checklist)
 
-***
+---
 
-## Task POL‑002: Quality Gates & Testing
+## 🗂️ Task POL‑002: Quality Gates & Testing
 
-**Priority:** 🔴 High | **Est. Effort:** 4 hours | **Depends On:** POL‑001, FND‑004 (Testing Infrastructure)
+**Priority:** 🔴 High
+**Est. Effort:** 4 hours
+**Depends On:** POL‑001, FND‑004 (Testing Infrastructure)
 
 Focus: enforce quality via CI with a full testing pyramid (unit → visual), plus performance and a11y gates.
 
@@ -167,11 +185,13 @@ Focus: enforce quality via CI with a full testing pyramid (unit → visual), plu
 - ❌ Running Lighthouse or a11y checks only locally.  
 - ❌ Tests coupled to live backends instead of MSW or controlled fixtures.
 
-***
+---
 
-## Task POL‑003: Analytics, Audit & RUM
+## 🗂️ Task POL‑003: Analytics, Audit & RUM
 
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** BUDG‑008 (Investments & Reports), CHAT‑002 (Chat State), POL‑001
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** BUDG‑008 (Investments & Reports), CHAT‑002 (Chat State), POL‑001
 
 Focus: in‑app analytics, audit logs, and basic front‑end observability (client logs + RUM).
 
@@ -214,11 +234,13 @@ Focus: in‑app analytics, audit logs, and basic front‑end observability (clie
 - ❌ Logging raw user content or PII in analytics/audit logs. [digiqt](https://digiqt.com/blog/reactjs-security-best-practices/)
 - ❌ Observability limited to server logs only; no front‑end view of errors/performance. [vettedoutsource](https://vettedoutsource.com/blog/production-readiness-checklist/)
 
-***
+---
 
-## Task POL‑004: Production Hardening & Env Safety
+## 🗂️ Task POL‑004: Production Hardening & Env Safety
 
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** POL‑001, POL‑002, POL‑003
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** POL‑001, POL‑002, POL‑003
 
 Focus: environment safety, error boundaries, offline/failure behavior, strict build quality.
 
@@ -269,11 +291,13 @@ Focus: environment safety, error boundaries, offline/failure behavior, strict bu
 - ❌ Swallowing errors silently in error boundaries.  
 - ❌ “Something went wrong” messages without actionable detail.
 
-***
+---
 
-## Task POL‑005: UX, Accessibility & States Polish
+## 🗂️ Task POL‑005: UX, Accessibility & States Polish
 
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** POL‑001, POL‑002
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** POL‑001, POL‑002
 
 Focus: consistent UX quality, state coverage, and manual accessibility polish.
 
@@ -327,11 +351,13 @@ Focus: consistent UX quality, state coverage, and manual accessibility polish.
 - ❌ Relying solely on automated a11y tools with no manual keyboard/screen‑reader testing. [muz](https://muz.li/blog/how-to-make-your-ui-accessible-a-practical-checklist-for-2026/)
 - ❌ Generic error text that does not explain what went wrong or how to fix it.
 
-***
+---
 
-## Task POL‑006: Security, Privacy & Compliance
+## 🗂️ Task POL‑006: Security, Privacy & Compliance
 
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** POL‑003, POL‑004
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** POL‑003, POL‑004
 
 Focus: secure frontend behavior, auth/session robustness, safe rendering of data, and basic privacy/user‑control standards.
 
@@ -381,9 +407,8 @@ Focus: secure frontend behavior, auth/session robustness, safe rendering of data
 - ❌ Relying on obscurity instead of documented, enforced security controls.  
 - ❌ Ignoring session timeout and refresh edge cases.
 
-***
-
-## Dependency Graph (Polish & Validation)
+---
+## 📊 Dependency Graph
 
 ```
 POL‑001 (Performance & Bundle Optimization)
@@ -398,8 +423,7 @@ POL‑004 (Production Hardening & Env Safety)
 └── POL‑006 (Security, Privacy & Compliance)
 ```
 
-***
-
+---
 ## Final Project Completion Checklist
 
 **Performance & Metrics**

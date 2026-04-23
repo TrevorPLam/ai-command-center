@@ -1,9 +1,26 @@
-# 10-Email — Unified Email Integration Module
+# 30‑Email — Personal AI Command Center Frontend
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 📐 Reasoning Memo: Email as a Core Command Center Module
 
@@ -62,7 +79,7 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | Email list scroll | **Static** | No animation — virtualized rows |
 | Thread expansion | **Quiet** | Height transition 150ms |
@@ -75,9 +92,12 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ---
 
-## 🗃️ Task EMAIL-000: Email Domain Model, Security & Mock Data
 
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
+## 🗂️ Task EMAIL-000: Email Domain Model, Security & Mock Data
+
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
 
 ### Related Files
 `src/schemas/email.ts` · `src/mocks/factories/email.ts` · `src/mocks/handlers/email.ts` · `src/lib/emailSecurity.ts` · `src/queries/email.ts`
@@ -171,7 +191,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 🔧 Task EMAIL-001: Email State Management & Route Configuration
 
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** EMAIL-000, FND-005 (Zustand)
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** EMAIL-000, FND-005 (Zustand)
 
 ### Related Files
 `src/stores/slices/emailSlice.ts` · `src/pages/EmailPage.tsx` · `src/router/routes.ts`
@@ -257,7 +279,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 📥 Task EMAIL-002: Account Management & Unified Inbox
 
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** EMAIL-001, EMAIL-000
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** EMAIL-001, EMAIL-000
 
 ### Related Files
 `src/components/email/AccountSidebar.tsx` · `src/components/email/AccountSwitcher.tsx` · `src/components/email/AddAccountModal.tsx` · `src/components/email/UnifiedInbox.tsx`
@@ -326,7 +350,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 📧 Task EMAIL-003: Email List, Thread View & Compose
 
-**Priority:** 🔴 High | **Est. Effort:** 4 hours | **Depends On:** EMAIL-002, EMAIL-000
+**Priority:** 🔴 High
+**Est. Effort:** 4 hours
+**Depends On:** EMAIL-002, EMAIL-000
 
 ### Related Files
 `src/components/email/EmailList.tsx` · `src/components/email/EmailListItem.tsx` · `src/components/email/ThreadView.tsx` · `src/components/email/ComposeWindow.tsx`
@@ -412,7 +438,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 📎 Task EMAIL-004: Attachments, Search & Advanced Features
 
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** EMAIL-003, EMAIL-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** EMAIL-003, EMAIL-000
 
 ### Related Files
 `src/components/email/AttachmentViewer.tsx` · `src/components/email/EmailSearch.tsx` · `src/components/email/SnoozeModal.tsx`
@@ -486,7 +514,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 🔗 Task EMAIL-005: Email Integration with Other Modules
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** EMAIL-003, PROJ-002 (Projects), CAL-008 (Calendar Composer)
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** EMAIL-003, PROJ-002 (Projects), CAL-008 (Calendar Composer)
 
 ### Related Files
 `src/components/email/CreateTaskFromEmail.tsx` · `src/components/email/EmailToEvent.tsx` · `src/components/email/EmailActionsMenu.tsx`
@@ -552,7 +582,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 🤖 Task EMAIL-006: AI-Powered Email Features
 
-**Priority:** 🟢 Low | **Est. Effort:** 3 hours | **Depends On:** EMAIL-003, CHAT-002 (Chat State/AI)
+**Priority:** 🟢 Low
+**Est. Effort:** 3 hours
+**Depends On:** EMAIL-003, CHAT-002 (Chat State/AI)
 
 ### Related Files
 `src/components/email/SmartCompose.tsx` · `src/components/email/EmailSummary.tsx` · `src/components/email/SuggestedReplies.tsx`
@@ -610,7 +642,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 📝 Task EMAIL-007: Email Templates & Signatures
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** EMAIL-003, EMAIL-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** EMAIL-003, EMAIL-000
 
 ### Related Files
 `src/components/email/TemplateManager.tsx` · `src/components/email/SignatureEditor.tsx` · `src/components/email/TemplatePicker.tsx`
@@ -670,7 +704,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 🔧 Task EMAIL-008: Email Rules, Filters & Automation
 
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** EMAIL-002, EMAIL-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** EMAIL-002, EMAIL-000
 
 ### Related Files
 `src/components/email/RuleBuilder.tsx` · `src/components/email/FilterManager.tsx` · `src/lib/emailRules.ts`
@@ -728,7 +764,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 🔔 Task EMAIL-009: Notifications, Reminders & Auto-Replies
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** EMAIL-003, EMAIL-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** EMAIL-003, EMAIL-000
 
 ### Related Files
 `src/components/email/NotificationSettings.tsx` · `src/components/email/VacationResponder.tsx` · `src/components/email/FollowUpReminder.tsx`
@@ -790,7 +828,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 👥 Task EMAIL-010: Contact Management & Groups
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** EMAIL-003, EMAIL-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** EMAIL-003, EMAIL-000
 
 ### Related Files
 `src/components/email/ContactManager.tsx` · `src/components/email/ContactPicker.tsx` · `src/components/email/ContactGroups.tsx`
@@ -850,7 +890,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## 🔒 Task EMAIL-011: Email Security & Encryption
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** EMAIL-003, EMAIL-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** EMAIL-003, EMAIL-000
 
 ### Related Files
 `src/components/email/EncryptionManager.tsx` · `src/lib/emailEncryption.ts` · `src/components/email/PhishingWarning.tsx`
@@ -902,9 +944,12 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ---
 
-## 📊 Task EMAIL-012: Email Analytics & Insights
 
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** EMAIL-003, EMAIL-000
+## 🗂️ Task EMAIL-012: Email Analytics & Insights
+
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** EMAIL-003, EMAIL-000
 
 ### Related Files
 `src/components/email/EmailAnalytics.tsx` · `src/components/email/ResponseTimeChart.tsx` · `src/components/email/EmailVolumeChart.tsx`
@@ -961,7 +1006,9 @@ Email remains the primary asynchronous communication protocol for professional w
 
 ## ⌨️ Task EMAIL-013: Keyboard Shortcuts & Power User Features
 
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** EMAIL-003
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** EMAIL-003
 
 ### Related Files
 `src/hooks/useEmailKeyboardShortcuts.ts` · `src/components/email/KeyboardShortcutsHelp.tsx`
@@ -1053,7 +1100,7 @@ EMAIL-001 (State Management & Route)
 
 ---
 
-## ✅ Email Module Completion Checklist
+## ✅ Module Completion Checklist
 
 **Core Functionality:**
 - [ ] Email account connection (OAuth + IMAP) working

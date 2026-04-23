@@ -1,9 +1,26 @@
-# 12-Research — AI-Powered Research & Learning Module
+# 42‑Research — Personal AI Command Center Frontend
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 📐 Reasoning Memo: Research as a Dedicated Learning Space
 
@@ -52,7 +69,7 @@ Unlike other modules that focus on task management or communication, Research is
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | Mind map node creation | **Alive** | `scale: 0.95→1` with spring, glow effect on hover |
 | Document upload processing | **Alive** | Progress bar with pulse, `scaleY: 0→1` animation |
@@ -67,9 +84,12 @@ Unlike other modules that focus on task management or communication, Research is
 
 ---
 
-## 🗃️ Task RES-000: Research Domain Model & Mock Data
 
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
+## 🗂️ Task RES-000: Research Domain Model & Mock Data
+
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
 
 ### Related Files
 `src/domain/research/types.ts` · `src/schemas/researchSchema.ts` · `src/mocks/factories/research.ts` · `src/mocks/handlers/research.ts` · `src/queries/research.ts`
@@ -269,7 +289,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 🔧 Task RES-001: Research State Management & Route Configuration
 
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-005 (Zustand), RES-000
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-005 (Zustand), RES-000
 
 ### Related Files
 `src/stores/slices/researchSlice.ts` · `src/pages/ResearchPage.tsx` · `src/router/routes.ts`
@@ -367,7 +389,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 📚 Task RES-002: Research Page Layout & Document Management
 
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** FND-007 (Router), RES-001
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** FND-007 (Router), RES-001
 
 ### Related Files
 `src/pages/ResearchPage.tsx` · `src/components/research/ResearchLayout.tsx` · `src/components/research/DocumentUpload.tsx` · `src/components/research/NotebookSidebar.tsx`
@@ -436,7 +460,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 🤖 Task RES-003: AI-Powered Document Analysis & Summaries
 
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** RES-002, RES-000
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** RES-002, RES-000
 
 ### Related Files
 `src/components/research/DocumentAnalyzer.tsx` · `src/components/research/AISummary.tsx` · `src/services/researchAI.ts` · `src/hooks/useDocumentAnalysis.ts`
@@ -506,9 +532,12 @@ Unlike other modules that focus on task management or communication, Research is
 
 ---
 
-## 🧠 Task RES-004: Interactive Mind Maps & Visual Knowledge Graphs
 
-**Priority:** 🔴 High | **Est. Effort:** 3.5 hours | **Depends On:** RES-003, RES-000
+## 🗂️ Task RES-004: Interactive Mind Maps & Visual Knowledge Graphs
+
+**Priority:** 🔴 High
+**Est. Effort:** 3.5 hours
+**Depends On:** RES-003, RES-000
 
 ### Related Files
 `src/components/research/MindMapEditor.tsx` · `src/components/research/MindMapNode.tsx` · `src/components/research/KnowledgeGraph.tsx` · `src/hooks/useMindMap.ts`
@@ -580,7 +609,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 📇 Task RES-005: Flashcard & Quiz Generation System
 
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** RES-003, RES-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** RES-003, RES-000
 
 ### Related Files
 `src/components/research/FlashcardDeck.tsx` · `src/components/research/FlashcardReviewer.tsx` · `src/components/research/QuizTaker.tsx` · `src/hooks/useSpacedRepetition.ts`
@@ -652,7 +683,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 🎓 Task RES-006: Learning Guide with Personalized Tutoring
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** RES-003, RES-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** RES-003, RES-000
 
 ### Related Files
 `src/components/research/LearningGuide.tsx` · `src/components/research/TutoringChat.tsx` · `src/services/learningGuide.ts` · `src/hooks/useLearningGuide.ts`
@@ -726,7 +759,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 🎧 Task RES-007: Audio Overviews with Multiple Formats
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** RES-003, RES-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** RES-003, RES-000
 
 ### Related Files
 `src/components/research/AudioOverview.tsx` · `src/components/research/AudioPlayer.tsx` · `src/services/audioGeneration.ts` · `src/hooks/useAudioOverview.ts`
@@ -800,7 +835,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 📝 Task RES-008: Report Generation with Custom Formats
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** RES-003, RES-000
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** RES-003, RES-000
 
 ### Related Files
 `src/components/research/ReportGenerator.tsx` · `src/components/research/ReportViewer.tsx` · `src/services/reportGeneration.ts` · `src/hooks/useReportGeneration.ts`
@@ -875,7 +912,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 🔗 Task RES-009: Cross-Module Integration & Search
 
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** RES-001, other modules
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** RES-001, other modules
 
 ### Related Files
 `src/components/research/ResearchSearch.tsx` · `src/hooks/useResearchIntegration.ts` · `src/integrations/budgetIntegration.ts` · `src/integrations/projectsIntegration.ts`
@@ -935,7 +974,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 👥 Task RES-010: Collaboration & Sharing Features
 
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** RES-006, RES-000
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** RES-006, RES-000
 
 ### Related Files
 `src/components/research/CollaborationPanel.tsx` · `src/components/research/ShareDialog.tsx` · `src/hooks/useResearchCollaboration.ts`
@@ -999,7 +1040,9 @@ Unlike other modules that focus on task management or communication, Research is
 
 ## 🧪 Task RES-011: Comprehensive Testing & Quality Gates
 
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** All RES tasks
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** All RES tasks
 
 ### Related Files
 `src/tests/research/*.test.tsx` · `vitest.config.ts` · `src/tests/research/accessibility.test.tsx`
@@ -1099,7 +1142,7 @@ RES-001 (State Management & Route)
 
 ---
 
-## ✅ Research Module Completion Checklist
+## ✅ Module Completion Checklist
 
 **Core Functionality:**
 - [ ] Notebook creation and management

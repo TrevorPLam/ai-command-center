@@ -1,7 +1,26 @@
-# 06-News — News Feed & Reader Module
+# 40‑News — Personal AI Command Center Frontend
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+
+---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 > **Migration Note**: Earlier versions of this specification referenced `react-window`'s `VariableSizeList` for virtualization. The corrected approach uses `@tanstack/react-virtual` (`useVirtualizer`) with `measureElement` for automatic dynamic height updates. This aligns with the TanStack ecosystem already in use (Query, Table). The scroll anchoring contract and IntersectionObserver sentinel pattern remain intact.
 
@@ -43,7 +62,7 @@
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | Topic chip toggle | **Quiet** | `whileTap={{ scale: 0.95 }}` (spring ≤150ms) |
 | Sentiment dot | **Quiet** | Slow opacity pulse (2s loop, `useReducedMotion` guard) |
@@ -55,8 +74,11 @@
 | Reader mode open | **Alive** | Cross-fade panel entrance (spring) |
 
 
-## 🗃️ Task NEWS-000: Mock Data Layer
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
+
+## 🗂️ Task NEWS-000: Mock Data Layer
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
 
 ### Related Files
 `src/mocks/factories/news.ts` · `src/mocks/handlers.ts` · `src/queries/news.ts`
@@ -172,7 +194,9 @@
 
 
 ## 🔧 Task NEWS-001: State Management & Route
-**Priority:** 🔴 High | **Est. Effort:** 45 min | **Depends On:** FND-005 (Zustand), NEWS-000
+**Priority:** 🔴 High
+**Est. Effort:** 0.75 hours
+**Depends On:** FND-005 (Zustand), NEWS-000
 
 ### Related Files
 `src/stores/slices/newsSlice.ts` · `src/router/routes.ts` · `src/pages/NewsPage.tsx`
@@ -281,7 +305,9 @@
 
 
 ## 🧭 Task NEWS-002: Page Layout & Sidebar
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** NEWS-001
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** NEWS-001
 
 ### Related Files
 `src/components/news/NewsSidebar.tsx` · `src/components/news/TopicSelector.tsx` · `src/components/news/SourceManager.tsx` · `src/components/news/FrequencySlider.tsx` · `src/components/news/PreferenceSync.tsx`
@@ -376,7 +402,9 @@
 
 
 ## 📰 Task NEWS-003: Feed Infrastructure
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** NEWS-001, NEWS-002
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** NEWS-001, NEWS-002
 
 ### Related Files
 `src/components/news/NewsFeed.tsx` · `src/hooks/useNewsFeed.ts` · `src/hooks/useInfiniteScroll.ts`
@@ -558,7 +586,9 @@
 
 
 ## 🃏 Task NEWS-004: NewsCard Component
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** NEWS-003
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** NEWS-003
 
 ### Related Files
 `src/components/news/NewsCard.tsx` · `src/components/news/SentimentDot.tsx` · `src/components/news/TrustBadge.tsx`
@@ -661,7 +691,9 @@
 
 
 ## 📖 Task NEWS-005: Bookmarks, Read Status & Offline
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** NEWS-004
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** NEWS-004
 
 ### Related Files
 `src/lib/db.ts` · `src/hooks/useBookmarks.ts` · `src/hooks/useReadStatus.ts` · `src/components/news/SavedView.tsx`
@@ -811,7 +843,9 @@
 
 
 ## 📖 Task NEWS-006: In-App Article Reader Mode
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** NEWS-005
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** NEWS-005
 
 ### Related Files
 `src/components/news/ArticleReaderPanel.tsx` · `src/hooks/useArticleContent.ts` · `src/components/news/ReaderControls.tsx`
@@ -920,7 +954,9 @@
 
 
 ## 🔎 Task NEWS-007: Article Search & Advanced Filtering
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** NEWS-003, NEWS-004
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** NEWS-003, NEWS-004
 
 ### Related Files
 `src/components/news/SearchPanel.tsx` · `src/hooks/useArticleSearch.ts` · `src/components/news/AdvancedFilters.tsx`
@@ -1017,7 +1053,9 @@
 
 
 ## 🔊 Task NEWS-008: Audio Summaries
-**Priority:** 🟢 Low | **Est. Effort:** 1 hour | **Depends On:** NEWS-004
+**Priority:** 🟢 Low
+**Est. Effort:** 1 hour
+**Depends On:** NEWS-004
 
 ### Related Files
 `src/hooks/useAudioSummary.ts` · `src/components/news/AudioPlayer.tsx`
@@ -1126,7 +1164,7 @@ NEWS-001 (State Slice + Route)
 ```
 
 
-## 🏁 Module Completion Checklist
+## ✅ Module Completion Checklist
 
 **Foundation:**
 - [ ] Mock factories: article (all fields including `wordCount`, `sentimentLabel`, `fullContent`), topic, source, preferences

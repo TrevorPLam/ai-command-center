@@ -1,30 +1,26 @@
-I will now conduct comprehensive research on modern budgeting apps and calendar UI patterns to enhance the existing Budget Module spec. This will ensure the refreshed task list is fully aligned with 2025–2026 industry best practices, especially those from Monarch Money and Copilot Money, which lead the market with their financial calendar and AI-powered planning features.
+# 50‑Budget — Personal AI Command Center Frontend (Enhanced v3)
 
----
-
-### 🔍 Research Synthesis: The "Financial Calendar" Paradigm
-
-Leading personal finance platforms in 2026 have converged on a core concept: the **financial calendar** is the central planning interface that ties budgeting, goals, and cash flow together.
-
-**Monarch Money's Approach.** Monarch presents a unified dashboard where a "clean, customizable" widget system lets users prioritize budgets, cash flow, and investments. A key feature is its **calendar view of upcoming recurring charges**, which transforms a list of bills into a visual, time-based schedule for managing cash flow. It also automatically detects subscriptions, addressing a major source of financial tracking errors.
-
-**Copilot Money's Approach.** Copilot emphasizes **forward-looking intelligence**. Its "Cash Flow" feature uses AI to categorize transactions, forecast patterns, and provide real-time insights into overspending. Crucially, it suggests savings goals based on a user's actual cash flow and spending patterns, directly tying a plan's feasibility to the user's financial calendar.
-
-**Synthesis for the Task List.** This research directly informs the following key enhancements to the Budget module:
-
-- **First-Class Calendar View:** The current `TransactionList` must be augmented with a true Calendar View that displays past, scheduled, and planned transactions on a single grid. This is the user's primary "schedule" for money.
-- **Smart Goal Planning:** Creating a goal should not be a standalone form. It should analyze the user's projected cash flow (from the calendar) to determine if a target monthly contribution is realistic, providing a "Feasibility Score."
-- **Unified Data & Interactivity:** Users should be able to drag to reschedule planned transactions, click to filter, and toggle the visibility of different transaction types, all within a consistent and performant interface.
-- **Automation & Rule Engine:** The system should not just record data; it should proactively help users by suggesting categories for new transactions and automatically detecting recurring bills.
-
----
-
-*(The following is the full, updated version of `07-Budget.md`, enhanced with all new tasks and subtasks.)*
-
-# 07-Budget — Personal AI Command Center Frontend (Enhanced v3)
-
-> **Status indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
+> **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+
+---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 
 ## 📐 Reasoning Memo: The "Financial Calendar" Paradigm
@@ -67,7 +63,7 @@ This necessitates several high-priority enhancements:
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | View switcher active state | **Quiet** | Opacity fade 150ms; active indicator slides with `layout` prop |
 | Project list rows | **Static** | Instant render; no animation |
@@ -78,8 +74,11 @@ This necessitates several high-priority enhancements:
 | Transaction calendar event drag/resize | **Alive** | Scale `1.02` + glow boxShadow on drag; `rotate: 1deg` tilt |
 | Goal progress bar fill | **Alive** | `scaleX: 0→1`, `transformOrigin: 'left'` on initial load |
 
-## 🧱 Task BUDG‑000: Budget Domain Model & Utilities
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND‑001 (TypeScript Base)
+
+## 🗂️ Task BUDG‑000: Budget Domain Model & Utilities
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND‑001 (TypeScript Base)
 
 ### Related Files
 - `src/domain/budget/types.ts` · `src/domain/budget/utils.ts` · `src/domain/budget/derivations.ts`
@@ -108,8 +107,11 @@ This necessitates several high-priority enhancements:
 - All budget-related entities share a consistent domain model.
 - Utility functions are pure, typed, and covered by tests.
 
-## 🗃️ Task BUDG‑001: Mock Data Layer & Query Contracts
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** BUDG‑000, FND‑004 (Testing), FND‑006 (TanStack Query)
+
+## 🗂️ Task BUDG‑001: Mock Data Layer & Query Contracts
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** BUDG‑000, FND‑004 (Testing), FND‑006 (TanStack Query)
 
 ### Related Files
 - `src/mocks/factories/budget.ts` · `src/mocks/handlers/budget.ts` · `src/queries/budget.ts`
@@ -153,7 +155,9 @@ This necessitates several high-priority enhancements:
 - All mutations follow optimistic update with rollback patterns.
 
 ## 🔧 Task BUDG‑002: Budget State Management & URL Sync
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** BUDG‑001, FND‑005 (Zustand), FND‑007 (Router)
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** BUDG‑001, FND‑005 (Zustand), FND‑007 (Router)
 
 ### Related Files
 - `src/stores/slices/budgetSlice.ts` · `src/lib/queryClient.ts` · `src/hooks/useBudgetUrlState.ts`
@@ -184,7 +188,9 @@ This necessitates several high-priority enhancements:
 - Query client defaults align with financial freshness requirements.
 
 ## 🧩 Task BUDG‑003: Budget Route Shell, Suspense & Error Boundaries
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** BUDG‑002
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** BUDG‑002
 
 ### Related Files
 - `src/pages/BudgetPage.tsx` · `src/components/budget/BudgetLayout.tsx` · `src/components/budget/BudgetErrorBoundary.tsx` · `src/components/budget/BudgetSkeletons.tsx`
@@ -222,8 +228,11 @@ This necessitates several high-priority enhancements:
 - Budget route has robust navigation, loading, and error handling.
 - Individual section failures do not break the entire budget area.
 
-## 📊 Task BUDG‑004: Budget Overview Dashboard
-**Priority:** 🔴 High | **Est. Effort:** 3.5 hours | **Depends On:** BUDG‑001, BUDG‑003
+
+## 🗂️ Task BUDG‑004: Budget Overview Dashboard
+**Priority:** 🔴 High
+**Est. Effort:** 3.5 hours
+**Depends On:** BUDG‑001, BUDG‑003
 
 ### Related Files
 - `src/components/budget/BudgetDashboard.tsx` · `src/components/budget/NetWorthCard.tsx` · `src/components/budget/CashFlowSummary.tsx` · `src/components/budget/BudgetCategoryCard.tsx` · `src/components/budget/SpendingTrendChart.tsx` · `src/components/budget/OverviewDataTable.tsx`
@@ -271,7 +280,9 @@ This necessitates several high-priority enhancements:
 - All charts have accessible tabular counterparts.
 
 ## 📅 Task BUDG‑005: Budget Planner & Category Management
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** BUDG‑002, BUDG‑001
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** BUDG‑002, BUDG‑001
 
 ### Related Files
 - `src/pages/BudgetPlannerPage.tsx` · `src/components/budget/BudgetPlanner.tsx` · `src/components/budget/CategoryEditorModal.tsx`
@@ -306,7 +317,9 @@ This necessitates several high-priority enhancements:
 - Planner reflects actual spending and rollover rules.
 
 ## 💰 Task BUDG‑006: Transactions Workspace (Virtualized List & Financial Calendar)
-**Priority:** 🔴 High | **Est. Effort:** 3.5 hours | **Depends On:** BUDG‑001, BUDG‑002
+**Priority:** 🔴 High
+**Est. Effort:** 3.5 hours
+**Depends On:** BUDG‑001, BUDG‑002
 
 ### Related Files
 - `src/pages/TransactionsPage.tsx` · `src/components/budget/TransactionList.tsx` · `src/components/budget/TransactionCalendarView.tsx` · `src/components/budget/PlannedTransactionModal.tsx`
@@ -362,7 +375,9 @@ This necessitates several high-priority enhancements:
 - Users can add, edit, and reschedule one-time and recurring future transactions directly from both the list and calendar views.
 
 ## 🔍 Task BUDG‑007: Transaction Detail Drawer, Split Transactions & Rules
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** BUDG‑006
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** BUDG‑006
 
 ### Related Files
 - `src/components/budget/TransactionDetailDrawer.tsx` · `src/schemas/transactionSchema.ts` · `src/components/budget/TransactionRulesForm.tsx`
@@ -405,8 +420,11 @@ This necessitates several high-priority enhancements:
 - Transaction drawer supports full edit, split, and rule creation workflows.
 - Users can create robust rules to automate the categorization and management of their financial calendar.
 
-## 🎯 Task BUDG‑008: Goals Page (Saving & Payoff Goals)
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** BUDG‑002, BUDG‑001
+
+## 🗂️ Task BUDG‑008: Goals Page (Saving & Payoff Goals)
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** BUDG‑002, BUDG‑001
 
 ### Related Files
 - `src/pages/GoalsPage.tsx` · `src/components/budget/GoalCard.tsx` · `src/components/budget/AddGoalModal.tsx`
@@ -436,7 +454,9 @@ This necessitates several high-priority enhancements:
 - Optimistic updates keep UI responsive.
 
 ## 🏦 Task BUDG‑009: Accounts Page, Reconciliation & Sync Status
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** BUDG‑002, BUDG‑001
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** BUDG‑002, BUDG‑001
 
 ### Related Files
 - `src/pages/AccountsPage.tsx` · `src/components/budget/AccountCard.tsx` · `src/components/budget/AccountDetailDrawer.tsx` · `src/components/budget/ReconciliationPanel.tsx`
@@ -475,7 +495,9 @@ This necessitates several high-priority enhancements:
 - Users can resolve duplicates and unmatched entries.
 
 ## 🔄 Task BUDG‑010: Recurring Page & Cash-Flow Forecast
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** BUDG‑002, BUDG‑001
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** BUDG‑002, BUDG‑001
 
 ### Related Files
 - `src/pages/RecurringPage.tsx` · `src/components/budget/RecurringItemRow.tsx` · `src/components/budget/RecurringCalendar.tsx` · `src/components/budget/CashFlowForecast.tsx` · `@/shared/recurrence/RecurrenceEngine.ts` · `@/shared/recurrence/helpers.ts`
@@ -513,7 +535,9 @@ This necessitates several high-priority enhancements:
 - Users have granular control over editing individual instances or entire series.
 
 ## 📈 Task BUDG‑011: Investments Page, Reports & Data Import/Export
-**Priority:** 🟢 Low | **Est. Effort:** 3.5 hours | **Depends On:** BUDG‑002, BUDG‑001
+**Priority:** 🟢 Low
+**Est. Effort:** 3.5 hours
+**Depends On:** BUDG‑002, BUDG‑001
 
 ### Related Files
 - `src/pages/InvestmentsPage.tsx` · `src/pages/ReportsPage.tsx` · `src/components/budget/AssetAllocationDonut.tsx` · `src/components/budget/PerformanceChart.tsx` · `src/components/budget/ReportsList.tsx` · `src/components/budget/ReportDataTable.tsx` · `src/components/budget/ImportTransactionsModal.tsx`
@@ -564,7 +588,9 @@ This necessitates several high-priority enhancements:
 - Users can import and export transaction data reliably.
 
 ## 💾 Task BUDG‑012: Offline-First Support, PWA & Sync Engine
-**Priority:** 🔴 High | **Est. Effort:** 3.5 hours | **Depends On:** BUDG‑006, BUDG‑007, BUDG‑009
+**Priority:** 🔴 High
+**Est. Effort:** 3.5 hours
+**Depends On:** BUDG‑006, BUDG‑007, BUDG‑009
 
 ### Related Files
 - `src/lib/db.ts` · `src/hooks/useOfflineTransactions.ts` · `src/components/budget/OfflineStatusBar.tsx` · `public/service-worker.js`
@@ -608,7 +634,9 @@ This necessitates several high-priority enhancements:
 - Users can see and control sync status and pending changes.
 
 ## 🆕 Task BUDG-013: Financial Planning Dashboard (NEW)
-**Priority:** 🟠 Medium | **Est. Effort:** 3.5 hours | **Depends On:** BUDG‑006
+**Priority:** 🟠 Medium
+**Est. Effort:** 3.5 hours
+**Depends On:** BUDG‑006
 
 A dedicated "Home" view that acts as a true "Calendar Week View" for money, similar to Monarch's customizable dashboard. It provides an at-a-glance summary of upcoming cash flow and key metrics.
 
@@ -638,7 +666,9 @@ A dedicated "Home" view that acts as a true "Calendar Week View" for money, simi
 - A new, focused financial home page provides a calendar-centric view of cash flow, goals, and budgets.
 
 ## 🆕 Task BUDG-014: AI-Powered Anomaly Detection & Insights (NEW)
-**Priority:** 🟢 Low | **Est. Effort:** 2.5 hours | **Depends On:** BUDG‑004
+**Priority:** 🟢 Low
+**Est. Effort:** 2.5 hours
+**Depends On:** BUDG‑004
 
 This task brings in a trend from apps like Copilot and FinSight: proactive, AI-powered insights to help users understand their financial health.
 
@@ -667,8 +697,11 @@ This task brings in a trend from apps like Copilot and FinSight: proactive, AI-p
 ### Definition of Done
 - Users receive proactive, non-judgmental insights into their spending patterns on the main dashboard.
 
-## ✅ Task BUDG‑015: Quality Gates, Testing & Accessibility
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** All BUDG tasks
+
+## 🗂️ Task BUDG‑015: Quality Gates, Testing & Accessibility
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** All BUDG tasks
 
 ### Related Files
 - `package.json` (scripts) · `vitest.config.ts` · `src/tests/budget/*.test.tsx` · `src/tests/budget/accessibility.test.tsx`

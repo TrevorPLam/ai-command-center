@@ -1,9 +1,26 @@
-# 16-Translation — Personal AI Command Center Frontend (Enhanced v1)
+# 33‑Translation — Personal AI Command Center Frontend (Enhanced v1)
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 📐 Reasoning Memo
 
@@ -38,17 +55,17 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ## 🧱 Cross-Cutting Foundations for Translation
 
-| ID | Requirement |
-|----|-------------|
-| **TRANS-C01** | Speaker SSOT | TanStack Query cache is the **only** source of truth for speakers and translations. No local `useState` arrays. |
-| **TRANS-C02** | Real-time Streaming | SSE over `fetch` + `ReadableStream` for translation streaming (same pattern as Chat module). |
-| **TRANS-C03** | Speaker Attribution | Every translation segment must have `speakerId` and display speaker name/color. |
-| **TRANS-C04** | Language Pairs | Support bidirectional translation pairs (e.g., English ↔ Spanish) with auto-detection option. |
-| **TRANS-C05** | Split-Screen View | Original text and translated text displayed side-by-side with synchronized scrolling. |
-| **TRANS-C06** | Session State | Active translation session state (recording, paused, stopped) managed in Zustand `translationSlice`. |
-| **TRANS-C07** | ARIA Live Regions | Transcript container: `role="log"` + `aria-live="polite"`. New translation segments announced. |
-| **TRANS-C08** | Motion Guard | All animated components check `useReducedMotion()`. |
-| **TRANS-C09** | Test Infrastructure | All network calls mocked via MSW handlers in `src/mocks/handlers/translation.ts`. |
+| ID | Area | Requirement |
+|----|------|-------------|
+| **TRANS-C01** | Data | TanStack Query cache is the **only** source of truth for speakers and translations. No local `useState` arrays. |
+| **TRANS-C02** | Streaming | SSE over `fetch` + `ReadableStream` for translation streaming (same pattern as Chat module). |
+| **TRANS-C03** | Attribution | Every translation segment must have `speakerId` and display speaker name/color. |
+| **TRANS-C04** | Languages | Support bidirectional translation pairs (e.g., English ↔ Spanish) with auto-detection option. |
+| **TRANS-C05** | Layout | Original text and translated text displayed side-by-side with synchronized scrolling. |
+| **TRANS-C06** | State | Active translation session state (recording, paused, stopped) managed in Zustand `translationSlice`. |
+| **TRANS-C07** | Accessibility | Transcript container: `role="log"` + `aria-live="polite"`. New translation segments announced. |
+| **TRANS-C08** | Motion | All animated components check `useReducedMotion()`. |
+| **TRANS-C09** | Testing | All network calls mocked via MSW handlers in `src/mocks/handlers/translation.ts`. |
 | **TRANS-C10** | Export | Export translations as text, JSON, or SRT subtitle format. |
 
 ### Motion Tier Assignment
@@ -65,8 +82,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🗃️ Task TRANS-000: Domain Contract Layer — Types, Zod Schemas & queryOptions
-**Priority:** 🔴 High | **Est. Effort:** 45 min | **Depends On:** FND-006 (TanStack Query)
+
+## 🗂️ Task TRANS-000: Domain Contract Layer — Types, Zod Schemas & queryOptions
+**Priority:** 🔴 High
+**Est. Effort:** 0.75 hours
+**Depends On:** FND-006 (TanStack Query)
 
 > Types and schemas must exist before factories can be typed and before queryOptions can be written.
 
@@ -222,8 +242,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🏭 Task TRANS-001: Mock Data Factories, MSW Handlers & Custom Hooks
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** TRANS-000, FND-004 (Testing Infra)
+
+## 🗂️ Task TRANS-001: Mock Data Factories, MSW Handlers & Custom Hooks
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** TRANS-000, FND-004 (Testing Infra)
 
 ### Related Files
 - `src/mocks/factories/translation.ts` · `src/mocks/handlers/translation.ts` · `src/hooks/useTranslation.ts`
@@ -531,8 +554,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 🟢 Task TRANS-002: Translation Page Layout & Route Configuration
-**Priority:** 🔴 High | **Est. Effort:** 30 min | **Depends On:** FND-007 (Router), FND-008 (Provider Tree)
+
+## 🗂️ Task TRANS-002: Translation Page Layout & Route Configuration
+**Priority:** 🔴 High
+**Est. Effort:** 0.5 hours
+**Depends On:** FND-007 (Router), FND-008 (Provider Tree)
 
 ### Related Files
 - `src/pages/TranslationPage.tsx` · `src/router/routes.ts` · `src/layouts/AppShell.tsx`
@@ -578,7 +604,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 ---
 
 ## 🎤 Task TRANS-003: Speaker Management
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** TRANS-001, TRANS-002
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** TRANS-001, TRANS-002
 
 ### Related Files
 - `src/components/translation/SpeakerManager.tsx` · `src/components/translation/SpeakerCard.tsx` · `src/components/translation/AddSpeakerDialog.tsx`
@@ -640,7 +668,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 ---
 
 ## 💬 Task TRANS-004: Translation Display & Split-Screen View
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** TRANS-001, TRANS-002
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** TRANS-001, TRANS-002
 
 ### Related Files
 - `src/components/translation/TranslationDisplay.tsx` · `src/components/translation/TranslationSegment.tsx` · `src/components/translation/SplitScreenView.tsx`
@@ -734,7 +764,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 ---
 
 ## 🎛️ Task TRANS-005: Session Controls & Export
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** TRANS-001, TRANS-002
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** TRANS-001, TRANS-002
 
 ### Related Files
 - `src/components/translation/SessionControls.tsx` · `src/components/translation/ExportDialog.tsx`
@@ -803,8 +835,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 ---
 
-## 📊 Task TRANS-006: Streaming Translation (SSE)
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** TRANS-001, TRANS-004
+
+## 🗂️ Task TRANS-006: Streaming Translation (SSE)
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** TRANS-001, TRANS-004
 
 ### Related Files
 - `src/hooks/useTranslationStream.ts` · `src/mocks/handlers/translation.ts` (SSE handler)

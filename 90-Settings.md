@@ -1,12 +1,27 @@
-There is value in slightly **refining** the parent tasks and reprioritizing some items, but not in exploding the number of parent tasks; most “enhancement” should happen inside each parent task via clearer subtasks, embedded testing, and a few missing feature areas (notably audit/logging, security UX, and more explicit performance/accessibility work). [dev](https://dev.to/marufrahmanlive/react-hook-form-with-zod-complete-guide-for-2026-1em1)
-
-Below is an updated version of your foundational task list with those improvements applied, preserving your original formatting and style while tightening structure, folding testing into each parent task, and adding missing “perfect‑developer‑practice” bits.
-
-***
-# 08-Settings — Personal AI Command Center Frontend (Enhanced v3)
-> **Status indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.  
+# 90‑Settings — Personal AI Command Center Frontend (Enhanced v3)
+> **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.  
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.  
 > **Versioning Note**: This document supersedes `08-Settings (Enhanced v2)`.
+
+---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
+
 ## 📐 Reasoning Memo: Structural & Quality Decisions
 - Keep **8 parent tasks** to avoid fragmentation and maintain a clear mental model, but tighten scopes so each is focused, testable, and maps cleanly to UI + state boundaries. [minimum-code](https://www.minimum-code.com/blog/ui-ux-best-practises-web-app-design-2026)
 - Push “perfect developer practices” into **cross-cutting requirements** and **per-task subtasks**, instead of creating separate parent tasks for testing, validation, or accessibility. [dev](https://dev.to/marufrahmanlive/react-hook-form-with-zod-complete-guide-for-2026-1em1)
@@ -35,6 +50,9 @@ Below is an updated version of your foundational task list with those improvemen
 | Use Zustand `partialize` carefully; only persist stable, user-controlled preferences; prepare migrations for shape changes. | Zustand docs + discussion [zustand.docs.pmnd](https://zustand.docs.pmnd.rs/reference/integrations/persisting-store-data) | Keep `persist` slice minimal, add `migrate` to remove deprecated keys safely. |
 | Accessibility and consistency are core UX best practices in 2026; every interactive element must be keyboard accessible and have an accessible name. | UX best-practices 2026 [minimum-code](https://www.minimum-code.com/blog/ui-ux-best-practises-web-app-design-2026) | Sidebar and forms must support keyboard nav, ARIA attributes, and proper labels. |
 | Personalization (themes, language, notification preferences) is expected; users must be able to quickly adjust settings, see immediate feedback, and understand the impact. | UI/UX 2026 personalization guidance [minimum-code](https://www.minimum-code.com/blog/ui-ux-best-practises-web-app-design-2026) | Ensure settings immediately reflect changes in the UI (especially theme and motion). |
+
+---
+
 ## 🧱 Cross‑Cutting Foundations for Settings
 | ID | Area | Requirement |
 |----|------|-------------|
@@ -51,7 +69,7 @@ Below is an updated version of your foundational task list with those improvemen
 | **SET‑C11** | Testing | Each parent task includes tests for state updates, accessibility basics, and critical flows; settings domain has 90%+ coverage. |
 | **SET‑C12** | Observability | Basic logging hooks capture key settings changes (e.g., theme, notification preferences) to help debug behavior in development. |
 ## 🎯 Motion Tier Assignment for Settings
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | Settings sidebar active indicator | **Quiet** | Background color fade (≤150ms). |
 | Section content transition | **Quiet** | Opacity fade (≤150ms) with `AnimatePresence`. |
@@ -60,8 +78,11 @@ Below is an updated version of your foundational task list with those improvemen
 | Export progress bar | **Quiet** | Width transition (≤150ms). |
 | Danger zone dialogs | **Static** | Instant open/close (no animation). |
 | All form inputs | **Static** | No animation (instant updates). |
-## 🗃️ Task SET‑000: Settings State, Persistence & Audit (Zustand Slice)
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** FND‑005 (Zustand Slices)
+
+## 🗂️ Task SET‑000: Settings State, Persistence & Audit (Zustand Slice)
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** FND‑005 (Zustand Slices)
 ### Related Files
 - `src/schemas/settingsSchema.ts`  
 - `src/stores/slices/settingsSlice.ts`  
@@ -97,7 +118,9 @@ Below is an updated version of your foundational task list with those improvemen
 - ❌ Persisting the entire slice without `partialize`.  
 - ❌ Duplicating validation logic in TypeScript and Zod instead of deriving from schemas. [dev](https://dev.to/marufrahmanlive/react-hook-form-with-zod-complete-guide-for-2026-1em1)
 ## 🔧 Task SET‑001: Settings Shell, Layout & Navigation
-**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** SET‑000, FND‑007 (Router)
+**Priority:** 🔴 High
+**Est. Effort:** 1 hour
+**Depends On:** SET‑000, FND‑007 (Router)
 ### Related Files
 - `src/pages/SettingsPage.tsx`  
 - `src/components/settings/SettingsSidebar.tsx`  
@@ -120,7 +143,9 @@ Below is an updated version of your foundational task list with those improvemen
 - Section changes are smooth but subtle.  
 - Keyboard and screen reader navigation is reliable.
 ## ⚙️ Task SET‑002: Core Settings Forms (General, Appearance, Notifications, Analytics)
-**Priority:** 🔴 High | **Est. Effort:** 4 hours | **Depends On:** SET‑001
+**Priority:** 🔴 High
+**Est. Effort:** 4 hours
+**Depends On:** SET‑001
 ### Related Files
 - `src/components/settings/GeneralSettings.tsx`  
 - `src/components/settings/AppearanceSettings.tsx`  
@@ -171,7 +196,9 @@ Below is an updated version of your foundational task list with those improvemen
 - Updates persist to the store and `localStorage` as intended; theme/motion changes are immediate.  
 - Users receive clear feedback for success and failure.
 ## 🔑 Task SET‑003: API Keys & Security UX
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** SET‑001, SET‑000
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** SET‑001, SET‑000
 ### Related Files
 - `src/components/settings/ApiKeysSettings.tsx`  
 - `src/schemas/apiKeySchema.ts`
@@ -194,8 +221,11 @@ Below is an updated version of your foundational task list with those improvemen
 ### Definition of Done
 - Users can add, inspect, and manage API keys with secure defaults.  
 - Masking, reveal, and destructive operations feel safe and predictable.
-## 🧠 Task SET‑004: Memory, Integrations & Sync States
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** SET‑001, SET‑000
+
+## 🗂️ Task SET‑004: Memory, Integrations & Sync States
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** SET‑001, SET‑000
 ### Related Files
 - `src/components/settings/MemorySettings.tsx`  
 - `src/components/settings/IntegrationsSettings.tsx`
@@ -219,7 +249,9 @@ Below is an updated version of your foundational task list with those improvemen
 - Memory controls are clear, safe, and responsive.  
 - Integrations show realistic connection states and can be connected/disconnected smoothly.
 ## 📤 Task SET‑005: Export, Import & Data Portability UX
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** SET‑001, SET‑000
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** SET‑001, SET‑000
 ### Related Files
 - `src/components/settings/ExportImportPage.tsx`
 ### Subtasks
@@ -241,7 +273,9 @@ Below is an updated version of your foundational task list with those improvemen
 - Users can start an export, see progress, and “download” a mock archive.  
 - Users can attempt an import, see validation behavior, and get clear feedback.
 ## ⚠️ Task SET‑006: Danger Zone, Privacy & Account Lifecycle
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** SET‑001, SET‑000
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** SET‑001, SET‑000
 ### Related Files
 - `src/components/settings/DangerZone.tsx`
 ### Subtasks
@@ -263,7 +297,9 @@ Below is an updated version of your foundational task list with those improvemen
 - All destructive actions are clearly marked, confirmed, and safe from accidental activation.  
 - Users understand what will happen and when, especially for account deletion.
 ## 👥 Task SET‑007: Team & Workspace Settings (Optional)
-**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** SET‑001, SET‑000
+**Priority:** 🟢 Low
+**Est. Effort:** 1.5 hours
+**Depends On:** SET‑001, SET‑000
 ### Related Files
 - `src/components/settings/TeamSettings.tsx`
 ### Subtasks

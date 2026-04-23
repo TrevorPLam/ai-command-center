@@ -1,9 +1,26 @@
-# 11-Documents — Personal AI Command Center Frontend (Enhanced v1)
+# 41‑Documents — Personal AI Command Center Frontend (Enhanced v1)
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.  
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
 ---
+
+## 📋 Frontend Context (Module‑Wide Assumptions)
+
+> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
+> **Do not repeat these in every task** – they are global.
+
+- **Framework**: React 18 + TypeScript (strict mode)
+- **State**: Zustand (UI) + TanStack Query (server state)
+- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
+- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
+- **Testing**: Vitest + RTL + MSW (unit / component / integration)
+- **Routing**: React Router v7 (data mode, lazy routes)
+- **Virtualization**: `@tanstack/react-virtual`
+- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
+- **Forms**: react‑hook‑form + zod
+- **Offline**: Dexie (centralised `CommandCenterDB`)
+- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ## 🔬 Research Findings — Documents Module
 
@@ -45,7 +62,7 @@
 
 ### 🎯 Motion Tier Assignment
 
-| Component | Tier | Allowed Techniques |
+| Component | Tier | Technique |
 |-----------|------|--------------------|
 | Document open/close | **Alive** | `scale: 0.95→1`, `opacity: 0→1`, spring `stiffness: 300, damping: 30` |
 | Link creation | **Alive** | Brief glow effect on linked text; graph node entrance |
@@ -59,9 +76,12 @@
 
 ---
 
-## 🗃️ Task DOC-000: Documents Domain Model & Mock Data
 
-**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
+## 🗂️ Task DOC-000: Documents Domain Model & Mock Data
+
+**Priority:** 🔴 High
+**Est. Effort:** 2 hours
+**Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
 
 ### Related Files
 
@@ -209,7 +229,9 @@
 ---
 
 ## 🔧 Task DOC-001: Documents State Management & Templates
-**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-005 (Zustand), DOC-000
+**Priority:** 🔴 High
+**Est. Effort:** 1.5 hours
+**Depends On:** FND-005 (Zustand), DOC-000
 
 ### Related Files
 `src/stores/slices/documentsSlice.ts` · `src/data/documentTemplates.ts` · `src/hooks/useDocumentTemplates.ts`
@@ -321,7 +343,9 @@
 ---
 
 ## 📝 Task DOC-002: Documents Page Layout & Editor
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** FND-007 (Router), DOC-001
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** FND-007 (Router), DOC-001
 
 ### Related Files
 `src/pages/DocumentsPage.tsx` · `src/components/documents/DocumentsLayout.tsx` · `src/components/documents/DocumentEditor.tsx` · `src/components/documents/DocumentPreview.tsx` · `src/components/documents/DocumentSidebar.tsx` · `src/router/routes.ts`
@@ -415,7 +439,9 @@
 ---
 
 ## 🔗 Task DOC-003: Bidirectional Linking & Graph Visualization
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** DOC-002, DOC-000
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** DOC-002, DOC-000
 
 ### Related Files
 `src/components/documents/LinkingSystem.tsx` · `src/components/documents/DocumentGraph.tsx` · `src/components/documents/BacklinksPanel.tsx` · `src/hooks/useDocumentLinks.ts`
@@ -505,7 +531,9 @@
 ---
 
 ## 📸 Task DOC-004: OCR Processing & Document Import
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** DOC-000
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** DOC-000
 
 ### Related Files
 `src/components/documents/OCRProcessor.tsx` · `src/components/documents/DocumentImport.tsx` · `src/lib/ocr.ts` · `src/hooks/useOCRProcessing.ts`
@@ -602,7 +630,9 @@
 ---
 
 ## 🔍 Task DOC-005: Semantic Search & Vector Embeddings
-**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** DOC-000, DOC-004
+**Priority:** 🔴 High
+**Est. Effort:** 3 hours
+**Depends On:** DOC-000, DOC-004
 
 ### Related Files
 `src/components/documents/SearchInterface.tsx` · `src/lib/vectorSearch.ts` · `src/hooks/useSemanticSearch.ts` · `src/components/documents/SearchResults.tsx`
@@ -702,7 +732,9 @@
 ---
 
 ## 🤖 Task DOC-006: AI-Powered Content Extraction
-**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** DOC-004, DOC-005
+**Priority:** 🟠 Medium
+**Est. Effort:** 2.5 hours
+**Depends On:** DOC-004, DOC-005
 
 ### Related Files
 `src/components/documents/ExtractionPanel.tsx` · `src/lib/contentExtractor.ts` · `src/hooks/useContentExtraction.ts` · `src/components/documents/EntityHighlight.tsx`
@@ -797,7 +829,9 @@
 ---
 
 ## ❓ Task DOC-007: Question-Answering over Documents
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** DOC-005, DOC-006
+**Priority:** 🟠 Medium
+**Est. Effort:** 3 hours
+**Depends On:** DOC-005, DOC-006
 
 ### Related Files
 `src/components/documents/QAInterface.tsx` · `src/lib/qaEngine.ts` · `src/hooks/useQuestionAnswering.ts` · `src/components/documents/AnswerPanel.tsx`
@@ -907,7 +941,9 @@
 ---
 
 ## 👥 Task DOC-008: Real-Time Collaboration
-**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** DOC-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 1.5 hours
+**Depends On:** DOC-002
 
 ### Related Files
 `src/components/documents/CollaborationPanel.tsx` · `src/lib/yjsDocument.ts` · `src/hooks/useRealTimeSync.ts` · `src/components/documents/CursorOverlay.tsx`
@@ -1019,7 +1055,9 @@
 ---
 
 ## 📚 Task DOC-009: Version Control & Document History
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** DOC-002
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** DOC-002
 
 ### Related Files
 `src/components/documents/VersionHistory.tsx` · `src/components/documents/DiffViewer.tsx` · `src/lib/versionControl.ts` · `src/hooks/useVersionControl.ts`
@@ -1123,7 +1161,9 @@
 ---
 
 ## 📱 Task DOC-010: Offline Support & Data Sync
-**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** DOC-000, DOC-001
+**Priority:** 🔴 High
+**Est. Effort:** 2.5 hours
+**Depends On:** DOC-000, DOC-001
 
 ### Related Files
 `src/lib/db/documents.ts` · `src/hooks/useOfflineDocuments.ts` · `src/components/documents/OfflineStatusBar.tsx` · `src/lib/yjsDocument.ts`
@@ -1217,8 +1257,11 @@
 
 ---
 
-## 🎨 Task DOC-011: Rich Content & Media Support
-**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** DOC-002
+
+## 🗂️ Task DOC-011: Rich Content & Media Support
+**Priority:** 🟠 Medium
+**Est. Effort:** 2 hours
+**Depends On:** DOC-002
 
 ### Related Files
 `src/components/documents/MediaEmbed.tsx` · `src/components/documents/MediaGallery.tsx` · `src/lib/mediaProcessor.ts` · `src/hooks/useMediaContent.ts`
@@ -1322,8 +1365,11 @@
 
 ---
 
-## 📊 Task DOC-012: Split View & Advanced Layouts
-**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** DOC-002
+
+## 🗂️ Task DOC-012: Split View & Advanced Layouts
+**Priority:** 🟢 Low
+**Est. Effort:** 2 hours
+**Depends On:** DOC-002
 
 ### Related Files
 `src/components/documents/SplitView.tsx` · `src/components/documents/LayoutManager.tsx` · `src/hooks/useDocumentLayout.ts`
@@ -1422,7 +1468,7 @@
 
 ---
 
-## 📊 Dependency Graph (Documents Module)
+## 📊 Dependency Graph
 
 ```
 DOC-000 (Domain Model & Mock Data)
