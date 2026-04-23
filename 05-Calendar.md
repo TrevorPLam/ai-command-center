@@ -549,27 +549,41 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 ### Subtasks
 
-- [ ] **CAL‑006A** Install `ical.js` for parsing imported `.ics` files:
+- [ ] **CAL‑006A** Install libraries for iCal import/export:
   ```bash
-  pnpm add ical.js
+  pnpm add ical.js ical-generator
   ```
-  For export, generate RFC 5545‑compliant `.ics` strings manually (no extra lib needed)
+  Use the `ical-generator` library to produce `.ics` content. This library correctly handles CRLF line endings, 75‑byte folding, and text escaping as required by RFC 5545. Manual string generation is error‑prone and must not be used.
 
 - [ ] **CAL‑006B** Create `src/utils/ical.ts` with full RFC 5545 compliance:
   ```ts
-  // Export
-  export function eventsToICS(events: CalendarEvent[], calendarName?: string): string
-  // Handles: VCALENDAR headers, VERSION, PRODID, CALSCALE, METHOD:PUBLISH
-  // Per VEVENT: UID, DTSTAMP, DTSTART, DTEND (or DURATION), SUMMARY, DESCRIPTION, LOCATION,
-  // RRULE, EXDATE, ATTENDEE, ORGANIZER, STATUS, TRANSP, CATEGORIES
+  import ical from 'ical-generator';
+  import { parseComponents } from 'ical.js';
 
-  // Line folding at 75 bytes (RFC 5545 §3.1)
-  export function foldLine(line: string, maxLength = 75): string
-  // Text escaping (; , \ \n)
-  export function escapeText(str: string): string
+  // Export using ical-generator
+  export function eventsToICS(events: CalendarEvent[], calendarName?: string): string {
+    const calendar = ical({ name: calendarName || 'Calendar' });
+    events.forEach(event => {
+      calendar.createEvent({
+        start: event.start,
+        end: event.end,
+        summary: event.title,
+        description: event.description,
+        location: event.location,
+        uid: event.id,
+        stamp: new Date(),
+        // Add recurrence, attendees, etc. as needed
+      });
+    });
+    return calendar.toString();
+  }
 
-  // Import
-  export function parseICS(icsString: string): Partial<CalendarEvent>[]
+  // Import using ical.js
+  export function parseICS(icsString: string): Partial<CalendarEvent>[] {
+    const jcalData = parseComponents(icsString);
+    // Convert jcalData to CalendarEvent format
+    return [];
+  }
   ```
 
 - [ ] **CAL‑006C** Export flow enhancements:
@@ -605,7 +619,7 @@ Based on research into the latest calendar application patterns (2025–2026), r
 - Recurring events fully supported in both directions
 
 ### Anti‑Patterns
-- ❌ `eventsToICS` with plain `\n` line endings — must use `\r\n` (RFC 5545 §3.1)
+- ❌ Manual ICS string generation — use `ical-generator` library instead
 - ❌ Omitting `DTSTAMP` in VEVENT — silent failure in Google Calendar/Outlook
 - ❌ Parallel batch mutations on import — use sequential processing to avoid cache thrash
 - ❌ Exporting local timezone datetimes — all DTSTART/DTEND must be UTC (`Z` suffix)

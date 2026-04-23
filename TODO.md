@@ -129,14 +129,16 @@
 
 **Priority:** 🟠 Medium | **Est. Effort:** 30 min | **Depends On:** None
 
+**Status:** ✅ Done
+
 ### Related Files
 - `04-Projects.md` (Tasks PROJ‑004, PROJ‑009)
 - `01-Foundations.md` (if drag-and-drop guidance is present)
 
 ### Subtasks
-- [ ] **SPEC-005A**: In `04-Projects.md`, immediately after the `@dnd-kit/core` installation step, insert the following note:
+- [x] **SPEC-005A**: In `04-Projects.md`, immediately after the `@dnd-kit/core` installation step, insert the following note:
   > "`@dnd-kit/core@6.3.1` was last updated December 2024. Development has moved to the newer `@dnd-kit/react` and `@dnd-kit/dom` packages. For the MVP, `@dnd-kit/core` meets all requirements. Schedule evaluation of `@dnd-kit/react` or `@atlaskit/pragmatic-drag-and-drop` as a POL‑001 performance/debt review item."
-- [ ] **SPEC-005B**: Throughout `04-Projects.md`, ensure no statements claim `@dnd-kit` is "end‑of‑life" or "unmaintained." Use the phrasing "maintenance mode" and "forward path available."
+- [x] **SPEC-005B**: Throughout `04-Projects.md`, ensure no statements claim `@dnd-kit` is "end‑of‑life" or "unmaintained." Use the phrasing "maintenance mode" and "forward path available."
 
 ### Definition of Done
 - `@dnd-kit/core` status is accurately described as low-velocity but stable.
@@ -148,15 +150,17 @@
 
 **Priority:** 🔴 High | **Est. Effort:** 20 min | **Depends On:** SPEC-001
 
+**Status:** ✅ Done
+
 ### Related Files
 - `01-Foundations.md` (Task FND‑002)
 - All module files with Zod schema definitions (DASH‑000, CHAT‑002, PROJ‑000, CAL‑008, BUDG‑000, SET‑002)
 
 ### Subtasks
-- [ ] **SPEC-006A**: In `01-Foundations.md` FND‑002, directly below the Zod installation command, add this warning block:
+- [x] **SPEC-006A**: In `01-Foundations.md` FND‑002, directly below the Zod installation command, add this warning block:
   > ⚠️ **Zod v4 Performance Note**  
   > Zod v4 schema creation is 8–17× slower than v3. **All schemas must be defined at module scope.** Never define a schema inside a component body, hook, or render function. Use `z.infer<typeof schema>` to derive TypeScript types instead of writing separate interfaces.
-- [ ] **SPEC-006B**: Review each module spec and ensure that schema definitions are shown at module level, not inside component examples or hook bodies. If any examples show inline schema definitions, correct them and add a short comment explaining the move.
+- [x] **SPEC-006B**: Review each module spec and ensure that schema definitions are shown at module level, not inside component examples or hook bodies. If any examples show inline schema definitions, correct them and add a short comment explaining the move.
 
 ### Definition of Done
 - The Zod v4 performance warning is prominent in the Foundation document.
@@ -168,13 +172,15 @@
 
 **Priority:** 🟠 Medium | **Est. Effort:** 15 min | **Depends On:** SPEC-001
 
+**Status:** ✅ Done
+
 ### Related Files
 - `05-Calendar.md` (Task CAL‑006)
 
 ### Subtasks
-- [ ] **SPEC-007A**: In `05-Calendar.md` CAL‑006B, replace the instruction *"generate RFC 5545‑compliant .ics strings manually"* with:
+- [x] **SPEC-007A**: In `05-Calendar.md` CAL‑006B, replace the instruction *"generate RFC 5545‑compliant `.ics` strings manually"* with:
   > "Use the `ical-generator` library (`pnpm add ical-generator`) to produce `.ics` content. This library correctly handles CRLF line endings, 75‑byte folding, and text escaping as required by RFC 5545. Manual string generation is error‑prone and must not be used."
-- [ ] **SPEC-007B**: Add `ical-generator` to the dependencies list for the Calendar module.
+- [x] **SPEC-007B**: Add `ical-generator` to the dependencies list for the Calendar module.
 
 ### Definition of Done
 - The spec no longer advocates manual ICS string generation.
@@ -293,12 +299,12 @@ SPEC-009 (Standardize Tests)
 - [x] OKLCH token equivalents are defined; typed token file is spec'd.
 - [x] Virtualization strategy is unified on `@tanstack/react-virtual`.
 - [x] Calendar module is locked to `react-big-calendar ^1.19.4`.
-- [ ] `@dnd-kit/core` status is accurately described.
-- [ ] Zod v4 performance warning is prominent.
-- [ ] iCal export uses `ical-generator`, not manual strings.
-- [ ] Motion tokens exist (`src/lib/motion.ts`) and a review checklist is in place.
-- [ ] Every implementation subtask is paired with a `[TEST]` subtask.
-- [ ] Testing execution is described as phased, not monolithic.
-- [ ] No speculative or overconfident language remains.
+- [x] `@dnd-kit/core` status is accurately described.
+- [x] Zod v4 performance warning is prominent.
+- [x] iCal export uses `ical-generator`, not manual strings.
+- [x] Motion tokens exist (`src/lib/motion.ts`) and a review checklist is in place.
+- [x] Every implementation subtask is paired with a `[TEST]` subtask.
+- [x] Testing execution is described as phased, not monolithic.
+- [x] No speculative or overconfident language remains.
 
 Once all tasks are marked Done, the specification suite is ready for the implementation phase.
