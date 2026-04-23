@@ -87,9 +87,21 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑000A**: Define core types: `Account`, `Transaction`, `Category`, `Goal`, `RecurringItem`, `Holding`, `ReportConfig`, `BudgetPeriod`. Enums: `TransactionType`, `AccountType`, `SyncStatus`, `ReconciliationStatus`. **NEW**: Added `TransactionSource` ('past', 'scheduled', 'planned') to distinguish record type.
+
+- [ ] **[TEST] BUDG‑000A**: Core types defined with correct TypeScript interfaces; enums include all required values
+
 - [ ] **BUDG‑000B**: Define `BudgetRule` type for transaction rules (conditions + actions).
+
+- [ ] **[TEST] BUDG‑000B**: `BudgetRule` type includes conditions and actions fields; type-safe
+
 - [ ] **BUDG‑000C**: Implement currency/date utilities: Normalize amounts to minor units, parse/format dates and ranges, signed amounts for income vs expense.
+
+- [ ] **[TEST] BUDG‑000C**: Currency utilities normalize correctly; date utilities parse/format accurately; signed amounts work for income/expense
+
 - [ ] **BUDG‑000D**: Implement derivation helpers: Net worth, cash flow, category totals, budget utilization per category and per period, projected completion for goals.
+
+- [ ] **[TEST] BUDG‑000D**: Derivation helpers calculate correctly; net worth, cash flow, category totals, budget utilization, goal projections accurate
+
 - [ ] **BUDG‑000E**: **Tests**: Unit tests for all domain helpers and derivations.
 
 ### Definition of Done
@@ -105,15 +117,33 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑001A**: Create `src/mocks/factories/budget.ts` with factories for `Account`, `Transaction`, `Category`, `Goal`, `Recurring`, `Holding`, `BudgetPeriod`.
+
+- [ ] **[TEST] BUDG‑001A**: Factories produce valid typed data for all entities
+
 - [ ] **BUDG‑001B**: Ensure factories produce:
   - 5–10 accounts, 20–50 transactions per period, 8–12 categories, 3–5 goals, 5–10 recurring items, 5–10 holdings.
   - **NEW**: `createMockPlannedTransaction()` factory for future-dated, non-recurring planned spending/saving.
   - **NEW**: `createMockRecurring()` must support complex RRULE-like patterns: "Every 2 weeks on Friday," "Last day of the month," etc.
   - **NEW**: `createMockNetWorthGoal()` and `createMockPaydownGoal()` for goal system.
+
+- [ ] **[TEST] BUDG‑001B**: Factories produce correct counts; planned transaction factory works; recurring supports complex patterns; goal factories work
+
 - [ ] **BUDG‑001C**: Create `src/mocks/handlers/budget.ts` covering all CRUD endpoints (accounts, transactions, categories, goals, recurring, periods, reconciliation, holdings, reports, import/export, rules).
+
+- [ ] **[TEST] BUDG‑001C**: MSW handlers cover all CRUD endpoints; handlers return correct responses
+
 - [ ] **BUDG‑001D**: Create `src/queries/budget.ts` with query key factory for all entities.
+
+- [ ] **[TEST] BUDG‑001D**: Query key factory produces structurally distinct keys for all entities
+
 - [ ] **BUDG‑001E**: Define `transactionsInfiniteQueryOptions` with `getNextPageParam` (cursor-based) and `maxPages` to limit cached pages.
+
+- [ ] **[TEST] BUDG‑001E**: Infinite query options have correct `getNextPageParam` and `maxPages`
+
 - [ ] **BUDG‑001F**: Create mutation hooks with optimistic updates (`useCreateTransaction`, `useUpdateTransaction`, etc.).
+
+- [ ] **[TEST] BUDG‑001F**: Mutation hooks implement optimistic updates; rollback on error
+
 - [ ] **BUDG‑001G**: **Tests**: Hook tests for transactions infinite query (initial load, load-more, end-of-list, error, empty state).
 - [ ] **BUDG‑001H**: **Tests**: Mutation tests for optimistic updates and rollback.
 
@@ -131,9 +161,21 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑002A**: Create `budgetSlice` interface with state for date range, selected account, filters, active view, and active report. **NEW**: Added `visibleTransactionTypes` to toggle view of past, scheduled, planned events.
+
+- [ ] **[TEST] BUDG‑002A**: Slice state shape matches interface; includes `visibleTransactionTypes`
+
 - [ ] **BUDG‑002B**: Export atomic selector hooks (`useBudgetDateRange`, `useBudgetFilters`, `useBudgetActiveView`, etc.).
+
+- [ [TEST] BUDG‑002B**: Atomic selector hooks export correctly; return correct state slices
+
 - [ ] **BUDG‑002C**: Implement `useBudgetUrlState()` to sync filters, date range, active view, and active report to query params, and hydrate Zustand state from URL on load.
+
+- [ ] **[TEST] BUDG‑002C**: URL syncs to state; state hydrates from URL on load
+
 - [ ] **BUDG‑002D**: Update `queryClient.ts` with appropriate `staleTime` defaults for various budget data.
+
+- [ ] **[TEST] BUDG‑002D**: Query client has appropriate `staleTime` defaults for budget data
+
 - [ ] **BUDG‑002E**: **Tests**: Unit tests for slice actions and selectors.
 - [ ] **BUDG‑002F**: **Tests**: Integration tests for URL ↔ state sync.
 
@@ -150,11 +192,29 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑003A**: Create `BudgetPage` route with horizontal secondary nav (Overview, Planner, Transactions, Goals, Accounts, Recurring, Investments, Reports). **NEW**: Added "Calendar" view to the navigation items.
+
+- [ ] **[TEST] BUDG‑003A**: Route renders with correct navigation items; includes Calendar view
+
 - [ ] **BUDG‑003B**: Implement `BudgetLayout` with top-level Suspense boundary, top-level ErrorBoundary, and child boundaries per major section.
+
+- [ ] **[TEST] BUDG‑003B**: Layout has Suspense and Error boundaries; child boundaries per section
+
 - [ ] **BUDG‑003C**: Add skeletons for dashboard cards, tables, and forms.
+
+- [ ] **[TEST] BUDG‑003C**: Skeletons render for cards, tables, forms
+
 - [ ] **BUDG‑003D**: Add generic empty states per section (no transactions, no goals, no recurring items, no holdings).
+
+- [ ] **[TEST] BUDG‑003D**: Empty states render per section with correct messaging
+
 - [ ] **BUDG‑003E**: Implement `BudgetErrorBoundary` with friendly error message, "Try again" button, and support link.
+
+- [ ] **[TEST] BUDG‑003E**: Error boundary shows friendly message; retry button works; support link present
+
 - [ ] **BUDG‑003F**: Wire TanStack Query error states into boundaries and toast notifications.
+
+- [ ] **[TEST] BUDG‑003F**: Query errors trigger boundaries and toast notifications
+
 - [ ] **BUDG‑003G**: **Tests**: Tests for loading, error, and empty states per section.
 - [ ] **BUDG‑003H**: **Tests**: Tests for retry behavior and boundary resets.
 
@@ -171,13 +231,37 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑004A**: Implement `BudgetDashboard` as default view for `/budget`.
+
+- [ ] **[TEST] BUDG‑004A**: Dashboard renders as default view; layout correct
+
 - [ ] **BUDG‑004B**: Layout with net worth/cash flow row, category utilization grid, spending trend chart with drill-down link to Transactions.
+
+- [ ] **[TEST] BUDG‑004B**: Layout renders all sections; drill-down link works
+
 - [ ] **BUDG‑004C**: Install `react-sparkline-chart` if not present.
+
+- [ ] **[TEST] BUDG‑004C**: Dependency installed; package.json includes react-sparkline-chart
+
 - [ ] **BUDG‑004D**: Implement `NetWorthCard` with total net worth, delta vs last month, 12-month sparkline, and assets/liabilities breakdown.
+
+- [ ] **[TEST] BUDG‑004D**: Net worth calculated correctly; sparkline renders; breakdown accurate
+
 - [ ] **BUDG‑004E**: Implement `CashFlowSummary` with income, expenses, net savings, savings rate, and progress vs monthly target.
+
+- [ ] **[TEST] BUDG‑004E**: Cash flow metrics calculated correctly; progress bar accurate
+
 - [ ] **BUDG‑004F**: Implement category cards with planned vs actual, percent used, color-coded thresholds, and hover popover showing last 5 transactions.
+
+- [ ] **[TEST] BUDG‑004F**: Category cards show correct data; thresholds color-coded; popover loads transactions
+
 - [ ] **BUDG‑004G**: Implement `SpendingTrendChart` with Recharts (line/bar toggle; 3M/6M/1Y range), respecting reduced motion preference.
+
+- [ ] **[TEST] BUDG‑004G**: Chart renders; toggle works; range selection works; reduced motion respected
+
 - [ ] **BUDG‑004H**: Implement `OverviewDataTable` as accessible numeric summary for charts.
+
+- [ ] **[TEST] BUDG‑004H**: Data table renders; accessible; matches chart data
+
 - [ ] **BUDG‑004I**: **Tests**: Tests for net worth calculation and sparkline rendering.
 - [ ] **BUDG‑004J**: **Tests**: Tests for category card thresholds and popover loading.
 - [ ] **BUDG‑004K**: **Tests**: Tests for chart mode toggle, range selection, and reduced-motion behavior.
@@ -195,10 +279,25 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑005A**: Create `BudgetPlannerPage` with month selector, category allocation grid, and summary (planned vs actual, remaining, overspend). **NEW**: Add a "Forecast" toggle that overlays planned and scheduled transactions from the calendar onto the current budget view.
+
+- [ ] **[TEST] BUDG‑005A**: Planner renders with month selector; allocation grid works; summary accurate; forecast toggle works
+
 - [ ] **BUDG‑005B**: Implement allocations (planned amount per category, rollover options, carryover display from previous month).
+
+- [ ] **[TEST] BUDG‑005B**: Allocations calculate correctly; rollover options work; carryover display accurate
+
 - [ ] **BUDG‑005C**: Implement category actions (add/edit/archive categories, reorder categories within groups).
+
+- [ ] **[TEST] BUDG‑005C**: Category add/edit/archive work; reordering works
+
 - [ ] **BUDG‑005D**: Implement `CategoryEditorModal` using `react-hook-form` + `zodResolver`.
+
+- [ ] **[TEST] BUDG‑005D**: Modal uses RHF + Zod; form renders correctly
+
 - [ ] **BUDG‑005E**: Enforce validation rules for name, color, allocation, and rollover settings.
+
+- [ ] **[TEST] BUDG‑005E**: Validation rules enforced; errors shown correctly
+
 - [ ] **BUDG‑005F**: **Tests**: Tests for allocation math, rollover behavior, overspend status.
 - [ ] **BUDG‑005G**: **Tests**: Tests for category add/edit/archive and planner persistence.
 
@@ -215,15 +314,45 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑006A**: Implement `useTransactionsInfinite()` with `useInfiniteQuery` (cursor-based pagination, page size 50).
+
+- [ ] **[TEST] BUDG‑006A**: Infinite query loads pages correctly; cursor-based pagination works
+
 - [ ] **BUDG‑006B**: Implement filter/search UI (debounced search bar, date range, category multi-select, etc.).
+
+- [ ] **[TEST] BUDG‑006B**: Filter/search UI renders; debounced search works; filters apply correctly
+
 - [ ] **BUDG‑006B1** (NEW): Implement `TransactionCalendarView` using `react-big-calendar` with month/week/day views. Merges Past, Scheduled, and Planned transactions onto a single calendar, with days showing a net total (green/red). Click a day filters the virtualized transaction list.
+
+- [ ] **[TEST] BUDG‑006B1**: Calendar renders all views; transactions merged correctly; day totals accurate; click filters list
+
 - [ ] **BUDG‑006B2** (NEW): Add view toggle to the top of the TransactionPage: `[SegmentedControl: "List"] [SegmentedControl: "Calendar"]`.
-- [ ] **BUDG‑006C**: Implement `TransactionList` using `react-window` `VariableSizeList` with `estimatedItemSize`, height measurement cache, and `resetAfterIndex`.
+
+- [ ] **[TEST] BUDG‑006B2**: View toggle switches between List and Calendar; state persists
+
+- [ ] **BUDG‑006C**: Implement `TransactionList` using `@tanstack/react-virtual` with dynamic row heights and `measureElement` for accurate sizing.
+
+- [ ] **[TEST] BUDG‑006C**: Virtual list renders correctly; dynamic heights work; `measureElement` accurate
+
 - [ ] **BUDG‑006C1** (NEW): Extend the "Add Transaction" `Dialog` to support `type: 'past' | 'planned'`. If `planned`, the date picker defaults to a future date and includes an option to make it recurring.
+
+- [ ] **[TEST] BUDG‑006C1**: Dialog supports past/planned types; planned defaults to future date; recurring option works
+
 - [ ] **BUDG‑006D**: Implement `TransactionRow` with date, merchant, category badge, account, amount, and click-to-open-drawer. **NEW**: Visually distinguish `past`, `scheduled`, and `planned` entries.
+
+- [ ] **[TEST] BUDG‑006D**: Row renders all fields; click opens drawer; visual distinction for types
+
 - [ ] **BUDG‑006D1** (NEW): In `TransactionCalendarView`, past transactions are read-only "events". Scheduled and Planned transactions are draggable and resizable (fires optimistic update).
+
+- [ ] **[TEST] BUDG‑006D1**: Past events read-only; scheduled/planned draggable; resizable works; optimistic update fires
+
 - [ ] **BUDG‑006E**: Implement selection and bulk actions (checkbox per row, select-all, bulk recategorize, bulk tag, bulk delete).
+
+- [ ] **[TEST] BUDG‑006E**: Selection works; bulk actions work; select-all works
+
 - [ ] **BUDG‑006F**: Use semantic table structure with sortable headers and ARIA attributes.
+
+- [ ] **[TEST] BUDG‑006F**: Table semantic; headers sortable; ARIA attributes present
+
 - [ ] **BUDG‑006G**: **Tests**: Tests for virtualized rendering and pagination.
 - [ ] **BUDG‑006H**: **Tests**: Tests for filter behavior and URL persistence.
 - [ ] **BUDG‑006I**: **Tests**: Tests for bulk actions and selection UX.
@@ -241,12 +370,33 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑007A**: Create `transactionSchema` using Zod.
+
+- [ ] **[TEST] BUDG‑007A**: Schema validates correctly; all fields have proper validation
+
 - [ ] **BUDG‑007B**: Create `transactionRuleSchema` for rules (conditions: merchant, description, amount range, account; actions: set category, tags, notes, rename merchant). **NEW**: Rules now support applying to both past and future transactions.
+
+- [ ] **[TEST] BUDG‑007B**: Rule schema validates conditions and actions; supports past/future application
+
 - [ ] **BUDG‑007C**: Implement `TransactionDetailDrawer` with shadcn `Sheet`, fetching the transaction by ID and using RHF with Zod resolver.
+
+- [ ] **[TEST] BUDG‑007C**: Drawer opens/closes; fetches transaction; uses RHF with Zod
+
 - [ ] **BUDG‑007D**: Implement optimistic update on save and delete using mutation hooks.
+
+- [ ] **[TEST] BUDG‑007D**: Optimistic update works; rollback on error
+
 - [ ] **BUDG‑007E**: Implement split editor (add/remove lines, each with category, amount, validation).
+
+- [ ] **[TEST] BUDG‑007E**: Split editor adds/removes lines; validation works; math correct
+
 - [ ] **BUDG‑007F**: Implement `TransactionRulesForm` for creating rules from a transaction, showing a preview of what would change.
+
+- [ ] **[TEST] BUDG‑007F**: Rules form creates rules; preview shows changes accurately
+
 - [ ] **BUDG‑007G**: Implement focus trapping, escape-to-close, and focus restoration.
+
+- [ ] **[TEST] BUDG‑007G**: Focus trapped; escape closes; focus restored
+
 - [ ] **BUDG‑007H**: **Tests**: Tests for drawer open/close, validation, split math.
 - [ ] **BUDG‑007I**: **Tests**: Tests for rule creation and application preview.
 - [ ] **BUDG‑007J**: **Tests**: Tests for optimistic updates and rollback.
@@ -264,9 +414,21 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑008A**: Implement `GoalsPage` with Saving and Payoff sections.
+
+- [ ] **[TEST] BUDG‑008A**: GoalsPage renders with Saving and Payoff sections
+
 - [ ] **BUDG‑008B**: Implement `GoalCard` with target, current, progress, monthly contribution, projected completion date, and details for payoff goals (creditor, interest rate, etc.).
+
+- [ ] **[TEST] BUDG‑008B**: GoalCard renders all fields; progress accurate; projection correct
+
 - [ ] **BUDG‑008C**: Implement `AddGoalModal` using RHF + Zod. **NEW**: Add a "Feasibility Score" panel that analyzes the user's financial calendar and projected cash flow to determine if the goal's target monthly contribution and date are realistic.
+
+- [ ] **[TEST] BUDG‑008C**: Modal uses RHF + Zod; Feasibility Score analyzes cash flow; score accurate
+
 - [ ] **BUDG‑008D**: Wire `useCreateGoal()` and `useUpdateGoal()` with optimistic updates.
+
+- [ ] **[TEST] BUDG‑008D**: Mutations implement optimistic updates; rollback on error
+
 - [ ] **BUDG‑008E**: **Tests**: Tests for create/edit flows, projection logic, and the new feasibility analysis.
 
 ### Definition of Done
@@ -282,11 +444,29 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑009A**: Implement grouped accounts by type with balances and utilization.
+
+- [ ] **[TEST] BUDG‑009A**: Accounts grouped by type; balances accurate; utilization correct
+
 - [ ] **BUDG‑009B**: Add "last synced" indicator and manual refresh button per institution.
+
+- [ ] **[TEST] BUDG‑009B**: Sync indicator shows correct time; refresh button works
+
 - [ ] **BUDG‑009C**: Implement `ReconciliationPanel` for unmatched transactions, potential duplicates, and match suggestions.
+
+- [ ] **[TEST] BUDG‑009C**: Panel shows unmatched; shows duplicates; match suggestions accurate
+
 - [ ] **BUDG‑009D**: Implement actions for accept, ignore, merge duplicates.
+
+- [ ] **[TEST] BUDG‑009D**: Accept/ignore/merge actions work correctly
+
 - [ ] **BUDG‑009E**: Implement `AccountDetailDrawer` with balance history mini-chart and account-level settings.
+
+- [ ] **[TEST] BUDG‑009E**: Drawer renders; mini-chart works; settings accessible
+
 - [ ] **BUDG‑009F**: Implement `useUnlinkAccount()` and `useUpdateAccountSyncStatus()` with optimistic updates.
+
+- [ ] **[TEST] BUDG‑009F**: Mutations implement optimistic updates; rollback on error
+
 - [ ] **BUDG‑009G**: **Tests**: Tests for grouping, sync status, and refresh flows.
 - [ ] **BUDG‑009H**: **Tests**: Tests for reconciliation actions and account unlink behavior.
 
@@ -303,11 +483,29 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑010A**: Implement `RecurringPage` with tabs for Bills & Subscriptions / Income. **NEW**: Ensure this page features a prominent `RecurringCalendar` as a core component, not a separate tab.
+
+- [ ] **[TEST] BUDG‑010A**: RecurringPage renders with tabs; RecurringCalendar prominent
+
 - [ ] **BUDG‑010B**: Implement `RecurringItemRow` with edit/delete and active toggle. **NEW**: Expand row to display recurrence summary (e.g., "Monthly on the 15th").
+
+- [ ] **[TEST] BUDG‑010B**: Row renders; edit/delete work; toggle works; expansion shows summary
+
 - [ ] **BUDG‑010C**: Implement `RecurringCalendar` using the existing calendar library (or `react-big-calendar`) to show next 30 days of recurring items. **NEW**: The calendar should support directly dragging to reschedule an instance of a recurring item.
+
+- [ ] **[TEST] BUDG‑010C**: Calendar renders next 30 days; drag to reschedule works
+
 - [ ] **BUDG‑010C1** (NEW): Implement an "Edit Series" modal that provides standard calendar series options: "This Instance Only," "This and All Future Instances," "All Instances."
+
+- [ ] **[TEST] BUDG‑010C1**: Edit Series modal renders; options work; updates correct instances
+
 - [ ] **BUDG‑010D**: Implement `CashFlowForecast` with a projected balance curve (Recharts) considering recurring items and known income. Highlight dates with potential shortfall.
+
+- [ ] **[TEST] BUDG‑010D**: Forecast curve renders; projections accurate; shortfalls highlighted
+
 - [ ] **BUDG‑010E**: Wire `useUpdateRecurring()` mutation with optimistic toggle.
+
+- [ ] **[TEST] BUDG‑010E**: Mutation implements optimistic toggle; rollback on error
+
 - [ ] **BUDG‑010F**: **Tests**: Tests for calendar rendering, projection logic, toggles, and the new series editing modal.
 
 ### Definition of Done
@@ -323,14 +521,41 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑011A**: Implement `InvestmentsPage` with portfolio summary and holdings table.
+
+- [ ] **[TEST] BUDG‑011A**: InvestmentsPage renders; portfolio summary accurate; holdings table works
+
 - [ ] **BUDG‑011B**: Implement `AssetAllocationDonut` using Recharts `PieChart` with `innerRadius`, animating segments on mount and respecting reduced motion.
+
+- [ ] **[TEST] BUDG‑011B**: Donut chart renders; animation works; reduced motion respected
+
 - [ ] **BUDG‑011C**: Implement `PerformanceChart` with time-range toggle.
+
+- [ ] **[TEST] BUDG‑011C**: Performance chart renders; time-range toggle works
+
 - [ ] **BUDG‑011D**: Implement `ReportsPage` with pre-built and custom report slots.
+
+- [ ] **[TEST] BUDG‑011D**: ReportsPage renders; pre-built reports work; custom slots work
+
 - [ ] **BUDG‑011E**: Implement date range filter and saved report presets. **NEW**: Reports now support toggling inclusion of `past`, `scheduled`, and `planned` transactions.
+
+- [ ] **[TEST] BUDG‑011E**: Date range filter works; presets work; transaction type toggle works
+
 - [ ] **BUDG‑011F**: Implement CSV export with progress toast.
+
+- [ ] **[TEST] BUDG‑011F**: CSV export initiates; progress toast shows; file downloads
+
 - [ ] **BUDG‑011G**: Implement `ReportDataTable` components as accessible tabular views parallel to charts.
+
+- [ ] **[TEST] BUDG‑011G**: Data tables render; accessible; match chart data
+
 - [ ] **BUDG‑011H**: Implement `ImportTransactionsModal` with file upload, preview, column mapping, conflict warnings.
+
+- [ ] **[TEST] BUDG‑011H**: Modal renders; upload works; preview shows; mapping works; warnings shown
+
 - [ ] **BUDG‑011I**: Wire mock preview and commit endpoints.
+
+- [ ] **[TEST] BUDG‑011I**: Preview endpoint called; commit endpoint called
+
 - [ ] **BUDG‑011J**: **Tests**: Tests for chart rendering, export initiation, and data tables.
 - [ ] **BUDG‑011K**: **Tests**: Tests for import preview, mapping, and commit flows.
 
@@ -347,12 +572,33 @@ This necessitates several high-priority enhancements:
 ### Subtasks
 
 - [ ] **BUDG‑012A**: Install and configure Dexie in `src/lib/db.ts` with stores for `transactions`, `pendingMutations`, `syncMetadata`. **NEW**: Store for `offlineRules`.
+
+- [ ] **[TEST] BUDG‑012A**: Dexie configured; stores created; offlineRules store added
+
 - [ ] **BUDG‑012B**: Define schema versioning and indexes.
+
+- [ ] **[TEST] BUDG‑012B**: Schema versioning defined; indexes correct
+
 - [ ] **BUDG‑012C**: Implement `useOfflineTransactions()` to write to Dexie and queue mutations when offline, then sync when online. **NEW**: The sync engine now handles both offline transaction creation and newly created rules.
+
+- [ ] **[TEST] BUDG‑012C**: Offline writes to Dexie; mutations queued; sync on online; rules synced
+
 - [ ] **BUDG‑012D**: Implement service worker with caching and background sync for queued POST/PUT/DELETE where supported.
+
+- [ ] **[TEST] BUDG‑012D**: Service worker caches; background sync works
+
 - [ ] **BUDG‑012E**: Fallback to online/offline events when Background Sync is unavailable.
+
+- [ ] **[TEST] BUDG‑012E**: Fallback works when Background Sync unavailable
+
 - [ ] **BUDG‑012F**: Implement `OfflineStatusBar` showing offline state, number of pending changes, and last sync time.
+
+- [ ] **[TEST] BUDG‑012F**: Status bar shows offline state; pending count accurate; sync time shown
+
 - [ ] **BUDG‑012G**: Provide manual "Sync now" and "Retry failed" actions.
+
+- [ ] **[TEST] BUDG‑012G**: Sync now works; retry failed works
+
 - [ ] **BUDG‑012H**: **Tests**: Tests for offline transaction creation and local persistence.
 - [ ] **BUDG‑012I**: **Tests**: Tests for reconnect sync, conflict resolution, and deduplication.
 - [ ] **BUDG‑012J**: **Tests**: Tests for background sync fallback behavior.
@@ -371,9 +617,21 @@ A dedicated "Home" view that acts as a true "Calendar Week View" for money, simi
 
 ### Subtasks
 - [ ] **BUDG‑013A**: Create a new route for the Financial Planning Home (e.g., `/plan`).
+
+- [ ] **[TEST] BUDG‑013A**: Route created; renders Financial Planning Home
+
 - [ ] **BUDG‑013B**: Implement a **7-Day Cash Flow Timeline** component that visualizes daily net totals (green/red) and upcoming bills.
+
+- [ ] **[TEST] BUDG‑013B**: Timeline renders 7 days; net totals accurate; bills shown
+
 - [ ] **BUDG‑013C**: Implement a **Top 3 Goals Tracker** section showing progress, monthly contribution amount, and whether you are on track.
+
+- [ ] **[TEST] BUDG‑013C**: Goals tracker shows top 3; progress accurate; on-track status correct
+
 - [ ] **BUDG‑013D**: Implement a **Budget Category Summary** section showing top 3-5 active budget categories with a progress bar and quick-add planned transaction popover.
+
+- [ ] **[TEST] BUDG‑013D**: Category summary shows top 3-5; progress bar accurate; quick-add popover works
+
 - [ ] **BUDG‑013E**: **Tests**: Tests for all new components and their integration with the rest of the budget module.
 
 ### Definition of Done
@@ -389,9 +647,21 @@ This task brings in a trend from apps like Copilot and FinSight: proactive, AI-p
 
 ### Subtasks
 - [ ] **BUDG‑014A**: Create a `useSpendingInsights` hook that analyzes transaction data (via mock AI or simple statistical rules) for anomalies like "spending spike in groceries" or "unusual merchant."
+
+- [ ] **[TEST] BUDG‑014A**: Hook analyzes transactions; detects anomalies; returns insights
+
 - [ ] **BUDG‑014B**: Implement a `SpendingInsightsCard` component to be displayed on the Overview Dashboard.
+
+- [ ] **[TEST] BUDG‑014B**: Card renders on dashboard; shows insights
+
 - [ ] **BUDG‑014C**: The card shows 1-3 key insights, such as "You spent 30% more on dining this month than last" or "Your Amazon spending is up 15%."
+
+- [ ] **[TEST] BUDG‑014C**: Card shows 1-3 insights; insights accurate
+
 - [ ] **BUDG‑014D**: Each insight includes a call to action, like "Review transactions" or "Adjust budget."
+
+- [ ] **[TEST] BUDG‑014D**: Call to action present; works correctly
+
 - [ ] **BUDG‑014E**: **Tests**: Tests for insight logic and component rendering.
 
 ### Definition of Done
@@ -406,12 +676,32 @@ This task brings in a trend from apps like Copilot and FinSight: proactive, AI-p
 ### Subtasks
 
 - [ ] **BUDG‑015A**: Ensure unit tests cover domain utilities, selectors, schemas, and pure derivations.
+
+- [ ] **[TEST] BUDG‑015A**: Unit tests cover all domain utilities, selectors, schemas, derivations
+
 - [ ] **BUDG‑015B**: Ensure integration tests cover query hooks, optimistic mutations, forms, error boundaries, and route transitions.
+
+- [ ] **[TEST] BUDG‑015B**: Integration tests cover query hooks, mutations, forms, boundaries, routes
+
 - [ ] **BUDG‑015C**: Add E2E tests for critical flows: Load overview, Filter transactions, Edit/split transaction, Offline add → reconnect sync → verify UI, Create a goal and see feasibility score.
+
+- [ ] **[TEST] BUDG‑015C**: E2E tests cover all critical flows; pass
+
 - [ ] **BUDG‑015D**: Run automated accessibility checks (axe) on all budget pages.
+
+- [ ] **[TEST] BUDG‑015D**: Axe checks run; no violations
+
 - [ ] **BUDG‑015E**: Verify table semantics, keyboard navigation, focus order, color contrast, and reduced-motion behavior.
+
+- [ ] **[TEST] BUDG‑015E**: Table semantics correct; keyboard works; focus order correct; contrast meets WCAG; reduced motion respected
+
 - [ ] **BUDG‑015F**: Add tests or checks for infinite query cache size, `maxPages` configuration, and virtualized list performance.
+
+- [ ] **[TEST] BUDG‑015F**: Cache size tests pass; `maxPages` correct; virtualization performant
+
 - [ ] **BUDG‑015G**: Verify error boundaries and Suspense boundaries handle failures gracefully.
+
+- [ ] **[TEST] BUDG‑015G**: Boundaries handle failures gracefully; UI remains functional
 
 **Definition of Done**
 - All BUDG tasks have passing tests.

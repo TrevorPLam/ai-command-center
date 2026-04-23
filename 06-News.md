@@ -87,10 +87,14 @@
     ```
   - `createMockFeed(opts: { count: number; topics?: string[]; cursor?: string })` — returns varied articles, cursor-paginated (20 per page), mixing sentiments and topics
 
+- [ ] **[TEST] NEWS-000A**: Factory produces articles with all required fields; `readTimeMinutes` correctly derived from `wordCount`
+
 - [ ] **NEWS-000B** Create supporting factories:
   - `createMockTopic(overrides?)` — `{ id, label, iconName }`; standard set: Technology, Business, World, Science, Health, Politics, Sports
   - `createMockSource(overrides?)` — `{ id, name, logoUrl, trustTier, rssUrl }`
   - `createMockPreferences()` — `{ activeTopics: string[], activeSources: string[], frequency, sortOrder }`
+
+- [ ] **[TEST] NEWS-000B**: Supporting factories produce valid typed data; topic set includes all standard topics
 
 - [ ] **NEWS-000C** Update `src/mocks/handlers.ts`:
   ```ts
@@ -115,6 +119,8 @@
     HttpResponse.json({ ...createMockArticle({ id: params.id as string }), fullContent: '<article>...</article>' }))
   ```
 
+- [ ] **[TEST] NEWS-000C**: MSW handler returns paginated feed with correct `nextCursor`; cursor parameter filters results correctly
+
 - [ ] **NEWS-000D** Create `src/queries/news.ts`:
   ```ts
   export const newsKeys = {
@@ -137,10 +143,14 @@
     })
   ```
 
+- [ ] **[TEST] NEWS-000D**: `newsKeys` factory produces structurally distinct keys; `feedInfiniteQueryOptions` has correct `staleTime` and `gcTime`
+
 - [ ] **NEWS-000E** Create `useSavePreferences()` mutation with optimistic update:
   - `onMutate`: snapshot + update `newsKeys.preferences()` cache
   - `onError`: rollback
   - `onSettled`: `invalidateQueries({ queryKey: newsKeys.preferences() })`
+
+- [ ] **[TEST] NEWS-000E**: Mutation snapshots cache on `onMutate`; rolls back on error; invalidates on `onSettled`
 
 ### Tests
 - [ ] Factory produces articles with all required fields, correct `readTimeMinutes` derivation
@@ -214,6 +224,8 @@
   }
   ```
 
+- [ ] **[TEST] NEWS-001A**: Slice state shape matches TypeScript interface; all actions are defined
+
 - [ ] **NEWS-001B** Persist with `persist` middleware, partializing:
   ```ts
   partialize: (state) => ({
@@ -227,6 +239,8 @@
   })
   ```
   Note: `savedArticleIds` and `readArticleIds` are not persisted here — they are the source of truth in Dexie; these fields are populated on app boot via `useLiveQuery`.
+
+- [ ] **[TEST] NEWS-001B**: Persist middleware saves only specified fields; `savedArticleIds` and `readArticleIds` excluded from localStorage
 
 - [ ] **NEWS-001C** Export atomic selectors: `useNewsTopics()`, `useNewsPaused()`, `useReaderPrefs()`, `useNewsPendingCount()`
 
@@ -243,6 +257,8 @@
     },
   }
   ```
+
+- [ ] **[TEST] NEWS-001D**: Route loader calls `ensureQueryData` with correct filter params from slice state
 
 - [ ] **NEWS-001E** `NewsPage` renders: `<NewsSidebar />` (left, collapsible) + main content area with `<FeedHeader />` + `<NewsFeed />` + `<ArticleReaderPanel />` (hidden by default, slides in)
 
@@ -278,11 +294,15 @@
   - Collapse toggle writes to Zustand (persisted)
   - On mobile: renders as a bottom sheet using shadcn `Sheet`
 
+- [ ] **[TEST] NEWS-002A**: Sidebar renders all sections; collapse toggle persists state; mobile renders as Sheet
+
 - [ ] **NEWS-002B** Build `TopicSelector`:
   - Available topics rendered as chips
   - Active: electric blue border + filled background
   - `whileTap={{ scale: 0.95 }}` (quiet tier)
   - Selecting all / deselecting all topics shows warning: "No topics selected — feed will be empty"
+
+- [ ] **[TEST] NEWS-002B**: Toggling chip updates `activeTopics`; deselecting all shows warning banner
 
 - [ ] **NEWS-002C** Build `SourceManager`:
   - List of sources with `trustTier` badge
@@ -291,23 +311,33 @@
   - Toggle individual sources
   - Search input within source list (client-side filter by source name)
 
+- [ ] **[TEST] NEWS-002C**: Bulk actions select correct source IDs; trust tier badges include visible text; search filters correctly
+
 - [ ] **NEWS-002D** Build `FrequencySlider`:
   - Segmented control: Real-time / Hourly / Every 6h / Daily
   - Displays "Last updated: X minutes ago" (mocked)
   - Changing frequency triggers `useSavePreferences`
+
+- [ ] **[TEST] NEWS-002D**: Segmented control displays correct frequency; changing triggers save mutation
 
 - [ ] **NEWS-002E** Add feed controls section:
   - **Pause Feed** toggle — sets `isPaused`; when on, shows "Feed paused" label with icon
   - **Deduplication** toggle — sets `deduplicationEnabled`
   - **Refresh Now** button — calls `queryClient.invalidateQueries({ queryKey: newsKeys.feed(...) })`; shows loading spinner during refetch
 
+- [ ] **[TEST] NEWS-002E**: Pause toggle sets `isPaused`; deduplication toggle sets `deduplicationEnabled`; refresh calls `invalidateQueries`
+
 - [ ] **NEWS-002F** Add saved articles link:
   - Shows `useLiveQuery(() => db.articles.count())` count
   - Navigates to saved view (filtered feed)
 
+- [ ] **[TEST] NEWS-002F**: Saved count from `useLiveQuery`; click navigates to saved view
+
 - [ ] **NEWS-002G** Add "Mark all as read" button:
   - Confirms with `AlertDialog` ("Mark all visible articles as read?")
   - Calls `markAllRead(visibleArticleIds)`; writes to Dexie in batch
+
+- [ ] **[TEST] NEWS-002G**: AlertDialog confirms before marking; batch write to Dexie succeeds
 
 **Preference Sync:**
 - [ ] **NEWS-002H** Debounced auto-save (1.5 seconds after last topic/source change):
@@ -317,7 +347,11 @@
   }, 1500)
   ```
 
+- [ ] **[TEST] NEWS-002H**: Debounced save fires once after 1.5s of inactivity; not on every toggle
+
 - [ ] **NEWS-002I** "Reset to Defaults" button: resets slice to initial state + triggers save
+
+- [ ] **[TEST] NEWS-002I**: Reset to Defaults restores initial state and triggers save mutation
 
 ### Tests
 - [ ] TopicSelector: toggling a chip updates `activeTopics` in slice
@@ -381,11 +415,15 @@
   }
   ```
 
+- [ ] **[TEST] NEWS-003A**: `useNewsFeed` composes infinite query; `allArticles` memoized; `visibleArticles` filters correctly
+
 - [ ] **NEWS-003B** Implement `normalizeUrl(url: string): string`:
   - Strip `utm_*`, `fbclid`, `gclid` query params
   - Normalize protocol (`http://` → `https://`)
   - Remove trailing slash
   - Lowercase hostname
+
+- [ ] **[TEST] NEWS-003B**: `normalizeUrl` strips `utm_*`, `fbclid`, `gclid`; normalizes protocol; removes trailing slash; lowercases hostname
 
 **Pause / Pending Buffer:**
 - [ ] **NEWS-003C** When `isPaused` and `useInfiniteQuery` fires a background refresh:
@@ -393,11 +431,15 @@
   - Do NOT prepend them to the visible list
   - Detect new articles by comparing fresh `data.pages[0].articles[0].id` against the last-known top ID
 
+- [ ] **[TEST] NEWS-003C**: When `isPaused`, new articles go to `pendingArticleIds`; not added to visible list
+
 - [ ] **NEWS-003D** Build `NewArticlesBanner`:
   - Sticky at top of feed (below filter tabs)
   - Shows "↑ 12 new articles" when `pendingCount > 0`
   - Slide-down entrance animation (`y: -8 → 0`, quiet tier)
   - Click: `flushPendingArticles()` → invalidates query to trigger refetch with new articles prepended
+
+- [ ] **[TEST] NEWS-003D**: Banner renders when `pendingCount > 0`; click flushes and resets count
 
 **Feed Rendering:**
 - [ ] **NEWS-003E** Build `NewsFeed` component:
@@ -450,6 +492,8 @@
   )
   ```
 
+- [ ] **[TEST] NEWS-003E**: Virtualizer renders only visible items; skeleton/error/empty states render correctly; sentinel outside container
+
 - [ ] **NEWS-003F** Create `src/hooks/useInfiniteScroll.ts`:
   ```ts
   export function useInfiniteScroll(callback: () => void, enabled: boolean) {
@@ -468,6 +512,8 @@
   ```
   Usage: `const sentinelRef = useInfiniteScroll(fetchNextPage, hasNextPage && !isFetchingNextPage)`
 
+- [ ] **[TEST] NEWS-003F**: `fetchNextPage` called when sentinel intersects; not called when `isFetchingNextPage` is true
+
 - [ ] **NEWS-003G** Build `FeedSkeleton` (count prop): renders N pulse-animated card skeletons at correct heights
 
 - [ ] **NEWS-003H** Build `FeedEmptyState`: "No articles match your filters" with "Edit Topics" CTA
@@ -477,7 +523,13 @@
   - Tab click: `setActiveTab(topic)` → client-side filter of `visibleArticles`
   - Scrollable horizontally on mobile
 
+- [ ] **[TEST] NEWS-003G**: Skeleton renders correct count; empty state shows CTA
+
+- [ ] **[TEST] NEWS-003I**: Filter tabs render per active topic; click filters `visibleArticles`; horizontal scroll on mobile
+
 - [ ] **NEWS-003J** Sort toggle (top right of feed): Recency / Relevance / Trending — calls `setSortOrder` → triggers refetch via key change
+
+- [ ] **[TEST] NEWS-003J**: Sort toggle changes `sortOrder`; infinite query key changes; refetch triggered
 
 ### Tests
 - [ ] `useNewsFeed` flattens pages via `useMemo` — reference is stable when pages unchanged
@@ -529,10 +581,14 @@
   - Row 5: Topic tags + sentiment dot
   - Row 6: Actions row (Bookmark, Share, Open, Hide, Expand)
 
+- [ ] **[TEST] NEWS-004A**: Card renders all rows in correct order; `onHeightChange` callback present
+
 - [ ] **NEWS-004B** Implement read state visual treatment:
   - If `readArticleIds.includes(article.id)`: apply `opacity-60` to headline + image, `line-through` on title is too aggressive — use muted color instead
   - Card border: subtle left accent bar (colored per topic)
   - Unread articles: normal opacity
+
+- [ ] **[TEST] NEWS-004B**: Read articles have muted opacity; unread articles normal; no strikethrough
 
 - [ ] **NEWS-004C** Build `SentimentDot`:
   - Positive: green dot + `aria-label="Sentiment: Positive"`
@@ -541,6 +597,8 @@
   - Slow pulse animation (`opacity` keyframes, `useReducedMotion` guard)
   - Tooltip showing sentiment score on hover
 
+- [ ] **[TEST] NEWS-004C**: Dot has correct color per sentiment; `aria-label` present; pulse animation with `useReducedMotion` guard
+
 - [ ] **NEWS-004D** Build `TrustBadge`:
   - High: green chip with text "High trust"
   - Medium: yellow chip with text "Medium trust"
@@ -548,10 +606,14 @@
   - `aria-label="Source trust level: High"` (full label on the element)
   - Never color-only — text is visible, not just `sr-only`
 
+- [ ] **[TEST] NEWS-004D**: Badge has correct color and visible text; `aria-label` present; not color-only
+
 - [ ] **NEWS-004E** Implement card expand/collapse:
   - "Expand" button below AI summary shows full summary text
   - Use `motion.div` with `layout` prop for height animation
   - After transition: call `props.onHeightChange()` → triggers `listRef.current.resetAfterIndex(index)`
+
+- [ ] **[TEST] NEWS-004E**: Expand shows full summary; collapse shows truncated; `onHeightChange` called after animation
 
 - [ ] **NEWS-004F** Actions:
   - **Bookmark**: `markSaved(article.id)` in Zustand + `db.articles.put(article)` in Dexie; toggled state reflected instantly
@@ -559,14 +621,20 @@
   - **Open**: opens `article.url` in new tab; calls `markRead(article.id)` on click
   - **Hide**: calls `hideArticle(article.id)` (local session state); card disappears from feed
 
+- [ ] **[TEST] NEWS-004F**: Bookmark updates Zustand and Dexie; Share falls back to clipboard; Open calls `markRead`; Hide removes from feed
+
 - [ ] **NEWS-004G** Keyboard accessibility:
   - All action buttons keyboard-reachable via `Tab`
   - Min 44×44px touch targets on mobile (WCAG 2.5.8)
   - `role="article"`, `aria-label={article.title}`
 
+- [ ] **[TEST] NEWS-004G**: All buttons Tab-reachable; touch targets ≥44px; `role` and `aria-label` present
+
 - [ ] **NEWS-004H** Reading time display:
   - `"${article.readTimeMinutes} min read"` beside timestamp
   - For articles where `wordCount` is null: omit display
+
+- [ ] **[TEST] NEWS-004H**: Reading time displays beside timestamp; omitted when `wordCount` is null
 
 ### Tests
 - [ ] Read articles render with muted opacity; unread are normal
@@ -605,6 +673,8 @@
   pnpm add dexie dexie-react-hooks
   ```
 
+- [ ] **[TEST] NEWS-005A**: Dependencies installed; package.json includes dexie and dexie-react-hooks
+
 - [ ] **NEWS-005B** Create `src/lib/db.ts`:
   ```ts
   import Dexie, { type Table } from 'dexie'
@@ -635,6 +705,8 @@
   export const db = new NewsDB()
   ```
 
+- [ ] **[TEST] NEWS-005B**: Dexie schema created with correct tables and indexes; `NewsDB` instance exported
+
 - [ ] **NEWS-005C** Create `src/hooks/useBookmarks.ts`:
   ```ts
   export function useBookmarks() {
@@ -652,6 +724,8 @@
     return { articles: articles ?? [], save, remove }
   }
   ```
+
+- [ ] **[TEST] NEWS-005C**: `useLiveQuery` re-renders on `db.articles` changes; `save` writes to Dexie and Zustand; `remove` deletes from both
 
 - [ ] **NEWS-005D** Create `src/hooks/useReadStatus.ts`:
   ```ts
@@ -674,6 +748,8 @@
   }
   ```
 
+- [ ] **[TEST] NEWS-005D**: `useLiveQuery` re-renders on `db.readStatus` changes; `markRead` writes to Dexie and Zustand; `markAllRead` uses `bulkPut`
+
 - [ ] **NEWS-005E** On app boot, sync Dexie → Zustand:
   ```ts
   // In NewsPage or app init
@@ -687,6 +763,8 @@
   }, [])
   ```
 
+- [ ] **[TEST] NEWS-005E**: Boot sync loads Dexie primary keys into Zustand on mount; single action sets both arrays
+
 - [ ] **NEWS-005F** Build `SavedView` component:
   - Reads from `db.articles` via `useLiveQuery`
   - Renders a `VariableSizeList` of saved articles (same `NewsCard` component)
@@ -695,13 +773,19 @@
   - Empty state: "No saved articles yet — bookmark articles to read later"
   - Each card has "Remove from saved" button (replaces "Bookmark" action)
 
+- [ ] **[TEST] NEWS-005F**: `SavedView` renders saved articles; sort options work; search filters correctly; empty state shows CTA
+
 - [ ] **NEWS-005G** Handle IndexedDB quota:
   - On any Dexie write, catch `QuotaExceededError`
   - Show toast: "Storage almost full — remove some saved articles to continue saving"
 
+- [ ] **[TEST] NEWS-005G**: `QuotaExceededError` caught and shows toast; does not crash app
+
 - [ ] **NEWS-005H** (Optional stretch) PWA offline via `vite-plugin-pwa`:
   - Cache-first strategy for saved article content
   - Network-first for feed API
+
+- [ ] **[TEST] NEWS-005H**: (Optional) PWA cache-first for saved articles; network-first for feed API
 
 ### Tests
 - [ ] `useLiveQuery` from `useBookmarks` re-renders when `db.articles` changes
@@ -739,6 +823,8 @@
   pnpm add @mozilla/readability
   ```
 
+- [ ] **[TEST] NEWS-006A**: Dependency installed; package.json includes @mozilla/readability
+
 - [ ] **NEWS-006B** Create `src/hooks/useArticleContent.ts`:
   ```ts
   export function useArticleContent(articleId: string | null) {
@@ -758,10 +844,14 @@
   }
   ```
 
+- [ ] **[TEST] NEWS-006B**: Query enabled when `articleId` is not null; calls Readability with parsed DOM; `staleTime` is Infinity
+
 - [ ] **NEWS-006C** Build `ArticleReaderPanel` as a slide-in side panel (full-height, 600px wide on desktop; full-screen on mobile):
   - Opens when user clicks "Read in app" from a card's action row
   - Entrance: cross-fade spring animation (Alive tier, `useReducedMotion` guard)
   - Close: `Escape` key or ×  button; restores focus to triggering card
+
+- [ ] **[TEST] NEWS-006C**: Panel opens with spring animation; closes on Escape; focus returns to triggering card
 
 - [ ] **NEWS-006D** Panel layout:
   - Header: source logo + publication name + original `Open in browser` link
@@ -769,6 +859,8 @@
   - Reading time + reading progress bar (scrollY-based `%` calculation)
   - Article body: `parsed.content` rendered via `dangerouslySetInnerHTML` with strict content sanitization (DOMPurify — see NEWS-006E)
   - Footer: Bookmark + Share actions
+
+- [ ] **[TEST] NEWS-006D**: Panel renders all sections; reading progress bar calculates correctly
 
 - [ ] **NEWS-006E** Sanitize extracted HTML:
   ```bash
@@ -782,6 +874,8 @@
   ```
   All external links get `target="_blank" rel="noopener noreferrer"` added automatically
 
+- [ ] **[TEST] NEWS-006E**: DOMPurify strips dangerous tags/attributes; external links have `rel="noopener noreferrer"`
+
 - [ ] **NEWS-006F** Build `ReaderControls` panel (toggle button in reader header):
   - Font size slider: 14px → 22px (maps to Tailwind `text-sm` → `text-xl`)
   - Font family selector: Sans / Serif / Mono
@@ -789,12 +883,18 @@
   - Theme toggle: Light / Sepia / Dark
   - All controls write to `newsSlice.readerPrefs` (persisted)
 
+- [ ] **[TEST] NEWS-006F**: Controls write to readerPrefs; font-size change applies immediately to article body
+
 - [ ] **NEWS-006G** Reading progress bar:
   - Thin bar at top of panel (4px, accent color)
   - Width = `(scrollTop / (scrollHeight - clientHeight)) * 100`%
   - Updates on scroll via `onScroll` handler on panel container
 
+- [ ] **[TEST] NEWS-006G**: Progress bar updates correctly at 0%, 50%, 100% scroll positions
+
 - [ ] **NEWS-006H** On reader open: call `markRead(article)` — marks article as read in Dexie
+
+- [ ] **[TEST] NEWS-006H**: Opening reader calls `markRead` with article ID
 
 ### Tests
 - [ ] `useArticleContent` calls Readability with parsed DOM; returns `{ title, content, byline }`
@@ -832,6 +932,8 @@
   - Debounced input (300ms): writes to `newsSlice.searchQuery`
   - Close: `Escape` key or clicking outside; restores focus to search icon
 
+- [ ] **[TEST] NEWS-007A**: Search panel slides down; input debounced 300ms; Escape closes and restores focus
+
 - [ ] **NEWS-007B** Create `src/hooks/useArticleSearch.ts`:
   ```ts
   export function useArticleSearch(query: string, articles: Article[]) {
@@ -850,6 +952,8 @@
   }
   ```
 
+- [ ] **[TEST] NEWS-007B**: Query < 2 returns empty; filters title/summary/aiSummary/source; caps at 30 results
+
 - [ ] **NEWS-007C** Render search results in `SearchPanel`:
   - Results grouped: first 5 are "Best matches", rest under "More results"
   - Each result: source logo + title with matched terms highlighted in `<mark>`
@@ -865,15 +969,21 @@
     ```
   - Click result: closes search panel, scrolls feed to article, opens reader
 
+- [ ] **[TEST] NEWS-007C**: Results grouped correctly; matched terms wrapped in `<mark>`; `escapeRegex` handles special chars
+
 - [ ] **NEWS-007D** Keyboard navigation within results:
   - `ArrowUp/Down`: move focus between result items
   - `Enter`: open focused result
   - Announce result count via `aria-live="polite"` region: "12 results for 'AI'"
 
+- [ ] **[TEST] NEWS-007D**: Arrow keys move focus; Enter opens result; `aria-live` announces count
+
 - [ ] **NEWS-007E** Recent searches:
   - Store last 5 queries in `localStorage` (keyed separately, not in Zustand)
   - Show below empty input as "Recent: [query chips]"
   - Click chip: populate input and search
+
+- [ ] **[TEST] NEWS-007E**: Last 5 queries persist to localStorage; chips populate input on click
 
 - [ ] **NEWS-007F** Build `AdvancedFilters` panel (accessible from "Filters" button next to search):
   - Date range: Today / This week / This month / Custom
@@ -881,6 +991,8 @@
   - Source filter: multi-select (same sources as sidebar)
   - Min/max reading time slider
   - All filters apply to `visibleArticles` via `useArticleSearch` or a separate `applyAdvancedFilters` utility
+
+- [ ] **[TEST] NEWS-007F**: Date range, sentiment, source, and reading time filters apply correctly
 
 ### Tests
 - [ ] `useArticleSearch`: query of length < 2 returns empty array
@@ -944,22 +1056,32 @@
   ```
   Note: **never gate on `useReducedMotion`** — audio has no connection to motion preference.
 
+- [ ] **[TEST] NEWS-008A**: `play` calls `speak` with `cancel` first; `stop` calls `cancel` and clears ID; cleanup on unmount
+
 - [ ] **NEWS-008B** Build `AudioPlayer` floating widget (bottom of screen when active):
   - Shows current article title + source
   - Controls: Play/Pause, Stop, speed selector (0.75×, 1×, 1.25×, 1.5×, 2×)
   - `aria-live="polite"` for playback state changes
 
+- [ ] **[TEST] NEWS-008B**: Widget renders when active; controls work; `aria-live` announces state changes
+
 - [ ] **NEWS-008C** "Read Aloud" button on card (visible when `audioEnabled` is true in `newsSlice`):
   - Clicking: `play(article)` → starts playback, shows `AudioPlayer` widget
   - If another article is playing: stops it, starts the new one
+
+- [ ] **[TEST] NEWS-008C**: Button visible when `audioEnabled`; click starts playback; second article stops first
 
 - [ ] **NEWS-008D** Voice selector (if `speechSynthesis.getVoices().length > 1`):
   - Show dropdown in `AudioPlayer` widget
   - Persist selected voice name to `newsSlice.readerPrefs`
 
+- [ ] **[TEST] NEWS-008D**: Dropdown shows when multiple voices; selection persists to readerPrefs
+
 - [ ] **NEWS-008E** Capability check gate:
   - If `!('speechSynthesis' in window)`: hide "Read Aloud" button entirely
   - Show no error — silent graceful degradation
+
+- [ ] **[TEST] NEWS-008E**: Button hidden when `speechSynthesis` not in window; no error shown
 
 ### Tests
 - [ ] `play()` calls `window.speechSynthesis.speak` with correct text

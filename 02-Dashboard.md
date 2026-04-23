@@ -113,6 +113,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
     expiresAt?: string // ISO 8601, present if timeSensitive
   }
   ```
+
+- [ ] **[TEST] DASH-000A**: TypeScript interfaces defined; all required fields present; types compile without errors
+
 - [ ] **DASH-000B**: Create Zod schemas in `src/schemas/dashboard.ts` — schemas mirror the types and serve as runtime validators at API boundaries:
   ```ts
   export const AgentSchema = z.object({
@@ -123,6 +126,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
   export type Agent = z.infer<typeof AgentSchema> // types derived from schemas
   ```
   Note: if Zod schemas are the source of truth, delete `src/types/dashboard.ts` and export types from schemas instead.
+
+- [ ] **[TEST] DASH-000B**: Zod schemas validate correctly; types derived from schemas; runtime validation works
+
 - [ ] **DASH-000C**: Create `src/queries/dashboard.ts` with `queryOptions` for all dashboard domains:
   ```ts
   export const agentsQueryOptions = queryOptions({
@@ -142,6 +148,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
   })
   ```
   Runtime Zod `.parse()` at the query boundary catches API shape mismatches immediately.
+
+- [ ] **[TEST] DASH-000C**: queryOptions defined for all domains; staleTime values correct; Zod parse at query boundary
+
 - [ ] **DASH-000D**: Create stub fetch functions in `src/api/dashboard.ts` (thin wrappers around `fetch()`; MSW will intercept these in dev and test):
   ```ts
   export const fetchAgents = () => fetch('/api/agents').then(r => r.json())
@@ -151,6 +160,8 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
   export const rejectDecision = (id: string) => fetch(`/api/decisions/${id}/reject`, { method: 'POST' }).then(r => r.json())
   export const deferDecision = (id: string) => fetch(`/api/decisions/${id}/defer`, { method: 'POST' }).then(r => r.json())
   ```
+
+- [ ] **[TEST] DASH-000D**: Stub fetch functions created; return promises; MSW can intercept
 
 ### Definition of Done
 - All interfaces/types exported from `src/types/dashboard.ts` or derived from Zod schemas
@@ -176,6 +187,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
 **Factories:**
 - [ ] **DASH-001A**: Install `@faker-js/faker` as a dev dependency: `pnpm add -D @faker-js/faker`
+
+- [ ] **[TEST] DASH-001A**: Dependency installed; package.json includes @faker-js/faker
+
 - [ ] **DASH-001B**: Create `src/mocks/factories/dashboard.ts` using `@faker-js/faker`:
   ```ts
   import { faker } from '@faker-js/faker'
@@ -239,6 +253,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
   export const createAttentionQueue = (count = 3): DecisionPacket[] =>
     Array.from({ length: count }, () => createDecisionPacket())
   ```
+
+- [ ] **[TEST] DASH-001B**: Factories produce valid data; faker seeded correctly; all factory functions work
+
 - [ ] **DASH-001C**: Create `src/mocks/handlers/dashboard.ts` with **stateful** handlers:
   ```ts
   import { http, HttpResponse, delay } from 'msw'
@@ -288,6 +305,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
   ]
   ```
   Note: export `dashboardHandlers` and spread into `src/mocks/handlers.ts` root handlers array.
+
+- [ ] **[TEST] DASH-001C**: MSW handlers intercept requests; in-memory state persists; delay() works
+
 - [ ] **DASH-001D**: Add a `resetDashboardDb()` export for test isolation:
   ```ts
   export const resetDashboardDb = () => {
@@ -298,6 +318,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
   }
   ```
   Call this in test `beforeEach` to guarantee a clean slate.
+
+- [ ] **[TEST] DASH-001D**: resetDashboardDb() resets all state; faker.seed(12345) produces deterministic data
+
 - [ ] **DASH-001E**: Create `src/hooks/useDashboard.ts` with custom hooks consuming `queryOptions`:
   ```ts
   export function useAgents() { return useQuery(agentsQueryOptions) }
@@ -330,7 +353,12 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 
   // useRejectDecision and useDeferDecision follow the same pattern
   ```
+
+- [ ] **[TEST] DASH-001E**: Custom hooks consume queryOptions; type inference works; optimistic updates implemented correctly
+
 - [ ] **DASH-001F**: Verify `pnpm test` passes — MSW intercepts factory data and hooks return typed values
+
+- [ ] **[TEST] DASH-001F**: Tests pass; MSW intercepts; hooks return typed values
 
 ### Definition of Done
 - Factories use `@faker-js/faker` and produce schema-valid data
@@ -384,9 +412,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 - [ ] **DASH-002E**: Add `<Suspense fallback={<DashboardSkeleton />}>` around lazy-loaded page content
 
 **Tests:**
-- [ ] **DASH-002F**: Test: `/` route renders Dashboard component
-- [ ] **DASH-002G**: Test: route loader calls `queryClient.ensureQueryData` (mock queryClient)
-- [ ] **DASH-002H**: Test: `DashboardSkeleton` renders during lazy load (mock `Suspense`)
+- [ ] **[TEST] DASH-002F**: `/` route renders Dashboard component
+- [ ] **[TEST] DASH-002G**: Route loader calls `queryClient.ensureQueryData` (mock queryClient)
+- [ ] **[TEST] DASH-002H**: `DashboardSkeleton` renders during lazy load (mock `Suspense`)
 
 ### Definition of Done
 - `/` renders Dashboard with two-column layout
@@ -434,9 +462,9 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 - [ ] **DASH-003E**: `useReducedMotion()` check: disable border rotation (static border), keep opacity transitions at `duration: 0`
 
 **Tests:**
-- [ ] **DASH-003F**: Test: banner renders when `isAnyThinking = true`, hidden when false
-- [ ] **DASH-003G**: Test: dismiss persists (check `localStorage` or `uiSlice` update)
-- [ ] **DASH-003H**: Test: `useReducedMotion = true` → no CSS animation class on border element
+- [ ] **[TEST] DASH-003F**: Banner renders when `isAnyThinking = true`, hidden when false
+- [ ] **[TEST] DASH-003G**: Dismiss persists (check `localStorage` or `uiSlice` update)
+- [ ] **[TEST] DASH-003H**: `useReducedMotion = true` → no CSS animation class on border element
 
 ### Definition of Done
 - Banner appears/disappears with `AnimatePresence`
@@ -509,11 +537,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 - [ ] **DASH-004I**: Loading skeleton: 3 skeleton cards while `isLoading` (matches grid layout)
 
 **Tests:**
-- [ ] **DASH-004J**: Test: agent cards render with name, status, truncated task
-- [ ] **DASH-004K**: Test: expand button dispatches `openAgentDrawer(agent.id)` to Zustand
-- [ ] **DASH-004L**: Test: empty state renders when `agents = []`
-- [ ] **DASH-004M**: Test: loading skeleton renders when `isLoading = true`
-- [ ] **DASH-004N**: Test: `thinking` status indicator has correct class/attributes
+- [ ] **[TEST] DASH-004J**: Agent cards render with name, status, truncated task
+- [ ] **[TEST] DASH-004K**: Expand button dispatches `openAgentDrawer(agent.id)` to Zustand
+- [ ] **[TEST] DASH-004L**: Empty state renders when `agents = []`
+- [ ] **[TEST] DASH-004M**: Loading skeleton renders when `isLoading = true`
+- [ ] **[TEST] DASH-004N**: `thinking` status indicator has correct class/attributes
 
 ### Definition of Done
 - Cards stagger in with `0.08s` delay per card
@@ -606,11 +634,11 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 - [ ] **DASH-005I**: Empty state per filter tab
 
 **Tests:**
-- [ ] **DASH-005J**: Test: filter tabs render entries of correct type
-- [ ] **DASH-005K**: Test: expanding an entry calls `setRowHeight` and triggers `resetAfterIndex`
-- [ ] **DASH-005L**: Test: `role="log"` present on container
-- [ ] **DASH-005M**: Test: `role="tab"` elements have correct `aria-selected` values
-- [ ] **DASH-005N**: Test: `isPending = true` while filter transition is in flight
+- [ ] **[TEST] DASH-005J**: Filter tabs render entries of correct type
+- [ ] **[TEST] DASH-005K**: Expanding an entry calls `setRowHeight` and triggers `resetAfterIndex`
+- [ ] **[TEST] DASH-005L**: `role="log"` present on container
+- [ ] **[TEST] DASH-005M**: `role="tab"` elements have correct `aria-selected` values
+- [ ] **[TEST] DASH-005N**: `isPending = true` while filter transition is in flight
 
 ### Definition of Done
 - Virtualization uses `VariableSizeList` with memoized `Row` component
@@ -693,12 +721,12 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 - [ ] **DASH-006H**: ARIA: each packet `role="article"` + `aria-label` with priority and agent name; buttons with descriptive `aria-label`
 
 **Tests:**
-- [ ] **DASH-006I**: Test: packets render with correct priority badge class
-- [ ] **DASH-006J**: Test: Approve button calls `approveDecision(packet.id)`
-- [ ] **DASH-006K**: Test: optimistic update removes packet immediately (before server responds)
-- [ ] **DASH-006L**: Test: failed approval restores packet and shows error toast
-- [ ] **DASH-006M**: Test: countdown timer updates every second (use `vi.useFakeTimers()`)
-- [ ] **DASH-006N**: Test: empty state renders when `packets = []`
+- [ ] **[TEST] DASH-006I**: Packets render with correct priority badge class
+- [ ] **[TEST] DASH-006J**: Approve button calls `approveDecision(packet.id)`
+- [ ] **[TEST] DASH-006K**: Optimistic update removes packet immediately (before server responds)
+- [ ] **[TEST] DASH-006L**: Failed approval restores packet and shows error toast
+- [ ] **[TEST] DASH-006M**: Countdown timer updates every second (use `vi.useFakeTimers()`)
+- [ ] **[TEST] DASH-006N**: Empty state renders when `packets = []`
 
 ### Definition of Done
 - `AnimatePresence mode="popLayout"` — exiting packets don't block remaining items from repositioning
@@ -742,10 +770,10 @@ Testing is embedded as subtasks within each component task. Infrastructure is as
 - [ ] **DASH-007F**: Fetch agent detail data: `useAgent(selectedAgentId)` — uses `select` to find agent from cached fleet list; no extra network request if fleet is cached
 
 **Tests:**
-- [ ] **DASH-007G**: Test: drawer opens when `openAgentDrawer(id)` is called
-- [ ] **DASH-007H**: Test: correct agent data displays (mock `useAgent`)
-- [ ] **DASH-007I**: Test: "Send Message" navigates to `/chat` with state payload
-- [ ] **DASH-007J**: Test: focus returns to expand button after close
+- [ ] **[TEST] DASH-007G**: Drawer opens when `openAgentDrawer(id)` is called
+- [ ] **[TEST] DASH-007H**: Correct agent data displays (mock `useAgent`)
+- [ ] **[TEST] DASH-007I**: "Send Message" navigates to `/chat` with state payload
+- [ ] **[TEST] DASH-007J**: Focus returns to expand button after close
 
 ### Definition of Done
 - Drawer opens with `layoutId` morph from card
