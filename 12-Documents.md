@@ -30,13 +30,13 @@
 | ID | Area | Requirement |
 |----|------|-------------|
 | **DOC-C01** | State Management | Zustand `documentsSlice` for active document, view mode, search, and collaboration state. URL sync for shareable document links. |
-| **DOC-C02** | Data Persistence | Dexie for offline document storage; sync queue for pending mutations. Vector embeddings stored in IndexedDB for semantic search. |
+| **DOC-C02** | Data Persistence | Centralized CommandCenterDB with module-prefixed stores (`documents_documents`, `documents_syncQueue`, `documents_embeddings`) for offline document storage; sync queue for pending mutations. Vector embeddings stored in IndexedDB for semantic search. |
 | **DOC-C03** | Content Types | Unified content model supporting: Markdown, PDF, images, videos, audio recordings, and embedded content. |
 | **DOC-C04** | Linking System | Bidirectional linking with `[[wikilink]]` syntax; auto-backlink discovery; graph visualization. |
 | **DOC-C05** | Search Architecture | Hybrid search: full-text + semantic (vector embeddings) + metadata filters. Results ranked by relevance score. |
 | **DOC-C06** | OCR Pipeline | Tesseract.js integration for image/PDF text extraction; progress indicators; error handling. |
 | **DOC-C07** | AI Integration | OpenAI-compatible API for embeddings, extraction, and Q&A. Cost tracking and rate limiting. |
-| **DOC-C08** | Collaboration | Real-time operational transforms; conflict resolution; presence indicators. |
+| **DOC-C08** | Collaboration | Yjs CRDT-based collaboration with y-indexeddb for offline persistence; automatic conflict resolution; presence indicators via awareness API. |
 | **DOC-C09** | Version Control | Immutable document versions; diff visualization; rollback capability. |
 | **DOC-C10** | Templates | 10+ built-in templates (Meeting Notes, Project Brief, Research Paper, etc.); custom template builder. |
 | **DOC-C11** | View Modes | Edit mode (Markdown), Preview mode (rendered), Split view, Graph view, Timeline view. |
@@ -364,6 +364,7 @@
   - Code block syntax highlighting
   - Table of contents for long documents
   - Print-friendly view
+  - Note: If any HTML content is rendered (e.g., from document imports), use shared `SanitizedHTML` component (see 01-Foundations.md)
 
 - [ ] **DOC-002E**: Implement split view mode:
   - Side-by-side editor and preview
@@ -906,38 +907,50 @@
 ---
 
 ## 👥 Task DOC-008: Real-Time Collaboration
-**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** DOC-002
+**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** DOC-002
 
 ### Related Files
-`src/components/documents/CollaborationPanel.tsx` · `src/lib/operationalTransform.ts` · `src/hooks/useRealTimeSync.ts` · `src/components/documents/CursorOverlay.tsx`
+`src/components/documents/CollaborationPanel.tsx` · `src/lib/yjsDocument.ts` · `src/hooks/useRealTimeSync.ts` · `src/components/documents/CursorOverlay.tsx`
 
 ### Subtasks
 
-- [ ] **DOC-008A**: Implement operational transforms:
+- [ ] **DOC-008A**: Implement Yjs document management:
   ```ts
-  // src/lib/operationalTransform.ts
-  export class OperationalTransform {
-    transform(op1: Operation, op2: Operation): [Operation, Operation]
-    apply(document: string, operation: Operation): string
-    compose(op1: Operation, op2: Operation): Operation
-    invert(operation: Operation, document: string): Operation
-  }
+  // src/lib/yjsDocument.ts
+  import * as Y from 'yjs'
+  import { IndexeddbPersistence } from 'y-indexeddb'
   
-  interface Operation {
-    type: 'insert' | 'delete' | 'retain'
-    position: number
-    content?: string
-    length?: number
-    attributes?: Record<string, any>
+  export class YjsDocumentManager {
+    private ydoc: Y.Doc
+    private ytext: Y.Text
+    private persistence: IndexeddbPersistence
+    
+    constructor(documentId: string) {
+      this.ydoc = new Y.Doc()
+      this.ytext = this.ydoc.getText('content')
+      this.persistence = new IndexeddbPersistence(`doc-${documentId}`, this.ydoc)
+    }
+    
+    getText(): Y.Text {
+      return this.ytext
+    }
+    
+    getDoc(): Y.Doc {
+      return this.ydoc
+    }
+    
+    destroy(): void {
+      this.ydoc.destroy()
+    }
   }
   ```
 
-- [ ] **DOC-008B**: Create WebSocket connection manager:
-  - Connection management with auto-reconnect
+- [ ] **DOC-008B**: Configure Yjs network provider:
+  - Use `y-websocket` or `y-webrtc` provider for real-time sync
   - Room-based collaboration (document-specific rooms)
-  - User presence and status
-  - Message queuing and ordering
-  - Conflict resolution protocols
+  - User presence and status via provider.awareness
+  - Yjs handles message queuing and ordering automatically
+  - CRDT-based conflict resolution (no manual protocols needed)
 
 - [ ] **DOC-008C**: Build `CollaborationPanel` component:
   - Active users list with avatars and status
@@ -946,19 +959,20 @@
   - Activity feed (recent changes, comments)
   - Collaboration settings
 
-- [ ] **DOC-008D**: Create `CursorOverlay` component:
-  - Real-time cursor positions for all users
-  - User labels with custom colors
-  - Selection highlighting
-  - Hover tooltips with user info
-  - Smooth cursor animations
+- [ ] **DOC-008D**: Create `CursorOverlay` component using Yjs awareness:
+  - Use `provider.awareness.getStates()` to get all user cursors
+  - Use `provider.awareness.setLocalStateField('cursor', position)` to broadcast cursor
+  - User labels with custom colors from awareness state
+  - Selection highlighting from awareness state
+  - Hover tooltips with user info from awareness state
+  - Smooth cursor animations (Alive-tier motion)
 
 - [ ] **DOC-008E**: Implement real-time features:
-  - Live document editing with operational transforms
+  - Live document editing with Yjs Y.Text (automatic CRDT sync)
   - Comment system with threading
   - @mention notifications
-  - Document locking for concurrent editing prevention
-  - Change tracking with user attribution
+  - Document locking for concurrent editing prevention (optional, Yjs handles conflicts)
+  - Change tracking with user attribution via awareness
 
 - [ ] **DOC-008F**: Add collaboration UI elements:
   - User avatars in document header
@@ -968,39 +982,39 @@
   - Version comparison with user changes
 
 - [ ] **DOC-008G**: Create `useRealTimeSync()` hook:
-  - `joinDocument(documentId)` connection
-  - `sendOperation(operation)` broadcast
-  - `receiveOperations()` subscription
-  - `updateCursor(position)` broadcast
+  - `joinDocument(documentId)` — initialize Yjs provider and persistence
+  - `sendOperation(operation)` — Yjs handles automatically via Y.Text mutations
+  - `receiveOperations()` — observe Y.Text changes with `ytext.observe()`
+  - `updateCursor(position)` — use `awareness.setLocalStateField('cursor', position)`
   - `addComment(comment)` mutation
 
-- [ ] **DOC-008H**: Implement offline collaboration:
-  - Queue operations when offline
-  - Sync when reconnected
-  - Conflict resolution for concurrent edits
-  - Offline indicator and status
+- [ ] **DOC-008H**: Implement offline collaboration with y-indexeddb:
+  - y-indexeddb automatically queues operations when offline
+  - Sync when reconnected (handled by IndexeddbPersistence)
+  - CRDT-based conflict resolution for concurrent edits (automatic)
+  - Offline indicator and status (listen to `persistence.on('synced')`)
 
 ### Tests
-- [ ] Operational transforms handle concurrent edits correctly
-- [ ] Real-time cursors update smoothly
+- [ ] Yjs Y.Text handles concurrent edits correctly
+- [ ] Real-time cursors update smoothly via awareness
 - [ ] Comment system works with threading
-- [ ] Conflict resolution preserves user intent
-- [ ] Offline mode queues operations properly
+- [ ] CRDT conflict resolution preserves user intent
+- [ ] y-indexeddb persists and syncs operations properly
 - [ ] User permissions are enforced correctly
 
 ### Definition of Done
-- Full real-time collaboration with operational transforms
-- Live cursors and user presence
+- Full real-time collaboration with Yjs CRDT
+- Live cursors and user presence via awareness
 - Comment system with @mentions
 - Document sharing with permissions
-- Conflict resolution and change tracking
-- Offline collaboration support
+- Automatic conflict resolution and change tracking
+- Offline collaboration support via y-indexeddb
 
 ### Anti-Patterns
-- ❌ Not handling operational transforms correctly — data corruption
-- ❌ Missing conflict resolution — user frustration
+- ❌ Implementing custom operational transforms — Yjs handles this automatically
+- ❌ Not using y-indexeddb for offline — users lose work
 - ❌ Not showing other users' presence — confusing experience
-- ❌ Ignoring offline scenarios — data loss
+- ❌ Manual conflict resolution logic — Yjs CRDT handles this
 
 ---
 
@@ -1112,30 +1126,11 @@
 **Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** DOC-000, DOC-001
 
 ### Related Files
-`src/lib/db/documents.ts` · `src/hooks/useOfflineDocuments.ts` · `src/components/documents/OfflineStatusBar.tsx` · `src/lib/syncEngine.ts`
+`src/lib/db/documents.ts` · `src/hooks/useOfflineDocuments.ts` · `src/components/documents/OfflineStatusBar.tsx` · `src/lib/yjsDocument.ts`
 
 ### Subtasks
 
-- [ ] **DOC-010A**: Create `src/lib/db/documents.ts` extending Dexie:
-  ```ts
-  interface DocumentDB extends Dexie {
-    documents: Table<Document, string>
-    versions: Table<Version, string>
-    embeddings: Table<Embedding, string>
-    pendingMutations: Table<PendingMutation, string>
-    syncMetadata: Table<SyncMetadata, string>
-  }
-  
-  interface PendingMutation {
-    id: string
-    type: 'create' | 'update' | 'delete'
-    entity: 'document' | 'version' | 'embedding'
-    data: unknown
-    timestamp: number
-    retryCount: number
-    lastError?: string
-  }
-  ```
+- [ ] **DOC-010A**: Import centralized Dexie schema from `@/lib/db/commandCenterDB` with module-prefixed stores: `documents_documents`, `documents_syncQueue`, `documents_embeddings`. For collaborative documents, y-indexeddb handles persistence automatically via `IndexeddbPersistence` (see DOC-008A).
 
 - [ ] **DOC-010B**: Implement `useOfflineDocuments()` hook:
   - Read documents from Dexie when offline
@@ -1143,8 +1138,9 @@
   - Queue mutations in `pendingMutations` table
   - Sync queue when connection restored
   - Handle sync conflicts with resolution strategies
+  - For collaborative documents, y-indexeddb automatically handles offline persistence and sync
 
-- [ ] **DOC-010C**: Create sync engine:
+- [ ] **DOC-010C**: Create sync engine for non-collaborative documents:
   ```ts
   // src/lib/syncEngine.ts
   export class SyncEngine {
@@ -1155,6 +1151,7 @@
     private async applyMutation(mutation: PendingMutation): Promise<void>
   }
   ```
+  Note: Collaborative documents use Yjs CRDT + y-indexeddb for automatic sync (no custom sync engine needed).
 
 - [ ] **DOC-010D**: Build `OfflineStatusBar` component:
   - Connection status indicator
@@ -1170,6 +1167,7 @@
   - Three-way merge for text content
   - Conflict preview and selection
   - Conflict history and analytics
+  - For collaborative documents, Yjs CRDT automatically resolves conflicts (no manual resolution needed)
 
 - [ ] **DOC-010F**: Add offline features:
   - Offline document creation and editing
@@ -1199,10 +1197,12 @@
 - [ ] Conflict resolution preserves user data
 - [ ] Incremental sync reduces bandwidth usage
 - [ ] Offline status bar shows correct information
+- [ ] y-indexeddb persists collaborative documents and syncs on reconnect
 
 ### Definition of Done
 - Full offline support with IndexedDB storage
-- Robust sync engine with conflict resolution
+- Robust sync engine with conflict resolution (for non-collaborative docs)
+- y-indexeddb for collaborative document persistence (automatic)
 - Offline status indicators and controls
 - Incremental sync with bandwidth optimization
 - Comprehensive sync analytics
@@ -1210,9 +1210,10 @@
 
 ### Anti-Patterns
 - ❌ Not queueing mutations offline — data loss
-- [ ] Silent sync failures — users unaware of problems
-- [ ] Not handling conflicts properly — data corruption
-- [ ] Full sync every time — bandwidth waste
+- ❌ Silent sync failures — users unaware of problems
+- ❌ Not handling conflicts properly — data corruption
+- ❌ Full sync every time — bandwidth waste
+- ❌ Not using y-indexeddb for collaborative documents — unnecessary complexity
 
 ---
 

@@ -97,16 +97,15 @@ Each task includes the files to update, the specific sections/tasks within them,
 **What to Change:**
 - [x] **UPD‑006A**: In `01-Foundations.md`, add a cross‑cutting rule: “All TanStack Query mutations must use the shared `useOptimisticMutation()` wrapper that enforces `cancelQueries → snapshot → setQueryData → rollback → onSettled invalidate.”  
 - [x] **UPD‑006B**: In each module’s hooks file, replace explicit mutation patterns with `useOptimisticMutation({ queryKey, mutationFn, updateFn })`.
-
 ### Task UPD‑007: Centralize IndexedDB (Dexie) Schema
 **Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** UPD‑000–UPD‑003
 
 **Files to Update:** `06-News.md`, `07-Budget.md`, `09-Email.md`, `10-Lists.md`, `11-Contacts.md`, `12-Documents.md`, new foundation rule.
 
 **What to Change:**
-- [ ] **UPD‑007A**: Create a single `CommandCenterDB` schema in a new foundation rule, with module‑prefixed stores.  
-- [ ] **UPD‑007B**: In each module’s Dexie setup, replace independent `new Dexie(...)` with reference to the centralized database.  
-- [ ] **UPD‑007C**: Add a global quota manager specification that calls `navigator.storage.estimate()` and warns at 80% usage.
+- [x] **UPD‑007A**: Create a single `CommandCenterDB` schema in a new foundation rule, with module‑prefixed stores.
+- [x] **UPD‑007B**: In each module's Dexie setup, replace independent `new Dexie(...)` with reference to the centralized database.
+- [x] **UPD‑007C**: Add a global quota manager specification that calls `navigator.storage.estimate()` and warns at 80% usage.
 
 ### Task UPD‑008: Build Shared SanitizedHTML Component
 **Priority:** 🟠 Medium | **Est. Effort:** 0.5 hour | **Depends On:** UPD‑000
@@ -114,8 +113,8 @@ Each task includes the files to update, the specific sections/tasks within them,
 **Files to Update:** `01-Foundations.md` (new cross‑cutting rule), `09-Email.md`, `06-News.md`, `12-Documents.md`, `14-Research.md`
 
 **What to Change:**
-- [ ] **UPD‑008A**: Create a `SanitizedHTML` component spec using DOMPurify + `html-react-parser`.  
-- [ ] **UPD‑008B**: Replace all `dangerouslySetInnerHTML` usage in the above modules with `SanitizedHTML`.
+- [x] **UPD‑008A**: Create a `SanitizedHTML` component spec using DOMPurify + `html-react-parser`.  
+- [x] **UPD‑008B**: Replace all `dangerouslySetInnerHTML` usage in the above modules with `SanitizedHTML`.
 
 ---
 
@@ -127,9 +126,9 @@ Each task includes the files to update, the specific sections/tasks within them,
 **Files to Update:** `12-Documents.md` (DOC‑008, DOC‑010)
 
 **What to Change:**
-- [ ] **UPD‑009A**: Replace the `OperationalTransform` class with Yjs `Y.Text`, using `y-indexeddb` for persistence.  
-- [ ] **UPD‑009B**: Update the collaboration cursor overlay to use Yjs awareness.  
-- [ ] **UPD‑009C**: Reduce estimated effort for real‑time collaboration from 3 hours to 1.5 hours.
+- [x] **UPD‑009A**: Replace the `OperationalTransform` class with Yjs `Y.Text`, using `y-indexeddb` for persistence.  
+- [x] **UPD‑009B**: Update the collaboration cursor overlay to use Yjs awareness.  
+- [x] **UPD‑009C**: Reduce estimated effort for real‑time collaboration from 3 hours to 1.5 hours.
 
 ### Task UPD‑010: Re‑scope Conference Module MVP
 **Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** None
@@ -289,11 +288,11 @@ UPD‑003 (cancelQueries fix)
 - [ ] `17-SharedRecurrence.md` created and 4 modules updated
 - [x] Shared `useDndSensors()` hook specified
 - [x] Unified `useOptimisticMutation()` hook specified
-- [ ] Centralized `CommandCenterDB` schema created
-- [ ] `SanitizedHTML` component specified
+- [x] Centralized `CommandCenterDB` schema created
+- [x] `SanitizedHTML` component specified
 
 **Phase 2:**
-- [ ] Documents OT replaced with Yjs
+- [x] Documents OT replaced with Yjs
 - [ ] Conference rescoped to LiveKit rectangular grid
 - [ ] ONNX first‑use UX added to Chat and Research
 - [ ] Budget anomaly detection switched to client‑side z‑score
@@ -311,3 +310,311 @@ UPD‑003 (cancelQueries fix)
 - [ ] Final cross‑reference audit completed
 
 **Success Metric:** Post‑update, the total estimated effort for duplicate implementations will decrease by ≥25%, and all P0 persistence bugs will be eliminated before any component code is written.
+
+---
+
+## Phase 5 — New Feature Extensions (from User Desire Synthesis)
+
+> **Purpose**: Add 17 new feature ideas derived from user desire synthesis. These are pure frontend UI/UX additions that extend existing modules or create new standalone spec files. All reuse existing mock data infrastructure, glass-aesthetic, motion hierarchy, and cross-cutting foundations.
+
+### Task UPD‑021: Create Agent Observatory Dashboard
+**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `02-Dashboard.md` (new task DASH‑008 or extend DASH‑004)
+
+**What to Change:**
+- [ ] **UPD‑021A**: Create new task **DASH‑008** (Agent Observatory Dashboard) as a full-page "mission control" view.
+- [ ] **UPD‑021B**: Specify live status display for all agents (online/offline, active tasks, token costs).
+- [ ] **UPD‑021C**: Add audit trail component showing recent agent actions with timestamps.
+- [ ] **UPD‑021D**: Integrate with existing AgentFleetPanel data model.
+- [ ] **UPD‑021E**: Apply Alive-tier motion for status indicators and Quiet-tier for audit entries.
+
+### Task UPD‑022: Add AI Decision Justification Panel
+**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `08-Workflow.md` (new task FLOW‑005.1, extend FLOW‑005)
+
+**What to Change:**
+- [ ] **UPD‑022A**: Create subtask **FLOW‑005.1** (AI Decision Justification Panel) extending Execution Monitoring.
+- [ ] **UPD‑022B**: Specify reasoning chain display with step-by-step breakdown.
+- [ ] **UPD‑022C**: Add confidence score visualization (progress bar with color coding).
+- [ ] **UPD‑022D**: Implement "what-if" adjustment controls for proposed actions.
+- [ ] **UPD‑022E**: Use Quiet-tier motion for panel reveal.
+
+### Task UPD‑023: Create Permission Scope Manager
+**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `15-Settings.md` (new task SET‑008 or extend SET‑003)
+
+**What to Change:**
+- [ ] **UPD‑023A**: Create new task **SET‑008** (Permission Scope Manager) as visual policy builder.
+- [ ] **UPD‑023B**: Specify per-agent permission UI (apps, actions, confirmation prompts).
+- [ ] **UPD‑023C**: Add connection to Agent Studio for policy application.
+- [ ] **UPD‑023D**: Implement permission scope visualization with tree/grouped view.
+- [ ] **UPD‑023E**: Use Alive-tier motion for scope changes.
+
+### Task UPD‑024: Implement Proactive Insight Feed ("Pulse")
+**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `01-Foundations.md` (new task FND‑015)
+
+**What to Change:**
+- [ ] **UPD‑024A**: Create new foundation task **FND‑015** (Proactive Insight Feed) as global always-visible panel.
+- [ ] **UPD‑024B**: Specify root layout integration (persistent side panel or bottom bar).
+- [ ] **UPD‑024C**: Define insight types: unreplied emails, deadline collisions, well-being nudges.
+- [ ] **UPD‑024D**: Add AI-detected pattern surfacing logic (mock data).
+- [ ] **UPD‑024E**: Apply Alive-tier motion for new insights (spring physics, stagger).
+
+### Task UPD‑025: Extend AmbientStatusBanner with Intentionality Nudge
+**Priority:** 🟠 Medium | **Est. Effort:** 1 hour | **Depends On:** UPD‑017
+
+**Files to Update:** `02-Dashboard.md` (extend DASH‑003)
+
+**What to Change:**
+- [ ] **UPD‑025A**: Extend **DASH‑003** (AmbientStatusBanner) with intentionality tracking.
+- [ ] **UPD‑025B**: Add color change logic when user drifts from declared intention.
+- [ ] **UPD‑025C**: Implement non-judgmental nudge messaging.
+- [ ] **UPD‑025D**: Add do-not-disturb mode respect.
+- [ ] **UPD‑025E**: Use CSS @property animated gradient border for nudge state.
+
+### Task UPD‑026: Create Context‑Aware Briefing
+**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `05-Calendar.md` (new task CAL‑015)
+
+**What to Change:**
+- [ ] **UPD‑026A**: Create new task **CAL‑015** (Pre‑Meeting Briefing) as prep card before events.
+- [ ] **UPD‑026B**: Specify briefing content: attendees, recent emails, related documents, previous action items.
+- [ ] **UPD‑026C**: Add trigger logic (5-10 minutes before event).
+- [ ] **UPD‑026D**: Integrate with existing Calendar, Email, Documents data models.
+- [ ] **UPD‑026E**: Use Quiet-tier motion for card reveal.
+
+### Task UPD‑027: Create Personal Timeline Explorer (New Spec File)
+**Priority:** 🔴 High | **Est. Effort:** 4 hours | **Depends On:** UPD‑017
+
+**Files to Update:** New file `19-PersonalTimeline.md`
+
+**What to Change:**
+- [ ] **UPD‑027A**: Create `19-PersonalTimeline.md` spec file following existing pattern.
+- [ ] **UPD‑027B**: Define domain model: TimelineEvent, TimelineFilter, ZoomLevel.
+- [ ] **UPD‑027C**: Specify scrollable, zoomable timeline UI (react-window for virtualization).
+- [ ] **UPD‑027D**: Add timeline data aggregation from all modules (Calendar, Projects, Chat, etc.).
+- [ ] **UPD‑027E**: Implement zoom controls (day/week/month/year views).
+- [ ] **UPD‑027F**: Add search and filter capabilities.
+- [ ] **UPD‑027G**: Use Alive-tier motion for timeline navigation.
+
+### Task UPD‑028: Add Relationship Graph / Personal CRM
+**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `11-Contacts.md` (new task CONT‑028)
+
+**What to Change:**
+- [ ] **UPD‑028A**: Create new task **CONT‑028** (Relationship Graph Dashboard).
+- [ ] **UPD‑028B**: Specify force-directed graph visualization (react-force-graph or D3).
+- [ ] **UPD‑028C**: Add AI-suggested reconnection moments based on interaction history.
+- [ ] **UPD‑028D**: Implement draft message suggestions for reconnection.
+- [ ] **UPD‑028E**: Build on existing Contacts relationship data model.
+- [ ] **UPD‑028F**: Use Quiet-tier motion for graph node hover.
+
+### Task UPD‑029: Create Life Admin Concierge (New Spec File)
+**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** UPD‑017
+
+**Files to Update:** New file `20-LifeAdmin.md`
+
+**What to Change:**
+- [ ] **UPD‑029A**: Create `20-LifeAdmin.md` spec file following existing pattern.
+- [ ] **UPD‑029B**: Define domain model: LifeAdminTask, DecisionCard, BookingIntegration.
+- [ ] **UPD‑029C**: Specify low-friction input interface (quick capture, voice input).
+- [ ] **UPD‑029D**: Add decision card component for complex choices (insurance plans, etc.).
+- [ ] **UPD‑029E**: Implement booking integration stubs (doctor appointments, services).
+- [ ] **UPD‑029F**: Use Alive-tier motion for task completion.
+
+### Task UPD‑030: Create AI Journal & Reflection Partner (New Spec File)
+**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** UPD‑017
+
+**Files to Update:** New file `21-AIJournal.md`
+
+**What to Change:**
+- [ ] **UPD‑030A**: Create `21-AIJournal.md` spec file following existing pattern.
+- [ ] **UPD‑030B**: Define domain model: JournalEntry, ReflectionPrompt, PatternInsight.
+- [ ] **UPD‑030C**: Specify private journaling space with rich text editor.
+- [ ] **UPD‑030D**: Add AI-powered reflection and pattern detection (mock data).
+- [ ] **UPD‑030E**: Implement Socratic question generation.
+- [ ] **UPD‑030F**: Design distinct visual style from Chat (calmer, more contemplative).
+- [ ] **UPD‑030G**: Use Quiet-tier motion throughout.
+
+### Task UPD‑031: Add Gamified Quest System
+**Priority:** 🟢 Low | **Est. Effort:** 2.5 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `04-Projects.md` (new task PROJ‑026), `10-Lists.md` (new task LIST‑025)
+
+**What to Change:**
+- [ ] **UPD‑031A**: Create **PROJ‑026** (Quest Log) in Projects module.
+- [ ] **UPD‑031B**: Create **LIST‑025** (Quest Log) in Lists module.
+- [ ] **UPD‑031C**: Specify XP, levels, and achievements system.
+- [ ] **UPD‑031D**: Add overlay that turns tasks/habits into quests.
+- [ ] **UPD‑031E**: Implement Alive-tier celebration animations for level-ups.
+- [ ] **UPD‑031F**: Add progress visualization (XP bar, achievement badges).
+
+### Task UPD‑032: Implement Context Bridge
+**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `01-Foundations.md` (new task FND‑016)
+
+**What to Change:**
+- [ ] **UPD‑032A**: Create new foundation task **FND‑016** (Context Save/Restore).
+- [ ] **UPD‑032B**: Specify tiny floating button component for "brain save-point" capture.
+- [ ] **UPD‑032C**: Define context snapshot structure (current chat, document, project state).
+- [ ] **UPD‑032D**: Add restoration and sharing functionality.
+- [ ] **UPD‑032E**: Use Alive-tier motion for button interactions.
+
+### Task UPD‑033: Add Cognitive Load Meter
+**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `01-Foundations.md` (new task FND‑017)
+
+**What to Change:**
+- [ ] **UPD‑033A**: Create new foundation task **FND‑017** (Cognitive Load Indicator).
+- [ ] **UPD‑033B**: Specify ambient header bar component for load display.
+- [ ] **UPD‑033C**: Define load estimation logic (context switches, meetings, task count).
+- [ ] **UPD‑033D**: Add intervention suggestions (take break, focus mode, etc.).
+- [ ] **UPD‑033E**: Use color-coded indicators (green/yellow/red) with CSS @property animation.
+
+### Task UPD‑034: Add Multi‑Audience Translator
+**Priority:** 🟠 Medium | **Est. Effort:** 2 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `03-Chat.md` (new task CHAT‑023), `09-Email.md` (new task EMAIL‑014)
+
+**What to Change:**
+- [ ] **UPD‑034A**: Create **CHAT‑023** (Multi‑Audience Translator) in Chat module.
+- [ ] **UPD‑034B**: Create **EMAIL‑014** (Multi‑Audience Translator) in Email module.
+- [ ] **UPD‑034C**: Specify one-click rewrite into personas (Executive summary, Engineer, Client‑friendly).
+- [ ] **UPD‑034D**: Add persona chips in composer interfaces.
+- [ ] **UPD‑034E**: Use Quiet-tier motion for rewrite preview.
+
+### Task UPD‑035: Create Meeting Intelligence Hub
+**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `05-Calendar.md` (new task CAL‑016)
+
+**What to Change:**
+- [ ] **UPD‑035A**: Create new task **CAL‑016** (Meeting Intelligence Hub).
+- [ ] **UPD‑035B**: Specify unified meeting view with pre‑briefing, live, and post‑meeting phases.
+- [ ] **UPD‑035C**: Add live transcription with key point extraction (mock data).
+- [ ] **UPD‑035D**: Implement post‑meeting action item extraction.
+- [ ] **UPD‑035E**: Add searchable meeting archive.
+- [ ] **UPD‑035F**: Use Alive-tier motion for live transcription updates.
+
+### Task UPD‑036: Add AI Art Director & Creative Studio
+**Priority:** 🟢 Low | **Est. Effort:** 3 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `18-Media.md` (new task MEDIA‑023)
+
+**What to Change:**
+- [ ] **UPD‑036A**: Create new task **MEDIA‑023** (Creative Studio).
+- [ ] **UPD‑036B**: Specify canvas-based creative workflow component.
+- [ ] **UPD‑036C**: Add mood board creation and management.
+- [ ] **UPD‑036D**: Implement style guide tools.
+- [ ] **UPD‑036E**: Add AI-as-critique feature (mock data for feedback).
+- [ ] **UPD‑036F**: Extend existing Media module with collaborative creation.
+
+### Task UPD‑037: Extend Voice Shell with Persona Studio
+**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** UPD‑017
+
+**Files to Update:** `01-Foundations.md` (extend FND‑014)
+
+**What to Change:**
+- [ ] **UPD‑037A**: Extend **FND‑014** (Voice Shell) with Persona Studio.
+- [ ] **UPD‑037B**: Specify persona designer UI (formality, verbosity, humour sliders).
+- [ ] **UPD‑037C**: Add context-based switching logic.
+- [ ] **UPD‑037D**: Implement playback preview for voice personas.
+- [ ] **UPD‑037E**: Use Quiet-tier motion for persona adjustments.
+
+---
+
+## 📊 Updated Dependency Graph for All Tasks
+
+```
+UPD‑000 (Set fix)
+UPD‑001 (LayoutGroup audit)
+UPD‑002 (focusTriggerRef removal)
+UPD‑003 (cancelQueries fix)
+     │
+     ├── UPD‑004 (Recurrence engine)
+     ├── UPD‑005 (dnd‑kit shared)
+     ├── UPD‑006 (Optimistic mutation wrapper)
+     ├── UPD‑007 (Centralized Dexie)
+     └── UPD‑008 (SanitizedHTML)
+              │
+              ├── UPD‑009 (Documents Yjs) depends on UPD‑007
+              ├── UPD‑010 (Conference rescope)
+              ├── UPD‑011 (ONNX setup UX) depends on UPD‑007
+              ├── UPD‑012 (Budget z‑score)
+              └── UPD‑013 (Dependency versions)
+                       │
+                       ├── UPD‑014 (SSE tests)
+                       ├── UPD‑015 (Bundle strategy) depends on UPD‑010, UPD‑011
+                       └── UPD‑016 (WCAG 2.5.7) depends on UPD‑005
+                                │
+                                ├── UPD‑017 (Renumbering)
+                                ├── UPD‑018 (Shared Primitives doc) depends on UPD‑004‑008
+                                ├── UPD‑019 (Dependency graphs update)
+                                └── UPD‑020 (Final consistency audit) ← depends on all
+                                         │
+                                         └── UPD‑021 through UPD‑037 (New Feature Extensions) ← depends on UPD‑017
+```
+
+---
+
+## 🏁 Updated Completion Checklist
+
+**Phase 0:**
+- [ ] All `Set<string>` in persisted state converted to `string[]`
+- [ ] `focusTriggerRef` replaced with imperative registry
+- [ ] `cancelQueries` enforced in all v1 module mutations
+
+**Phase 1:**
+- [ ] `17-SharedRecurrence.md` created and 4 modules updated
+- [x] Shared `useDndSensors()` hook specified
+- [x] Unified `useOptimisticMutation()` hook specified
+- [x] Centralized `CommandCenterDB` schema created
+- [x] `SanitizedHTML` component specified
+
+**Phase 2:**
+- [x] Documents OT replaced with Yjs
+- [ ] Conference rescoped to LiveKit rectangular grid
+- [ ] ONNX first‑use UX added to Chat and Research
+- [ ] Budget anomaly detection switched to client‑side z‑score
+
+**Phase 3:**
+- [ ] Dependencies updated with pinned versions and new libraries
+- [ ] SSE test patterns documented
+- [ ] Heavy library code‑splitting strategy added
+- [ ] WCAG 2.5.7 alternatives mandated for all drag operations
+
+**Phase 4:**
+- [ ] All files renumbered and cross‑referenced
+- [ ] `18-SharedPrimitives.md` created
+- [ ] All dependency graphs updated
+- [ ] Final cross‑reference audit completed
+
+**Phase 5 — New Feature Extensions:**
+- [ ] Agent Observatory Dashboard (DASH‑008) specified
+- [ ] AI Decision Justification Panel (FLOW‑005.1) specified
+- [ ] Permission Scope Manager (SET‑008) specified
+- [ ] Proactive Insight Feed "Pulse" (FND‑015) specified
+- [ ] Intentionality Nudge System (extend DASH‑003) specified
+- [ ] Context‑Aware Briefing (CAL‑015) specified
+- [ ] Personal Timeline Explorer (`19-PersonalTimeline.md`) created
+- [ ] Relationship Graph / Personal CRM (CONT‑028) specified
+- [ ] Life Admin Concierge (`20-LifeAdmin.md`) created
+- [ ] AI Journal & Reflection Partner (`21-AIJournal.md`) created
+- [ ] Gamified Quest System (PROJ‑026 / LIST‑025) specified
+- [ ] Context Bridge (FND‑016) specified
+- [ ] Cognitive Load Meter (FND‑017) specified
+- [ ] Multi‑Audience Translator (CHAT‑023 / EMAIL‑014) specified
+- [ ] Meeting Intelligence Hub (CAL‑016) specified
+- [ ] AI Art Director & Creative Studio (MEDIA‑023) specified
+- [ ] Voice Persona Studio (extend FND‑014) specified
+
+**Success Metric:** Post‑update, the total estimated effort for duplicate implementations will decrease by ≥25%, all P0 persistence bugs will be eliminated before any component code is written, and 17 new user-desired features will be fully specified with implementation guidance.
