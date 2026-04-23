@@ -478,7 +478,7 @@ This necessitates several high-priority enhancements:
 **Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** BUDG‑002, BUDG‑001
 
 ### Related Files
-- `src/pages/RecurringPage.tsx` · `src/components/budget/RecurringItemRow.tsx` · `src/components/budget/RecurringCalendar.tsx` · `src/components/budget/CashFlowForecast.tsx`
+- `src/pages/RecurringPage.tsx` · `src/components/budget/RecurringItemRow.tsx` · `src/components/budget/RecurringCalendar.tsx` · `src/components/budget/CashFlowForecast.tsx` · `@/shared/recurrence/RecurrenceEngine.ts` · `@/shared/recurrence/helpers.ts`
 
 ### Subtasks
 
@@ -486,15 +486,15 @@ This necessitates several high-priority enhancements:
 
 - [ ] **[TEST] BUDG‑010A**: RecurringPage renders with tabs; RecurringCalendar prominent
 
-- [ ] **BUDG‑010B**: Implement `RecurringItemRow` with edit/delete and active toggle. **NEW**: Expand row to display recurrence summary (e.g., "Monthly on the 15th").
+- [ ] **BUDG‑010B**: Implement `RecurringItemRow` with edit/delete and active toggle. **NEW**: Expand row to display recurrence summary using `rruleToHuman()` from `@/shared/recurrence/helpers`.
 
 - [ ] **[TEST] BUDG‑010B**: Row renders; edit/delete work; toggle works; expansion shows summary
 
-- [ ] **BUDG‑010C**: Implement `RecurringCalendar` using the existing calendar library (or `react-big-calendar`) to show next 30 days of recurring items. **NEW**: The calendar should support directly dragging to reschedule an instance of a recurring item.
+- [ ] **BUDG‑010C**: Implement `RecurringCalendar` using `RecurrenceEngine` from `@/shared/recurrence` to show next 30 days of recurring items. Use `RecurrenceEngine.getOccurrences()` for date range expansion. **NEW**: The calendar should support directly dragging to reschedule an instance of a recurring item.
 
 - [ ] **[TEST] BUDG‑010C**: Calendar renders next 30 days; drag to reschedule works
 
-- [ ] **BUDG‑010C1** (NEW): Implement an "Edit Series" modal that provides standard calendar series options: "This Instance Only," "This and All Future Instances," "All Instances."
+- [ ] **BUDG‑010C1** (NEW): Implement an "Edit Series" modal that uses `buildEditOperations()` from `@/shared/recurrence/helpers` for three-mode editing: "This Instance Only," "This and All Future Instances," "All Instances."
 
 - [ ] **[TEST] BUDG‑010C1**: Edit Series modal renders; options work; updates correct instances
 

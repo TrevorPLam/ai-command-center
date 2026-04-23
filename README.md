@@ -46,7 +46,8 @@ Each module specification is a detailed implementation guide with tasks, subtask
 | `13-Conference.md` | Video Conferencing | WebRTC video calls with LiveKit, screen sharing, recording |
 | `14-Research.md` | Research Tools | RAG with local ONNX embeddings, vector search, knowledge graph |
 | `15-Settings.md` | Settings | General, appearance, notifications, analytics, memory, integrations, export/import |
-| `16-Polish-Validation.md` | Polish & Validation | Performance optimization, accessibility audit, testing coverage, security checks |
+| `16-Translation.md` | Translation | Multi-speaker real-time translation with speaker diarization, split-screen view, session management |
+| `17-Polish-Validation.md` | Polish & Validation | Performance optimization, accessibility audit, testing coverage, security checks |
 
 **Specification Format:**
 - Reasoning memo explaining architectural decisions

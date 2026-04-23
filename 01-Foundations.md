@@ -103,6 +103,66 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 | **C-11** | Test Pattern | `userEvent.setup()` called fresh per test; `screen` preferred over `container` |
 | **C-12** | Router Import | `import { ... } from "react-router"` — NOT `react-router-dom` |
 | **C-13** | Motion Tokens | All `motion` components must use shared tokens from `src/lib/motion.ts`. Inline animation objects (e.g., `transition={{ duration: 0.2 }}`) are prohibited outside of `src/lib/motion.ts`. |
+| **C-14** | dnd-kit Sensors | All dnd-kit usage must use the shared `useDndSensors()` hook (exported from `src/shared/dnd`). Never configure sensors inline. |
+
+---
+
+## 🔌 Shared dnd-kit Sensors Hook
+
+All drag-and-drop functionality across the application must use the shared `useDndSensors()` hook exported from `src/shared/dnd`. This ensures consistent sensor configuration and eliminates duplication.
+
+### Hook Specification
+
+```ts
+// src/shared/dnd/useDndSensors.ts
+import { useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+
+export function useDndSensors() {
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 5, // Prevents accidental drag-on-click
+    },
+  });
+
+  const keyboardSensor = useSensor(KeyboardSensor, {
+    coordinateGetter: sortableKeyboardCoordinates,
+  });
+
+  return useSensors(pointerSensor, keyboardSensor);
+}
+```
+
+### Usage Pattern
+
+```tsx
+import { DndContext } from '@dnd-kit/core';
+import { useDndSensors } from '@/shared/dnd/useDndSensors';
+
+function MyDraggableComponent() {
+  const sensors = useDndSensors();
+
+  return (
+    <DndContext sensors={sensors}>
+      {/* Draggable content */}
+    </DndContext>
+  );
+}
+```
+
+### Rationale
+
+- **Consistency**: All drag operations use the same activation constraints
+- **Maintainability**: Single source of truth for sensor configuration
+- **Accessibility**: Keyboard navigation is always enabled with `sortableKeyboardCoordinates`
+- **UX**: 5px distance threshold prevents accidental drags on click interactions
+
+### Anti-Patterns
+
+- ❌ Configuring sensors inline in each component
+- ❌ Using different `activationConstraint` values across components
+- ❌ Omitting `KeyboardSensor` (breaks accessibility)
+- ❌ Forgetting `sortableKeyboardCoordinates` (keyboard navigation won't work correctly)
 
 ---
 
@@ -510,18 +570,67 @@ The new structure is: FND-000 through FND-013 (14 tasks).
   )
   ```
 - [ ] **FND-006G**: Write unit tests for `queryOptions` using MSW handlers
+- [ ] **FND-006H**: Create unified optimistic mutation wrapper `useOptimisticMutation` in `src/lib/useOptimisticMutation.ts`:
+  ```ts
+  import { useMutation, useQueryClient, type UseMutationOptions } from '@tanstack/react-query'
+
+  interface OptimisticMutationOptions<TData, TError, TVariables, TContext> {
+    queryKey: unknown[]
+    mutationFn: (variables: TVariables) => Promise<TData>
+    updateFn: (oldData: unknown, variables: TVariables) => unknown
+    mutationOptions?: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'onMutate' | 'onError' | 'onSettled'>
+  }
+
+  export function useOptimisticMutation<TData, TError, TVariables, TContext = unknown>({
+    queryKey,
+    mutationFn,
+    updateFn,
+    mutationOptions = {},
+  }: OptimisticMutationOptions<TData, TError, TVariables, TContext>) {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+      mutationFn,
+      ...mutationOptions,
+      onMutate: async (variables) => {
+        // Cancel outgoing refetches to prevent overwriting optimistic update
+        await queryClient.cancelQueries({ queryKey })
+        // Snapshot previous value for rollback
+        const previous = queryClient.getQueryData(queryKey)
+        // Optimistically update cache
+        queryClient.setQueryData(queryKey, (old: unknown) => updateFn(old, variables))
+        // Return context with snapshot
+        return { previous }
+      },
+      onError: (_err, _variables, context) => {
+        // Rollback to previous value on error
+        if (context?.previous !== undefined) {
+          queryClient.setQueryData(queryKey, context.previous)
+        }
+      },
+      onSettled: () => {
+        // Always invalidate after error or success (ensures cache consistency)
+        queryClient.invalidateQueries({ queryKey })
+      },
+    })
+  }
+  ```
+  This wrapper enforces the canonical optimistic pattern: `cancelQueries → snapshot → setQueryData → rollback → onSettled invalidate`. All module mutations MUST use this wrapper instead of inline patterns.
 
 ### Definition of Done
 - `QueryClient` created with correct defaults
 - `queryOptions` defined for all domains
 - Custom hooks consume `queryOptions` with full type inference
 - DevTools lazy-loaded in development only
+- `useOptimisticMutation` wrapper specified and enforced across all modules
 
 ### Anti-Patterns
 - ❌ Wrapping `useQuery` in a custom hook without `queryOptions` — destroys type inference for `data`, `error`, `isLoading`
 - ❌ Using `queryKey: ['agents']` inline in multiple places — query key collisions; use `queryOptions` as single source
 - ❌ Not setting `staleTime` — defaults to `0`, causing a refetch on every component mount
 - ❌ Mirroring TanStack Query cache data into Zustand — the cache IS the state; this creates sync bugs
+- ❌ Skipping `cancelQueries` before optimistic updates — creates race conditions where background refetches overwrite optimistic state
+- ❌ Using `onSuccess` for invalidation instead of `onSettled` — `onSettled` fires on both success and error, ensuring cache consistency after rollback
 
 ---
 
@@ -762,7 +871,7 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 **Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** FND-005, FND-008
 
 ### Related Files
-- `src/components/layout/CommandPalette.tsx` · `src/hooks/useKeyboardShortcut.ts`
+- `src/components/layout/CommandPalette.tsx` · `src/hooks/useKeyboardShortcut.ts` · `src/hooks/useIntentHandler.ts` · `src/stores/slices/uiSlice.ts`
 
 ### Subtasks
 
@@ -772,32 +881,64 @@ The new structure is: FND-000 through FND-013 (14 tasks).
   - Binds to `document` — not a specific element
   - Cleans up on unmount
 - [ ] **FND-012B**: Build `CommandPalette` as a Portal rendered into `document.body`
-- [ ] **FND-012C**: Full-screen backdrop (`fixed inset-0 bg-black/60`) with centered 640px modal
-- [ ] **FND-012D**: Apply glass styling + `.noise-overlay`
-- [ ] **FND-012E**: ARIA roles: outer `div` gets `role="dialog"` + `aria-modal="true"` + `aria-label="Command palette"`. Input gets `role="combobox"` + `aria-expanded` + `aria-controls`
-- [ ] **FND-012F**: Staggered item animation:
-  ```ts
-  const containerVariants = { visible: { transition: { staggerChildren: 0.05 } } }
-  const itemVariants = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }
-  ```
+- [ ] **FND-012C**: Visual placement:
+  - Full-screen backdrop: `fixed inset-0 bg-black/60 backdrop-blur-sm`
+  - Centered panel: `fixed top-[15%] left-1/2 -translate-x-1/2 max-w-lg w-[560px]`
+  - Panel positioning near top of viewport (roughly 15% of screen height)
+- [ ] **FND-012D**: Apply glass styling + `.noise-overlay` to the panel: `backdrop-blur-md bg-white/5 border border-white/10 rounded-xl`
+- [ ] **FND-012E**: Motion — Alive tier:
+  - Panel entry: spring-scale animation (`stiffness: 300, damping: 30`)
+  - Backdrop: opacity fade
+  - Staggered item animation:
+    ```ts
+    const containerVariants = { visible: { transition: { staggerChildren: 0.05 } } }
+    const itemVariants = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }
+    ```
+- [ ] **FND-012F**: ARIA roles: outer `div` gets `role="dialog"` + `aria-modal="true"` + `aria-label="Command palette"`. Input gets `role="combobox"` + `aria-expanded` + `aria-controls`
 - [ ] **FND-012G**: Keyboard navigation: `↑↓` to navigate, `Enter` to select, `Escape` to close
 - [ ] **FND-012H**: Focus trap using `@radix-ui/react-focus-trap` (or `@radix-ui/react-dialog`)
 - [ ] **FND-012I**: Verify WCAG 2.2 2.4.12 Focus Not Obscured — the sticky status bar must not cover the focused item
 - [ ] **FND-012J**: Focus restoration: on close, focus returns to the element that triggered the palette using the imperative focus registry
+- [ ] **FND-012K**: Result categorization:
+  - Categorized results below input: commands, pages, contacts, documents, AI actions
+  - Each category section with visual separator
+  - Keyboard navigation works across categories
+- [ ] **FND-012L**: AI intent parsing:
+  - Parse AI-phrased intents (e.g., "Schedule deep work tomorrow 9-11")
+  - Show visual preview of resulting action before execution
+  - Preview pane displays parsed intent with confirmation
+- [ ] **FND-012M**: Intent handler hook:
+  - Create `useIntentHandler()` hook that dispatches commands to appropriate modules
+  - Integrates with TanStack Query caches for data operations
+  - Uses React Router navigation for page changes
+  - Calls module-specific actions for domain operations
+- [ ] **FND-012N**: Zustand state:
+  - Add `commandPaletteOpen`, `query`, `results` to `uiSlice`
+  - Global accessibility — palette lives outside `<Routes>` in layout shell
+  - Always mounted but hidden for instant responsiveness
 
 **Tests:**
-- [ ] **FND-012K**: Test: `Cmd+K` opens the palette
-- [ ] **FND-012L**: Test: `Escape` closes the palette
-- [ ] **FND-012M**: Test: arrow keys navigate through items
-- [ ] **FND-012N**: Test: focus is trapped inside the palette while open
-- [ ] **FND-012O**: Test: focus returns to trigger after close
+- [ ] **FND-012O**: Test: `Cmd+K` opens the palette
+- [ ] **FND-012P**: Test: `Escape` closes the palette
+- [ ] **FND-012Q**: Test: arrow keys navigate through items
+- [ ] **FND-012R**: Test: focus is trapped inside the palette while open
+- [ ] **FND-012S**: Test: focus returns to trigger after close
+- [ ] **FND-012T**: Test: categorized results display correctly
+- [ ] **FND-012U**: Test: AI intent parsing shows preview before execution
+- [ ] **FND-012V**: Test: intent handler dispatches to correct module
 
 ### Definition of Done
 - `Cmd+K` / `Ctrl+K` opens palette
 - Escape closes; focus restores
-- Staggered item animation on open
+- Staggered item animation on open (Alive tier)
 - Focus trap active
-- All 5 tests pass
+- Panel positioned at top 15% with 560px max width
+- Glass styling + noise-overlay applied
+- Categorized results (commands, pages, contacts, documents, AI actions)
+- AI intent parsing with visual preview
+- Intent handler hook dispatches to modules
+- Zustand state (`commandPaletteOpen`, `query`, `results`) in `uiSlice`
+- All 8 tests pass
 
 ### Anti-Patterns
 - ❌ `<dialog>` element without focus trap management — built-in dialog has different behavior across browsers
@@ -845,6 +986,85 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 
 ---
 
+## 🎤 Task FND-014: Global Layout — Voice Shell
+**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** FND-005, FND-008, FND-012
+
+### Related Files
+- `src/components/layout/VoiceShell.tsx` · `src/hooks/useKeyboardShortcut.ts` · `src/hooks/useWebSpeech.ts` · `src/stores/slices/uiSlice.ts`
+
+### Subtasks
+
+**Implementation:**
+- [ ] **FND-014A**: Create `useWebSpeech()` hook wrapping Web Speech API:
+  - SpeechRecognition for STT (Speech-to-Text)
+  - SpeechSynthesis for TTS (Text-to-Speech)
+  - Permission handling for microphone access
+  - Fallback to mock data if browser doesn't support Web Speech API
+- [ ] **FND-014B**: Build `VoiceShell` as a Portal rendered into `document.body`
+- [ ] **FND-014C**: UI states with visual feedback:
+  - **Idle**: Invisible, waiting for hotkey or wake word
+  - **Listening**: Glass orb/pulse at screen center with waveform animation (Alive tier, spring physics)
+  - **Processing**: Orb turns electric blue (`#0066ff`) with thinking/loading indicator; transcribed text shown below
+  - **Action preview**: Visual preview of parsed intent with "Cancel" / "Execute" options (same as command palette)
+  - **Speaking**: Orb animates with speech waveform; subtitles rendered in glass panel
+  - **Error/No-match**: Fade-out message ("Sorry, I didn't catch that") with retry hint
+- [ ] **FND-014D**: Glass orb styling:
+  - `backdrop-blur-md bg-white/5 border border-white/10 rounded-full`
+  - Apply `.noise-overlay` for glass surface
+  - Motion: spring-scale for open, opacity fade for overlay
+- [ ] **FND-014E**: Keyboard shortcut binding:
+  - `Ctrl+Space` (Windows/Linux) or `⌥Space` (macOS) to toggle listening
+  - Binds to `document` — not a specific element
+  - Cleans up on unmount
+- [ ] **FND-014F**: Intent handler integration:
+  - Connect to the same `useIntentHandler()` hook used by CommandPalette
+  - Voice transcript passes through identical parsing pipeline
+  - Cross-module actions: navigate, compose, schedule, query, control settings
+- [ ] **FND-014G**: Zustand state:
+  - Add `voiceStatus`, `transcript`, `intent`, `error` to `uiSlice`
+  - Status enum: `'idle' | 'listening' | 'processing' | 'preview' | 'speaking' | 'error'`
+  - Global accessibility — shell lives outside `<Routes>` in layout shell
+  - Always mounted but hidden when idle for instant responsiveness
+- [ ] **FND-014H**: ARIA roles and accessibility:
+  - Outer `div` gets `role="dialog"` + `aria-modal="true"` + `aria-label="Voice command"`
+  - Transcript region gets `aria-live="polite"` for screen reader announcements
+  - Focus trap when open using `@radix-ui/react-focus-trap`
+  - Respect `prefers-reduced-motion` — disable spring animations when requested
+- [ ] **FND-014I**: Verify WCAG 2.2 2.4.12 Focus Not Obscured — the sticky status bar must not cover the focused element
+- [ ] **FND-014J**: Focus restoration: on close, focus returns to the element that triggered voice mode using the imperative focus registry
+
+**Tests:**
+- [ ] **FND-014K**: Test: hotkey (`Ctrl+Space` / `⌥Space`) toggles listening state
+- [ ] **FND-014L**: Test: voice transcript updates correctly (mock Web Speech API)
+- [ ] **FND-014M**: Test: intent parsing shows preview before execution
+- [ ] **FND-014N**: Test: intent handler dispatches to correct module
+- [ ] **FND-014O**: Test: TTS (text-to-speech) speaks response correctly
+- [ ] **FND-014P**: Test: focus is trapped inside voice shell while open
+- [ ] **FND-014Q**: Test: focus returns to trigger after close
+- [ ] **FND-014R**: Test: error state displays retry hint on no-match
+- [ ] **FND-014S**: Test: `prefers-reduced-motion` disables animations
+
+### Definition of Done
+- Hotkey toggles listening state
+- Glass orb with waveform animation (Alive tier)
+- All UI states render correctly (Idle, Listening, Processing, Preview, Speaking, Error)
+- Web Speech API wrapped in `useWebSpeech()` hook with permission handling
+- Intent handler integration matches CommandPalette behavior
+- Zustand state (`voiceStatus`, `transcript`, `intent`, `error`) in `uiSlice`
+- ARIA roles and `aria-live` regions present
+- Focus trap and focus restoration work
+- `prefers-reduced-motion` respected
+- All 9 tests pass
+
+### Anti-Patterns
+- ❌ Implementing custom speech recognition instead of using Web Speech API (unless browser unsupported)
+- ❌ Voice shell buried inside a route component — must be at root layout level
+- ❌ Missing permission handling for microphone access
+- ❌ Not connecting to the same intent handler as CommandPalette — creates duplicate parsing logic
+- ❌ Forgetting `aria-live="polite"` on transcript region — screen readers won't announce voice input
+
+---
+
 ## 📊 Dependency Graph (Updated)
 
 ```
@@ -873,6 +1093,8 @@ FND-003 (Code Quality)            FND-004 (Testing Infra)
         └──────────┴────────────┴──────────┘
                          │
                    FND-013 (A11y)
+                         │
+                   FND-014 (VoiceShell)
 ```
 
 ---
@@ -917,6 +1139,7 @@ FND-003 (Code Quality)            FND-004 (Testing Infra)
 - [ ] StatusBar fixed bottom with pulse (respects reduced motion)
 - [ ] RightPanel slide animation with focus restoration
 - [ ] CommandPalette `Cmd+K` with focus trap and focus restoration
+- [ ] VoiceShell `Ctrl+Space` / `⌥Space` with Web Speech API and intent handler integration
 
 **Accessibility:**
 - [ ] WCAG 2.2 AA: all focus indicators visible (2.4.11)

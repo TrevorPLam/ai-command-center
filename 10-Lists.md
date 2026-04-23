@@ -449,7 +449,7 @@ Based on comprehensive research into modern list and note-taking applications (N
   - Default columns: "To Do", "In Progress", "Done" (or tag-based)
   - Drag items between columns updates status/tag
   - Column add/remove UI
-  - Uses same dnd-kit sensors as Projects Kanban (PROJ-004)
+  - Use the shared `useDndSensors()` hook from `src/shared/dnd`
   - `DragOverlay` with glow effect during drag
 
 - [ ] **LIST-004C**: Build `GridView` (media-focused):
@@ -506,7 +506,7 @@ Based on comprehensive research into modern list and note-taking applications (N
 ### Subtasks
 
 - [ ] **LIST-005A**: Implement dnd-kit integration for list items:
-  - `useSensors` with `PointerSensor` (distance: 5px) + `KeyboardSensor`
+  - Use the shared `useDndSensors()` hook from `src/shared/dnd`
   - `SortableContext` with `vertical` strategy for List view
   - `DragOverlay` rendering clone with `scale: 1.02` + electric blue glow
   - Original item at `opacity: 0.4` during drag
@@ -831,45 +831,31 @@ Based on comprehensive research into modern list and note-taking applications (N
 **Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** LIST-009
 
 ### Related Files
-`src/components/lists/RecurrencePicker.tsx` · `src/lib/recurrence.ts` · `src/hooks/useRecurringTasks.ts`
+`src/components/lists/RecurrencePicker.tsx` · `@/shared/recurrence/RecurrenceEngine.ts` · `@/shared/recurrence/helpers.ts` · `@/shared/recurrence/RecurrenceEditor.tsx` · `@/shared/recurrence/types.ts` · `src/hooks/useRecurringTasks.ts`
 
 ### Subtasks
 
-- [ ] **LIST-010A**: Extend domain model for recurrence:
-  ```ts
-  export interface RecurrenceRule {
-    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom'
-    interval: number  // e.g., every 2 weeks
-    daysOfWeek?: number[]  // [0,2,4] for Mon, Wed, Fri
-    dayOfMonth?: number  // 15th of each month
-    endDate?: string
-    count?: number  // Occurrences limit
-  }
-  ```
+- [ ] **LIST-010A**: Use `RecurrenceRule` type from `@/shared/recurrence/types` for recurrence domain model. Extend task model with `recurrenceRule?: RecurrenceRule` and `recurringTaskId?: string` for linking instances.
 
-- [ ] **LIST-010B**: Build `RecurrencePicker` component:
-  - Preset buttons: Daily, Weekly, Monthly, Yearly
-  - Custom interval input (every X days/weeks)
-  - Day selector for weekly recurrence
-  - End date or occurrence limit option
+- [ ] **LIST-010B**: Use `RecurrenceEditor` from `@/shared/recurrence` as the recurrence picker component. It provides preset buttons, custom interval input, day selector, and end condition options.
 
-- [ ] **LIST-010C**: Implement recurrence engine:
-  - Calculate next occurrence based on rule
-  - Handle edge cases (leap years, month boundaries)
-  - Generate next N occurrences for preview
-  - Stop at end date or occurrence limit
+- [ ] **LIST-010C**: Use `RecurrenceEngine` from `@/shared/recurrence` for occurrence calculation:
+  - Use `RecurrenceEngine.getNextOccurrences()` to calculate next occurrence
+  - Use `RecurrenceEngine.getOccurrences()` to generate next N occurrences for preview
+  - Edge cases (leap years, month boundaries) handled by rrule.js
+  - Stop at end date or occurrence limit automatically
 
-- [ ] **LIST-010D**: Implement auto-generation:
+- [ ] **LIST-010D**: Implement auto-generation using `RecurrenceEngine.getNextOccurrences()`:
   - When recurring item completed, generate next instance
   - Preserve original recurrence rule on new instance
-  - Link instances to original recurring task
-  - Show "Repeats every X" indicator
+  - Link instances to original recurring task via `recurringTaskId`
+  - Show "Repeats every X" indicator using `rruleToHuman()` from `@/shared/recurrence/helpers`
 
-- [ ] **LIST-010E**: Add recurrence management:
-  - Edit recurrence rule on existing tasks
-  - "Delete this and all future" option
-  - "Delete only this instance" option
-  - Pause/resume recurrence
+- [ ] **LIST-010E**: Add recurrence management using `buildEditOperations()` from `@/shared/recurrence/helpers`:
+  - Edit recurrence rule using `RecurrenceEditor`
+  - "Delete this and all future" uses `buildEditOperations()` with 'thisAndFollowing' mode
+  - "Delete only this instance" uses `buildEditOperations()` with 'this' mode
+  - Pause/resume recurrence toggles active flag
 
 ### Tests
 - [ ] Daily recurrence generates next day correctly

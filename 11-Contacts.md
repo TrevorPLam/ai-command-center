@@ -165,7 +165,7 @@
   - `useDeleteContactField()` — Optimistic field removal
   - `useEnrichContact()` — Async enrichment with loading state
   - `useImportContacts()` — Bulk import with progress tracking
-  - **Critical**: All mutation `onMutate` handlers must begin with `await queryClient.cancelQueries(...)` before `getQueryData` / `setQueryData` to prevent race conditions
+  - **Critical**: All mutations MUST use the shared `useOptimisticMutation()` wrapper from `src/lib/useOptimisticMutation.ts` (see FND-006H in 01-Foundations.md). This wrapper enforces the canonical pattern: `cancelQueries → snapshot → setQueryData → rollback → onSettled invalidate`. Do not implement inline optimistic patterns.
 
 ### Tests
 - [ ] Factory produces valid contacts with proper field validation

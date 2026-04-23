@@ -1059,7 +1059,7 @@ Based on research into the latest calendar application patterns (2025–2026), r
 **Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** CAL‑005, CAL‑006, CAL‑000
 
 ### Related Files
-`src/components/calendar/RecurringEditModal.tsx` · `src/utils/recurrence.ts`
+`src/components/calendar/RecurringEditModal.tsx` · `@/shared/recurrence/RecurrenceEngine.ts` · `@/shared/recurrence/helpers.ts`
 
 ### Subtasks
 
@@ -1067,14 +1067,11 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 - [ ] **CAL‑013B** Build `RecurringEditModal` with three radio options
 
-- [ ] **CAL‑013C** Create `src/utils/recurrence.ts`:
-  ```ts
-  export function rruleToHuman(rrule: string): string
-  export function buildSingleOccurrenceEdit(...): [masterPatch, newEvent]
-  export function buildThisAndFollowingEdit(...): [masterPatch, newMaster]
-  export function buildAllEventsEdit(...): Partial<CalendarEvent>
-  export function restoreExceptionToSeries(master, occurrence): Partial<CalendarEvent> // remove EXDATE
-  ```
+- [ ] **CAL‑013C** Use `RecurrenceEngine` from `@/shared/recurrence` for all RRULE operations:
+  - Import `rruleToHuman`, `buildEditOperations`, `restoreExceptionToSeries` from `@/shared/recurrence/helpers`
+  - Use `RecurrenceEngine.isValid()` for RRULE validation
+  - Use `RecurrenceEngine.getOccurrences()` for expanding recurring events in date ranges
+  - Helper functions provide three-mode edit operations (this / thisAndFollowing / all)
 
 - [ ] **CAL‑013D** Implement `useUpdateRecurringEvent()` mutation supporting three modes
 

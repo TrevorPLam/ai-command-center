@@ -73,11 +73,11 @@ Each task includes the files to update, the specific sections/tasks within them,
 **Files to Update:** New file `17-SharedRecurrence.md`, plus `05-Calendar.md`, `07-Budget.md`, `04-Projects.md`, `10-Lists.md`
 
 **What to Change:**
-- [ ] **UPD‑004A**: Create `17-SharedRecurrence.md` defining `RecurrenceEngine` (wraps `rrule.js`), `RecurrenceEditor` (shared UI), and `recurrenceSchema` (Zod validation for RRULE).  
-- [ ] **UPD‑004B**: In `05-Calendar.md` (CAL‑013), replace inline RRULE handling with a reference to `RecurrenceEngine`.  
-- [ ] **UPD‑004C**: In `07-Budget.md` (BUDG‑010), replace custom recurrence with `RecurrenceEngine`.  
-- [ ] **UPD‑004D**: In `04-Projects.md` (PROJ‑013), replace custom scheduler with `RecurrenceEngine`.  
-- [ ] **UPD‑004E**: In `10-Lists.md` (LIST‑010), replace custom recurrence with `RecurrenceEngine`.
+- [x] **UPD‑004A**: Create `17-SharedRecurrence.md` defining `RecurrenceEngine` (wraps `rrule.js`), `RecurrenceEditor` (shared UI), and `recurrenceSchema` (Zod validation for RRULE).
+- [x] **UPD‑004B**: In `05-Calendar.md` (CAL‑013), replace inline RRULE handling with a reference to `RecurrenceEngine`.
+- [x] **UPD‑004C**: In `07-Budget.md` (BUDG‑010), replace custom recurrence with `RecurrenceEngine`.
+- [x] **UPD‑004D**: In `04-Projects.md` (PROJ‑013), replace custom scheduler with `RecurrenceEngine`.
+- [x] **UPD‑004E**: In `10-Lists.md` (LIST‑010), replace custom recurrence with `RecurrenceEngine`.
 
 ### Task UPD‑005: Extract Shared Drag‑and‑Drop Configuration
 **Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** UPD‑000–UPD‑003
@@ -85,9 +85,9 @@ Each task includes the files to update, the specific sections/tasks within them,
 **Files to Update:** `01-Foundations.md` (new section in Cross‑Cutting), `04-Projects.md`, `10-Lists.md`
 
 **What to Change:**
-- [ ] **UPD‑005A**: In `01-Foundations.md`, add a cross‑cutting rule: “All dnd‑kit usage must use the shared `useDndSensors()` hook (exported from `src/shared/dnd`).”  
-- [ ] **UPD‑005B**: Create the hook specification: `PointerSensor` with `activationConstraint.distance: 5`, `KeyboardSensor` with `sortableKeyboardCoordinates`.  
-- [ ] **UPD‑005C**: In `04-Projects.md` (PROJ‑C06) and `10-Lists.md` (LIST‑C10), replace inline sensor configurations with reference to the shared hook.
+- [x] **UPD‑005A**: In `01-Foundations.md`, add a cross‑cutting rule: “All dnd‑kit usage must use the shared `useDndSensors()` hook (exported from `src/shared/dnd`).”  
+- [x] **UPD‑005B**: Create the hook specification: `PointerSensor` with `activationConstraint.distance: 5`, `KeyboardSensor` with `sortableKeyboardCoordinates`.  
+- [x] **UPD‑005C**: In `04-Projects.md` (PROJ‑C06) and `10-Lists.md` (LIST‑C10), replace inline sensor configurations with reference to the shared hook.
 
 ### Task UPD‑006: Create Unified Optimistic Mutation Wrapper
 **Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** UPD‑000–UPD‑003
@@ -95,8 +95,8 @@ Each task includes the files to update, the specific sections/tasks within them,
 **Files to Update:** `01-Foundations.md` (new section in FND‑006), all module‑specific mutation sections.
 
 **What to Change:**
-- [ ] **UPD‑006A**: In `01-Foundations.md`, add a cross‑cutting rule: “All TanStack Query mutations must use the shared `useOptimisticMutation()` wrapper that enforces `cancelQueries → snapshot → setQueryData → rollback → onSettled invalidate`.”  
-- [ ] **UPD‑006B**: In each module’s hooks file, replace explicit mutation patterns with `useOptimisticMutation({ queryKey, mutationFn, updateFn })`.
+- [x] **UPD‑006A**: In `01-Foundations.md`, add a cross‑cutting rule: “All TanStack Query mutations must use the shared `useOptimisticMutation()` wrapper that enforces `cancelQueries → snapshot → setQueryData → rollback → onSettled invalidate.”  
+- [x] **UPD‑006B**: In each module’s hooks file, replace explicit mutation patterns with `useOptimisticMutation({ queryKey, mutationFn, updateFn })`.
 
 ### Task UPD‑007: Centralize IndexedDB (Dexie) Schema
 **Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** UPD‑000–UPD‑003
@@ -287,8 +287,8 @@ UPD‑003 (cancelQueries fix)
 
 **Phase 1:**
 - [ ] `17-SharedRecurrence.md` created and 4 modules updated
-- [ ] Shared `useDndSensors()` hook specified
-- [ ] Unified `useOptimisticMutation()` hook specified
+- [x] Shared `useDndSensors()` hook specified
+- [x] Unified `useOptimisticMutation()` hook specified
 - [ ] Centralized `CommandCenterDB` schema created
 - [ ] `SanitizedHTML` component specified
 

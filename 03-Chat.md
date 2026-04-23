@@ -1876,6 +1876,129 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 ---
 
+## 📚 Task CHAT-022: Prompt Library — Management & Quick Insert
+
+**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** CHAT-006 (ChatInput), CHAT-008 (SlashMenu)
+
+**Why this matters:** A prompt library allows users to save, organize, and quickly reuse frequently used prompts. This is a productivity feature that reduces repetitive typing and ensures consistency in prompt engineering. Users can access their library while typing in the chat input.
+
+#### Related Files
+
+`src/pages/PromptLibraryPage.tsx` · `src/components/chat/PromptLibraryModal.tsx` · `src/components/chat/PromptCard.tsx` · `src/stores/promptStore.ts` · `src/lib/mockData/prompts.ts`
+
+#### Subtasks
+
+- [ ] **CHAT-022A**: Create `src/stores/promptStore.ts` (Zustand):
+  ```ts
+  interface Prompt {
+    id: string
+    title: string
+    content: string
+    category: string  // e.g., 'coding', 'writing', 'analysis', 'custom'
+    tags: string[]
+    createdAt: string
+    updatedAt: string
+    usageCount: number
+  }
+
+  interface PromptState {
+    prompts: Prompt[]
+    categories: string[]
+    selectedCategory: string | null
+    searchQuery: string
+    isOpen: boolean
+  }
+  ```
+  Actions: `addPrompt`, `updatePrompt`, `deletePrompt`, `setCategory`, `setSearchQuery`, `openLibrary`, `closeLibrary`, `incrementUsage`.
+  Persist to localStorage with `persist` middleware.
+
+- [ ] **CHAT-022B**: Create `src/lib/mockData/prompts.ts` with realistic starter prompts:
+  ```ts
+  export const DEFAULT_PROMPTS: Prompt[] = [
+    {
+      id: '1',
+      title: 'Code Review',
+      content: 'Review this code for bugs, performance issues, and best practices. Suggest improvements.',
+      category: 'coding',
+      tags: ['review', 'quality'],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      usageCount: 0
+    },
+    // ... 8-10 more default prompts across categories
+  ]
+  ```
+
+- [ ] **CHAT-022C**: Build `PromptLibraryPage.tsx`:
+  - Route: `/prompts` (subpage, accessible via nav or chat)
+  - Two-column layout: left category sidebar (200px), right prompt grid
+  - Category sidebar: list of categories with counts (e.g., "Coding (5)", "Writing (3)")
+  - Search bar at top (controlled, filters prompts by title/content/tags)
+  - Prompt grid: bento-style layout using CSS Grid, `PromptCard` components
+  - "New Prompt" button (primary, electric blue) opens create modal
+  - Empty state: "No prompts yet. Create your first prompt to get started."
+  - Page transition: `motion.div` with fade/slide (Alive tier)
+
+- [ ] **CHAT-022D**: Build `PromptCard.tsx`:
+  - Displays: title, truncated content preview (2 lines), category badge, tags (pill badges), usage count
+  - Hover: subtle lift (`y: -2`) and border glow (electric blue)
+  - Click: opens edit modal with full content
+  - Three-dot menu: "Edit", "Duplicate", "Delete" (destructive)
+  - Motion: entrance animation with stagger (Quiet tier)
+  - `role="button"` + `aria-label={prompt.title}`
+
+- [ ] **CHAT-022E**: Build `PromptLibraryModal.tsx` (create/edit):
+  - Uses shadcn `Dialog` for modal (accessible, focus trap)
+  - Form fields: title (text), content (textarea with auto-resize), category (select), tags (comma-separated input)
+  - Validation: title required, content required
+  - "Save" button (primary) calls `promptStore.addPrompt` or `updatePrompt`
+  - "Cancel" button closes modal
+  - Entrance/exit animation with `AnimatePresence` (Alive tier)
+  - `role="dialog"` + `aria-modal="true"` + `aria-labelledby`
+
+- [ ] **CHAT-022F**: Integrate with ChatInput:
+  - Add "Prompt Library" button (icon-only, book icon) to input toolbar (left of attach button)
+  - Click opens `PromptLibraryModal` in "quick insert" mode (compact view, no edit)
+  - Quick insert mode: shows prompt list in dropdown-style menu (positioned above input)
+  - Clicking a prompt inserts its content into the chat input (appends to existing text)
+  - Keyboard shortcut: `Cmd/Ctrl+P` opens quick insert menu
+  - Quick insert menu: search bar at top, filtered prompt list, hover preview of content
+  - Motion: menu slides up from input (Quiet tier)
+
+- [ ] **CHAT-022G**: Add slash command integration:
+  - Add `/prompt` to `SLASH_COMMANDS` in `src/data/slashCommands.ts`
+  - `/prompt` opens quick insert menu
+  - `/prompt <search>` filters menu by search query
+  - Example: `/prompt code` shows only coding-related prompts
+
+- [ ] **CHAT-022H**: Implement prompt usage tracking:
+  - When a prompt is inserted via quick insert, call `promptStore.incrementUsage(promptId)`
+  - Sort prompts by usage count in "Most Used" category (auto-generated)
+  - Show usage count on PromptCard with "Used X times" label
+
+- [ ] **[TEST] CHAT-022A-H**: Prompt library page renders with categories and grid; search filters correctly; create/edit/delete mutations work; quick insert menu opens on button click and keyboard shortcut; prompt content inserts into chat input; `/prompt` slash command opens menu; usage count increments on insert.
+
+#### Definition of Done
+
+- Prompt library page at `/prompts` with category sidebar and prompt grid
+- CRUD operations for prompts with localStorage persistence
+- Default prompts provided on first load
+- Quick insert accessible from ChatInput button and `Cmd/Ctrl+P`
+- `/prompt` slash command integration
+- Usage tracking and "Most Used" sorting
+- All modals accessible with proper ARIA attributes
+- Motion follows hierarchy (Alive for modals, Quiet for menus)
+
+#### Anti-Patterns
+
+- ❌ Not persisting to localStorage — prompts lost on refresh
+- ❌ Using path params for prompt editing — causes page remount; use modal
+- ❌ Forgetting `Cmd/Ctrl+P` keyboard shortcut — power users expect this
+- ❌ Not validating prompt content — empty prompts cause confusion
+- ❌ Missing category "All" option — users can't view all prompts at once
+
+---
+
 ## 📊 Dependency Graph (Full Chat Module)
 
 ```

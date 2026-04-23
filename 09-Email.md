@@ -146,7 +146,7 @@ Email remains the primary asynchronous communication protocol for professional w
   - `useMarkRead()`, `useStarEmail()`, `useArchiveEmail()`: immediate UI update, sync in background
   - `useSnoozeEmail()`: move to snoozed, restore at time
   - `useDeleteEmail()`: soft delete with undo window
-  - **Critical**: All mutation `onMutate` handlers must begin with `await queryClient.cancelQueries(...)` before `getQueryData` / `setQueryData` to prevent race conditions
+  - **Critical**: All mutations MUST use the shared `useOptimisticMutation()` wrapper from `src/lib/useOptimisticMutation.ts` (see FND-006H in 01-Foundations.md). This wrapper enforces the canonical pattern: `cancelQueries → snapshot → setQueryData → rollback → onSettled invalidate`. Do not implement inline optimistic patterns.
 
 **Tests:**
 - [ ] **EMAIL-000H**: Tests for all schemas validating correctly

@@ -19,7 +19,7 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 | **PROJ-C03** | Filter Performance | All list/Kanban filters use `useTransition`. No `setTimeout` debounce. `isPending` state drives visual loading indicator. |
 | **PROJ-C04** | WCAG 2.5.7 (AA) | **Keyboard shortcuts alone do not satisfy WCAG 2.5.7.** The criterion requires a single-pointer (click/tap) alternative — i.e., a visible button. Keyboard navigation (`KeyboardSensor`) is a bonus on top of the required button alternative. Both Kanban and My Week MUST have "Move to…" buttons on draggable items. |
 | **PROJ-C05** | Virtualization Stack | TanStack Table + TanStack Virtual for all tabular data. TanStack Virtual (`useVirtualizer`) for task lists and Triage stream. No `react-base-table`, no `react-window` — they are outside the existing TanStack ecosystem already used in this codebase. |
-| **PROJ-C06** | dnd-kit Sensors | Always combine `PointerSensor` (with `activationConstraint: { distance: 5 }` to prevent accidental drag-on-click) and `KeyboardSensor` (with `sortableKeyboardCoordinates`). Activate both via `useSensors`. |
+| **PROJ-C06** | dnd-kit Sensors | Use the shared `useDndSensors()` hook from `src/shared/dnd`. Never configure sensors inline. See C-14 in 01-Foundations.md. |
 | **PROJ-C07** | DragOverlay Pattern | `DragOverlay` always renders a **clone** of the dragged item, not the original. Apply `boxShadow: '0 0 16px oklch(62% 0.19 264 / 0.4)'` to overlay clone. Original card reduces to opacity 0.4 while dragging. |
 | **PROJ-C08** | Inline Edit Contract | All inline-editable fields: `useForm({ defaultValues: current })` → Enter/blur saves → Escape calls `reset(original)` and cancels. Validation via Zod schema. Save via optimistic mutation. |
 | **PROJ-C09** | Hover Prefetch | Project rows/cards: `onMouseEnter` calls `queryClient.prefetchQuery(projectDetailQueryOptions(id))` with a 200ms delay (cancel on `onMouseLeave` with `clearTimeout`) to avoid aggressive prefetch on cursor pass-through. |
@@ -387,12 +387,10 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
   ```
 
   > "`@dnd-kit/core@6.3.1` was last updated December 2024. Development has moved to the newer `@dnd-kit/react` and `@dnd-kit/dom` packages. For the MVP, `@dnd-kit/core` meets all requirements. Schedule evaluation of `@dnd-kit/react` or `@atlaskit/pragmatic-drag-and-drop` as a POL-001 performance/debt review item."
-- [ ] **PROJ-004C**: Configure `DndContext` sensors:
+- [ ] **PROJ-004C**: Configure `DndContext` sensors using the shared `useDndSensors()` hook from `src/shared/dnd`:
   ```ts
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  )
+  import { useDndSensors } from '@/shared/dnd/useDndSensors';
+  const sensors = useDndSensors();
   ```
   Collision detection: custom algorithm — `pointerWithin` first (cross-column), `closestCenter` fallback (within-column).
 - [ ] **[TEST] PROJ-004B**: `PointerSensor` does not trigger drag on single click; `KeyboardSensor` activates on Space/Enter
@@ -514,7 +512,7 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 - [ ] **PROJ-006B**: Colleague's Week dropdown: select a team member → lanes populate with that person's items. Shows capacity info (assigned vs available hours). Private/hidden items show banner: "Some items are hidden."
 - [ ] **[TEST] PROJ-006B**: Switching colleague updates lanes; capacity bar appears; private item banner shown
 
-- [ ] **PROJ-006C**: Each lane is `useDroppable`. Tasks within lane are `useSortable`. Same sensor config as PROJ-004B. Cross-lane drop updates `plannedWeek` / `status`:
+- [ ] **PROJ-006C**: Each lane is `useDroppable`. Tasks within lane are `useSortable`. Use the shared `useDndSensors()` hook from `src/shared/dnd`. Cross-lane drop updates `plannedWeek` / `status`:
   - Drop in `working-now`: set as actively working
   - Drop in `this-week`: set `plannedWeek = 'this-week'`
   - Drop in `next-week`: set `plannedWeek = 'next-week'`
@@ -830,24 +828,20 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 **Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** PROJ-000, PROJ-008
 
 ### Related Files
-`src/components/projects/RecurringWorkDialog.tsx` · `src/components/projects/RecurringScheduleList.tsx`
+`src/components/projects/RecurringWorkDialog.tsx` · `src/components/projects/RecurringScheduleList.tsx` · `@/shared/recurrence/RecurrenceEngine.ts` · `@/shared/recurrence/helpers.ts` · `@/shared/recurrence/RecurrenceEditor.tsx`
 
 ### Subtasks
 
-- [ ] **PROJ-013A**: Build `RecurringWorkDialog` with seven configurable areas (matching Karbon's repeat settings):
-  1. **Frequency**: Daily, Weekly, Monthly, Quarterly, Custom (every N days/weeks/months). End-by date or forever.
-  2. **Due dates**: Offset from start date (e.g., "15 days after work start date"). Weekend avoidance toggle (moves to Friday before).
-  3. **Assignee**: Defaults to current work assignee; can change.
-  4. **Naming convention**: Dynamic placeholders — Repeat Period, Start Date, Due Date with customizable date formulas and formats.
-  5. **Connected folder**: Auto-link to document storage folder (placeholder for PROJ-016).
-  6. **Work creation**: How far in advance to create work items (default 3 months) and tasks (default 2 weeks before start).
-  7. **Resource Planning (My Week)**: "Week of Work Start Date", "Week of Work Due Date", or "Don't Add Planned Week".
-- [ ] **[TEST] PROJ-013A**: All seven sections render; frequency changes update preview; naming convention preview updates live
+- [ ] **PROJ-013A**: Build `RecurringWorkDialog` using `RecurrenceEditor` from `@/shared/recurrence` for frequency configuration. Map frequency options to `RecurrenceRule`:
+  - Daily, Weekly, Monthly, Quarterly (monthly with interval 3), Yearly
+  - Use `ruleToRRULE()` and `rruleToHuman()` from `@/shared/recurrence/helpers` for rule conversion and display
+  - Additional project-specific fields (due date offset, assignee, naming convention, folder, work creation timing, resource planning)
+- [ ] **[TEST] PROJ-013A**: All sections render; frequency changes update preview; naming convention preview updates live
 
-- [ ] **PROJ-013B**: Form validation: Zod schema. Frequency required; due date offset must be positive integer; naming convention must include at least one placeholder.
+- [ ] **PROJ-013B**: Form validation: Use `recurrenceRuleSchema` from `@/shared/recurrence` for recurrence validation. Additional Zod validation for project-specific fields (due date offset positive integer, naming convention includes placeholder).
 - [ ] **[TEST] PROJ-013B**: Validation errors shown for invalid offset; submit disabled until valid
 
-- [ ] **PROJ-013C**: On submit: call `useCreateRecurringSchedule()` mutation. Schedule list appears below dialog showing upcoming instances (next 5) with dates, assignee, and status.
+- [ ] **PROJ-013C**: On submit: call `useCreateRecurringSchedule()` mutation with RRULE string from `RecurrenceEditor`. Use `RecurrenceEngine.getNextOccurrences()` to preview upcoming instances (next 5) with dates, assignee, and status.
 - [ ] **[TEST] PROJ-013C**: Submit saves schedule; upcoming instances preview renders
 
 - [ ] **PROJ-013D**: `RecurringScheduleList` component (shown in project header for recurring work):
