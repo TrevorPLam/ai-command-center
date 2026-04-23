@@ -105,15 +105,19 @@
 
 **Priority:** 🔴 High | **Est. Effort:** 30 min | **Depends On:** SPEC-001
 
+**Status:** ✅ Done
+
 ### Related Files
 - `05-Calendar.md` (all calendar tasks)
 - `01-Foundations.md` (C‑12 reference if present)
 
 ### Subtasks
-- [ ] **SPEC-004A**: In `05-Calendar.md`, add a clear dependency statement after the introduction:
+- [x] **SPEC-004A**: In `05-Calendar.md`, add a clear dependency statement after the introduction:
   > "Calendar library: `react-big-calendar ^1.19.4`. This library meets all feature requirements: Month/Week/Day/Agenda/Resource views, drag‑and‑drop via `withDragAndDrop`, date‑fns localization, and time‑zone handling. No alternative library is under consideration for the MVP."
-- [ ] **SPEC-004B**: In **CAL‑009** and **CAL‑010**, ensure the import paths and component references use `react-big-calendar` and its addons (`react-big-calendar/lib/addons/dragAndDrop`).
-- [ ] **SPEC-004C**: Remove any residual mentions of `@schedule-x/react`. If a comparison was described in earlier drafts, replace it with the finalized decision statement.
+- [x] **SPEC-004B**: In **CAL‑009** and **CAL‑010**, ensure the import paths and component references use `react-big-calendar` and its addons (`react-big-calendar/lib/addons/dragAndDrop`).
+  - **Note:** CAL-009 and CAL-010 already correctly reference `react-big-calendar` and its DnD addon; no changes required.
+- [x] **SPEC-004C**: Remove any residual mentions of `@schedule-x/react`. If a comparison was described in earlier drafts, replace it with the finalized decision statement.
+  - **Note:** No `@schedule-x/react` references found in the document; no changes required.
 
 ### Definition of Done
 - `react-big-calendar` is the only calendar library mentioned.
@@ -288,7 +292,7 @@ SPEC-009 (Standardize Tests)
 - [x] All `pnpm add` commands reflect the exact, verified versions.
 - [x] OKLCH token equivalents are defined; typed token file is spec'd.
 - [x] Virtualization strategy is unified on `@tanstack/react-virtual`.
-- [ ] Calendar module is locked to `react-big-calendar ^1.19.4`.
+- [x] Calendar module is locked to `react-big-calendar ^1.19.4`.
 - [ ] `@dnd-kit/core` status is accurately described.
 - [ ] Zod v4 performance warning is prominent.
 - [ ] iCal export uses `ical-generator`, not manual strings.

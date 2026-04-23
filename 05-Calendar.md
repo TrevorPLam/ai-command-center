@@ -7,6 +7,7 @@ Based on research into the latest calendar application patterns (2025–2026), r
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
 > **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
+**Calendar library: `react-big-calendar ^1.19.4`.** This library meets all feature requirements: Month/Week/Day/Agenda/Resource views, drag‑and‑drop via `withDragAndDrop`, date‑fns localization, and time‑zone handling. No alternative library is under consideration for the MVP.
 
 ## 🔬 Research Findings — Calendar Module
 
@@ -693,7 +694,7 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 - [ ] **CAL‑005A** Install dependencies:
   ```bash
-  pnpm add react‑hook‑form zod @hookform/resolvers rrule
+  pnpm add react-hook-form zod@4.3.6 @hookform/resolvers@5.2.2 rrule
   ```
 
 - [ ] **CAL‑005B** Update `src/schemas/eventSchema.ts`:
@@ -819,7 +820,7 @@ Based on research into the latest calendar application patterns (2025–2026), r
 
 - [ ] **CAL‑002A** Install and configure `react‑big‑calendar` with resource support:
   ```bash
-  pnpm add react‑big‑calendar @types/react‑big‑calendar
+  pnpm add react-big-calendar@1.19.4 @types/react-big-calendar
   ```
   Configure `dateFnsLocalizer` with date‑fns v4 locale
 
