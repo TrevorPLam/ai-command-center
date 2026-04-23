@@ -510,6 +510,7 @@ Based on comprehensive research into modern list and note-taking applications (N
   - `SortableContext` with `vertical` strategy for List view
   - `DragOverlay` rendering clone with `scale: 1.02` + electric blue glow
   - Original item at `opacity: 0.4` during drag
+  > **⚠️ LayoutGroup Requirement:** Wrap drag-and-drop views in `<LayoutGroup id="lists-dnd">` to namespace all `layoutId` values used for smooth reordering animations. `layoutId` is global across the site; without namespacing, multiple list instances or other components using the same `layoutId` values will collide. See FND-013K for the full audit procedure.
 
 - [ ] **LIST-005B**: Implement cross-list drag:
   - Drag item from one list to another in sidebar

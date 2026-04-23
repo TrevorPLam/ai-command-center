@@ -102,6 +102,7 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 | **C-10** | Accessibility | WCAG 2.2 AA — Focus Not Obscured (2.4.12), Target Size (2.5.8) |
 | **C-11** | Test Pattern | `userEvent.setup()` called fresh per test; `screen` preferred over `container` |
 | **C-12** | Router Import | `import { ... } from "react-router"` — NOT `react-router-dom` |
+| **C-13** | Motion Tokens | All `motion` components must use shared tokens from `src/lib/motion.ts`. Inline animation objects (e.g., `transition={{ duration: 0.2 }}`) are prohibited outside of `src/lib/motion.ts`. |
 
 ---
 
@@ -138,6 +139,14 @@ The new structure is: FND-000 through FND-013 (14 tasks).
     accent: 'oklch(62% 0.19 264)',
   } as const;
   ```
+- [ ] **FND-000J**: Create `src/lib/motion.ts` — shared animation tokens for consistent motion across the application:
+  ```ts
+  export const springAlive = { type: 'spring' as const, stiffness: 300, damping: 30 };
+  export const fadeQuiet = { duration: 0.15 };
+  ```
+  These tokens enforce the Motion Hierarchy: use `springAlive` for Alive-tier elements (core nav, state changes), use `fadeQuiet` for Quiet-tier elements (tooltips, reveals), and no animation for Static-tier elements (dense tables).
+
+> **Directory Convention Note (Optional):** Consider organizing animated components with a directory convention (`src/components/motion/` for Alive/Quiet, `src/components/static/` for Static) as a visual signal for reviewers. However, the primary enforcement mechanism is the code review checklist in POL-005G, not folder placement.
 
 ### Definition of Done
 - No `tailwind.config.ts` file exists anywhere in the project
@@ -147,6 +156,7 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 - `body` background renders `#050507`
 - `.noise-overlay` class is available
 - `src/lib/tokens.ts` exports typed token constants
+- `src/lib/motion.ts` exports shared animation tokens
 
 ### Anti-Patterns
 - ❌ `tailwind.config.ts` with Tailwind v4 — this file is silently ignored
@@ -207,7 +217,10 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 - [ ] **FND-002A**: Install Tailwind v4 + Vite plugin: `pnpm add tailwindcss @tailwindcss/vite`
 - [ ] **FND-002B**: Install shadcn/ui runtime deps: `pnpm add class-variance-authority clsx tailwind-merge lucide-react`
 - [ ] **FND-002C**: Install animation: `pnpm add motion@12.38.0`
-- [ ] **FND-002D**: Install state + data: `pnpm add zustand@5.0.12 immer @tanstack/react-query@5.99.2`
+- [ ] **FND-002D**: Install state + data: `pnpm add zustand@5.0.12 immer @tanstack/react-query@5.99.2 zod@4.3.6`
+
+> ⚠️ **Zod v4 Performance Note**  
+> Zod v4 schema creation is 8–17× slower than v3. **All schemas must be defined at module scope.** Never define a schema inside a component body, hook, or render function. Use `z.infer<typeof schema>` to derive TypeScript types instead of writing separate interfaces.
 - [ ] **FND-002E**: Install routing: `pnpm add react-router`
   - **CRITICAL:** The package is `react-router`, NOT `react-router-dom`. v7 merged the two.
 - [ ] **FND-002F**: Install virtualisation: `pnpm add @tanstack/react-virtual@3.13.24`
@@ -816,6 +829,11 @@ The new structure is: FND-000 through FND-013 (14 tasks).
   - `expect(element).toHaveFocus()` after modal close
   - `expect(nav).toHaveAttribute('aria-label', 'Main navigation')`
   - `expect(button).toBeVisible()` after skip link is focused
+- [ ] **FND-013K**: Audit all components using `layoutId` for shared layout animations:
+  - Verify each component that uses `layoutId` is wrapped in a module-scoped `LayoutGroup` with a unique `id` prop
+  - `layoutId` is global across the site; without `LayoutGroup` namespacing, multiple instances of the same component will collide
+  - Example: `<LayoutGroup id="projects-kanban">` wraps the entire Kanban view to namespace `layoutId` values used within it
+  - Document any components that intentionally use cross-tree `layoutId` matching (e.g., card-to-drawer morph) and ensure they share the same `LayoutGroup` or are outside any `LayoutGroup`
 
 ### Definition of Done
 - ARIA landmarks present on all major layout regions

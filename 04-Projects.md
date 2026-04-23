@@ -398,6 +398,7 @@ Below is the fully refreshed and expanded Projects task list. It retains every t
 - [ ] **[TEST] PROJ-004B**: `PointerSensor` does not trigger drag on single click; `KeyboardSensor` activates on Space/Enter
 
 - [ ] **PROJ-004C**: Each column wrapped in `<SortableContext items={columnCardIds}>`. Each card uses `useSortable`. Track `activeId` on `onDragStart`. Render `<DragOverlay>` with cloned card + glow. Original card at 0.4 opacity.
+  > **⚠️ LayoutGroup Requirement:** Wrap the entire Kanban view in `<LayoutGroup id="projects-kanban">` to namespace all `layoutId` values used within it (e.g., view switcher indicator, card morph animations). `layoutId` is global across the site; without namespacing, multiple Kanban instances or other components using the same `layoutId` values will collide. See FND-013K for the full audit procedure.
 - [ ] **[TEST] PROJ-004C**: During drag, original card at 0.4 opacity; overlay clone follows cursor with glow + slight scale + tilt
 
 - [ ] **PROJ-004D**: Drop indicator: animated insertion line between cards (`scaleY: 0→1`, spring stiffness 400 damping 30, electric blue).

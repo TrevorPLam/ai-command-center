@@ -41,9 +41,9 @@ Each task includes the files to update, the specific sections/tasks within them,
 **Files to Update:** `01-Foundations.md` (FND‑013), `16-Polish-Validation.md` (POL‑005G)
 
 **What to Change:**
-- [ ] **UPD‑001A**: In `FND‑013`, add a subtask: “Audit all components using `layoutId`; verify each is wrapped in a module‑scoped `LayoutGroup` to prevent namespace collisions.”  
-- [ ] **UPD‑001B**: In `POL‑005G` Motion Compliance Checklist, elevate the existing `layoutId` / `LayoutGroup` line to a prominent warning with an explicit audit requirement.  
-- [ ] **UPD‑001C**: Add a note to `04-Projects.md` Kanban and `10-Lists.md` drag‑and‑drop sections referencing the `LayoutGroup` wrapper.
+- [x] **UPD‑001A**: In `FND‑013`, add a subtask: "Audit all components using `layoutId`; verify each is wrapped in a module‑scoped `LayoutGroup` to prevent namespace collisions."
+- [x] **UPD‑001B**: In `POL‑005G` Motion Compliance Checklist, elevate the existing `layoutId` / `LayoutGroup` line to a prominent warning with an explicit audit requirement.
+- [x] **UPD‑001C**: Add a note to `04-Projects.md` Kanban and `10-Lists.md` drag‑and‑drop sections referencing the `LayoutGroup` wrapper.
 
 ### Task UPD‑002: Replace `focusTriggerRef` in Zustand with Imperative Focus Registry
 **Priority:** 🔴 Critical | **Est. Effort:** 0.5 hour | **Depends On:** None
