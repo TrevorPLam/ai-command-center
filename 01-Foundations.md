@@ -440,7 +440,7 @@ The new structure is: FND-000 through FND-013 (14 tasks).
   export const useSidebarExpanded = () => useStore((s) => s.ui.sidebarExpanded)
   export const useCommandPaletteOpen = () => useStore((s) => s.ui.commandPaletteOpen)
   ```
-- [ ] **FND-005E**: Store `focusTriggerRef` as a `RefObject<HTMLElement | null>` in `uiSlice` — used for focus restoration on modal/drawer close
+- [ ] **FND-005E**: Use an imperative focus registry (module‑scoped `Map`) outside the Zustand store for focus restoration on modal/drawer close; never store React refs in Zustand (causes immutability errors with immer middleware)
 - [ ] **FND-005F**: Write unit tests for all slice actions (pure state transitions are ideal unit test targets)
 
 ### Definition of Done
@@ -449,7 +449,6 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 - All middleware applied at combined store level only
 - `persist` uses `partialize` — only sidebar state persists
 - Atomic selector hooks exported
-- Focus trigger ref in `uiSlice`
 - Slice action unit tests pass
 
 ### Anti-Patterns
@@ -743,9 +742,9 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 - [ ] **FND-011C**: Panel open/close state from `useStore` (`rightPanelOpen` from `uiSlice`)
 - [ ] **FND-011D**: Apply glass styling + `.noise-overlay` (consistent with sidebar)
 - [ ] **FND-011E**: Add close button with `aria-label="Close panel"`
-- [ ] **FND-011F**: Implement focus restoration:
-  - On open: store the `document.activeElement` ref in `uiSlice` via `setFocusTrigger`
-  - On unmount/close: call `focusTriggerRef.current?.focus()`
+- [ ] **FND-011F**: Implement focus restoration using the imperative focus registry:
+  - On open: register the trigger element in the module‑scoped registry
+  - On unmount/close: restore focus by retrieving from the registry and calling `.focus()`
 
 **Tests:**
 - [ ] **FND-011G**: Test: panel slides in when `rightPanelOpen = true`
@@ -784,7 +783,7 @@ The new structure is: FND-000 through FND-013 (14 tasks).
 - [ ] **FND-012G**: Keyboard navigation: `↑↓` to navigate, `Enter` to select, `Escape` to close
 - [ ] **FND-012H**: Focus trap using `@radix-ui/react-focus-trap` (or `@radix-ui/react-dialog`)
 - [ ] **FND-012I**: Verify WCAG 2.2 2.4.12 Focus Not Obscured — the sticky status bar must not cover the focused item
-- [ ] **FND-012J**: Focus restoration: on close, focus returns to the element that triggered the palette
+- [ ] **FND-012J**: Focus restoration: on close, focus returns to the element that triggered the palette using the imperative focus registry
 
 **Tests:**
 - [ ] **FND-012K**: Test: `Cmd+K` opens the palette

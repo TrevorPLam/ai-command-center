@@ -51,8 +51,8 @@ Each task includes the files to update, the specific sections/tasks within them,
 **Files to Update:** `01-Foundations.md` (FND‑005, FND‑011, FND‑012)
 
 **What to Change:**
-- [ ] **UPD‑002A**: In `FND‑005E`, replace `focusTriggerRef` state with a note: “Use an imperative focus registry (module‑scoped `Map`) outside the Zustand store; never store React refs in Zustand.”  
-- [ ] **UPD‑002B**: Update `FND‑011F` and `FND‑012J` focus restoration subtasks to reference the imperative registry.
+- [x] **UPD‑002A**: In `FND‑005E`, replace `focusTriggerRef` state with a note: “Use an imperative focus registry (module‑scoped `Map`) outside the Zustand store; never store React refs in Zustand.”  
+- [x] **UPD‑002B**: Update `FND‑011F` and `FND‑012J` focus restoration subtasks to reference the imperative registry.
 
 ### Task UPD‑003: Enforce `cancelQueries` Before Optimistic Updates in v1 Modules
 **Priority:** 🔴 Critical | **Est. Effort:** 1 hour | **Depends On:** None
