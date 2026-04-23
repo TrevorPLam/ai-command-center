@@ -181,6 +181,7 @@
   - `useGenerateEmbeddings()` — Vector embedding generation
   - `useExtractContent()` — AI extraction with optimistic updates
   - `useQuestionAnswer()` — Q&A with source citations
+  - **Critical**: All mutation `onMutate` handlers must begin with `await queryClient.cancelQueries(...)` before `getQueryData` / `setQueryData` to prevent race conditions
 
 ### Tests
 
@@ -203,6 +204,7 @@
 - ❌ Not validating link positions — may cause invalid backlink detection
 - ❌ Missing version tracking — prevents proper change history
 - ❌ Not handling OCR errors gracefully — user needs feedback
+- ❌ Skipping `cancelQueries` in `onMutate` — creates race conditions when a background refetch overwrites the optimistic state
 
 ---
 

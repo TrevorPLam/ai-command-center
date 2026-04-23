@@ -146,6 +146,7 @@ Email remains the primary asynchronous communication protocol for professional w
   - `useMarkRead()`, `useStarEmail()`, `useArchiveEmail()`: immediate UI update, sync in background
   - `useSnoozeEmail()`: move to snoozed, restore at time
   - `useDeleteEmail()`: soft delete with undo window
+  - **Critical**: All mutation `onMutate` handlers must begin with `await queryClient.cancelQueries(...)` before `getQueryData` / `setQueryData` to prevent race conditions
 
 **Tests:**
 - [ ] **EMAIL-000H**: Tests for all schemas validating correctly
@@ -164,6 +165,7 @@ Email remains the primary asynchronous communication protocol for professional w
 - ❌ Storing OAuth tokens in localStorage or plain Zustand
 - ❌ Inline email body in inbox list (causes massive payload)
 - ❌ No optimistic updates for common actions (archive, star, read)
+- ❌ Skipping `cancelQueries` in `onMutate` — creates race conditions when a background refetch overwrites the optimistic state
 
 ---
 

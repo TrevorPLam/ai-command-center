@@ -60,8 +60,8 @@ Each task includes the files to update, the specific sections/tasks within them,
 **Files to Update:** `08-Workflow.md`, `09-Email.md`, `11-Contacts.md`, `12-Documents.md`
 
 **What to Change:**
-- [ ] **UPD‑003A**: In each module’s mutation hooks section, ensure every `onMutate` handler begins with `await queryClient.cancelQueries(...)` before `getQueryData` / `setQueryData`. Add explicit subtask for this.  
-- [ ] **UPD‑003B**: Add an anti‑pattern warning: “Skipping `cancelQueries` creates race conditions when a background refetch overwrites the optimistic state.”
+- [x] **UPD‑003A**: In each module’s mutation hooks section, ensure every `onMutate` handler begins with `await queryClient.cancelQueries(...)` before `getQueryData` / `setQueryData`. Add explicit subtask for this.  
+- [x] **UPD‑003B**: Add an anti‑pattern warning: “Skipping `cancelQueries` creates race conditions when a background refetch overwrites the optimistic state.”
 
 ---
 

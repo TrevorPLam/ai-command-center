@@ -165,6 +165,7 @@
   - `useDeleteContactField()` — Optimistic field removal
   - `useEnrichContact()` — Async enrichment with loading state
   - `useImportContacts()` — Bulk import with progress tracking
+  - **Critical**: All mutation `onMutate` handlers must begin with `await queryClient.cancelQueries(...)` before `getQueryData` / `setQueryData` to prevent race conditions
 
 ### Tests
 - [ ] Factory produces valid contacts with proper field validation
@@ -184,6 +185,7 @@
 - ❌ Missing privacy controls — violates data protection requirements
 - ❌ Not supporting relationship mapping — loses network effect value
 - ❌ Synchronous enrichment processing — blocks UI and feels slow
+- ❌ Skipping `cancelQueries` in `onMutate` — creates race conditions when a background refetch overwrites the optimistic state
 
 ## 🔧 Task CONT-001: Contacts State Management & Privacy Controls
 **Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND-005 (Zustand), CONT-000

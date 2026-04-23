@@ -113,13 +113,25 @@
   - `createMockApprovalNode()` for human approval nodes
   - `createMockExecution()` for execution state
 - [ ] **FLOW-000D**: Create Zod schemas for all types
-- [ ] **FLOW-000E**: **Tests**: Unit tests for all domain types and factories
+- [ ] **FLOW-000E**: Define query options and mutation hooks:
+  - `workflowsQueryOptions(filters)` — List with `staleTime: 60_000`
+  - `workflowDetailQueryOptions(id)` — Full workflow with `staleTime: 30_000`
+  - `useCreateWorkflow()` — Optimistic create with validation
+  - `useUpdateWorkflow()` — Optimistic update with version increment
+  - `useDeleteWorkflow()` — Optimistic archive
+  - `useExecuteWorkflow()` — Optimistic execution status update
+  - **Critical**: All mutation `onMutate` handlers must begin with `await queryClient.cancelQueries(...)` before `getQueryData` / `setQueryData` to prevent race conditions
+- [ ] **FLOW-000F**: **Tests**: Unit tests for all domain types and factories
 
 ### Definition of Done
 - Complete domain model with all workflow-related entities
 - Zod schemas provide runtime validation
 - Mock factories produce realistic test data
 - All types are covered by tests
+- Query key factory and mutation hooks with optimistic updates
+
+### Anti-Patterns
+- ❌ Skipping `cancelQueries` in `onMutate` — creates race conditions when a background refetch overwrites the optimistic state
 
 ---
 
