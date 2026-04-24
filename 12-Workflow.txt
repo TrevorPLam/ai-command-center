@@ -1,0 +1,349 @@
+```text
+# 12-Workflow — Personal AI Command Center Frontend
+# Format: Hybrid (L1 registry + L3 detail blocks)
+# Generated: 2026-04-24 | Unifies research findings with actionable task spec
+# Ready for cross-model deployment
+
+════════════════════════════════════════════════════════════
+## 📦 CHECKPOINT BLOCK (paste at session start)
+════════════════════════════════════════════════════════════
+version: "1.0"
+module: "12-Workflow"
+last_updated: "2026-04-24"
+completed_tasks: []
+in_progress: null
+next_task: "FLOW-000"
+intent: "Implement all Workflow tasks following the registry below. Global contracts ($g, $c, $lc) are inherited from 01‑Foundations and extended with workflow‑specific rules. The module builds a node‑based visual automation canvas, agent orchestration, human‑in‑the‑loop, and monitoring. Frontend execution is mocked; real backend orchestration will be wired in a future Agent Backend phase."
+════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+## 🌐 GLOBAL CONTRACT BLOCK (L0 + L2)
+════════════════════════════════════════════════════════════
+contracts:
+  $g:  # Inherited from 01‑Foundations (all 18 active); key ones for Workflow:
+    "1": "BackgroundColor #050507"
+    "2": "Motion v12"
+    "3": "@tanstack/react-virtual (for logs, lists)"
+    "4": "oklch() tokens"
+    "5": "Glass .noise-overlay"
+    "6": "useReducedMotion()"
+    "7": "AnimatePresence page transitions"
+    "8": "Focus restoration"
+    "10": "WCAG 2.2 AA"
+    "11": "Test pattern: userEvent.setup(), screen"
+    "12": "react-router imports"
+    "13": "Motion tokens from lib/motion.ts"
+    "15": "SanitizedHTML for untrusted HTML"
+    "16": "No dangerouslySetInnerHTML outside SanitizedHTML"
+    "17": "Offline-first Dexie CommandCenterDB (for execution logs, drafts)"
+    "18": "Storage quota monitoring"
+
+  $c:  # Workflow‑specific cross‑cutting contracts
+    "FLOW-C01": "Canvas Engine: React Flow for node‑based visual editing with custom node and edge types"
+    "FLOW-C02": "Agent Orchestration: Distributed execution with process isolation and pub/sub communication (mocked in frontend)"
+    "FLOW-C03": "State Management: Zustand workflowSlice for canvas state, execution status, and workflow definitions"
+    "FLOW-C04": "Human‑in‑the‑Loop: Approval nodes, manual input nodes, escalation patterns with notification system"
+    "FLOW-C05": "Observability: Real‑time execution traces, step‑by‑step debugging, and error recovery mechanisms"
+    "FLOW-C06": "Template System: Reusable workflow patterns with parameter substitution"
+    "FLOW-C07": "Version Control: Workflow versioning with dev/staging/prod environments and rollback"
+    "FLOW-C08": "Security: Input validation, audit trails, RBAC, and data protection"
+    "FLOW-C09": "Performance: Lazy loading of large workflows, virtual rendering for complex canvases"
+    "FLOW-C10": "Accessibility: Keyboard navigation, screen reader support, ARIA labels for canvas elements"
+
+  $lc:  # Local task‑scoped contracts (reusable within Workflow)
+    canvas: "React Flow: use @xyflow/react v12+; custom nodes must export <Handle>; right‑click context menus; snap‑to‑grid; delete by Backspace/Delete"
+    execution: "Execution engine: topological sort nodes; support parallel execution; error handling with retry (exponential backoff); all execution state in Zustand"
+    approval: "Approval flow: pause execution on approval node; notify user (mock); store approval decision; resume or reject"
+    template: "Template instantiation: deep clone workflow; substitute template parameters; validate all required params before save"
+
+  motion:  # Workflow motion tier
+    Node_drag_resize: "Alive — spring physics with glow effect during drag"
+    Connection_line_drawing: "Quiet — smooth bezier curve animation (≤200ms)"
+    Execution_pulse: "Alive — progress indicator with electric blue glow traveling through connections"
+    Panel_slide_in_out: "Quiet — spring slide with AnimatePresence"
+    Template_library_items: "Static — no animation for performance"
+    Error_state_shake: "Alive — subtle shake animation on failed nodes"
+    Approval_dialog: "Quiet — scale fade with backdrop blur"
+
+  anti-patterns:  # Global severity (inherited)
+    S: "Security — keep verbatim"
+    P: "Performance — keep verbatim"
+    B: "Implementation bug — keep verbatim"
+    ST: "Style preference — safe to compress"
+
+════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+## L1 — MODULE REGISTRY (all 10 Workflow tasks)
+════════════════════════════════════════════════════════════
+id       |stat|pri|eff |depends               |files (selected)                                            |$cut
+FLOW-000 |P   |H  |1.5 |FND-001, FND-004      |domain/workflow/types.ts, schemas.ts, mocks/factories/workflow.ts|$c:FLOW-C03
+FLOW-001 |P   |H  |3.0 |FLOW-000, FND-005     |components/workflow/WorkflowCanvas.tsx, CustomNodeTypes.tsx, NodePalette.tsx|$c:FLOW-C01,$lc:canvas
+FLOW-002 |P   |H  |4.0 |FLOW-000              |services/workflowExecutor.ts, agentManager.ts, eventBus.ts|$c:FLOW-C02,$c:FLOW-C03,$lc:execution
+FLOW-003 |P   |H  |3.0 |FLOW-001, FLOW-002    |components/workflow/ApprovalPanel.tsx, ManualInputDialog.tsx, services/notificationService.ts|$c:FLOW-C04,$lc:approval
+FLOW-004 |P   |M  |2.5 |FLOW-001              |components/workflow/TemplateLibrary.tsx, TemplateEditor.tsx, data/workflowTemplates.ts|$c:FLOW-C06,$lc:template
+FLOW-005 |P   |M  |3.0 |FLOW-002              |components/workflow/ExecutionViewer.tsx, ExecutionLog.tsx, PerformanceMetrics.tsx|$c:FLOW-C05
+FLOW-006 |P   |M  |2.5 |FLOW-000              |services/workflowVersioning.ts, components/workflow/EnvironmentManager.tsx, DeploymentPanel.tsx|$c:FLOW-C07
+FLOW-007 |P   |M  |2.0 |FLOW-002              |services/workflowSecurity.ts, components/workflow/SecurityPanel.tsx, services/auditLogger.ts|$c:FLOW-C08
+FLOW-008 |P   |H  |2.0 |FLOW-001, FND-007     |pages/WorkflowPage.tsx, components/workflow/WorkflowLayout.tsx, router/routes.ts|$g7,$g8,$c:FLOW-C09,$c:FLOW-C10
+FLOW-009 |P   |H  |2.0 |ALL FLOW tasks        |src/tests/workflow/*.test.tsx, integration.test.ts        |$g11
+
+════════════════════════════════════════════════════════════
+
+## L3 — TASK DETAIL BLOCKS
+════════════════════════════════════════════════════════════
+
+### sec-FLOW-000 — Workflow Domain Model & Mock Data
+effort|pri|deps|$cut
+1.5|H|FND-001, FND-004|$c:FLOW-C03
+
+sub|type|description
+FLOW-000A|pipe|Define core types in `src/domain/workflow/types.ts`: `NodeType` (trigger, agent, action, decision, approval, manual‑input, delay, webhook), `ExecutionStatus` (idle, running, completed, failed, paused, awaiting‑approval), `WorkflowNode`, `WorkflowEdge`, `Workflow`.
+FLOW-000B|pipe|Define execution context types: `WorkflowExecution` with `id, workflowId, status, startedAt, completedAt?, currentNodeIds, executionLog: ExecutionLogEntry[], variables, error?`.
+FLOW-000C|pipe|Create mock factories in `src/mocks/factories/workflow.ts`: `createMockWorkflow(overrides?)`, `createMockAgentNode()`, `createMockApprovalNode()`, `createMockExecution()`. Use `@faker-js/faker` with seeds.
+FLOW-000D|pipe|Create Zod schemas in `src/domain/workflow/schemas.ts` mirroring all types.
+FLOW-000E|pipe|Define query options and mutation hooks (`src/queries/workflow.ts`): `workflowsQueryOptions`, `workflowDetailQueryOptions`, `useCreateWorkflow`, `useUpdateWorkflow`, `useDeleteWorkflow`, `useExecuteWorkflow`. **All mutations MUST use the shared `useOptimisticMutation()` wrapper from `src/lib/useOptimisticMutation.ts`** (ref FND‑006H).
+FLOW-000F|behavioral|[TEST] Unit tests for types, schemas, and factories; verify query key factory and mutation hooks with MSW.
+
+dod|criteria
+D1|Complete domain model with all workflow entities
+D2|Zod schemas provide runtime validation
+D3|Mock factories produce deterministic test data
+D4|Query key factory and optimised mutation hooks
+D5|All tests pass
+
+anti|description
+A1|Skipping `cancelQueries` in `onMutate` — creates race conditions
+A2|Defining Zod schemas inside React components
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-001 — Visual Canvas Engine (React Flow)
+effort|pri|deps|$cut
+3.0|H|FLOW-000, FND-005|$c:FLOW-C01,$lc:canvas
+
+sub|type|description
+FLOW-001A|pipe|Install React Flow: `pnpm add @xyflow/react` (v12+)
+FLOW-001B|behavioral|Implement `WorkflowCanvas.tsx`: `<ReactFlow>` with custom node/edge types, grid background with snap‑to‑grid, minimap, keyboard shortcuts (Ctrl+Z undo, Ctrl+Y redo, Delete/Backspace to remove selected).
+FLOW-001C|pipe|Create custom node types in `CustomNodeTypes.tsx`:
+  - Trigger Node: lightning bolt icon, blue border
+  - Agent Node: AI brain icon, purple border, status indicator
+  - Action Node: gear icon, green border
+  - Decision Node: diamond shape, orange border
+  - Approval Node: shield icon, red border, pending badge
+  - Manual Input Node: keyboard icon, yellow border
+  - Delay Node: clock icon, gray border
+  - Webhook Node: web icon, teal border
+FLOW-001D|pipe|Node interactions: drag with grid snapping; resize handles; right‑click context menu (delete, duplicate, configure); double‑click to edit config.
+FLOW-001E|pipe|Build `NodePalette.tsx` sidebar: categories (Triggers, Actions, AI, Control Flow); drag from palette to canvas; search; recently used nodes section.
+FLOW-001F|pipe|Edge creation: drag from handles; connection validation (compatible types); edge labels/conditions; animated edge during execution.
+FLOW-001G|behavioral|[TEST] Canvas renders; nodes can be added/removed; edges connect; keyboard shortcuts work; custom node styling correct; drag from palette creates node.
+
+dod|criteria
+D1|Functional React Flow canvas with all custom node types
+D2|Node palette with drag‑and‑drop
+D3|Edge creation with validation and labels
+D4|Keyboard shortcuts and undo/redo
+D5|All tests pass
+
+anti|description
+A1|Using HTML5 drag‑and‑drop instead of React Flow internals
+A2|Forgetting `<Handle>` on custom nodes
+A3|Not implementing node deletion via keyboard
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-002 — Agent Orchestration Engine
+effort|pri|deps|$cut
+4.0|H|FLOW-000|$c:FLOW-C02,$c:FLOW-C03,$lc:execution
+
+sub|type|description
+FLOW-002A|pipe|Create `WorkflowExecutor` class in `src/services/workflowExecutor.ts`: `executeWorkflow(workflowId, triggerData?)` returns executionId; `pause`, `resume`, `cancel` methods. Execution state stored in Zustand.
+FLOW-002B|pipe|Create `AgentManager` in `src/services/agentManager.ts`: agent lifecycle (register, start, stop, health). For frontend: mock agent execution with promises and artificial delays; design for future Web Worker isolation.
+FLOW-002C|pipe|Implement `EventBus` in `src/services/eventBus.ts`: pub/sub pattern (in‑memory for mock), event validation, routing, persistence in IndexedDB for replay.
+FLOW-002D|behavioral|Execution engine: topological sort of nodes; execute in parallel where possible; conditional branching via decision nodes; error handling with retry (exponential backoff, max 3). Store execution logs per node.
+FLOW-002E|pipe|Node execution handlers (mocked): `executeTriggerNode` (webhook/schedule), `executeAgentNode` (mock AI call), `executeActionNode` (mock API), `executeDecisionNode` (evaluate condition), `executeApprovalNode` (pause until human action), `executeManualInputNode` (collect user input), `executeDelayNode` (wait).
+FLOW-002F|pipe|Execution persistence: save execution state and logs to Dexie `workflow_executions` and `workflow_logs` stores; support resume.
+FLOW-002G|behavioral|[TEST] Execution runs through linear workflow; parallel branches execute; error triggers retry; cancellation stops all nodes; state persistence works.
+
+dod|criteria
+D1|Workflow executor with topological sorting and parallel execution
+D2|Mock agent manager and event bus
+D3|Error handling with retry
+D4|Execution state saved to IndexedDB
+D5|All tests pass
+
+anti|description
+A1|Blocking main thread with long‑running execution — use asynchronous mock
+A2|Not implementing cancellation propagation
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-003 — Human‑in‑the‑Loop System
+effort|pri|deps|$cut
+3.0|H|FLOW-001, FLOW-002|$c:FLOW-C04,$lc:approval
+
+sub|type|description
+FLOW-003A|pipe|Build `ApprovalPanel.tsx`: list pending approvals with workflow context; Approve/Reject/Request Info actions; batch approval; history and comments.
+FLOW-003B|pipe|Approval workflow: on approval node, execution pauses; notification sent (mock: in‑app toast + store); assignment and routing; escalation rules (timeout, then escalate). Zustand `pendingApprovals` slice.
+FLOW-003C|pipe|Build `ManualInputDialog.tsx`: dynamic form generated from node config; input validation (zod); file upload support; progress saving.
+FLOW-003D|pipe|Notification service (`notificationService.ts`): store notifications in Zustand; badge count; reminder logic; escalation.
+FLOW-003E|pipe|Approval analytics: metrics stored in Zustand (mock); dashboard in panel showing avg response time, rejection reasons, bottlenecks.
+FLOW-003F|behavioral|[TEST] Approval panel shows pending items; approve/resume workflow; escalate on timeout; manual input dialog validates and passes data; notifications appear.
+
+dod|criteria
+D1|Approval panel with full approve/reject/escalate flow
+D2|Manual input dialog with dynamic forms
+D3|Notification system with escalation
+D4|All human‑in‑the‑loop patterns functional
+D5|All tests pass
+
+anti|description
+A1|Auto‑approving without user action — must be explicit
+A2|Blocking UI during approval — keep non‑blocking dialogs
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-004 — Workflow Templates & Patterns
+effort|pri|deps|$cut
+2.5|M|FLOW-001|$c:FLOW-C06,$lc:template
+
+sub|type|description
+FLOW-004A|pipe|Define `WorkflowTemplate` type: id, name, description, category, tags, thumbnail?, workflow (partial), parameters, usage count, rating.
+FLOW-004B|pipe|Build `TemplateLibrary.tsx`: category filtering, search, preview/details, usage stats.
+FLOW-004C|pipe|Create pre‑built templates: "AI Agent Chain", "Document Processing", "Customer Support", "Data Pipeline", "Approval Workflow", "Integration Pattern".
+FLOW-004D|behavioral|Template instantiation: deep‑clone template workflow; substitute parameters; validate all required params; save as new user workflow.
+FLOW-004E|pipe|Build `TemplateEditor.tsx`: visual builder for creating templates; define parameters; preview and test.
+FLOW-004F|pipe|Template sharing (mock): export/import JSON; team library; community stats.
+FLOW-004G|behavioral|[TEST] Templates render in library; instantiation creates valid workflow; parameter substitution correct; missing params show validation error.
+
+dod|criteria
+D1|Template library with pre‑built patterns
+D2|Instantiation with parameter substitution
+D3|Template editor for custom templates
+D4|All tests pass
+
+anti|description
+A1|Sharing templates without sanitization — use structuredClone
+A2|Not validating substituted parameters
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-005 — Execution Monitoring & Debugging
+effort|pri|deps|$cut
+3.0|M|FLOW-002|$c:FLOW-C05
+
+sub|type|description
+FLOW-005A|pipe|Build `ExecutionViewer.tsx`: real‑time visualisation; node highlighting during execution; electric blue progress pulse traveling through edges; timeline view.
+FLOW-005B|pipe|`ExecutionLog.tsx`: step‑by‑step details, I/O data, error messages, filter/search.
+FLOW-005C|pipe|Debugging features: breakpoints (pause on node); step‑through mode; variable inspection; node‑level testing.
+FLOW-005D|pipe|`PerformanceMetrics.tsx`: per‑node execution time, resource usage (mock), cost analysis, bottleneck detection.
+FLOW-005E|pipe|Error recovery: auto‑retry with backoff; manual retry; alternative path; error notifications.
+FLOW-005F|pipe|Analytics: success/failure rates, trends, usage patterns.
+FLOW-005G|behavioral|[TEST] Execution viewer shows animated progress; log captures details; breakpoint pauses; retry works; performance metrics display.
+
+dod|criteria
+D1|Real‑time execution monitoring with visual feedback
+D2|Debugging tools (breakpoints, step‑through)
+D3|Performance metrics and analytics
+D4|Error recovery and retry
+D5|All tests pass
+
+anti|description
+A1|Logging sensitive data in clear text
+A2|Not virtualising large execution logs
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-006 — Version Control & Environments
+effort|pri|deps|$cut
+2.5|M|FLOW-000|$c:FLOW-C07
+
+sub|type|description
+FLOW-006A|pipe|Define `WorkflowVersion` type; integrate with `workflowSlice`.
+FLOW-006B|pipe|Version management: auto‑increment on save; version list; diff visualisation (react‑diff‑viewer); rollback; basic branching.
+FLOW-006C|pipe|Environment management: dev/staging/prod labels; per‑environment config; deployment simulation.
+FLOW-006D|pipe|`DeploymentPanel.tsx`: environment selector, validation, deployment history, rollback.
+FLOW-006E|pipe|Change tracking: audit trail with user and timestamp; impact analysis; compliance report.
+FLOW-006F|behavioral|[TEST] Saves create new version; version comparison works; rollback restores previous state; environment labels apply.
+
+dod|criteria
+D1|Versioning system with diff and rollback
+D2|Multi‑environment support
+D3|Deployment panel with approve flow
+D4|All tests pass
+
+anti|description
+A1|Storing full snapshots without deduplication — use efficient diff
+A2|Rollback without confirmation
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-007 — Security & Compliance
+effort|pri|deps|$cut
+2.0|M|FLOW-002|$c:FLOW-C08
+
+sub|type|description
+FLOW-007A|pipe|Input validation: Zod schemas for all node inputs; SQL injection/XSS prevention; file upload scanning (mock).
+FLOW-007B|pipe|Access control: RBAC (Admin, Editor, Viewer) mocked; workflow‑level and node‑level permission checks; API key management UI.
+FLOW-007C|pipe|Audit logging (`auditLogger.ts`): all executions and user actions stored; query and export.
+FLOW-007D|pipe|Data protection: sensitive data masking (PII detection mock); retention policy UI; GDPR/CCPA compliance stubs.
+FLOW-007E|pipe|Security dashboard: metrics, access review, compliance status.
+FLOW-007F|behavioral|[TEST] Invalid input rejected; unauthorized role cannot edit; audit log records actions; masked data shown.
+
+dod|criteria
+D1|Input validation and access control
+D2|Audit logging and compliance features
+D3|Data masking and security dashboard
+D4|All tests pass
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-008 — Workflow Page Layout & Integration
+effort|pri|deps|$cut
+2.0|H|FLOW-001, FND-007|$g7,$g8,$c:FLOW-C09,$c:FLOW-C10
+
+sub|type|description
+FLOW-008A|pipe|Build `WorkflowPage.tsx` with responsive layout: left sidebar (NodePalette + TemplateLibrary), main canvas (WorkflowCanvas), right panel (properties/config), bottom panel (execution status/logs).
+FLOW-008B|pipe|Workflow management: list view with search/filter; create wizard; duplicate/archive; bulk actions.
+FLOW-008C|pipe|Routing: `/workflows` (list), `/workflows/:id` (editor), `/workflows/:id/executions` (history), `/workflows/templates` (templates). Use lazy loading.
+FLOW-008D|pipe|Responsive design: mobile‑friendly (canvas disabled, list view primary); touch interactions for tablets; keyboard navigation and ARIA labels on all interactive elements.
+FLOW-008E|pipe|Integration points: trigger workflow from Dashboard/other modules; workflow status in StatusBar; notifications in activity feed.
+FLOW-008F|behavioral|[TEST] Page layout renders; navigation works; responsive breakpoints show correct UI; keyboard accessible.
+
+dod|criteria
+D1|Complete workflow management interface
+D2|Responsive design for all devices
+D3|Integration with existing modules
+D4|Accessibility compliance (keyboard, ARIA)
+D5|All tests pass
+
+────────────────────────────────────────────────────────
+
+### sec-FLOW-009 — Testing & Quality Assurance
+effort|pri|deps|$cut
+2.0|H|ALL FLOW tasks|$g11
+
+sub|type|description
+FLOW-009A|pipe|Unit tests for all services: WorkflowExecutor, AgentManager, EventBus, Security validators.
+FLOW-009B|pipe|Component tests: Canvas interactions, NodePalette, ApprovalPanel, TemplateInstantiation, ExecutionViewer.
+FLOW-009C|pipe|Integration tests: end‑to‑end workflow execution, human‑in‑the‑loop scenario, multi‑agent orchestration, error recovery.
+FLOW-009D|pipe|Performance tests: large workflow rendering (100+ nodes), memory usage, execution benchmarks, concurrent limits.
+FLOW-009E|pipe|Accessibility tests: axe audit, keyboard navigation test, screen reader, color contrast.
+FLOW-009F|pipe|Security tests: input validation bypass, access control escalation, data leakage prevention.
+
+dod|criteria
+D1|≥90% code coverage on all workflow modules
+D2|All integration scenarios pass
+D3|Accessibility audit with zero violations
+D4|Performance within targets (<2MB module, <100ms interaction)
+D5|All tests pass
+
+════════════════════════════════════════════════════════════
+## END OF 12-Workflow.txt
+## Checkpoint: FLOW-000 through FLOW-009 ready for execution.
+## Global contracts ($g, $c, $lc) inherited and extended.
+## Paste the CHECKPOINT BLOCK at top into any new session.
+## For any task, first load Global Contract block, then navigate to sec‑FLOW‑XXX.
+════════════════════════════════════════════════════════════
+```

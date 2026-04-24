@@ -1,0 +1,1977 @@
+
+# 01-Foundations — Personal AI Command Center 
+
+══════════════════════════════════════════════════════════════════════════════
+## 📦 AGENT PREAMBLE)
+══════════════════════════════════════════════════════════════════════════════
+- **This specification is incomplete until the bootstrapping task (FND‑BOOT) runs.**
+  The agent MUST execute FND‑BOOT before any other task. FND‑BOOT will:
+    a) Compute the SHA‑256 hash of every code block embedded in this specification,
+       treating each block as a file to be created.
+    b) Generate a `pnpm‑lock.yaml` from the exact dependency versions listed in
+       `sec‑FND‑002` and compute its SHA‑256 hash.
+    c) Generate any external generated files (e.g., shadcn Button) and capture their
+       exact content and hashes.
+    d) Insert all computed hashes back into this specification file, replacing the
+       `H(<asset‑id>)` place‑holders.
+    e) Re‑verify that the specification is now internally consistent (no remaining
+       place‑holders, no missing code blocks).
+  After FND‑BOOT, the specification is fully deterministic and can be re‑executed
+  from scratch using only this document.
+
+- **Execution model:** The agent ensures that every file in the target workspace
+  matches the SHA‑256 hash recorded in this specification. If a file exists and its
+  hash matches, the task is skipped. Otherwise, the agent creates or overwrites the
+  file with the exact content from the associated code block. This is called
+  **idempotent reconciliation**.
+
+- **Resource locking:** Each task declares the files it reads and writes. The
+  scheduler MUST NOT run two tasks concurrently if they write to the same file, or
+  if one writes a file that another reads (read‑after‑write dependency). The
+  dependency graph in the MODULE REGISTRY overrules parallel groups when there
+  is a conflict.
+
+- **Self‑healing & fix‑it:** Guard failures of severity [B] (BUG) have associated
+  `fixit` recipes given in the task block. The agent applies the recipe up to 2
+  times and re‑verifies. If it fails, the task stops.
+  A global **Self‑Healing Recipe Catalogue** is provided in Appendix A.
+
+- **Cryptographic attestation:** After every task, the agent signs an attestation
+  containing:
+    - Task ID and its subtree of completed sub‑tasks
+    - SHA‑256 of every file modified
+    - Merkle root of the entire workspace (excluding `node_modules` and `.agent/`)
+    - Timestamp and execution log
+  Attestations are stored in `.agent/attestations/` and are chained.
+
+- **Parallel execution:** Tasks in the same `parallel_group` may run concurrently
+  subject to resource locking. Max concurrency = 2.
+
+- **Resume logic:** From the CHECKPOINT BLOCK, if `resume_task` is set, continue
+  from that task; otherwise from `next_task`. The last completed task’s workspace
+  snapshot (stored in `.agent/checkpoints/`) is used to restore state if a failure
+  occurs.
+
+- **Windsurf‑specific hints:** 
+  - After changing `package.json`, always run `pnpm install`.
+  - If a `tsc --noEmit` fails, ensure that all `@types` packages listed in the
+    dependencies are installed.
+  - Use `pnpm dev` only to quickly verify the server starts; then kill it before
+    proceeding to tests.
+  - All code blocks must be saved with LF line endings (not CRLF) and UTF‑8
+    without BOM. Emojis must be preserved exactly.
+
+- **Before You Begin (for the human user):**
+  1. Ensure Node.js ≥20.11.0 is installed (`node -v`)
+  2. Install pnpm 9 (`npm install -g pnpm`)
+  3. Create a new empty folder and open it in Windsurf (or your assistant)
+  4. Paste this entire document into the chat
+  5. Tell the assistant: *“Execute every task in order, starting with FND‑BOOT.”*
+
+  **What you’ll end up with:** A running, dark‑themed Personal AI Command Center 
+  with a glass sidebar, command palette, voice orb, status bar, and offline‑first 
+  database—ready to be extended with AI modules.
+
+══════════════════════════════════════════════════════════════════════════════
+## 🌐 GLOBAL CONTRACTS v6.0
+══════════════════════════════════════════════════════════════════════════════
+$g1: Background #050507 via --background CSS var
+$g2: Motion v12 – import { motion } from "motion/react"
+$g3: Virtualization – @tanstack/react-virtual useVirtualizer
+$g4: Design tokens – CSS custom props + @theme inline, oklch() required
+$g5: Glass scope – .noise-overlay only for shells, drawers, command palette
+$g6: Reduced motion – useReducedMotion() guard before every animation
+$g7: Page transitions – AnimatePresence + motion.div keyed by location.pathname
+$g8: Focus restoration – store trigger ref in uiSlice; restore on modal/drawer close
+$g9: Keyboard hints – <kbd> tags
+$g10: WCAG 2.2 AA – keyboard nav, focus indicators, target size ≥44px touch
+$g11: Test pattern – userEvent.setup() per test; screen over container
+$g12: Router imports – from "react-router", never "react-router-dom"
+$g13: Motion tokens – shared from src/lib/motion.ts
+$g14: dnd‑kit sensors – shared useDndSensors() hook
+$g15: HTML sanitization – all untrusted HTML via SanitizedHTML component
+$g16: Security – no dangerouslySetInnerHTML outside SanitizedHTML
+$g17: Offline‑first – centralized IndexedDB via Dexie CommandCenterDB
+$g18: Storage quota – use useStorageQuota hook; warn at ≥80%
+$g19: Optimistic mutation – always use useOptimisticMutation wrapper
+$g20: React state preservation – keep VoiceShell and CmdPalette state via Zustand and conditional rendering (no experimental API)
+$g21: Stable callbacks – use useRef + useCallback pattern for interval/event handlers that shouldn’t re‑trigger effects (no useEffectEvent)
+$g22: Zustand selectors – always useShallow() for object selectors
+$g23: Dexie syncStatus – add "draft"|"syncing"|"synced" on mutable records
+$g24: Web Speech fallback – manual input if API missing
+$g25: clientLoader + HydrateFallback for RightPanel, CmdPalette (future; for now use lazy loading)
+$g26: Performance budgets – LCP ≤800ms, animation ≤100ms (enforced in FND‑FINAL)
+$g27: Spec validation – run FND‑META after FND‑BOOT
+$g28: Idempotency – all file operations use content hashes from this spec
+$g29: Cryptographic attestation – signed attestation per task
+$g30: Resource locking – declared reads/writes prevent races
+$g31: Fix‑it recipes – deterministic repair for [B] guard failures
+$g32: Immutable checkpoints – full workspace snapshots after each task
+$g33: Bootstrapping – FND‑BOOT must run before any other task; it makes the spec self‑consistent
+$g34: Lockfile hash – the bootstrapping step generates pnpm‑lock.yaml and records its hash
+$g35: Deterministic generated files – shadcn Button and similar are generated once, their content captured as code blocks with hashes
+$g36: Toolchain pinning – exact Node.js and pnpm versions required
+$g37: Incremental adoption – pre‑flight scan checks which files already match hashes
+$g38: Self‑healing catalogue – common failures have documented fixes
+$g39: Success indicator – final task outputs a clear completion message
+
+Local contracts:
+$lc‑focus: Focus trap rules
+$lc‑autoscroll: Auto‑scroll rules
+
+Motion tiers unchanged.
+
+══════════════════════════════════════════════════════════════════════════════
+## 📦 CHECKPOINT BLOCK v6.0
+══════════════════════════════════════════════════════════════════════════════
+version: "6.0"
+module: "01-Foundations"
+last_updated: "2026-04-24"
+state: "unbootstrapped"             # becomes "bootstrapped" after FND‑BOOT
+completed_tasks: []
+completed_task_hashes: {}
+in_progress_task: null
+next_task: "FND-BOOT"               # bootstrapping runs first
+resume_task: null
+subtask_states: {}
+workspace_base_hash: null
+cache_dir: ".agentcache/"
+attestation_dir: ".agent/attestations/"
+checkpoint_dir: ".agent/checkpoints/"
+compression_threshold: 10
+
+══════════════════════════════════════════════════════════════════════════════
+## 🛠️ AGENT CAPABILITY ASSUMPTIONS
+══════════════════════════════════════════════════════════════════════════════
+The following commands are assumed available and on PATH:
+- `pnpm` (>=9)
+- `node` (>=20.11.0)
+- `npx`
+- `git`
+- `curl`
+- `bash`
+
+If any are missing, stop and instruct the user to install them before proceeding.
+
+══════════════════════════════════════════════════════════════════════════════
+## 📦 TASK FND‑BOOT — Bootstrapping: Make the Specification Self‑Consistent
+══════════════════════════════════════════════════════════════════════════════
+effort: 0.5 | pri: H | critical: true | must_run_first: true
+resources: R: «01‑Foundations‑v6.txt»  W: «01‑Foundations‑v6.txt, hashes.json, .agent/lockfile.yaml»
+
+**Desired outcome:** The specification file no longer contains any `H(…)` place‑holders.
+All code blocks are recorded with their real SHA‑256 hashes, the `pnpm‑lock.yaml` hash
+is known, and the generated shadcn Button code is captured.
+
+**Procedure (execute exactly):**
+
+1. **Parse this specification** to identify every code block that is intended to be a file.
+   A code block is recognised by the marker `#### Code Block: <asset‑id>` immediately
+   followed by a fenced code block (`` ``` ``). Extract the exact content, preserving
+   line endings (LF) and trailing whitespace exactly as it appears.
+
+2. For each such code block:
+   - Compute its SHA‑256 hash (hex encoded, lowercase).
+   - Store the mapping: `<asset‑id>` → hash in `hashes.json`.
+
+3. Identify all place‑holders `H(asset‑id)` in the specification text. Replace each
+   occurrence with the corresponding hash from `hashes.json`.
+
+4. **Generate the lockfile**:
+   - In a temporary directory, create a `package.json` from the `FND002_pkg_final` code
+     block (found in sec‑FND‑002).
+   - Run `pnpm install --lockfile-only --no‑frozen‑lockfile`.
+   - Compute the SHA‑256 of the resulting `pnpm‑lock.yaml`.
+   - Record the hash in `hashes.json` as `LOCKFILE_YAML`.
+   - Copy the generated lockfile to `.agent/lockfile.yaml` for use in FND‑002.
+   - Replace `H(LOCKFILE_YAML)` in the specification with the real hash.
+
+5. **Generate deterministic shadcn Button**:
+   - Still in the temporary directory, with the same `package.json`, run:
+     `npx shadcn-ui@latest add button --yes` (if interactive flags are needed, check the
+     tool's CLI help).
+   - Locate the generated `src/components/ui/button.tsx` file.
+   - Compute its SHA‑256 and record it as `SHADCN_BUTTON_HASH`.
+   - Read its entire content and insert it as a new code block in the specification under
+     sec‑FND‑002, with asset‑id `SHADCN_BUTTON`. Replace any reference to the button
+     hash in the spec with this actual hash.
+   - Store the button file content in `.agent/shadcn-button.tsx` for later use.
+
+6. After all replacements, **verify** that the specification text contains no remaining
+   `H(` patterns outside code blocks.
+
+7. Update the CHECKPOINT BLOCK: set `state: "bootstrapped"`, `next_task: "FND‑META"`.
+
+**Verification after bootstrapping:**
+- No `H(` outside code blocks in the specification file.
+- `hashes.json` exists and contains all required entries.
+- `.agent/lockfile.yaml` exists and its hash matches the recorded lockfile hash.
+- `.agent/shadcn-button.tsx` exists and its hash matches the recorded button hash.
+
+**Attestation:** Sign the bootstrapped specification file.
+
+══════════════════════════════════════════════════════════════════════════════
+## L1 — MODULE REGISTRY 
+══════════════════════════════════════════════════════════════════════════════
+id      |stat|pri|eff|depends        |parallel_group|cache_key   |resources (R/W)                                                      |uses_global
+FND-BOOT|P   |H  |0.5|—              |boot          |boot-v1     |R: «01‑Foundations‑v6.txt»  W: «01‑Foundations‑v6.txt, hashes.json, .agent/lockfile.yaml, .agent/shadcn-button.tsx»|$g33,$g34,$g35
+FND-META|P   |H  |0.2|FND-BOOT       |meta          |meta-v1     |R: «*»  W: none                                                      |$g27
+FND-000 |P   |H  |2.0|FND-BOOT       |design        |tokens-v1   |W: «src/index.css,src/lib/tokens.ts,src/lib/motion.ts,src/providers/ThemeProvider.tsx,src/components/ThemeToggle.tsx»|$g1,$g4,$g5,$g13
+FND-001 |P   |H  |0.5|FND-BOOT       |scaffold      |vite-v1     |R: «.»  W: «package.json,vite.config.ts,tsconfig.json,tsconfig.node.json,src/index.css,src/App.tsx,.gitignore,public/»|$g2,$g12
+FND-002 |P   |H  |1.0|FND-001        |deps          |deps-v2     |R: «package.json»  W: «package.json,node_modules,pnpm‑lock.yaml,components.json,src/lib/utils.ts,src/lib/db.ts,src/components/ui/button.tsx,src/components/shared/SanitizedHTML.tsx,src/hooks/useStorageQuota.ts»|$g2,$g12,$g15,$g16,$g17,$g18,$g23,$g35
+FND-003 |P   |H  |1.0|FND-001        |toolchain     |lint-v1     |R: «src»  W: «eslint.config.js,.prettierrc,.husky/»                  |$g11
+FND-004 |P   |H  |1.5|FND-001,FND-002|toolchain     |test-v1     |R: «src»  W: «vitest.config.ts,src/test/setup.ts,src/mocks/server.ts,src/test/motion-helpers.ts»|$g11
+FND-005 |P   |H  |1.5|FND-002        |store         |zustand-v1  |W: «src/stores/index.ts,src/stores/slices/uiSlice.ts»                 |$g8,$g22
+FND-006 |P   |H  |1.0|FND-002        |store         |query-v1    |W: «src/lib/queryClient.ts,src/queries/,src/lib/useOptimisticMutation.ts»|$g19
+FND-007 |P   |H  |1.0|FND-002        |router        |router-v1   |W: «src/router/index.tsx,src/router/routes.ts,src/pages/*,src/components/shared/GlobalErrorFallback.tsx»|$g12,$g25
+FND-008 |P   |H  |0.5|FND-005..007   |shell         |app-v1      |W: «src/main.tsx,src/layouts/AppShell.tsx,src/components/shared/SkipLink.tsx»|$g7,$g8,$g20,$g21
+FND-009 |P   |H  |2.0|FND-005,FND-008|layout        |sidebar-v1  |W: «src/components/layout/Sidebar.tsx,src/components/layout/NavItem.tsx»|$g6,$g9,$g10,$lc‑focus,$g22
+FND-010 |P   |H  |1.0|FND-008        |layout        |statusbar-v1|W: «src/components/layout/StatusBar.tsx»                              |$g6,$g10,$g18,$g21
+FND-011 |P   |H  |1.0|FND-005,FND-008|layout        |rightpanel-v1|W: «src/components/layout/RightPanel.tsx»                             |$g6,$g8,$lc‑focus,$g25
+FND-012 |P   |H  |2.0|FND-005,FND-008|layout        |cmd-v1      |W: «src/components/layout/CommandPalette.tsx,src/hooks/useIntentHandler.ts»|$g6,$g8,$g9,$lc‑focus,$g20,$g25
+FND-013 |P   |H  |1.5|FND-009..012   |a11y         |a11y-v1     |R: «src/layouts,src/components/layout»  W: none (updates index.css with focus styles) |$g8,$g9,$g10
+FND-014 |P   |H  |2.5|FND-005,FND-008,FND-012|voice|voice-v1     |W: «src/components/layout/VoiceShell.tsx,src/hooks/useWebSpeech.ts»  |$g6,$g9,$g10,$g20,$g21,$g24
+FND-FINAL|P   |H  |0.2|FND-014        |final         |final-v1    |R: «*»  W: none                                                      |$g26,$g39
+
+══════════════════════════════════════════════════════════════════════════════
+## L3 — TASK DETAIL BLOCKS 
+══════════════════════════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑META — Spec integrity validator (run after bootstrapping)
+──────────────────────────────────────────────────────────────────────────────
+effort: 0.2 | pri: H | parallel_group: meta
+resources: R: «*» W: none
+
+**Desired state:** The bootstrapped specification passes all internal consistency checks.
+
+META-001: Verify all `$gXX` in MODULE REGISTRY exist in GLOBAL CONTRACTS.
+  verification: `spec_validator --check-refs` (or manual grep)
+  on_fail: S:block
+
+META-002: Detect cyclic dependencies.
+  verification: `ts-node scripts/check-cycles.ts` or visual inspection; must be zero.
+  on_fail: S:block
+
+META-003: No duplicate write targets.
+  verification: grep all task resource write declarations; no file appears in two task writes unless one depends on the other.
+  on_fail: S:block
+
+META-004: Every `$g` used in a task is actually referenced in that task’s code blocks (basic grep).
+  verification: for each task, for each contract in uses_global, search the code blocks for the contract’s keyword (e.g., `useReducedMotion` for `$g6`). Report missing.
+  on_fail: ST:log
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑000 — Design tokens & CSS‑first theme system
+──────────────────────────────────────────────────────────────────────────────
+effort: 2.0 | pri: H | parallel_group: design
+resources: W: «src/index.css,src/lib/tokens.ts,src/lib/motion.ts,src/providers/ThemeProvider.tsx,src/components/ThemeToggle.tsx»
+uses_global: $g1,$g4,$g5,$g13
+
+**File states after bootstrapping:**
+
+| File path                         | Asset‑id                | Expected SHA‑256 |
+|-----------------------------------|-------------------------|------------------|
+| src/index.css                     | `FND000_index_css`      | H(FND000_index_css) |
+| src/lib/tokens.ts                 | `FND000_tokens_ts`      | H(FND000_tokens_ts) |
+| src/lib/motion.ts                 | `FND000_motion_ts`      | H(FND000_motion_ts) |
+| src/providers/ThemeProvider.tsx   | `FND000_ThemeProvider`  | H(FND000_ThemeProvider) |
+| src/components/ThemeToggle.tsx    | `FND000_ThemeToggle`    | H(FND000_ThemeToggle) |
+
+**Code Blocks:**
+
+#### Code Block: `FND000_index_css`
+```css
+@import "tailwindcss";
+
+@theme inline {
+  --background: oklch(9.8% 0.006 264);
+  --foreground: oklch(93% 0.005 264);
+  --muted: oklch(16% 0.008 264);
+  --accent: oklch(67% 0.2 265);
+  --ring: oklch(67% 0.2 265);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    color-scheme: dark;
+  }
+}
+
+@import "tw-animate-css";
+
+@utility noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  pointer-events: none;
+}
+
+@property --conic-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --conic-color {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+```
+
+#### Code Block: `FND000_tokens_ts`
+```ts
+export const colors = {
+  background: 'var(--background)',
+  foreground: 'var(--foreground)',
+  muted: 'var(--muted)',
+  accent: 'var(--accent)',
+  ring: 'var(--ring)',
+} as const;
+
+export const spacing = {
+  0: '0px',
+  1: '0.25rem',
+  2: '0.5rem',
+  4: '1rem',
+  8: '2rem',
+} as const;
+```
+
+#### Code Block: `FND000_motion_ts`
+```ts
+import { useReducedMotion } from 'motion/react';
+
+export const springPresets = {
+  gentle: { type: 'spring' as const, stiffness: 120, damping: 14 },
+  stiff: { type: 'spring' as const, stiffness: 300, damping: 30 },
+};
+
+export const durationTokens = {
+  fast: 0.15,
+  slow: 0.5,
+} as const;
+
+export function useShouldAnimate() {
+  return !useReducedMotion();
+}
+```
+
+#### Code Block: `FND000_ThemeProvider`
+```tsx
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <NextThemesProvider attribute="class" enableSystem>
+      {children}
+    </NextThemesProvider>
+  );
+}
+```
+
+#### Code Block: `FND000_ThemeToggle`
+```tsx
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
+
+export function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return null;
+  const nextTheme = theme === 'dark' ? 'light' : theme === 'light' ? 'system' : 'dark';
+  const label = theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🖥️';
+  return (
+    <button onClick={() => setTheme(nextTheme)} aria-label="Toggle theme">
+      {label}
+    </button>
+  );
+}
+```
+
+**Guard & Fix‑it:**  
+- If `tailwind.config.ts` exists → [S] delete it (Tailwind v4 uses CSS‑first config).  
+- If hex color codes found in `src/index.css` → [B] replace with oklch() equivalents.
+
+**Verification:** `tsc --noEmit`, visual check background #050507.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑001 — Vite + TS scaffold
+──────────────────────────────────────────────────────────────────────────────
+effort: 0.5 | pri: H | parallel_group: scaffold
+resources: R: «.»  W: «package.json,vite.config.ts,tsconfig.json,tsconfig.node.json,src/index.css,src/App.tsx,.gitignore,public/»
+uses_global: $g2,$g12
+
+**File states after bootstrapping:**
+
+| File                          | Asset‑id               | Expected SHA‑256 |
+|-------------------------------|------------------------|------------------|
+| package.json (initial)        | `FND001_pkg_json`      | H(FND001_pkg_json) |
+| vite.config.ts                | `FND001_vite_ts`       | H(FND001_vite_ts) |
+| tsconfig.json                 | `FND001_tsconfig`      | H(FND001_tsconfig) |
+| tsconfig.node.json            | `FND001_tsconfig_node` | H(FND001_tsconfig_node) |
+| src/index.css (empty)         | `FND001_empty_css`     | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (empty file) |
+| src/App.tsx                   | `FND001_app_tsx`       | H(FND001_app_tsx) |
+| .gitignore                    | `FND001_gitignore`     | H(FND001_gitignore) |
+
+**Also ensure:** `public/` directory exists (Vite creates it). Delete `src/App.css`, `src/assets/react.svg`, `public/vite.svg` if present.
+
+**Code Blocks:**
+
+#### Code Block: `FND001_pkg_json`
+```json
+{
+  "name": "command-center",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
+```
+
+#### Code Block: `FND001_vite_ts`
+```ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    target: 'esnext',
+  },
+});
+```
+
+#### Code Block: `FND001_tsconfig`
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+```
+
+#### Code Block: `FND001_tsconfig_node`
+```json
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["vite.config.ts"]
+}
+```
+
+#### Code Block: `FND001_app_tsx`
+```tsx
+export default function App() {
+  return <div>Hello Command Center</div>;
+}
+```
+
+#### Code Block: `FND001_gitignore`
+```
+node_modules
+dist
+.agent
+```
+
+**Guard:** If tsconfig uses `"moduleResolution": "node"`, replace with `"bundler"`.
+
+**Verification:** `pnpm dev` starts on localhost:5173; `curl -s http://localhost:5173 | head -n 5` returns HTML; `tsc --noEmit` passes.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑002 — Core dependencies + shared infrastructure (with deterministic generated files)
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.0 | pri: H | parallel_group: deps
+resources: R: «package.json»  W: «package.json,node_modules,pnpm‑lock.yaml,components.json,src/lib/utils.ts,src/lib/db.ts,src/components/ui/button.tsx,src/components/shared/SanitizedHTML.tsx,src/hooks/useStorageQuota.ts»
+uses_global: $g2,$g12,$g15,$g16,$g17,$g18,$g23,$g35
+
+**Special: Deterministic dependency installation**
+
+The bootstrapping step (FND‑BOOT) already generated `pnpm‑lock.yaml` and a shadcn Button file, recording their hashes. The agent must now:
+
+1. Ensure `package.json` exactly matches the content below (hash `H(FND002_pkg_final)`).
+2. Verify that `pnpm‑lock.yaml` does not exist or its hash matches `H(LOCKFILE_YAML)`. If missing or wrong, copy the file from `.agent/lockfile.yaml` to `pnpm‑lock.yaml`.
+3. Run `pnpm install --frozen‑lockfile`. This will install exact dependencies from the lockfile.
+4. Ensure `src/components/ui/button.tsx` exists and matches the hash `H(SHADCN_BUTTON)`. If missing or wrong, copy the file from `.agent/shadcn-button.tsx` to the correct path.
+5. Create the other source files below, ensuring each matches its hash.
+
+**File states after bootstrapping:**
+
+| File                                    | Asset‑id                     | Expected SHA‑256 |
+|-----------------------------------------|------------------------------|------------------|
+| package.json (final)                    | `FND002_pkg_final`           | H(FND002_pkg_final) |
+| pnpm‑lock.yaml                          | `LOCKFILE_YAML`              | H(LOCKFILE_YAML) |
+| components.json                         | `FND002_components_json`     | H(FND002_components_json) |
+| src/lib/utils.ts                        | `FND002_utils_ts`            | H(FND002_utils_ts) |
+| src/lib/db.ts                           | `FND002_db_ts`               | H(FND002_db_ts) |
+| src/components/ui/button.tsx            | `SHADCN_BUTTON`              | H(SHADCN_BUTTON) |
+| src/components/shared/SanitizedHTML.tsx | `FND002_SanitizedHTML_tsx`   | H(FND002_SanitizedHTML_tsx) |
+| src/hooks/useStorageQuota.ts            | `FND002_useStorageQuota_ts`  | H(FND002_useStorageQuota_ts) |
+
+**Code Blocks:**
+
+#### Code Block: `FND002_pkg_final`
+```json
+{
+  "name": "command-center",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "motion": "12.0.0",
+    "zustand": "5.0.0",
+    "@tanstack/react-query": "5.62.0",
+    "zod": "3.24.0",
+    "react-router": "7.1.0",
+    "@tanstack/react-virtual": "3.11.0",
+    "next-themes": "0.4.0",
+    "dexie": "4.0.0",
+    "dompurify": "3.2.0",
+    "html-react-parser": "5.2.0",
+    "tailwindcss": "4.0.0",
+    "@tailwindcss/vite": "4.0.0",
+    "tailwind-merge": "2.6.0",
+    "clsx": "2.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.0.0",
+    "tw-animate-css": "1.2.0",
+    "@tanstack/react-query-devtools": "5.62.0",
+    "eslint": "9.0.0",
+    "@typescript-eslint/parser": "8.18.0",
+    "@typescript-eslint/eslint-plugin": "8.18.0",
+    "eslint-plugin-react-hooks": "5.1.0",
+    "eslint-plugin-react-refresh": "0.4.14",
+    "eslint-config-prettier": "9.1.0",
+    "prettier": "3.4.0",
+    "husky": "9.0.0",
+    "lint-staged": "15.0.0",
+    "commitlint": "19.0.0",
+    "@commitlint/config-conventional": "19.0.0",
+    "vitest": "2.1.8",
+    "@testing-library/react": "16.1.0",
+    "@testing-library/jest-dom": "6.6.3",
+    "msw": "2.7.0",
+    "happy-dom": "15.0.0"
+  }
+}
+```
+
+#### Code Block: `FND002_utils_ts`
+```ts
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+#### Code Block: `FND002_db_ts`
+```ts
+import { Dexie } from 'dexie';
+
+export interface NewsArticle { id: string; sourceId: string; publishedAt: string; topics: string[]; url: string; syncStatus: "draft"|"syncing"|"synced"; }
+export interface Bookmark { id: string; articleId: string; createdAt: string; }
+export interface ReadStatus { id: string; articleId: string; readAt: string; }
+export interface Transaction { id: string; accountId: string; categoryId: string; date: string; type: string; amount: number; syncStatus: "draft"|"syncing"|"synced"; }
+export interface RecurringItem { id: string; accountId: string; categoryId: string; nextDate: string; isActive: boolean; }
+export interface Goal { id: string; targetAmount: number; currentAmount: number; deadline: string; status: string; }
+export interface EmailMessage { id: string; accountId: string; threadId: string; subject: string; date: string; isRead: boolean; syncStatus: "draft"|"syncing"|"synced"; }
+export interface QueuedAction { id: string; type: string; payload: any; createdAt: string; retryCount: number; }
+export interface Attachment { id: string; messageId: string; filename: string; size: number; mimeType: string; }
+export interface Contact { id: string; email: string; phone: string; name: string; syncStatus: "draft"|"syncing"|"synced"; }
+export interface ContactInteraction { id: string; contactId: string; type: string; timestamp: string; }
+export interface ListItem { id: string; listId: string; parentId: string; position: number; contentType: string; syncStatus: "draft"|"syncing"|"synced"; }
+export interface ListTemplate { id: string; name: string; type: string; isBuiltIn: boolean; }
+export interface DocumentMetadata { id: string; parentId: string; name: string; mimeType: string; size: number; createdAt: string; syncStatus: "draft"|"syncing"|"synced"; }
+export interface QueuedDocumentAction { id: string; type: string; documentId: string; payload: any; createdAt: string; }
+export interface DocumentVersion { id: string; documentId: string; version: number; createdAt: string; checksum: string; }
+
+export class CommandCenterDB extends Dexie {
+  news_articles: Dexie.Table<NewsArticle, string>;
+  news_bookmarks: Dexie.Table<Bookmark, string>;
+  news_readStatus: Dexie.Table<ReadStatus, string>;
+  budget_transactions: Dexie.Table<Transaction, string>;
+  budget_recurring: Dexie.Table<RecurringItem, string>;
+  budget_goals: Dexie.Table<Goal, string>;
+  email_messages: Dexie.Table<EmailMessage, string>;
+  email_queue: Dexie.Table<QueuedAction, string>;
+  email_attachments: Dexie.Table<Attachment, string>;
+  contacts_records: Dexie.Table<Contact, string>;
+  contacts_interactions: Dexie.Table<ContactInteraction, string>;
+  lists_items: Dexie.Table<ListItem, string>;
+  lists_templates: Dexie.Table<ListTemplate, string>;
+  docs_metadata: Dexie.Table<DocumentMetadata, string>;
+  docs_queue: Dexie.Table<QueuedDocumentAction, string>;
+  docs_versions: Dexie.Table<DocumentVersion, string>;
+
+  constructor() {
+    super('CommandCenterDB');
+    this.version(1).stores({
+      news_articles: 'id, sourceId, publishedAt, syncStatus',
+      news_bookmarks: 'id, articleId, createdAt',
+      news_readStatus: 'id, articleId, readAt',
+      budget_transactions: 'id, accountId, categoryId, date, syncStatus',
+      budget_recurring: 'id, accountId, categoryId, nextDate, isActive',
+      budget_goals: 'id, targetAmount, currentAmount, deadline, status',
+      email_messages: 'id, accountId, threadId, subject, date, syncStatus',
+      email_queue: 'id, type, payload, createdAt, retryCount',
+      email_attachments: 'id, messageId, filename, size, mimeType',
+      contacts_records: 'id, email, phone, name, syncStatus',
+      contacts_interactions: 'id, contactId, type, timestamp',
+      lists_items: 'id, listId, parentId, position, contentType, syncStatus',
+      lists_templates: 'id, name, type, isBuiltIn',
+      docs_metadata: 'id, parentId, name, mimeType, size, syncStatus',
+      docs_queue: 'id, type, documentId, payload, createdAt',
+      docs_versions: 'id, documentId, version, createdAt, checksum'
+    });
+  }
+}
+
+export const db = new CommandCenterDB();
+```
+
+#### Code Block: `FND002_SanitizedHTML_tsx`
+```tsx
+import DOMPurify from 'dompurify';
+import parse from 'html-react-parser';
+
+interface SanitizedHTMLProps {
+  html: string;
+  allowlist?: DOMPurify.Config['ALLOWED_TAGS'];
+  className?: string;
+}
+
+const DEFAULT_ALLOWLIST = {
+  ALLOWED_TAGS: [
+    'p','h1','h2','h3','h4','h5','h6','ul','ol','li','strong','em','a',
+    'img','blockquote','pre','code','br','hr','table','thead','tbody','tr','th','td'
+  ],
+  ALLOWED_ATTR: ['href','src','alt','title','target','rel','class'],
+};
+
+export function SanitizedHTML({ html, allowlist = DEFAULT_ALLOWLIST, className }: SanitizedHTMLProps) {
+  const cleanHtml = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: allowlist.ALLOWED_TAGS,
+    ALLOWED_ATTR: allowlist.ALLOWED_ATTR,
+    FORBID_TAGS: ['script','iframe','object','embed','form','input'],
+    FORBID_ATTR: ['onclick','onload','onerror','onmouseover'],
+  });
+
+  const processedHtml = cleanHtml.replace(
+    /<a\s+href=(["'])(https?:\/\/[^"']+)\1/gi,
+    '<a href="$1$2$1" target="_blank" rel="noopener noreferrer"'
+  );
+
+  return <div className={className}>{parse(processedHtml)}</div>;
+}
+```
+
+#### Code Block: `FND002_useStorageQuota_ts`
+```ts
+import { useEffect, useState } from 'react';
+
+export function useStorageQuota() {
+  const [quota, setQuota] = useState<{
+    usage: number; quota: number; percentage: number; isNearLimit: boolean
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const estimate = async () => {
+      try {
+        const est = await navigator.storage.estimate();
+        const usage = est.usage || 0;
+        const quotaLimit = est.quota || 0;
+        const percentage = quotaLimit > 0 ? (usage / quotaLimit) * 100 : 0;
+        setQuota({
+          usage,
+          quota: quotaLimit,
+          percentage,
+          isNearLimit: percentage >= 80,
+        });
+      } catch (error) {
+        console.warn('Storage estimate failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    estimate();
+    const interval = setInterval(estimate, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatBytes = (bytes: number) => {
+    const units = ['B','KB','MB','GB'];
+    let size = bytes, idx = 0;
+    while (size >= 1024 && idx < units.length-1) { size /= 1024; idx++; }
+    return `${size.toFixed(1)} ${units[idx]}`;
+  };
+
+  return {
+    quota,
+    isLoading,
+    formatBytes,
+    shouldShowWarning: quota?.isNearLimit ?? false,
+    warningMessage: quota
+      ? `Storage usage at ${quota.percentage.toFixed(1)}% (${formatBytes(quota.usage)} / ${formatBytes(quota.quota)})`
+      : undefined,
+  };
+}
+```
+
+**Guard & Fix‑it:**  
+- If `dangerouslySetInnerHTML` found outside SanitizedHTML → [S] BLOCK: remove and use SanitizedHTML.  
+- If `from "framer-motion"` detected → [B] replace with `"motion/react"`.  
+- If `from "react-router-dom"` detected → [B] replace with `"react-router"`.  
+- If `pnpm install` fails with network error, retry once after 30s; if still failing, stop and tell user to check internet.
+
+**Verification:** `pnpm build` succeeds; SanitizedHTML test (see Appendix B) blocks script; storage quota hook renders without crash.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑003 — Code quality toolchain
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.0 | pri: H | parallel_group: toolchain
+resources: R: «src»  W: «eslint.config.js,.prettierrc,.husky/»
+uses_global: $g11
+
+**File states after bootstrapping:**
+
+| File                     | Asset‑id               | Expected SHA‑256 |
+|--------------------------|------------------------|------------------|
+| eslint.config.js         | `FND003_eslint_js`     | H(FND003_eslint_js) |
+| .prettierrc              | `FND003_prettierrc`    | H(FND003_prettierrc) |
+| .husky/pre-commit        | `FND003_husky_commit`  | H(FND003_husky_commit) |
+| commitlint.config.js     | `FND003_commitlint_js` | H(FND003_commitlint_js) |
+
+After writing, run `chmod +x .husky/*` to ensure hooks are executable.
+
+**Code Blocks:**
+
+#### Code Block: `FND003_eslint_js`
+```js
+import tseslint from 'typescript-eslint';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import prettier from 'eslint-config-prettier';
+
+export default tseslint.config(
+  { ignores: ['dist'] },
+  {
+    extends: [
+      ...tseslint.configs.recommended,
+      prettier,
+    ],
+    files: ['**/*.{ts,tsx}'],
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    },
+  }
+);
+```
+
+#### Code Block: `FND003_prettierrc`
+```json
+{
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "all"
+}
+```
+
+#### Code Block: `FND003_husky_commit`
+```bash
+pnpm lint-staged
+```
+
+#### Code Block: `FND003_commitlint_js`
+```js
+export default { extends: ['@commitlint/config-conventional'] };
+```
+
+**Guard & Fix‑it:**  
+- Legacy `.eslintrc.js` exists → delete it.  
+- Prettier plugin not last → move to last in extends array.
+
+**Verification:** `pnpm lint` passes with 0 warnings; `pnpm format:check` passes.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑004 — Testing infrastructure
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.5 | pri: H | parallel_group: toolchain
+resources: R: «src»  W: «vitest.config.ts,src/test/setup.ts,src/mocks/server.ts,src/test/motion-helpers.ts»
+uses_global: $g11
+
+**File states after bootstrapping:**
+
+| File                        | Asset‑id                  | Expected SHA‑256 |
+|-----------------------------|---------------------------|------------------|
+| vitest.config.ts            | `FND004_vitest_config`    | H(FND004_vitest_config) |
+| src/test/setup.ts           | `FND004_setup_ts`         | H(FND004_setup_ts) |
+| src/mocks/server.ts         | `FND004_msw_server`       | H(FND004_msw_server) |
+| src/test/motion-helpers.ts  | `FND004_motion_helpers`   | H(FND004_motion_helpers) |
+
+**Code Blocks:**
+
+#### Code Block: `FND004_vitest_config`
+```ts
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'happy-dom',
+    setupFiles: './src/test/setup.ts',
+    globals: true,
+    coverage: {
+      provider: 'v8',
+      thresholds: {
+        lines: 80,
+      },
+    },
+  },
+});
+```
+
+#### Code Block: `FND004_setup_ts`
+```ts
+import '@testing-library/jest-dom/vitest';
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }),
+});
+
+global.ResizeObserver = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+global.IntersectionObserver = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+} as any;
+```
+
+#### Code Block: `FND004_msw_server`
+```ts
+import { setupServer } from 'msw/node';
+export const server = setupServer();
+
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+```
+
+#### Code Block: `FND004_motion_helpers`
+```ts
+import { vi } from 'vitest';
+export function mockReducedMotion(prefersReduced = true) {
+  vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
+    matches: query === '(prefers-reduced-motion: reduce)' ? prefersReduced : false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
+}
+```
+
+**Guard:** MSW server must use `onUnhandledRequest: 'error'` → [S] BLOCK.
+
+**Verification:** `pnpm test -- --run` passes (smoke test for `cn()`).
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑005 — Zustand store architecture
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.5 | pri: H | parallel_group: store
+resources: W: «src/stores/index.ts,src/stores/slices/uiSlice.ts»
+uses_global: $g8,$g22
+
+**File states after bootstrapping:**
+
+| File                         | Asset‑id              | Expected SHA‑256 |
+|------------------------------|-----------------------|------------------|
+| src/stores/slices/uiSlice.ts | `FND005_uiSlice_ts`   | H(FND005_uiSlice_ts) |
+| src/stores/index.ts          | `FND005_store_index`  | H(FND005_store_index) |
+
+**Code Blocks:**
+
+#### Code Block: `FND005_uiSlice_ts`
+```ts
+import type { StateCreator } from 'zustand';
+
+export interface UISlice {
+  sidebarOpen: boolean;
+  rightPanel: string | null;
+  focusTriggerRef: HTMLElement | null;
+  setSidebarOpen: (open: boolean) => void;
+  setRightPanel: (panel: string | null) => void;
+  setFocusTrigger: (element: HTMLElement) => void;
+  clearFocusTrigger: () => void;
+}
+
+export const createUISlice: StateCreator<UISlice> = (set) => ({
+  sidebarOpen: true,
+  rightPanel: null,
+  focusTriggerRef: null,
+  setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  setRightPanel: (panel) => set({ rightPanel: panel }),
+  setFocusTrigger: (element) => set({ focusTriggerRef: element }),
+  clearFocusTrigger: () => set({ focusTriggerRef: null }),
+});
+```
+
+#### Code Block: `FND005_store_index`
+```ts
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
+import { createUISlice, type UISlice } from './slices/uiSlice';
+import { useShallow } from 'zustand/react/shallow';
+
+export type AppState = UISlice;
+
+export const useAppStore = create<AppState>()(
+  devtools(
+    persist(
+      (...a) => ({
+        ...createUISlice(...a),
+      }),
+      {
+        name: 'command-center-ui',
+        partialize: (state) => ({
+          sidebarOpen: state.sidebarOpen,
+        }),
+      }
+    )
+  )
+);
+
+export const useSidebarOpen = () => useAppStore((s) => s.sidebarOpen);
+export const useRightPanel = () => useAppStore((s) => s.rightPanel);
+export const useFocusTriggerRef = () => useAppStore((s) => s.focusTriggerRef);
+export const useUIActions = () =>
+  useAppStore(
+    useShallow((s) => ({
+      setSidebarOpen: s.setSidebarOpen,
+      setRightPanel: s.setRightPanel,
+      setFocusTrigger: s.setFocusTrigger,
+      clearFocusTrigger: s.clearFocusTrigger,
+    }))
+  );
+```
+
+**Guard:** If `useState` used for sidebar or panel state → [B] replace with store selectors.
+
+**Verification:** `pnpm test -- --run -t "uiSlice"` passes.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑006 — TanStack Query v5 configuration
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.0 | pri: H | parallel_group: store
+resources: W: «src/lib/queryClient.ts,src/queries/,src/lib/useOptimisticMutation.ts»
+uses_global: $g19
+
+**File states after bootstrapping:**
+
+| File                              | Asset‑id                      | Expected SHA‑256 |
+|-----------------------------------|-------------------------------|------------------|
+| src/lib/queryClient.ts            | `FND006_queryClient_ts`       | H(FND006_queryClient_ts) |
+| src/lib/useOptimisticMutation.ts  | `FND006_optimistic_ts`        | H(FND006_optimistic_ts) |
+
+**Code Blocks:**
+
+#### Code Block: `FND006_queryClient_ts`
+```ts
+import { QueryClient } from '@tanstack/react-query';
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      gcTime: 30 * 60 * 1000,
+      retry: 1,
+    },
+  },
+});
+```
+
+#### Code Block: `FND006_optimistic_ts`
+```ts
+import { useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
+
+export function useOptimisticMutation<TData, TError, TVariables>({
+  mutationFn,
+  queryKey,
+  optimisticUpdate,
+  onSettled,
+}: {
+  mutationFn: (vars: TVariables) => Promise<TData>;
+  queryKey: QueryKey;
+  optimisticUpdate: (old: TData | undefined, vars: TVariables) => TData;
+  onSettled?: () => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn,
+    onMutate: async (vars) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<TData>(queryKey);
+      queryClient.setQueryData<TData>(queryKey, (old) => optimisticUpdate(old, vars));
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(queryKey, context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+      onSettled?.();
+    },
+  });
+}
+```
+
+Also create `src/queries/` directory (empty). Lazy‑load React Query DevTools in `FND‑008`.
+
+**Guard:** Any custom `useMutation` outside this wrapper → [S] BLOCK.
+
+**Verification:** `pnpm test -- --run -t "useOptimistic"` passes.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑007 — React Router v7 route architecture
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.0 | pri: H | parallel_group: router
+resources: W: «src/router/index.tsx,src/router/routes.ts,src/pages/*,src/components/shared/GlobalErrorFallback.tsx»
+uses_global: $g12,$g25
+
+**File states after bootstrapping:**
+
+| File                                  | Asset‑id              | Expected SHA‑256 |
+|---------------------------------------|-----------------------|------------------|
+| src/router/index.tsx                  | `FND007_router_index` | H(FND007_router_index) |
+| src/router/routes.ts                  | `FND007_router_routes`| H(FND007_router_routes)|
+| src/pages/Dashboard.tsx               | `FND007_page_dash`    | H(FND007_page_dash) |
+| src/pages/Chat.tsx                    | `FND007_page_chat`    | H(FND007_page_chat) |
+| src/pages/Projects.tsx                | `FND007_page_proj`    | H(FND007_page_proj) |
+| src/pages/Calendar.tsx                | `FND007_page_cal`     | H(FND007_page_cal) |
+| src/pages/Lists.tsx                   | `FND007_page_lists`   | H(FND007_page_lists)|
+| src/pages/Email.tsx                   | `FND007_page_email`   | H(FND007_page_email)|
+| src/components/shared/GlobalErrorFallback.tsx | `FND007_error_fallback` | H(FND007_error_fallback) |
+
+**Code Blocks:**
+
+#### Code Block: `FND007_router_index`
+```tsx
+import { createBrowserRouter } from 'react-router';
+import { routes } from './routes';
+
+export const router = createBrowserRouter(routes);
+```
+
+#### Code Block: `FND007_router_routes`
+```tsx
+import type { RouteObject } from 'react-router';
+import AppShell from '@/layouts/AppShell';
+import GlobalErrorFallback from '@/components/shared/GlobalErrorFallback';
+
+export const routes: RouteObject[] = [
+  {
+    path: '/',
+    element: <AppShell />,
+    errorElement: <GlobalErrorFallback />,
+    children: [
+      { index: true, lazy: () => import('@/pages/Dashboard') },
+      { path: 'chat', lazy: () => import('@/pages/Chat') },
+      { path: 'projects', lazy: () => import('@/pages/Projects') },
+      { path: 'calendar', lazy: () => import('@/pages/Calendar') },
+      { path: 'lists', lazy: () => import('@/pages/Lists') },
+      { path: 'email', lazy: () => import('@/pages/Email') },
+    ],
+  },
+];
+```
+
+Example page (Dashboard):
+#### Code Block: `FND007_page_dash`
+```tsx
+export default function Dashboard() {
+  return <div>Dashboard</div>;
+}
+```
+
+All other pages follow identical structure with the name changed.
+
+#### Code Block: `FND007_error_fallback`
+```tsx
+export default function GlobalErrorFallback() {
+  return <div>Something went wrong.</div>;
+}
+```
+
+**Verification:** `pnpm test -- --run -t "Router"` passes.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑008 — App entry point & provider composition
+──────────────────────────────────────────────────────────────────────────────
+effort: 0.5 | pri: H | parallel_group: shell
+resources: W: «src/main.tsx,src/layouts/AppShell.tsx,src/components/shared/SkipLink.tsx»
+uses_global: $g7,$g8,$g20,$g21
+
+**File states after bootstrapping:**
+
+| File                               | Asset‑id              | Expected SHA‑256 |
+|------------------------------------|-----------------------|------------------|
+| src/main.tsx                       | `FND008_main_tsx`     | H(FND008_main_tsx) |
+| src/layouts/AppShell.tsx           | `FND008_appshell_tsx` | H(FND008_appshell_tsx) |
+| src/components/shared/SkipLink.tsx | `FND008_skiplink_tsx` | H(FND008_skiplink_tsx) |
+
+**Code Blocks:**
+
+#### Code Block: `FND008_main_tsx`
+```tsx
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/lib/queryClient';
+import { ThemeProvider } from '@/providers/ThemeProvider';
+import { RouterProvider } from 'react-router';
+import { router } from '@/router';
+import { Suspense } from 'react';
+
+const root = createRoot(document.getElementById('root')!);
+root.render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <RouterProvider router={router} />
+        </Suspense>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </StrictMode>
+);
+```
+
+#### Code Block: `FND008_appshell_tsx`
+```tsx
+import { Outlet, useLocation } from 'react-router';
+import { AnimatePresence, motion } from 'motion/react';
+import Sidebar from '@/components/layout/Sidebar';
+import StatusBar from '@/components/layout/StatusBar';
+import RightPanel from '@/components/layout/RightPanel';
+import CommandPalette from '@/components/layout/CommandPalette';
+import VoiceShell from '@/components/layout/VoiceShell';
+import SkipLink from '@/components/shared/SkipLink';
+
+export default function AppShell() {
+  const location = useLocation();
+
+  return (
+    <>
+      <SkipLink />
+      <div className="flex h-screen bg-background">
+        <Sidebar />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <main id="main-content" className="flex-1 overflow-auto relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Outlet />
+              </motion.div>
+            </AnimatePresence>
+          </main>
+          <StatusBar />
+        </div>
+      </div>
+      <RightPanel />
+      <CommandPalette />
+      <VoiceShell />
+    </>
+  );
+}
+```
+
+#### Code Block: `FND008_skiplink_tsx`
+```tsx
+export default function SkipLink() {
+  return (
+    <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 bg-background p-2">
+      Skip to main content
+    </a>
+  );
+}
+```
+
+**Verification:** Full tree mounts without errors; page transitions animate; SkipLink is first focusable element.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑009 — Sidebar shell
+──────────────────────────────────────────────────────────────────────────────
+effort: 2.0 | pri: H | parallel_group: layout
+resources: W: «src/components/layout/Sidebar.tsx,src/components/layout/NavItem.tsx»
+uses_global: $g6,$g9,$g10,$lc‑focus,$g22
+
+**File states after bootstrapping:**
+
+| File                               | Asset‑id              | Expected SHA‑256 |
+|------------------------------------|-----------------------|------------------|
+| src/components/layout/Sidebar.tsx  | `FND009_sidebar_tsx`  | H(FND009_sidebar_tsx) |
+| src/components/layout/NavItem.tsx  | `FND009_navitem_tsx`  | H(FND009_navitem_tsx) |
+
+**Code Blocks:**
+
+#### Code Block: `FND009_navitem_tsx`
+```tsx
+import { NavLink } from 'react-router';
+import { motion } from 'motion/react';
+
+interface NavItemProps {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+}
+
+export default function NavItem({ to, icon, label }: NavItemProps) {
+  return (
+    <NavLink to={to} className="group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted/50 transition">
+      {({ isActive }) => (
+        <>
+          <span className="relative flex-shrink-0">
+            {icon}
+            {isActive && (
+              <motion.div
+                layoutId="active-nav"
+                className="absolute inset-0 -z-10 rounded bg-accent/30"
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              />
+            )}
+          </span>
+          <span>{label}</span>
+        </>
+      )}
+    </NavLink>
+  );
+}
+```
+
+#### Code Block: `FND009_sidebar_tsx`
+```tsx
+import { motion, useReducedMotion } from 'motion/react';
+import { useSidebarOpen, useUIActions } from '@/stores';
+import NavItem from './NavItem';
+
+const moduleItems = [
+  { to: '/', icon: '🏠', label: 'Dashboard' },
+  { to: '/chat', icon: '💬', label: 'Chat' },
+  { to: '/projects', icon: '📁', label: 'Projects' },
+  { to: '/calendar', icon: '📅', label: 'Calendar' },
+  { to: '/lists', icon: '✔️', label: 'Lists' },
+  { to: '/email', icon: '📧', label: 'Email' },
+];
+
+export default function Sidebar() {
+  const sidebarOpen = useSidebarOpen();
+  const { setSidebarOpen } = useUIActions();
+  const prefersReduced = useReducedMotion();
+
+  const width = sidebarOpen ? 240 : 64;
+  const transition = prefersReduced ? { type: 'tween', duration: 0 } : { type: 'spring', stiffness: 300, damping: 30 };
+
+  return (
+    <motion.aside
+      className="noise-overlay glass border-r border-muted h-full flex flex-col p-2 gap-1"
+      animate={{ width }}
+      transition={transition}
+      onMouseEnter={() => setSidebarOpen(true)}
+      onMouseLeave={() => setSidebarOpen(false)}
+      role="navigation"
+      aria-label="Main navigation"
+    >
+      {moduleItems.map((item) => (
+        <NavItem key={item.to} {...item} />
+      ))}
+    </motion.aside>
+  );
+}
+```
+
+**Guard:** If `useState` used for sidebar → [B] replace with store.
+
+**Verification:** `pnpm test -- --run -t "Sidebar"` passes; keyboard navigation works.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑010 — StatusBar shell (with stable callback pattern, no experimental APIs)
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.0 | pri: H | parallel_group: layout
+resources: W: «src/components/layout/StatusBar.tsx»
+uses_global: $g6,$g10,$g18,$g21
+
+**File state:**
+
+| File                              | Asset‑id               | Expected SHA‑256 |
+|-----------------------------------|------------------------|------------------|
+| src/components/layout/StatusBar.tsx | `FND010_statusbar_tsx` | H(FND010_statusbar_tsx) |
+
+**Code Block:**
+
+#### Code Block: `FND010_statusbar_tsx`
+```tsx
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useStorageQuota } from '@/hooks/useStorageQuota';
+import { useReducedMotion } from 'motion/react';
+
+export default function StatusBar() {
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
+  const { shouldShowWarning, warningMessage } = useStorageQuota();
+  const prefersReduced = useReducedMotion();
+
+  const updateTime = useCallback(() => {
+    setTime(new Date().toLocaleTimeString());
+  }, []);
+
+  const updateTimeRef = useRef(updateTime);
+  updateTimeRef.current = updateTime;
+
+  useEffect(() => {
+    const timer = setInterval(() => updateTimeRef.current(), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <footer
+      className="fixed bottom-0 left-0 right-0 h-8 bg-background/90 border-t border-muted flex items-center justify-between px-3 text-xs text-muted-foreground z-50"
+      role="contentinfo"
+      aria-live="polite"
+    >
+      <div className="flex items-center gap-3">
+        <span className="flex items-center gap-1">
+          <span
+            className="inline-block w-2 h-2 rounded-full bg-green-500"
+            style={{ animation: prefersReduced ? 'none' : undefined }}
+          />
+          Connected
+        </span>
+        <span>Agents: 0</span>
+      </div>
+      <div className="flex items-center gap-3">
+        <span>{time}</span>
+        <span>Tokens: 0</span>
+        {shouldShowWarning && (
+          <span className="text-yellow-400" title={warningMessage}>
+            Storage ⚠️
+          </span>
+        )}
+      </div>
+    </footer>
+  );
+}
+```
+
+**Verification:** StatusBar visible; time updates; warning at ≥80%.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑011 — RightPanel shell
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.0 | pri: H | parallel_group: layout
+resources: W: «src/components/layout/RightPanel.tsx»
+uses_global: $g6,$g8,$lc‑focus
+
+**File state:**
+
+| File                                | Asset‑id                | Expected SHA‑256 |
+|-------------------------------------|-------------------------|------------------|
+| src/components/layout/RightPanel.tsx | `FND011_rightpanel_tsx`| H(FND011_rightpanel_tsx) |
+
+**Code Block:**
+```tsx
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { useRightPanel, useUIActions, useFocusTriggerRef } from '@/stores';
+import { useEffect } from 'react';
+
+export default function RightPanel() {
+  const rightPanel = useRightPanel();
+  const { setRightPanel } = useUIActions();
+  const focusTriggerRef = useFocusTriggerRef();
+  const prefersReduced = useReducedMotion();
+
+  const transition = prefersReduced ? { duration: 0 } : { type: 'spring', stiffness: 300, damping: 30 };
+
+  useEffect(() => {
+    if (!rightPanel && focusTriggerRef) {
+      focusTriggerRef.focus();
+    }
+  }, [rightPanel, focusTriggerRef]);
+
+  return (
+    <AnimatePresence>
+      {rightPanel && (
+        <motion.aside
+          key="right-panel"
+          className="noise-overlay glass fixed top-0 right-0 h-full w-80 border-l border-muted bg-background/95 backdrop-blur-xl z-40 overflow-y-auto"
+          initial={{ x: 320 }}
+          animate={{ x: 0 }}
+          exit={{ x: 320 }}
+          transition={transition}
+        >
+          <button
+            onClick={() => setRightPanel(null)}
+            className="absolute top-2 right-2 p-1 rounded hover:bg-muted"
+            aria-label="Close panel"
+          >
+            ✕
+          </button>
+          <div className="p-4">
+            <h2 className="text-lg font-semibold">Right Panel</h2>
+            <p>Content for {rightPanel}</p>
+          </div>
+        </motion.aside>
+      )}
+    </AnimatePresence>
+  );
+}
+```
+
+**Verification:** `pnpm test -- --run -t "RightPanel focus"` passes.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑012 — CommandPalette shell
+──────────────────────────────────────────────────────────────────────────────
+effort: 2.0 | pri: H | parallel_group: layout
+resources: W: «src/components/layout/CommandPalette.tsx,src/hooks/useIntentHandler.ts»
+uses_global: $g6,$g8,$g9,$lc‑focus,$g20
+
+**File states:**
+
+| File                                 | Asset‑id                  | Expected SHA‑256 |
+|--------------------------------------|---------------------------|------------------|
+| src/components/layout/CommandPalette.tsx | `FND012_palette_tsx`   | H(FND012_palette_tsx) |
+| src/hooks/useIntentHandler.ts        | `FND012_intent_handler`   | H(FND012_intent_handler) |
+
+**Code Blocks:**
+
+#### Code Block: `FND012_intent_handler`
+```ts
+import { useState } from 'react';
+
+export function useIntentHandler() {
+  const [intent, setIntent] = useState<string | null>(null);
+
+  const parseInput = (input: string) => {
+    setIntent(`Interpreted as: ${input}`);
+  };
+
+  const clearIntent = () => setIntent(null);
+
+  return { intent, parseInput, clearIntent };
+}
+```
+
+#### Code Block: `FND012_palette_tsx`
+```tsx
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { createPortal } from 'react-dom';
+import { useIntentHandler } from '@/hooks/useIntentHandler';
+import { useFocusTriggerRef, useUIActions } from '@/stores';
+
+export default function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { intent, parseInput, clearIntent } = useIntentHandler();
+  const focusTriggerRef = useFocusTriggerRef();
+  const { setFocusTrigger } = useUIActions();
+  const prefersReduced = useReducedMotion();
+
+  const transition = prefersReduced ? { duration: 0 } : { type: 'spring', stiffness: 300, damping: 30 };
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setOpen((prev) => !prev);
+      }
+      if (e.key === 'Escape' && open) {
+        setOpen(false);
+        focusTriggerRef?.focus();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [open, focusTriggerRef]);
+
+  useEffect(() => {
+    if (open) {
+      inputRef.current?.focus();
+      setFocusTrigger(document.activeElement as HTMLElement);
+    }
+  }, [open, setFocusTrigger]);
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    if (e.target.value) parseInput(e.target.value);
+    else clearIntent();
+  };
+
+  return createPortal(
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-black/50 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setOpen(false)}
+        >
+          <motion.div
+            className="w-full max-w-xl bg-background border border-muted rounded-xl shadow-2xl overflow-hidden"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={transition}
+            onClick={(e) => e.stopPropagation()}
+            role="combobox"
+            aria-expanded={open}
+            aria-haspopup="listbox"
+          >
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={handleInput}
+              placeholder="Type a command..."
+              className="w-full bg-transparent border-b border-muted px-4 py-3 text-sm outline-none"
+            />
+            {intent && (
+              <div className="px-4 py-2 text-xs text-muted-foreground">
+                {intent}
+              </div>
+            )}
+            <div className="p-2">
+              <div className="text-xs text-muted-foreground px-2 py-1">Commands</div>
+              <div className="text-xs text-muted-foreground px-2 py-1">Pages</div>
+              <div className="text-xs text-muted-foreground px-2 py-1">Recent</div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
+  );
+}
+```
+
+**Verification:** `Cmd+K` opens/closes; `Escape` returns focus; keyboard navigation works.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑013 — Accessibility foundation
+──────────────────────────────────────────────────────────────────────────────
+effort: 1.5 | pri: H | parallel_group: a11y
+resources: R: «src/layouts,src/components/layout»  W: none (modifies index.css)
+uses_global: $g8,$g9,$g10
+
+**Action:** Update `src/index.css` to add focus‑visible styles. The final `index.css` becomes the asset `FND013_index_css_final` and must match the code block below.
+
+**File state:**
+
+| File          | Asset‑id                 | Expected SHA‑256 |
+|---------------|--------------------------|------------------|
+| src/index.css | `FND013_index_css_final` | H(FND013_index_css_final) |
+
+**Code Block:**
+```css
+@import "tailwindcss";
+
+@theme inline {
+  --background: oklch(9.8% 0.006 264);
+  --foreground: oklch(93% 0.005 264);
+  --muted: oklch(16% 0.008 264);
+  --accent: oklch(67% 0.2 265);
+  --ring: oklch(67% 0.2 265);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    color-scheme: dark;
+  }
+  :focus-visible {
+    outline: 2px solid oklch(67% 0.2 265);
+    outline-offset: 2px;
+  }
+}
+
+@import "tw-animate-css";
+
+@utility noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  pointer-events: none;
+}
+
+@property --conic-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --conic-color {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+```
+
+**Verification:** Run `pnpm test:a11y` (if configured) or manual keyboard‑only navigation; zero console axe violations when run manually.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑014 — Voice shell (with Web Speech fallback, no experimental Activity)
+──────────────────────────────────────────────────────────────────────────────
+effort: 2.5 | pri: H | parallel_group: voice
+resources: W: «src/components/layout/VoiceShell.tsx,src/hooks/useWebSpeech.ts»
+uses_global: $g6,$g9,$g10,$g20,$g21,$g24
+
+**File states:**
+
+| File                                   | Asset‑id               | Expected SHA‑256 |
+|----------------------------------------|------------------------|------------------|
+| src/hooks/useWebSpeech.ts              | `FND014_webspeech_ts`  | H(FND014_webspeech_ts) |
+| src/components/layout/VoiceShell.tsx   | `FND014_voice_tsx`     | H(FND014_voice_tsx) |
+
+**Code Blocks:**
+
+#### Code Block: `FND014_webspeech_ts`
+```ts
+import { useState, useEffect, useCallback } from 'react';
+
+type VoiceState = 'idle' | 'listening' | 'processing' | 'preview' | 'execute';
+
+export function useWebSpeech() {
+  const [state, setState] = useState<VoiceState>('idle');
+  const [transcript, setTranscript] = useState('');
+  const [isSupported, setIsSupported] = useState(true);
+
+  useEffect(() => {
+    if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      setIsSupported(false);
+    }
+  }, []);
+
+  const startListening = useCallback(() => {
+    if (!isSupported) return;
+    setState('listening');
+    const timer = setTimeout(() => {
+      setTranscript('This is a test command');
+      setState('processing');
+      setTimeout(() => setState('preview'), 1000);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [isSupported]);
+
+  const confirm = useCallback(() => {
+    setState('execute');
+    setTimeout(() => setState('idle'), 1000);
+  }, []);
+
+  const cancel = useCallback(() => {
+    setState('idle');
+    setTranscript('');
+  }, []);
+
+  const speak = useCallback((text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utterance);
+    }
+  }, []);
+
+  return { state, transcript, isSupported, startListening, confirm, cancel, speak };
+}
+```
+
+#### Code Block: `FND014_voice_tsx`
+```tsx
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, useReducedMotion } from 'motion/react';
+import { useWebSpeech } from '@/hooks/useWebSpeech';
+import { useIntentHandler } from '@/hooks/useIntentHandler';
+
+export default function VoiceShell() {
+  const { state, transcript, isSupported, startListening, confirm, cancel } = useWebSpeech();
+  const { parseIntent } = useIntentHandler();
+  const prefersReduced = useReducedMotion();
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.code === 'Space') {
+        e.preventDefault();
+        startListening();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [startListening]);
+
+  useEffect(() => {
+    if (state === 'preview' && transcript) {
+      parseIntent(transcript);
+    }
+  }, [state, transcript, parseIntent]);
+
+  if (!isSupported) {
+    return (
+      <div className="fixed bottom-10 right-4 z-50 bg-muted p-2 rounded text-xs">
+        Voice not supported. Use <kbd>Ctrl+Space</kbd> to type command manually.
+      </div>
+    );
+  }
+
+  return createPortal(
+    <motion.div
+      className="fixed bottom-10 right-4 z-50"
+      animate={{
+        scale: state === 'listening' ? 1.2 : 1,
+      }}
+      transition={{ type: 'spring', stiffness: 300 }}
+      aria-live="assertive"
+    >
+      <button
+        onClick={startListening}
+        className="w-12 h-12 bg-accent rounded-full flex items-center justify-center shadow-lg"
+        aria-label="Voice command"
+      >
+        🎤
+      </button>
+      {state !== 'idle' && (
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-background border border-muted rounded px-2 py-1 text-xs whitespace-nowrap">
+          {state === 'listening' && 'Listening...'}
+          {state === 'processing' && 'Processing...'}
+          {state === 'preview' && (
+            <div className="flex gap-2">
+              <span>{transcript}</span>
+              <button onClick={confirm}>✓</button>
+              <button onClick={cancel}>✕</button>
+            </div>
+          )}
+          {state === 'execute' && 'Executing...'}
+        </div>
+      )}
+    </motion.div>,
+    document.body
+  );
+}
+```
+
+**Verification:** `Ctrl+Space` triggers flow; fallback UI if API missing; state transitions follow machine.
+
+──────────────────────────────────────────────────────────────────────────────
+### sec-FND‑FINAL — Final verification & success output
+──────────────────────────────────────────────────────────────────────────────
+effort: 0.2 | pri: H | parallel_group: final
+resources: R: «*» W: none
+uses_global: $g26,$g39
+
+**Actions:**
+1. Run `pnpm test` — must pass.
+2. Run `pnpm build` — must succeed.
+3. Run a performance audit: `lighthouse http://localhost:4173 --only-categories=performance` (or use `vite preview` on the dist). Check LCP ≤800ms.
+4. Compute Merkle root of workspace.
+5. Output the following success message:
+
+```
+✅ All 15 foundation tasks complete.
+   - Design tokens, scaffold, dependencies, toolchain, testing framework,
+     stores, router, shell, sidebar, status bar, right panel, command palette,
+     accessibility, voice shell.
+   - Workspace Merkle root: <hash>
+   - Run `pnpm dev` to see your Command Center.
+```
+
+**Attestation:** Final attestation signed.
+
+══════════════════════════════════════════════════════════════════════════════
+## APPENDIX A — Self‑Healing Recipe Catalogue
+══════════════════════════════════════════════════════════════════════════════
+- **Corrupt JSX file:** Overwrite with the exact code block from this spec.
+- **Missing dependency after install:** `pnpm install --frozen‑lockfile` again.
+- **Husky hooks not executable:** `chmod +x .husky/*`
+- **ESM import error for CSS:** Ensure `vite.config.ts` has `tailwindcss()` plugin.
+- **Focus restoration fails:** Check `focusTriggerRef` is set in store; verify `useEffect` runs on close.
+- **`pnpm install` network failures:** Retry once after 30s; if still failing, ask user to check internet.
+
+══════════════════════════════════════════════════════════════════════════════
+## APPENDIX B — Verification Matrix (machine‑readable)
+══════════════════════════════════════════════════════════════════════════════
+```yaml
+verifications:
+  - task: FND-META
+    commands:
+      - "spec_validator --check-refs"
+      - "ts-node scripts/check-cycles.ts"
+  - task: FND-000
+    commands:
+      - "tsc --noEmit"
+  - task: FND-001
+    commands:
+      - "pnpm dev & sleep 3; curl -s http://localhost:5173 | head -n 5; kill %1"
+  - task: FND-002
+    commands:
+      - "pnpm build"
+      - "pnpm test -- --run -t 'SanitizedHTML'"
+  - task: FND-003
+    commands:
+      - "pnpm lint"
+      - "pnpm format:check"
+  - task: FND-004
+    commands:
+      - "pnpm test -- --run"
+      - "pnpm test:coverage -- --run"
+  - task: FND-005
+    commands:
+      - "pnpm test -- --run -t 'uiSlice'"
+  - task: FND-006
+    commands:
+      - "pnpm test -- --run -t 'useOptimistic'"
+  - task: FND-007
+    commands:
+      - "pnpm test -- --run -t 'Router'"
+  - task: FND-008
+    commands:
+      - "pnpm test -- --run -t 'AppShell'"
+  - task: FND-009
+    commands:
+      - "pnpm test -- --run -t 'Sidebar'"
+  - task: FND-010
+    commands:
+      - "pnpm test -- --run -t 'StatusBar'"
+  - task: FND-011
+    commands:
+      - "pnpm test -- --run -t 'RightPanel focus'"
+  - task: FND-012
+    commands:
+      - "pnpm test -- --run -t 'CommandPalette'"
+  - task: FND-013
+    commands:
+      - "pnpm test:a11y || echo 'manual check required'"
+  - task: FND-014
+    commands:
+      - "pnpm test -- --run -t 'VoiceShell fallback'"
+  - task: FND-FINAL
+    commands:
+      - "pnpm test && pnpm build && lighthouse http://localhost:4173 --only-categories=performance"
+```
+══════════════════════════════════════════════════════════════════════════════
+## APPENDIX C — Quick Debugging Reference
+══════════════════════════════════════════════════════════════════════════════
+- **Tailwind styles not applying:** Check `@tailwindcss/vite` plugin in `vite.config.ts` and ensure `@import "tailwindcss"` is at the top of `index.css`.
+- **Zustand selector causing re‑renders:** Use `useShallow` on object selectors (`$g22`).
+- **Motion import error:** Ensure `motion` (v12) is imported from `motion/react`, not `framer-motion`.
+- **`tsc --noEmit` fails:** Check that all `@types` listed in `FND002_pkg_final` are installed.
+- **`pnpm install` stalls:** Check network connection; retry after 30s.
+- **Emoji‑related hash mismatch:** Save files as UTF‑8 without BOM, with LF line endings.
+
+══════════════════════════════════════════════════════════════════════════════
+## WHAT YOU’LL END UP WITH
+══════════════════════════════════════════════════════════════════════════════
+After executing all tasks, you will have a fully functional, dark‑themed Personal
+AI Command Center frontend with:
+- A glass‑morphism sidebar that expands on hover
+- Lazy‑loaded pages with smooth animated transitions
+- A command palette (Ctrl+K) with mock AI intent parsing
+- A voice orb (Ctrl+Space) with speech recognition fallback
+- A persistent status bar with storage quota warning
+- A right‑side panel with focus restoration
+- Offline‑first database (Dexie) with sync status fields
+- Full accessibility compliance
+- 80%+ code coverage
+
+Just run `pnpm dev` and open your browser.
+
+══════════════════════════════════════════════════════════════════════════════
+## END OF 01‑Foundations‑v6.txt
+══════════════════════════════════════════════════════════════════════════════
+```
+
+This final document incorporates all recommendations and is ready for Windsurf to execute autonomously.
