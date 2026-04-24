@@ -56,7 +56,7 @@ Unlike other modules that focus on task management or communication, Research is
 |----|------|-------------|
 | **RES-C01** | State Management | Zustand `researchSlice` for active notebook, documents, learning modes, and AI interactions. |
 | **RES-C02** | Document Processing | Multi-format support: PDF, text, audio, video, images. OCR and speech-to-text for content extraction. |
-| **RES-C03** | AI Integration | Local LLM integration for document analysis, summarization, and tutoring. Streaming responses for real-time interaction. |
+| **RES-C03** | AI Integration | Local LLM integration for document analysis, summarization, and tutoring. Streaming responses for real-time interaction. HTML content rendered via shared `SanitizedHTML` component. |
 | **RES-C04** | Visual Knowledge | Interactive mind maps with drag-and-drop, multiple layouts (mind map, concept map, tree). |
 | **RES-C05** | Learning Tools | Flashcards, quizzes, spaced repetition, progress tracking. |
 | **RES-C06** | Audio Processing | Text-to-speech for content narration, audio overview generation in multiple formats. |

@@ -123,6 +123,7 @@ Focus: enforce quality via CI with a full testing pyramid (unit → visual), plu
 - CI runs LHCI, pa11y/axe, unit, component, integration, E2E, and visual tests on every PR.  
 - PRs are blocked if performance < 90, accessibility < 90, tests fail, or lint/typecheck fails.  
 - Critical flows (auth, dashboard, chat, projects, calendar) are covered by at least integration + E2E tests.
+- **Mutation Pattern Conformance**: Zero inline `onMutate/onError/onSettled` patterns in module specs — all mutations use the shared `useOptimisticMutation()` wrapper (see FND-006H in 01-Foundations.md).
 
 ### Anti‑Patterns
 

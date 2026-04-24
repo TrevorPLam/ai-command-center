@@ -59,7 +59,7 @@ This necessitates several high-priority enhancements:
 | **BUDG-C07** | Drag-and-Drop | dnd-kit for all drag interactions (Kanban, My Week, within-list reordering). Always provide a keyboard-accessible alternative (WCAG 2.5.7). |
 | **BUDG-C08** | Motion | Respects `prefers-reduced-motion` for all Alive/Quiet tier animations. |
 | **BUDG-C09** | Error Resilience | Each major view wrapped in `<ErrorBoundary>` with `<Suspense fallback={<Skeleton />}>`. |
-| **BUDG-C10** | Offline Support | Dexie for local persistence of unsynced transactions and pending mutations. |
+| **BUDG-C10** | Offline Support | Centralised `CommandCenterDB` stores: `budget_transactions`, `budget_recurring`, `budget_goals`. Local persistence of unsynced transactions and pending mutations. |
 
 ### 🎯 Motion Tier Assignment
 
@@ -597,7 +597,7 @@ This necessitates several high-priority enhancements:
 
 ### Subtasks
 
-- [ ] **BUDG‑012A**: Install and configure Dexie in `src/lib/db.ts` with stores for `transactions`, `pendingMutations`, `syncMetadata`. **NEW**: Store for `offlineRules`.
+- [ ] **BUDG‑012A**: Use centralized `CommandCenterDB` from `01-Foundations.md` for budget stores: `budget_transactions`, `budget_recurring`, `budget_goals`. **NEW**: Store for `offlineRules`.
 
 - [ ] **[TEST] BUDG‑012A**: Dexie configured; stores created; offlineRules store added
 

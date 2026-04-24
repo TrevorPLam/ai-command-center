@@ -3,6 +3,14 @@ name: create-hooks
 description: Guides the creation of custom React hooks using TanStack Query v5 for data fetching, mutations, and domain-specific hooks for projects, calendar, budget, news, and settings. Use sse-implementation skill for Server-Sent Events.
 ---
 
+## Related Skills
+
+- **sse-implementation**: Use for Server-Sent Events and real-time streaming
+- **create-api-client**: Base API client setup and configuration
+- **performance**: Optimize hooks for Core Web Vitals and caching
+- **create-react-component**: Integrate hooks with component patterns
+- **virtualization-implementation**: For hooks managing large data sets
+
 ## Custom React Hooks
 
 Create custom hooks in `src/hooks/` following TanStack Query v5 patterns.

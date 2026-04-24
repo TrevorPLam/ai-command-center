@@ -3,6 +3,14 @@ name: motion-implementation
 description: Guides the implementation of motion library animations including spring physics, stagger effects, layout animations, exit animations, LED borders, pulse effects, and micro-interactions with performance best practices
 ---
 
+## Related Skills
+
+- **create-react-component**: Apply motion patterns to React components
+- **accessibility**: Ensure animations respect reduced motion preferences
+- **performance**: Optimize animations for Core Web Vitals
+- **bento-grid-layout**: Apply grid animations to bento layouts
+- **liquid-glass-implementation**: Combine motion effects with glass UI
+
 ## Motion Library Implementation Guide
 
 This skill guides implementation of the `motion` library (formerly framer-motion) for creating premium, performant animations.

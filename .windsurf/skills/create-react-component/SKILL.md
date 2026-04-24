@@ -55,6 +55,13 @@ description: Guides the creation of React components with TypeScript, Tailwind C
    - Use TanStack Query for optimistic UI updates
    - Use standard useEffect/useCallback/useMemo hooks
 
+## Related Skills
+
+- **motion-implementation**: Add animations and micro-interactions to components
+- **form-components**: For creating form components with validation
+- **accessibility**: Ensure WCAG 2.2 AA compliance
+- **performance**: Optimize component rendering and Core Web Vitals
+
 ## Component Structure Template (React 18)
 
 ```tsx

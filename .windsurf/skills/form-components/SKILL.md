@@ -3,6 +3,14 @@ name: form-components
 description: Guides the creation of form components using react-hook-form with proper validation, error handling, and accessibility for all form inputs across the application
 ---
 
+## Related Skills
+
+- **create-react-component**: Base component structure and patterns
+- **accessibility**: Ensure WCAG 2.2 AA compliance for forms
+- **motion-implementation**: Add micro-interactions to form elements
+- **date-handling**: For date picker components in forms
+- **drag-drop-components**: For file upload and drag-drop forms
+
 ## Overview
 
 This skill guides the implementation of form components using react-hook-form, the performant form library for React.

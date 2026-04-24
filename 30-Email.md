@@ -68,8 +68,8 @@ Email remains the primary asynchronous communication protocol for professional w
 |----|------|-------------|
 | **EMAIL-C01** | State Management | Zustand `emailSlice` for accounts, active view, filters, selected thread, compose state. Separate secure storage for OAuth tokens. |
 | **EMAIL-C02** | Data Fetching | Background sync via service worker. Optimistic mutations for actions (archive, delete, mark read). `staleTime: 5min` for inbox, `gcTime: 1hour`. |
-| **EMAIL-C03** | Offline Support | Dexie for email cache, pending actions queue, and attachment blobs. Full read capability offline; actions queue for retry. |
-| **EMAIL-C04** | Security | Tokens in secure cookie-backed storage, never localStorage. XSS protection for HTML email rendering via DOMPurify. |
+| **EMAIL-C03** | Offline Support | Centralised `CommandCenterDB` stores: `email_messages`, `email_queue`, `email_attachments`. Email cache, pending actions queue, and attachment blobs. Full read capability offline; actions queue for retry. |
+| **EMAIL-C04** | Security | Tokens in secure cookie-backed storage, never localStorage. XSS protection for HTML email rendering via shared `SanitizedHTML` component (DOMPurify + html-react-parser). |
 | **EMAIL-C05** | Virtualization | `useVirtualizer` for long email lists. Threaded view renders conversation with proper scroll handling. |
 | **EMAIL-C06** | Accessibility | ARIA grid pattern for email list, proper labels for action buttons, keyboard navigation for all features. |
 | **EMAIL-C07** | Integration | Link to Projects (create task from email), Calendar (detect invites), Chat (summarize thread), Budget (receipt extraction). |
@@ -387,7 +387,7 @@ Email remains the primary asynchronous communication protocol for professional w
   - Individual message card:
     - Sender info (avatar, name, email, date)
     - To/CC expander
-    - Body HTML rendered safely via DOMPurify
+    - Body HTML rendered safely via shared `SanitizedHTML` component (DOMPurify + html-react-parser)
     - Attachment list with download/preview
     - Reply/Reply All/Forward buttons
   - Quick reply composer at bottom (inline)
@@ -430,7 +430,7 @@ Email remains the primary asynchronous communication protocol for professional w
 - Undo send with configurable delay
 
 ### Anti-Patterns
-- ❌ Rendering raw HTML without DOMPurify sanitization
+- ❌ Rendering raw HTML without using shared `SanitizedHTML` component
 - ❌ Loading full message bodies in email list (causes slow render)
 - ❌ No undo for send (user errors are permanent)
 

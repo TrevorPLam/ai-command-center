@@ -131,12 +131,13 @@
   ```
 - [ ] **[TEST] CHAT-002B**: `staleTime` is 0 and `gcTime` is `Infinity` on the options object
 
-- [ ] **CHAT-002C**: Define `useSendMessage(threadId: string)` mutation:
-  - `onMutate`: Cancel outgoing queries → snapshot previous cache → optimistically append user message with `clientMsgId: crypto.randomUUID()`, `status: 'sending'`
-  - `onError`: Restore snapshot via `queryClient.setQueryData`
+- [ ] **CHAT-002C**: Define `useSendMessage(threadId: string)` mutation using the shared `useOptimisticMutation()` wrapper:
+  - **Critical**: MUST use `useOptimisticMutation()` from `src/lib/useOptimisticMutation.ts` (see FND-006H). Do not implement inline `onMutate/onError/onSettled` patterns.
+  - Config: `mutationFn: sendMessage`, `queryKey: chatKeys.messages(threadId)`
+  - `optimisticUpdate`: Append user message with `clientMsgId: crypto.randomUUID()`, `status: 'sending'`
   - `onSettled`: Invalidate `chatKeys.messages(threadId)` (handles both success and error paths)
   - The `clientMsgId` is passed through as part of the mutation variables and echoed back by the server; used to replace the `status: 'sending'` message without changing its React `key`
-- [ ] **[TEST] CHAT-002C**: Optimistic message appears immediately with `status: 'sending'`; on error, cache reverts; on success, status updates to `'sent'` without key change
+- [ ] **[TEST] CHAT-002C**: Optimistic message appears immediately with `status: 'sending'`; on error, cache reverts via wrapper rollback; on success, status updates to `'sent'` without key change
 
 - [ ] **CHAT-002D**: Define `useCreateThread()` and `useThreads()` for thread CRUD. Thread list uses `chatKeys.threads()` as cache key.
 - [ ] **[TEST] CHAT-002D**: Creating a thread optimistically prepends it to thread list cache

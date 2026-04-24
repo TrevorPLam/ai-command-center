@@ -42,7 +42,7 @@
 | ID | Area | Requirement |
 |----|------|-------------|
 | **CONT-C01** | State Management | Zustand `contactsSlice` for active contact, view mode, filters, and selection state. URL sync for shareable contact links. |
-| **CONT-C02** | Data Persistence | Dexie for offline contact storage; sync queue for pending mutations. Optimistic updates with rollback. |
+| **CONT-C02** | Data Persistence | Centralised `CommandCenterDB` stores: `contacts_records`, `contacts_interactions`. Offline contact storage; sync queue for pending mutations. Optimistic updates with rollback. |
 | **CONT-C03** | Privacy & Security | Granular privacy controls per contact field; encryption for sensitive data; audit logging for access. |
 | **CONT-C04** | Integration Points | Cross-module references: Calendar events, Project team members, Chat mentions, News sources. |
 | **CONT-C05** | AI Enrichment | Async background enrichment for social profiles, company data, and relationship mapping. |
@@ -886,14 +886,24 @@
 
 ### Subtasks
 
-- [ ] **CONT-010A**: Create `src/lib/db/contacts.ts` extending Dexie:
+- [ ] **CONT-010A**: Use centralized CommandCenterDB for contacts data:
   ```ts
-  interface ContactsDB extends Dexie {
-    contacts: Table<Contact, string>
-    interactions: Table<ContactInteraction, string>
-    relationships: Table<ContactRelationship, string>
-    pendingMutations: Table<PendingMutation, string>
-    enrichmentQueue: Table<EnrichmentTask, string>
+  // src/hooks/useOfflineContacts.ts
+  import { db } from '@/lib/db'  // Centralized CommandCenterDB
+
+  export function useOfflineContacts() {
+    const contacts = useLiveQuery(() => db.contacts_records.toArray(), [])
+    const interactions = useLiveQuery(() => db.contacts_interactions.toArray(), [])
+    
+    const saveContact = async (contact: Contact) => {
+      await db.contacts_records.put(contact)
+    }
+    
+    const saveInteraction = async (interaction: ContactInteraction) => {
+      await db.contacts_interactions.put(interaction)
+    }
+    
+    return { contacts, interactions, saveContact, saveInteraction }
   }
   ```
 

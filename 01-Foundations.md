@@ -42,6 +42,8 @@ All tasks implicitly rely on the shared infrastructure defined in `01-Foundation
 | C-12 | Router Import | `import { ... } from "react-router"` — NOT `react-router-dom` |
 | C-13 | Motion Tokens | All `motion` components must use shared tokens from `src/lib/motion.ts` |
 | C-14 | dnd-kit Sensors | All dnd-kit usage must use the shared `useDndSensors()` hook |
+| C-15 | HTML Sanitization | All untrusted HTML content MUST use shared `SanitizedHTML` component |
+| C-16 | Security Policy | No `dangerouslySetInnerHTML` outside of `SanitizedHTML` implementation |
 
 ---
 
@@ -133,6 +135,64 @@ export class CommandCenterDB extends Dexie {
 }
 
 export const db = new CommandCenterDB();
+
+### Migration Strategy
+
+When adding new stores or modifying existing schemas, the database version must be incremented and migration functions defined. All existing stores must be re-declared in each new version.
+
+```typescript
+// Example: Adding a new module store
+constructor() {
+  super('CommandCenterDB');
+  
+  this.version(1).stores({
+    // All existing stores from version 1...
+    'news_articles': 'id, sourceId, publishedAt, topics, url, [sourceId+publishedAt]',
+    'news_bookmarks': 'id, articleId, createdAt',
+    'news_readStatus': 'id, articleId, readAt',
+    // ... other existing stores
+  });
+  
+  // Version 2: Add new module store
+  this.version(2).stores({
+    // Re-declare all existing stores (required by Dexie)
+    'news_articles': 'id, sourceId, publishedAt, topics, url, [sourceId+publishedAt]',
+    'news_bookmarks': 'id, articleId, createdAt',
+    'news_readStatus': 'id, articleId, readAt',
+    'budget_transactions': 'id, accountId, categoryId, date, type, amount',
+    'budget_recurring': 'id, accountId, categoryId, nextDate, isActive',
+    'budget_goals': 'id, targetAmount, currentAmount, deadline, status',
+    'email_messages': 'id, accountId, threadId, subject, date, isRead',
+    'email_queue': 'id, type, payload, createdAt, retryCount',
+    'email_attachments': 'id, messageId, filename, size, mimeType',
+    'contacts_records': 'id, email, phone, name, createdAt',
+    'contacts_interactions': 'id, contactId, type, timestamp',
+    'lists_items': 'id, listId, parentId, position, contentType',
+    'lists_templates': 'id, name, type, isBuiltIn',
+    'docs_metadata': 'id, parentId, name, mimeType, size, createdAt',
+    'docs_queue': 'id, type, documentId, payload, createdAt',
+    'docs_versions': 'id, documentId, version, createdAt, checksum',
+    
+    // Add new module store
+    'calendar_events': 'id, calendarId, title, start, end, [calendarId+start]'
+  }).upgrade(tx => {
+    // Migration logic for data transformation if needed
+    return tx.table('calendar_events').toCollection().modify(event => {
+      // Example: Remove deprecated fields or add defaults
+      event.legacyField = undefined;
+      event.status = event.status || 'confirmed';
+    });
+  });
+}
+```
+
+**Migration Rules:**
+- Always increment the version number when adding/modifying stores
+- Re-declare ALL existing stores in the new version (Dexie requirement)
+- Use `.upgrade()` for data transformations or default value assignments
+- Test migrations on both fresh installs and existing databases
+- Consider user data loss when removing stores or fields
+
 ```
 
 ### Storage Quota Management Hook
@@ -205,17 +265,90 @@ export function useStorageQuota() {
   };
 }
 
-// ... (rest of the code remains the same)
+### Shared SanitizedHTML Component
+
+All untrusted HTML content must use the shared `SanitizedHTML` component to ensure consistent security and prevent XSS vulnerabilities.
+
+```typescript
+// src/components/shared/SanitizedHTML.tsx
+import DOMPurify from 'dompurify';
+import parse from 'html-react-parser';
+
+interface SanitizedHTMLProps {
+  html: string;
+  allowlist?: DOMPurify.Config['ALLOWED_TAGS'];
+  className?: string;
+}
+
+const DEFAULT_ALLOWLIST = {
+  ALLOWED_TAGS: [
+    'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'ul', 'ol', 'li', 'strong', 'em', 'a',
+    'img', 'blockquote', 'pre', 'code', 'br', 'hr',
+    'table', 'thead', 'tbody', 'tr', 'th', 'td'
+  ],
+  ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'target', 'rel', 'class'],
+};
+
+export function SanitizedHTML({ html, allowlist = DEFAULT_ALLOWLIST, className }: SanitizedHTMLProps) {
+  const cleanHtml = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: allowlist.ALLOWED_TAGS,
+    ALLOWED_ATTR: allowlist.ALLOWED_ATTR,
+    FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input'],
+    FORBID_ATTR: ['onclick', 'onload', 'onerror', 'onmouseover'],
+  });
+
+  // Add security attributes to external links
+  const processedHtml = cleanHtml.replace(
+    /<a\s+href=(["'])(https?:\/\/[^"']+)\1/gi,
+    '<a href="$1$2$1 target="_blank" rel="noopener noreferrer"'
+  );
+
+  const parsedContent = parse(processedHtml);
+
+  return (
+    <div className={className}>
+      {parsedContent}
+    </div>
+  );
+}
+```
+
+**Security Requirements:**
+- All `script`, `iframe`, `object`, `embed`, `form`, and `input` tags are forbidden
+- All event handlers (`onclick`, `onload`, etc.) are forbidden
+- External links automatically get `target="_blank" rel="noopener noreferrer"`
+- Default allowlist covers common content tags (headings, paragraphs, lists, links, images, tables)
+- Modules can extend the allowlist but never reduce security restrictions
+
+**Usage Pattern:**
+```tsx
+// Correct usage
+<SanitizedHTML html={articleContent} className="prose prose-invert" />
+
+// Extended allowlist for specific needs
+const extendedAllowlist = {
+  ...DEFAULT_ALLOWLIST,
+  ALLOWED_TAGS: [...DEFAULT_ALLOWLIST.ALLOWED_TAGS, 'video', 'source'],
+  ALLOWED_ATTR: [...DEFAULT_ALLOWLIST.ALLOWED_ATTR, 'controls', 'type']
+};
+<SanitizedHTML html={mediaContent} allowlist={extendedAllowlist} />
+```
+
 **Priority:** 🔴 High  
-**Est. Effort:** 0.75 hours  
-**Depends On:** None  
+**Est. Effort:** 0.5 hours  
+**Depends On:** FND-002 (DOMPurify and html-react-parser dependencies)
 
 **Related Files**  
-- `src/index.css`
-- `src/components/theme-provider.tsx`
-- `src/components/theme-toggle.tsx`
-- `src/lib/tokens.ts`
-- `src/lib/motion.ts`
+- `src/components/shared/SanitizedHTML.tsx`
+- `package.json` (DOMPurify, html-react-parser dependencies)
+
+**Anti‑Patterns**
+
+- ❌ Using `dangerouslySetInnerHTML` directly on untrusted content
+- ❌ Creating module-specific sanitization functions
+- ❌ Omitting `target="_blank" rel="noopener noreferrer"` on external links
+- ❌ Allowing `script`, `iframe`, or event handler attributes
 
 ### Subtasks
 
@@ -461,7 +594,57 @@ export function useStorageQuota() {
 - [ ] **FND-006E**: Set `staleTime: Infinity` for static data.
 - [ ] **FND-006F**: Set up lazy-loaded React Query DevTools.
 - [ ] **FND-006G**: **[TEST]** Write tests for `queryOptions` using MSW.
-- [ ] **FND-006H**: Implement `useOptimisticMutation` unified wrapper.
+- [ ] **FND-006H**: Implement `useOptimisticMutation` unified wrapper with canonical pattern:
+
+  **Canonical Pattern (Required for ALL mutations):**
+  ```ts
+  // src/lib/useOptimisticMutation.ts
+  export function useOptimisticMutation<TData, TError, TVariables>({
+    mutationFn,
+    queryKey,
+    optimisticUpdate,
+    onSettled,
+  }: {
+    mutationFn: (vars: TVariables) => Promise<TData>
+    queryKey: QueryKey
+    optimisticUpdate: (old: TData | undefined, vars: TVariables) => TData
+    onSettled?: () => void
+  }) {
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationFn,
+      onMutate: async (vars) => {
+        await queryClient.cancelQueries({ queryKey })
+        const previous = queryClient.getQueryData<TData>(queryKey)
+        queryClient.setQueryData<TData>(queryKey, (old) => optimisticUpdate(old, vars))
+        return { previous }
+      },
+      onError: (err, vars, context) => {
+        if (context?.previous !== undefined) {
+          queryClient.setQueryData(queryKey, context.previous)
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey })
+        onSettled?.()
+      },
+    })
+  }
+  ```
+
+  **Usage Pattern:**
+  ```ts
+  const mutation = useOptimisticMutation({
+    mutationFn: sendMessage,
+    queryKey: chatKeys.messages(threadId),
+    optimisticUpdate: (old, vars) => [...(old || []), vars.optimisticMessage],
+  })
+  ```
+
+  **Rules:**
+  - All module mutations MUST use this wrapper — no inline `onMutate/onError/onSettled` patterns
+  - Pattern: `cancelQueries → snapshot → setQueryData → rollback → invalidate`
+  - `onSettled` (not `onSuccess`) for invalidation to handle both success and error paths
 
 ### Definition of Done
 

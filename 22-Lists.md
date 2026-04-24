@@ -48,7 +48,7 @@
 | ID | Area | Requirement |
 |----|------|-------------|
 | **LIST-C01** | State Management | Zustand `listsSlice` for active list, view mode, filters, and selection state. URL sync for shareable list links. |
-| **LIST-C02** | Data Persistence | Dexie for offline list storage; sync queue for pending mutations. Optimistic updates with rollback. |
+| **LIST-C02** | Data Persistence | Centralised `CommandCenterDB` stores: `lists_items`, `lists_templates`. Offline list storage; sync queue for pending mutations. Optimistic updates with rollback. |
 | **LIST-C03** | Content Types | Unified content model supporting: text, checkbox, image, link (with preview), voice memo (blob). |
 | **LIST-C04** | Hierarchy | Nested items up to 5 levels deep; indentation UI; keyboard navigation (Tab/Shift+Tab/Enter/Backspace). |
 | **LIST-C05** | View Modes | List view (default), Board view (Kanban columns by status/tag), Grid view (card-based for media lists). |
@@ -599,21 +599,24 @@
 
 ### Subtasks
 
-- [ ] **LIST-006A**: Create `src/lib/db/lists.ts` extending Dexie:
+- [ ] **LIST-006A**: Use centralized CommandCenterDB for lists data:
   ```ts
-  interface ListDB extends Dexie {
-    lists: Table<List, string>
-    items: Table<ListItem, string>
-    pendingMutations: Table<PendingMutation, string>
-  }
-  
-  interface PendingMutation {
-    id: string
-    type: 'create' | 'update' | 'delete'
-    entity: 'list' | 'item'
-    data: unknown
-    timestamp: number
-    retryCount: number
+  // src/hooks/useOfflineLists.ts
+  import { db } from '@/lib/db'  // Centralized CommandCenterDB
+
+  export function useOfflineLists() {
+    const items = useLiveQuery(() => db.lists_items.toArray(), [])
+    const templates = useLiveQuery(() => db.lists_templates.toArray(), [])
+    
+    const saveItem = async (item: ListItem) => {
+      await db.lists_items.put(item)
+    }
+    
+    const saveTemplate = async (template: ListTemplate) => {
+      await db.lists_templates.put(template)
+    }
+    
+    return { items, templates, saveItem, saveTemplate }
   }
   ```
 

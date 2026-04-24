@@ -749,8 +749,10 @@
   pnpm add react-hook-form zod@4.3.6 @hookform/resolvers@5.2.2 rrule
   ```
 
-- [ ] **CAL‑005B** Update `src/schemas/eventSchema.ts`:
+- [ ] **CAL-005B** Update `src/schemas/eventSchema.ts`:
   ```ts
+  import { rruleStringSchema } from '@/schemas/recurrenceSchema'
+  
   export const eventSchema = z.object({
     title: z.string().min(1, 'Title is required').max(255),
     start: z.date(),
@@ -762,14 +764,8 @@
     calendarId: z.string(),
     projectId: z.string().nullable().default(null),
     reminder: z.enum(['none', '5min', '15min', '30min', '1hour', '1day']).default('15min'),
-    recurrence: z.enum(['none', 'daily', 'weekly', 'monthly', 'yearly']).default('none'),
-    recurrenceEnd: z.enum(['never', 'count', 'until']).default('never'),
-    recurrenceCount: z.number().int().min(1).max(999).optional(),
-    recurrenceUntil: z.date().optional(),
-    // Advanced recurrence
-    weekdays: z.array(z.number().min(0).max(6)).optional(), // 0=Sun
-    monthlyOnDay: z.number().min(1).max(31).optional(),
-    monthlyOnWeekday: z.object({ week: z.number(), day: z.number() }).optional(),
+    // Use shared recurrence schema - stores RRULE string directly
+    recurrence: rruleStringSchema.optional().describe('RRULE string for recurring events'),
     attendees: z.array(z.object({
       email: z.string().email(),
       name: z.string().optional(),
@@ -805,8 +801,9 @@
   - Attendees input with role (optional/required)
   - Reminder dropdown
   - Repeat dropdown → if not 'none', expands to:
-    - Advanced recurrence builder: weekdays picker, monthly options (day X or "first Monday")
-    - Recurrence end options (Count / Until date)
+    - Use `RecurrenceEditor` component from `@/shared/recurrence` for recurrence rule configuration
+    - Component provides weekdays picker, monthly options, and end conditions (Count / Until date)
+    - Human-readable preview generated automatically from RRULE
 
 - [ ] **CAL‑005E** Integrate `react‑hook‑form` with `zodResolver`:
   - `mode: 'onBlur'`

@@ -53,7 +53,7 @@
 |----|------|-------------|
 | **NEWS-C01** | State Management | Zustand `newsSlice` for topics, sources, sort order, pause state, pending count, reader prefs. Arrays (not Sets) for serializable persistence. |
 | **NEWS-C02** | Data Fetching | `useInfiniteQuery` with cursor pagination for feed. `staleTime: 30s`, `gcTime: 10min`. |
-| **NEWS-C03** | Offline / Local Storage | Dexie for bookmarks + read status. `useLiveQuery` for reactive reads. Bulk ops for batch saves. |
+| **NEWS-C03** | Offline / Local Storage | Centralised `CommandCenterDB` stores: `news_articles`, `news_bookmarks`, `news_readStatus`. `useLiveQuery` for reactive reads. Bulk ops for batch saves. |
 | **NEWS-C04** | Auto-Update Control | When `isPaused`, new articles buffer in `pendingArticles`. Sticky banner shows count. Flush on user action. |
 | **NEWS-C05** | Accessibility (Cards) | `role="article"`, trust tier and sentiment must have text labels (not color alone). Web Share fallback explicit. |
 | **NEWS-C06** | Virtualization | `useVirtualizer` from `@tanstack/react-virtual` for feed. Sentinel for IO outside the virtual list container. `measureElement` on each card wrapper for automatic height updates. |
@@ -700,89 +700,55 @@
 
 ### Subtasks
 
-- [ ] **NEWS-005A** Install dependencies:
-  ```bash
-  pnpm add dexie dexie-react-hooks
-  ```
+- [ ] **NEWS-005A** Use centralized `CommandCenterDB` from `01-Foundations.md` for news stores: `news_articles`, `news_bookmarks`, `news_readStatus`.
 
-- [ ] **[TEST] NEWS-005A**: Dependencies installed; package.json includes dexie and dexie-react-hooks
+- [ ] **[TEST] NEWS-005A**: News module references centralized DB; correct store names used
 
-- [ ] **NEWS-005B** Create `src/lib/db.ts`:
+- [ ] **NEWS-005B** Use centralized CommandCenterDB for offline bookmarks and read status:
   ```ts
-  import Dexie, { type Table } from 'dexie'
+  // src/hooks/useBookmarks.ts
+  import { db } from '@/lib/db'  // Centralized CommandCenterDB
 
-  interface SavedArticle extends Article {
-    savedAt: number  // Date.now() timestamp
-  }
-
-  interface ReadRecord {
-    id: string        // article ID
-    readAt: number    // timestamp
-    url: string       // for dedup across sessions
-  }
-
-  class NewsDB extends Dexie {
-    articles!: Table<SavedArticle, string>
-    readStatus!: Table<ReadRecord, string>
-
-    constructor() {
-      super('NewsDB')
-      this.version(1).stores({
-        articles: 'id, savedAt, *topics',   // * = multi-value index for topic queries
-        readStatus: 'id, readAt, url',
-      })
-    }
-  }
-
-  export const db = new NewsDB()
-  ```
-
-- [ ] **[TEST] NEWS-005B**: Dexie schema created with correct tables and indexes; `NewsDB` instance exported
-
-- [ ] **NEWS-005C** Create `src/hooks/useBookmarks.ts`:
-  ```ts
   export function useBookmarks() {
     const articles = useLiveQuery(() =>
-      db.articles.orderBy('savedAt').reverse().toArray(), []
+      db.news_articles.orderBy('savedAt').reverse().toArray(), []
     )
     const save = async (article: Article) => {
-      await db.articles.put({ ...article, savedAt: Date.now() })
-      markSaved(article.id)  // Zustand sync
+      await db.news_articles.put({ ...article, savedAt: Date.now() })
     }
     const remove = async (id: string) => {
-      await db.articles.delete(id)
-      markUnsaved(id)  // Zustand sync
+      await db.news_articles.delete(id)
     }
-    return { articles: articles ?? [], save, remove }
+    return { articles, save, remove }
   }
   ```
 
-- [ ] **[TEST] NEWS-005C**: `useLiveQuery` re-renders on `db.articles` changes; `save` writes to Dexie and Zustand; `remove` deletes from both
+- [ ] **[TEST] NEWS-005B**: Uses centralized CommandCenterDB `news_articles` table; bookmark functionality works
 
-- [ ] **NEWS-005D** Create `src/hooks/useReadStatus.ts`:
+- [ ] **NEWS-005C** Create `src/hooks/useReadStatus.ts`:
   ```ts
   export function useReadStatus() {
-    const readRecords = useLiveQuery(() => db.readStatus.toArray(), [])
+    const readRecords = useLiveQuery(() => db.news_readStatus.toArray(), [])
     const readIds = useMemo(
       () => new Set(readRecords?.map(r => r.id) ?? []),
       [readRecords]
     )
     const markRead = async (article: Article) => {
-      await db.readStatus.put({ id: article.id, readAt: Date.now(), url: article.url })
+      await db.news_readStatus.put({ id: article.id, readAt: Date.now() })
       markReadInSlice(article.id)  // Zustand sync
     }
     const markAllRead = async (articles: Article[]) => {
-      const records = articles.map(a => ({ id: a.id, readAt: Date.now(), url: a.url }))
-      await db.readStatus.bulkPut(records)  // batch — much faster than sequential put
+      const records = articles.map(a => ({ id: a.id, readAt: Date.now() }))
+      await db.news_readStatus.bulkPut(records)  // batch — much faster than sequential put
       markAllReadInSlice(articles.map(a => a.id))
     }
     return { readIds, markRead, markAllRead }
   }
   ```
 
-- [ ] **[TEST] NEWS-005D**: `useLiveQuery` re-renders on `db.readStatus` changes; `markRead` writes to Dexie and Zustand; `markAllRead` uses `bulkPut`
+- [ ] **[TEST] NEWS-005C**: `useLiveQuery` re-renders on `db.commandCenterDB.news_articles` changes; `save` writes to Dexie and Zustand; `remove` deletes from both
 
-- [ ] **NEWS-005E** On app boot, sync Dexie → Zustand:
+- [ ] **NEWS-005D** On app boot, sync Dexie → Zustand:
   ```ts
   // In NewsPage or app init
   useEffect(() => {
@@ -891,22 +857,16 @@
   - Header: source logo + publication name + original `Open in browser` link
   - Byline: `parsed.byline` (author + date)
   - Reading time + reading progress bar (scrollY-based `%` calculation)
-  - Article body: `parsed.content` rendered via `dangerouslySetInnerHTML` with strict content sanitization (DOMPurify — see NEWS-006E)
+  - Article body: `parsed.content` rendered via shared `SanitizedHTML` component with strict content sanitization (DOMPurify — see NEWS-006E)
   - Footer: Bookmark + Share actions
 
 - [ ] **[TEST] NEWS-006D**: Panel renders all sections; reading progress bar calculates correctly
 
 - [ ] **NEWS-006E** Sanitize extracted HTML:
-  ```bash
-  pnpm add dompurify @types/dompurify
-  ```
-  ```ts
-  const clean = DOMPurify.sanitize(parsed.content, {
-    ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li', 'strong', 'em', 'a', 'img', 'figure', 'figcaption', 'pre', 'code'],
-    ALLOWED_ATTR: ['href', 'src', 'alt', 'target', 'rel'],
-  })
-  ```
-  All external links get `target="_blank" rel="noopener noreferrer"` added automatically
+  - Use shared `SanitizedHTML` component from `src/components/shared/SanitizedHTML.tsx`
+  - Pass `parsed.content` to the component with default allowlist
+  - Component automatically handles DOMPurify sanitization and external link security
+  - No manual DOMPurify configuration required
 
 - [ ] **[TEST] NEWS-006E**: DOMPurify strips dangerous tags/attributes; external links have `rel="noopener noreferrer"`
 
@@ -949,7 +909,7 @@
 ### Anti-Patterns
 - ❌ Rendering `parsed.content` without DOMPurify sanitization — XSS vulnerability
 - ❌ `staleTime: 0` for article content — article text doesn't change; use `Infinity`
-- ❌ `dangerouslySetInnerHTML={{ __html: raw }}` without parsing through Readability first — raw HTML has ads/navigation
+- ❌ Using `dangerouslySetInnerHTML` instead of shared `SanitizedHTML` component — security risk
 - ❌ Opening external links without `rel="noopener noreferrer"` — security vulnerability
 
 
