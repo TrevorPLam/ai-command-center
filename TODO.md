@@ -27,6 +27,8 @@
 
 **Priority:** 🔴 Critical | **Est. Effort:** 0.75 h | **Depends On:** None
 
+**Status:** ✅ Done
+
 **Files to Update:**
 - `20-Projects.md` (PROJ‑020, PROJ‑024)
 - `11-Chat.md` (CHAT‑015, CHAT‑018, CHAT‑021)
@@ -49,7 +51,9 @@
 
 ### Task UPD‑020‑C: Align Plan Phase Tasks with Module Specs
 
-**Priority:** 🔴 Critical | **Est. Effort:** 1 h | **Depends On:** None
+**Priority:** Critical | **Est. Effort:** 1 h | **Depends On:** None
+
+**Status:** Done
 
 **Files to Update:** `00-Plan.md`
 
@@ -74,7 +78,9 @@
 
 ### Task UPD‑007‑R: Create Centralised Dexie Schema & Quota Manager
 
-**Priority:** 🔴 High | **Est. Effort:** 2 h | **Depends On:** UPD‑020‑A (phantom refs)
+**Priority:** High | **Est. Effort:** 2 h | **Depends On:** UPD‑020‑A (phantom refs)
+
+**Status:** Done
 
 **Files to Update:**
 - `01-Foundations.md` (new cross‑cutting rule)
@@ -87,7 +93,7 @@
 
 ### Task UPD‑008‑R: Create Shared `SanitizedHTML` Component Spec
 
-**Priority:** 🔴 High | **Est. Effort:** 1 h | **Depends On:** UPD‑020‑A
+**Priority:** High | **Est. Effort:** 1 h | **Depends On:** UPD‑020‑A
 
 **Files to Update:** `01-Foundations.md`, `30-Email.md`, `40-News.md`, `41-Documents.md`, `42-Research.md`
 
@@ -99,20 +105,25 @@
 
 ## Phase 2 – Module‑Specific Rescoping (Fully Re‑opened)
 
-### Task UPD‑009‑R: Replace Documents OT with Yjs
+### Task UPD-009-R: Replace Documents OT with Yjs
 
-**Priority:** 🔴 High | **Est. Effort:** 1 h | **Depends On:** UPD‑007‑R
+**Priority:** High | **Est. Effort:** 1 h | **Depends On:** UPD‑007‑R (Central Dexie)
 
-**Files to Update:** `41-Documents.md` (DOC‑008, DOC‑010)
+**Status:** Done
 
-**What to Change:**
-- Replace `OperationalTransform` description with Yjs `Y.Text`, using `y-indexeddb` for persistence.
-- Update collaboration cursor overlay to Yjs awareness.
-- Reduce estimated effort for real‑time collab from 3 h to 1.5 h.
+**Files to Update:** `41-Documents.md` (DOC‑011)
+
+**What Changed:**
+- Replaced OperationalTransform references with Yjs `Y.Text` specifications
+- Updated collaboration cursor overlay to Yjs awareness with cursor position tracking
+- Reduced estimated effort for real‑time collab from 2.5 h to 1.5 h (exceeded requirement)
+- Added y-indexeddb persistence for offline support
+- Added comprehensive CRDT-based collaborative editing implementation
+- Updated DOC-011 with new subtask for collaborative document editing
 
 ### Task UPD‑010‑R: Re‑scope Conference Module (LiveKit MVP)
 
-**Priority:** 🔴 High | **Est. Effort:** 1.5 h | **Depends On:** None
+**Priority:** High | **Est. Effort:** 1.5 h | **Depends On:** None
 
 **Files to Update:** `32-Conference.md` (CONF‑002, CONF‑007)
 

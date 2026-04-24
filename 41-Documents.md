@@ -41,14 +41,14 @@ Based on research into Google Drive, Proton Drive, Docspell, Seafile, OneDrive, 
 | ID | Area | Requirement |
 |----|------|-------------|
 | **DOC-C01** | State Management | Zustand `documentsSlice` for view mode, filters, selection, navigation state. TanStack Query for server/backend state. |
-| **DOC-C02** | Data Persistence | Dexie for offline metadata cache, pending mutations, and local-only documents. Backend API for persistent storage. |
+| **DOC-C02** | Data Persistence | Centralised `CommandCenterDB` stores: `docs_metadata`, `docs_queue`, `docs_versions`. Offline metadata cache, pending mutations, and local-only documents. Backend API for persistent storage. |
 | **DOC-C03** | Content Model | Unified `Document` type supporting files, folders, and shared items. Properties: metadata, tags, versions, permissions. |
 | **DOC-C04** | Virtualization | `@tanstack/react-virtual` for file lists with thousands of items. Grid dynamically calculates items per row. |
 | **DOC-C05** | Drag & Drop | dnd-kit with shared `useDndSensors` for file/folder drag, move, and upload drop zones. |
 | **DOC-C06** | Accessibility | WCAG 2.2 AA. File lists use `role="treegrid"` or `role="listbox"`. All actions keyboard-accessible. |
 | **DOC-C07** | Motion | Grid items: Quiet tier (fade). Upload progress: Alive tier (pulse). Modal open: Alive tier (spring). |
 | **DOC-C08** | AI Integration | Mock AI endpoints for classification, summarization, OCR, Q&A. Real implementation would use local LLM or API. |
-| **DOC-C09** | Security | Permissions enforced at UI level. Encryption indicators shown. Sensitive actions require confirmation. |
+| **DOC-C09** | Security | Permissions enforced at UI level. Encryption indicators shown. Sensitive actions require confirmation. HTML content rendered via shared `SanitizedHTML` component. |
 | **DOC-C10** | Testing | All mutations follow optimistic update pattern with rollback. MSW handlers for all endpoints. |
 
 ### 🎯 Motion Tier Assignment
@@ -543,11 +543,11 @@ Based on research into Google Drive, Proton Drive, Docspell, Seafile, OneDrive, 
 ---
 
 ## 🗂️ Task DOC‑011: Real-Time Collaboration (Comments & Annotations)
-**Priority:** 🟢 Low | **Est. Effort:** 2.5 hours | **Depends On:** DOC‑003
+**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** DOC‑003
 
 ### Related Files
 - `src/components/documents/CommentPanel.tsx` · `src/components/documents/CommentThread.tsx`
-- `src/hooks/useDocumentComments.ts`
+- `src/hooks/useDocumentComments.ts` · `src/lib/collaborativeDocument.ts`
 
 ### Subtasks
 
@@ -555,12 +555,17 @@ Based on research into Google Drive, Proton Drive, Docspell, Seafile, OneDrive, 
 - [ ] **DOC‑011B**: Build `CommentThread`: nested replies, timestamps, user avatars, edit own comments.
 - [ ] **DOC‑011C**: Implement `useDocumentComments` hook with optimistic add/edit/delete.
 - [ ] **DOC‑011D**: Comment notifications: email/in-app notification when mentioned.
-- [ ] **DOC‑011E**: Document-level annotations: highlight text, attach comment to selection.
+- [ ] **DOC‑011E**: Document-level annotations: highlight text, attach comment to selection using Yjs `Y.Text` for collaborative text editing.
 - [ ] **DOC‑011F**: Comment activity in audit log.
-- [ ] **[TEST] DOC‑011G**: Tests for comment CRUD, @mentions, threading.
+- [ ] **DOC‑011G**: Implement collaborative document editing with Yjs:
+  - Use `Y.Text` for shared document content with real-time synchronization
+  - Integrate `y-indexeddb` for local persistence and offline support
+  - Add cursor awareness overlay showing other users' cursor positions and selections
+  - Implement conflict-free editing using CRDT-based approach
+- [ ] **[TEST] DOC‑011H**: Tests for comment CRUD, @mentions, threading, and Yjs collaborative editing.
 
 ### Definition of Done
-- Comment system with threading and @mentions. Annotations linked to document selections.
+- Comment system with threading and @mentions. Annotations linked to document selections. Real-time collaborative document editing using Yjs Y.Text with y-indexeddb persistence and cursor awareness.
 
 ---
 
@@ -612,7 +617,31 @@ Based on research into Google Drive, Proton Drive, Docspell, Seafile, OneDrive, 
 
 ### Subtasks
 
-- [ ] **DOC‑014A**: Create Dexie schema: `documents_metadata`, `documents_pending_mutations`, `documents_offline_files`.
+- [ ] **DOC‑014A**: Use centralized CommandCenterDB for documents data:
+  ```ts
+  // src/hooks/useOfflineDocuments.ts
+  import { db } from '@/lib/db'  // Centralized CommandCenterDB
+
+  export function useOfflineDocuments() {
+    const metadata = useLiveQuery(() => db.docs_metadata.toArray(), [])
+    const queue = useLiveQuery(() => db.docs_queue.toArray(), [])
+    const versions = useLiveQuery(() => db.docs_versions.toArray(), [])
+    
+    const saveMetadata = async (doc: DocumentMetadata) => {
+      await db.docs_metadata.put(doc)
+    }
+    
+    const queueAction = async (action: QueuedDocumentAction) => {
+      await db.docs_queue.put(action)
+    }
+    
+    const saveVersion = async (version: DocumentVersion) => {
+      await db.docs_versions.put(version)
+    }
+    
+    return { metadata, queue, versions, saveMetadata, queueAction, saveVersion }
+  }
+  ```
 - [ ] **DOC‑014B**: Implement `useOfflineDocuments`: read from Dexie when offline, queue mutations, sync on reconnect.
 - [ ] **DOC‑014C**: Sync engine: process pending mutations FIFO, conflict resolution (last-write-wins), retry with exponential backoff.
 - [ ] **DOC‑014D**: Build `OfflineStatusBar`: connection indicator, pending mutation count, manual sync button, last sync timestamp.
