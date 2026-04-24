@@ -63,7 +63,7 @@ Basic calendar views and event management.
 |-------|-----------|
 | CAL-000 | Mock data |
 | CAL-001 | State & page layout |
-| CAL-002 | Mini‑calendar sidebar (needed for navigation) |
+| CAL-002 | Multi‑Calendar Support & Calendar List Sidebar |
 | CAL-008 | Event composer |
 | CAL-009, CAL-010 | Month, week/day views |
 | *Defer recurring, attendee, resource views, import/export, audio, etc.* | |
@@ -149,7 +149,7 @@ The transactions workspace, overview dashboard, and recurring calendar.
 ### 5.1 Lists (LIST‑002, LIST‑003, LIST‑004)
 Quick capture and nested checklists.
 
-### 5.2 Documents (DOC‑002, DOC‑003, DOC‑004, DOC‑008)
+### 5.2 Documents (DOC‑002, DOC‑003, DOC‑004, DOC‑005, DOC‑008)
 Bidirectional linking and OCR (simplified).
 
 ### 5.3 Advanced Chat Features
@@ -171,7 +171,7 @@ Visual canvas for workflow building, complementing A2A orchestration.
 | Task Group | Tasks |
 |------------|-------|
 | Settings completeness | SET-003 (API keys), SET-004, SET-006 (Danger Zone), SET-007 |
-| Polish & Validation | POL-001 (Performance), POL-002 (Testing gates), POL-004 (Production hardening), POL-005 (UX polish), POL-006 (Security) |
+| Polish & Validation | POL-001 (Performance), POL-002 (Testing gates), POL-003 (Analytics, Audit & RUM), POL-004 (Production hardening), POL-005 (UX polish), POL-006 (Security) |
 | Advanced Budget | BUDG-008 (Goals), BUDG-009 (Accounts), BUDG-011 (Reports), BUDG-013 (Financial Home) |
 | Advanced Projects | Triage inbox (PROJ-018‑PROJ-020), Automations (PROJ-017), Practice Intelligence (PROJ-024) |
 | Cross-module RAG | CHAT-018 (Knowledge base) and CHAT-019 (Memory) after core modules are stable |

@@ -58,8 +58,154 @@ All tasks implicitly rely on the shared infrastructure defined in `01-Foundation
 
 ---
 
-## 🗂️ Task FND-000: Design Tokens & CSS-First Theme System
+## 🗂️ Cross-Cutting Infrastructure
 
+### Centralized IndexedDB Schema
+
+All modules share a single `CommandCenterDB` instance with module-prefixed stores to avoid conflicts and enable centralized quota management.
+
+```typescript
+// src/lib/db.ts
+import { Dexie } from 'dexie';
+
+export class CommandCenterDB extends Dexie {
+  // News module stores
+  news_articles: Dexie.Table<NewsArticle, string>;
+  news_bookmarks: Dexie.Table<Bookmark, string>;
+  news_readStatus: Dexie.Table<ReadStatus, string>;
+
+  // Budget module stores
+  budget_transactions: Dexie.Table<Transaction, string>;
+  budget_recurring: Dexie.Table<RecurringItem, string>;
+  budget_goals: Dexie.Table<Goal, string>;
+
+  // Email module stores
+  email_messages: Dexie.Table<EmailMessage, string>;
+  email_queue: Dexie.Table<QueuedAction, string>;
+  email_attachments: Dexie.Table<Attachment, string>;
+
+  // Contacts module stores
+  contacts_records: Dexie.Table<Contact, string>;
+  contacts_interactions: Dexie.Table<ContactInteraction, string>;
+
+  // Lists module stores
+  lists_items: Dexie.Table<ListItem, string>;
+  lists_templates: Dexie.Table<ListTemplate, string>;
+
+  // Documents module stores
+  docs_metadata: Dexie.Table<DocumentMetadata, string>;
+  docs_queue: Dexie.Table<QueuedDocumentAction, string>;
+  docs_versions: Dexie.Table<DocumentVersion, string>;
+
+  constructor() {
+    super('CommandCenterDB');
+    
+    this.version(1).stores({
+      // News: articles, bookmarks, read tracking
+      'news_articles': 'id, sourceId, publishedAt, topics, url, [sourceId+publishedAt]',
+      'news_bookmarks': 'id, articleId, createdAt',
+      'news_readStatus': 'id, articleId, readAt',
+      
+      // Budget: transactions, recurring items, goals
+      'budget_transactions': 'id, accountId, categoryId, date, type, amount',
+      'budget_recurring': 'id, accountId, categoryId, nextDate, isActive',
+      'budget_goals': 'id, targetAmount, currentAmount, deadline, status',
+      
+      // Email: messages, queue, attachments
+      'email_messages': 'id, accountId, threadId, subject, date, isRead',
+      'email_queue': 'id, type, payload, createdAt, retryCount',
+      'email_attachments': 'id, messageId, filename, size, mimeType',
+      
+      // Contacts: records, interactions
+      'contacts_records': 'id, email, phone, name, createdAt',
+      'contacts_interactions': 'id, contactId, type, timestamp',
+      
+      // Lists: items, templates
+      'lists_items': 'id, listId, parentId, position, contentType',
+      'lists_templates': 'id, name, type, isBuiltIn',
+      
+      // Documents: metadata, queue, versions
+      'docs_metadata': 'id, parentId, name, mimeType, size, createdAt',
+      'docs_queue': 'id, type, documentId, payload, createdAt',
+      'docs_versions': 'id, documentId, version, createdAt, checksum'
+    });
+  }
+}
+
+export const db = new CommandCenterDB();
+```
+
+### Storage Quota Management Hook
+
+Global quota monitoring with warnings at 80% capacity:
+
+```typescript
+// src/hooks/useStorageQuota.ts
+import { useEffect, useState } from 'react';
+import { db } from '@/lib/db';
+
+export interface StorageQuota {
+  usage: number;
+  quota: number;
+  percentage: number;
+  isNearLimit: boolean;
+}
+
+export function useStorageQuota() {
+  const [quota, setQuota] = useState<StorageQuota | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const estimateQuota = async () => {
+      try {
+        const estimate = await navigator.storage.estimate();
+        const usage = estimate.usage || 0;
+        const quotaLimit = estimate.quota || 0;
+        const percentage = quotaLimit > 0 ? (usage / quotaLimit) * 100 : 0;
+        const isNearLimit = percentage >= 80;
+
+        setQuota({ usage, quota: quotaLimit, percentage, isNearLimit });
+      } catch (error) {
+        console.warn('Failed to estimate storage quota:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    estimateQuota();
+    
+    // Re-estimate every 5 minutes
+    const interval = setInterval(estimateQuota, 5 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatBytes = (bytes: number) => {
+    const units = ['B', 'KB', 'MB', 'GB'];
+    let size = bytes;
+    let unitIndex = 0;
+    
+    while (size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024;
+      unitIndex++;
+    }
+    
+    return `${size.toFixed(1)} ${units[unitIndex]}`;
+  };
+
+  return {
+    quota,
+    isLoading,
+    formatBytes,
+    // Helper for warning UI
+    shouldShowWarning: quota?.isNearLimit ?? false,
+    warningMessage: quota 
+      ? `Storage usage at ${quota.percentage.toFixed(1)}% (${formatBytes(quota.usage)} / ${formatBytes(quota.quota)})`
+      : undefined
+  };
+}
+
+// ... (rest of the code remains the same)
 **Priority:** 🔴 High  
 **Est. Effort:** 0.75 hours  
 **Depends On:** None  
