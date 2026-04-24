@@ -1427,7 +1427,7 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
   - Filter by agent, server, tool name, status
 
 - [ ] **CHAT-016D**: Wire into existing Dashboard ActivityFeed:
-  - AgentTerminal is a **more detailed** view of the ActivityFeed from TASK-006
+  - AgentTerminal is a **more detailed** view of the ActivityFeed from DASH-006
   - "Open in Terminal" button on ActivityFeed entries opens AgentTerminal scrolled to that entry
   - Terminal entries share the same data source as ActivityFeed but render with more detail
 
@@ -1741,7 +1741,7 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 **Priority:** 🟠 Medium
 **Est. Effort:** 6 hours
-**Depends On:** TASK-006 (AgentFleetPanel), CHAT-018 (Knowledge Base)
+**Depends On:** DASH-006 (AgentFleetPanel), CHAT-018 (Knowledge Base)
 
 **Why this matters:** ChatGPT's GPT Builder lets users create custom AI personas with specific system prompts, knowledge files, and tool access. Your current `AgentFleetPanel` displays hardcoded agents. The Agent Studio empowers users to create their own.
 
@@ -1817,7 +1817,7 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 **Priority:** 🔴 High
 **Est. Effort:** 14 hours
-**Depends On:** CHAT-020 (Agent Studio), TASK-006 (AgentFleetPanel)
+**Depends On:** CHAT-020 (Agent Studio), DASH-006 (AgentFleetPanel)
 
 **Why this matters:** This is your **strategic differentiator**. Neither ChatGPT nor Claude has a visual agent orchestration interface. ChatGPT runs agents in linear sequence; Claude's agent teams are implicit. A visual DAG editor where users connect agents (Researcher → Writer → Editor → QA) is a unique capability that positions your command center above both platforms.
 

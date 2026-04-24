@@ -1,108 +1,53 @@
-# 00‑Polish-Validation — Personal AI Command Center Frontend (Enhanced v3)
+# 00-Polish-Validation — Personal AI Command Center Frontend
 
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.  
-> **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.  
-> **Versioning Note**: This document supersedes `09-Polish-Validation-Enhanced-v2.md`.
+> **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
 
 ---
 
-## 📋 Frontend Context (Module‑Wide Assumptions)
+## 📋 Frontend Context
 
-> All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
-> **Do not repeat these in every task** – they are global.
+All tasks implicitly rely on the shared infrastructure defined in `01-Foundations.md`.  
+**Do not repeat any of the following** – they are global:
 
-- **Framework**: React 18 + TypeScript (strict mode)
-- **State**: Zustand (UI) + TanStack Query (server state)
-- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
-- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
-- **Testing**: Vitest + RTL + MSW (unit / component / integration)
-- **Routing**: React Router v7 (data mode, lazy routes)
-- **Virtualization**: `@tanstack/react-virtual`
-- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
-- **Forms**: react‑hook‑form + zod
-- **Offline**: Dexie (centralised `CommandCenterDB`)
-- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
+- React 18 + TypeScript (strict mode)
+- Zustand (UI state) + TanStack Query (server state)
+- Tailwind CSS v4 (`@theme` CSS‑first) + shadcn/ui
+- Motion v12 with `useReducedMotion()` guard
+- Testing: Vitest + RTL + MSW
+- Routing: React Router v7 (data mode, lazy routes)
+- Virtualization: `@tanstack/react-virtual`
+- Drag & drop: dnd‑kit with shared `useDndSensors` hook
+- Forms: react‑hook‑form + zod
+- Offline: Dexie (centralised `CommandCenterDB`)
+- Accessibility: WCAG 2.2 AA, keyboard navigation, focus restoration
 
 ---
-## Cross‑Cutting Foundations for Polish & Validation
+
+## 🧱 Cross‑Cutting Foundations (Module‑Specific)
 
 | ID | Area | Requirement |
 |----|------|-------------|
-| **POL-C01** | Performance Targets | Core Web Vitals: **LCP < 2.5s**, **INP < 200ms**, **CLS < 0.1** on mobile with 4G throttling. [vettedoutsource](https://vettedoutsource.com/blog/production-readiness-checklist/) Lighthouse Performance & Accessibility scores ≥ 90. |
-| **POL-C02** | Bundle Budget | Vendor chunk < 500KB, total initial JS < 2MB (uncompressed), enforced via Lighthouse CI budgets. [github](https://github.com/gorrion-io/production-readiness-checklist) |
-| **POL-C03** | Accessibility | WCAG 2.1/2.2 AA baseline, zero **critical** violations in axe‑core and pa11y. [muz](https://muz.li/blog/how-to-make-your-ui-accessible-a-practical-checklist-for-2026/) Manual screen‑reader pass (NVDA/VoiceOver) required. |
-| **POL-C04** | Environment Validation | All `VITE_*` environment variables validated with Zod at startup; missing or invalid values fail the app boot. [abbacustechnologies](https://www.abbacustechnologies.com/web-dev-checklist-2026/) |
-| **POL-C05** | Code Splitting | Route‑level `lazy` imports for all pages; `manualChunks` for stable vendor libraries and heavy UI libs. |
-| **POL-C06** | Error Resilience | Root `<ErrorBoundary>` plus per‑route boundaries for risky sections; Suspense fallbacks for lazy routes and data fetching. [abbacustechnologies](https://www.abbacustechnologies.com/web-dev-checklist-2026/) |
-| **POL-C07** | Testing Pyramid | Unit (Vitest), Component (RTL + Vitest), Integration (Vitest + MSW), E2E (Playwright), Visual (Chromatic/Percy), A11y checks (axe/pa11y) in CI. [shsxnk](https://www.shsxnk.com/tools/ci-readiness) |
-| **POL-C08** | Security & Privacy | No secrets in frontend bundles, XSS‑safe rendering, robust auth/session handling, and basic CSP/security headers documented. [domainoptic](https://domainoptic.com/security/react/) |
-| **POL-C09** | Observability | Client‑side error logging and Core Web Vitals RUM wired into analytics; dashboards can show whether a release is healthy. [vettedoutsource](https://vettedoutsource.com/blog/production-readiness-checklist/) |
+| POL-C01 | Performance Targets | Core Web Vitals: LCP < 2.5s, INP < 200ms, CLS < 0.1 |
+| POL-C02 | Bundle Budget | Vendor chunk < 500KB, total initial JS < 2MB (uncompressed) |
+| POL-C03 | Accessibility | WCAG 2.2 AA baseline, zero critical violations in axe-core |
+| POL-C04 | Env Validation | All `VITE_*` environment variables validated with Zod at startup |
+| POL-C05 | Code Splitting | Route-level `lazy` imports for all pages; `manualChunks` for vendor libs |
+| POL-C06 | Resilience | Root `<ErrorBoundary>` plus per-route boundaries; Suspense fallbacks |
+| POL-C07 | Testing Pyramid | Unit, Component, Integration, E2E, Visual, and A11y checks in CI |
+| POL-C08 | Security | No secrets in bundles, XSS-safe rendering, CSP headers documented |
+| POL-C09 | Observability | Client-side error logging and Core Web Vitals RUM wired into analytics |
 
 ---
 
-## 🗂️ Task POL‑001: Performance & Bundle Optimization
+## 🎯 Motion Tier Assignment
 
-**Priority:** 🔴 High
-**Est. Effort:** 3 hours
-**Depends On:** All previous modules
+| Component | Tier | Allowed Techniques |
+|-----------|------|--------------------|
+| Loading Skeletons | Quiet | Shimmer opacity fade, transitions ≤150ms |
+| Error Boundaries | Quiet | Simple fade-in for error messages |
+| Page Transitions | Alive | Spring physics, location-keyed motion |
 
-Focus: offline bundle analysis and targeted optimizations to meet Core Web Vitals and bundle budgets.
-
-### Related Files
-
-- `vite.config.ts`, `package.json`, `src/lib/performance.ts`, `src/lib/rum.ts`
-
-### Subtasks
-
-- [ ] **POL‑001A**: Install bundle analyzer  
-  - `pnpm add -D rollup-plugin-visualizer`. [pagepro](https://pagepro.co/blog/web-development-best-practices/)
-  - Configure in `vite.config.ts` to generate `stats.html` on production builds.  
-  - Open `stats.html` and document top 10 heaviest modules and why they are needed.
-
-- [ ] **POL‑001B**: Configure `manualChunks` in `vite.config.ts`
-  ```ts
-  rollupOptions: {
-    output: {
-      manualChunks: {
-        'vendor-react': ['react', 'react-dom', 'react-router'],
-        'vendor-query': ['@tanstack/react-query'],
-        'vendor-motion': ['motion'],
-        'ui-shadcn': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '...'],
-        'charts': ['recharts'],
-        'dnd': ['@dnd-kit/core', '@dnd-kit/sortable'],
-      },
-    },
-  }
-  ```
-  - Goal: vendor chunk < 500KB, total initial JS < 2MB (uncompressed). [github](https://github.com/gorrion-io/production-readiness-checklist)
-  - Move rarely used or admin‑only views behind route‑level `lazy` imports.
-
-- [ ] **POL‑001C**: Core Web Vitals lab audit (Lighthouse DevTools, Mobile + 4G throttling)  
-  - Record **LCP**, **INP**, **CLS** for `/`, `/dashboard`, `/chat`, `/projects`, `/analytics`.  
-  - If LCP > 2.5s: check images (dimensions, formats), render‑blocking CSS/JS, and initial data fetching strategy. [abbacustechnologies](https://www.abbacustechnologies.com/web-dev-checklist-2026/)
-  - If INP > 200ms: use Performance panel to identify long tasks >50ms; defer non‑critical work with `requestIdleCallback` or `startTransition`.  
-  - If CLS > 0.1: fix layout shifts via fixed dimensions and placeholders.
-
-- [ ] **POL‑001D**: Optimize expensive interactions  
-  - Use `useTransition` / `startTransition` for expensive filtering and sorting in Dashboard, Transactions, and News modules. [abbacustechnologies](https://www.abbacustechnologies.com/web-dev-checklist-2026/)
-  - Use `useDeferredValue` for large searchable lists (e.g., Audit, Transactions) to avoid blocking typing.  
-
-- [ ] **POL‑001E**: Image optimization  
-  - Ensure all non‑critical images use `loading="lazy"` and have width/height attributes. [pagepro](https://pagepro.co/blog/web-development-best-practices/)
-  - Use responsive sources (`srcset`) or a CDN for key hero/illustration images if present.
-
-- [ ] **POL‑001F**: Introduce RUM (Core Web Vitals client collection)  
-  - Add `src/lib/rum.ts` with a function to capture real‑user LCP/INP/CLS using `web-vitals` or equivalent. [vettedoutsource](https://vettedoutsource.com/blog/production-readiness-checklist/)
-  - Send metrics to a mock `/api/rum` endpoint or logging function for now (to be surfaced in POL‑003).
-
-### Definition of Done
-
-- `stats.html` has no unexplained monolithic chunks; bundle budgets met (vendor < 500KB, initial JS < 2MB).  
-- Lighthouse (mobile, 4G) Performance ≥ 90, LCP < 2.5s, INP < 200ms, CLS < 0.1 on key routes. [github](https://github.com/gorrion-io/production-readiness-checklist)
-- Expensive interactions use React concurrent patterns (`useTransition`, `useDeferredValue`).  
-- RUM hook for Core Web Vitals is implemented and can be consumed by analytics.
-
-### Anti‑Patterns
 
 - ❌ Assuming desktop broadband performance is sufficient; always test with throttling. [abbacustechnologies](https://www.abbacustechnologies.com/web-dev-checklist-2026/)
 - ❌ Leaving repeated heavy libraries in multiple chunks instead of centralizing them via `manualChunks`.  

@@ -1184,7 +1184,7 @@
 ## 🔗 Task PROJ-020: Triage Inbox — Integration Hub
 **Priority:** 🔴 High
 **Est. Effort:** 2 hours
-**Depends On:** PROJ-018, PROJ-019, TASK-006, TASK-007
+**Depends On:** PROJ-018, PROJ-019, DASH-006, DASH-007
 
 ### Related Files
 `src/components/triage/TriageIntegrationHub.tsx` · `src/hooks/useTriage.ts`
@@ -1192,8 +1192,8 @@
 ### Subtasks
 
 - [ ] **PROJ-020A**: Integrate real data sources into Triage stream:
-  - **Agent outputs**: AgentFleetPanel activity (from TASK-006) → Triage items when agents produce decisions, summaries, or alerts
-  - **Decision packets**: AttentionQueue items (from TASK-007) → Triage items with "Approve/Reject/Defer" inline actions
+  - **Agent outputs**: AgentFleetPanel activity (from DASH-006) → Triage items when agents produce decisions, summaries, or alerts
+  - **Decision packets**: AttentionQueue items (from DASH-007) → Triage items with "Approve/Reject/Defer" inline actions
   - **Project work assignments**: When user is assigned to a project/task → Triage item
   - **Budget alerts**: When budget exceeds 75%/100% → Triage notification
   - **Comment mentions**: When @mentioned in any comment → Triage notification
@@ -1351,7 +1351,7 @@
 ## 🗂️ Task PROJ-024: Practice Intelligence Dashboard (AI Agents)
 **Priority:** 🟢 Low
 **Est. Effort:** 3 hours
-**Depends On:** PROJ-000, TASK-006, TASK-007
+**Depends On:** PROJ-000, DASH-006, DASH-007
 
 ### Related Files
 `src/components/intelligence/PracticeIntelligenceDashboard.tsx` · `src/components/intelligence/AIAgentActivity.tsx` · `src/components/intelligence/FIFOQueue.tsx`
@@ -1472,7 +1472,7 @@ PROJ-018 (Triage Shell) ──→ PROJ-019 (Triage Actions) ──→ PROJ-020 (
 
 PROJ-023 (Filing Deadlines) ──→ PROJ-008
 
-PROJ-024 (Practice Intelligence) ──→ TASK-006, TASK-007
+PROJ-024 (Practice Intelligence) ──→ DASH-006, DASH-007
 
 PROJ-025 (Final Polish) ──→ ALL PROJ tasks
 ```

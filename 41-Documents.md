@@ -1,44 +1,38 @@
-# 41‑Documents — Personal AI Command Center Frontend (Enhanced v1)
+Based on research into Google Drive, Proton Drive, Docspell, Seafile, OneDrive, Box, and 2026 document storage best practices, here is a complete prioritized task list for the Document Storage module with AI intelligence, following the format established in the existing specs.
 
+---
+
+# # 41‑Documents — Personal AI Command Center Frontend (Regenerated v2)
 > **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.  
-> **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+> **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.  
+> **Source Research**: Google Drive (AI Overviews, Ask Gemini), Proton Drive (E2E encryption, secure sharing), Seafile 13.0 (metadata, AI, views), Docspell (OCR, ML tagging, full-text search), OneDrive (OCR, intelligent search), Box (AI Q&A, content management) — April 2026.
 
 ---
 
 ## 📋 Frontend Context (Module‑Wide Assumptions)
-
 > All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
-> **Do not repeat these in every task** – they are global.
 
-- **Framework**: React 18 + TypeScript (strict mode)
-- **State**: Zustand (UI) + TanStack Query (server state)
-- **Styling**: Tailwind CSS v4 (CSS‑first `@theme`), shadcn/ui components
-- **Animation**: Motion v12 (`framer-motion`) with `useReducedMotion()` guard
-- **Testing**: Vitest + RTL + MSW (unit / component / integration)
-- **Routing**: React Router v7 (data mode, lazy routes)
-- **Virtualization**: `@tanstack/react-virtual`
-- **Drag & Drop**: dnd‑kit with shared `useDndSensors` hook
-- **Forms**: react‑hook‑form + zod
-- **Offline**: Dexie (centralised `CommandCenterDB`)
-- **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
-
-## 🔬 Research Findings — Documents Module
+## 🔬 Research Findings — Document Storage 2026
 
 | Finding | Source | Action Required |
 |---------|--------|-----------------|
-| **Obsidian's core value is bidirectional linking** — Users create knowledge networks by linking notes with `[[double brackets]]`. This creates a graph view that visualizes connections. | Obsidian UX Research 2025 | DOC-003: Implement bidirectional linking with auto-backlink discovery and graph visualization. |
-| **OCR is essential for paper digitization** — Leading apps like Evernote, Notion, and Apple Notes use OCR to make scanned documents searchable. Tesseract.js is the standard browser OCR library. | Document Management Apps 2026 | DOC-004: Implement OCR processing pipeline using Tesseract.js with progress indicators. |
-| **Semantic search enables intelligent discovery** — Vector embeddings allow finding documents by meaning, not just keywords. OpenAI embeddings + cosine similarity is the standard approach. | AI-Powered Search 2026 | DOC-005: Implement semantic search using vector embeddings and similarity scoring. |
-| **Document extraction structures unstructured content** — AI can extract entities, topics, and summaries from documents. This enables automatic tagging and organization. | Document Intelligence 2026 | DOC-006: Implement AI-powered extraction for entities, topics, and summaries. |
-| **Q&A over documents is a premium feature** — Users expect to ask questions about their document collection and get precise answers with citations. | RAG Systems 2026 | DOC-007: Implement question-answering with retrieval-augmented generation and source citations. |
-| **Real-time collaboration is expected** — Multiple users editing documents simultaneously with live cursors and conflict resolution. | Collaborative Editing 2026 | DOC-008: Implement real-time collaboration with operational transforms. |
-| **Version history is non-negotiable** — Users need to track changes, revert to previous versions, and see who made what changes. | Document Versioning 2026 | DOC-009: Implement document versioning with diff visualization. |
-| **Offline-first is essential** — Documents must be accessible and editable without internet, with sync when reconnected. | PWA Document Apps 2026 | DOC-010: Implement offline storage with IndexedDB and sync queue. |
-| **Rich content beyond text** — Images, PDFs, videos, and embedded content are standard expectations. | Rich Document Editors 2026 | DOC-011: Support multiple content types with inline previews. |
-| **Template system accelerates creation** — Pre-built templates for meeting notes, project docs, research papers reduce blank-page anxiety. | Template UX Research 2026 | DOC-002: Create template library with 10+ document templates. |
-| **Markdown is the lingua franca** — Most knowledge workers prefer Markdown for its simplicity and portability. | Markdown Editors 2026 | DOC-003: Use Markdown as primary format with rich preview. |
-| **Tag-based organization scales** — Hierarchical folders break down; tags with auto-suggestion and faceted search scale better. | Information Architecture 2026 | DOC-005: Implement tag system with auto-suggestion and faceted search. |
-| **Split view enhances productivity** - Viewing source and preview side-by-side, or multiple documents simultaneously, is a power-user feature. | Advanced Editors 2026 | DOC-012: Implement split view layouts. |
+| **AI Overviews & Ask Gemini**: Google Drive now surfaces AI overviews from search queries and supports conversational Q&A about files ("Ask Gemini") — transforming Drive from passive storage into an active knowledge base. | Google Workspace Blog, Apr 2026 | DOC-010: Implement AI search with overview summaries; DOC-011: Add conversational Q&A over documents |
+| **End-to-End Encryption by Default**: Proton Drive offers zero-knowledge architecture where even the provider cannot read files. This is increasingly expected in modern storage apps. | Cyberinsider, Apr 2026 | DOC-012: Implement encryption indicators and optional client-side encryption |
+| **OCR & Full-Text Search**: Every major platform (Docspell, OneDrive, Seafile) now supports OCR for scanned documents and images, enabling full-text search across all content types. | Docspell, OneDrive updates 2026 | DOC-005: Implement OCR pipeline; DOC-006: Full-text search with OCR integration |
+| **Automated Tagging & Metadata**: ML-powered auto-tagging, date extraction, and correspondent detection are standard (Docspell, PaperAI). Reduces manual filing burden. | Docspell, PaperAI 2026 | DOC-007: AI-powered auto-tagging and metadata extraction |
+| **Multiview Layouts**: Seafile 13.0 introduced Table, Kanban, Gallery, Map, Card, and Statistics views for document libraries. | Seafile Blog, Jan 2026 | DOC-003: Multiple view modes (Grid, List, Gallery, Table, Kanban) |
+| **Hierarchical Tagging**: Seafile 13.0 supports multi-level tag hierarchies with drag-and-drop parent-child relationships. | Seafile Blog | DOC-007: Hierarchical tag system |
+| **Secure Sharing with Expiry & Password**: Dropbox, Proton Drive, and enterprise platforms all support expiring links, password protection, and access revocation. | Dropbox Help, 2026 | DOC-009: Secure sharing with password, expiry, and permissions |
+| **Version History & Rollback**: Complete version history with rollback, diff visualization, and change attribution is a baseline requirement. | Folderit, FlowWright 2026 | DOC-008: Version control with history, diff, and rollback |
+| **Trash/Recycle Bin with Retention**: Soft-delete with 30-day retention, restore capability, and auto-purge. | DocuWare, Rally 2026 | DOC-004: Trash system with restore and retention |
+| **Thumbnail Generation**: Automatic thumbnails for images, PDFs, videos, and Office documents. | Seafile Thumbnail Server | DOC-003: Thumbnail generation pipeline |
+| **Offline Access & Sync**: PWA with IndexedDB for offline access, background sync on reconnect. | OneDrive Web, PWA patterns 2026 | DOC-014: Offline support with Dexie and sync queue |
+| **Bulk Operations**: Batch upload, download, delete, move, and metadata editing. | Document360, LogicalDOC 2026 | DOC-004: Bulk operations throughout |
+| **Audit Trail & Compliance**: Immutable audit logs tracking access, modifications, sharing, and AI interactions. | FileOrbis, Kiteworks 2026 | DOC-008: Audit trail logging |
+| **Recycle Bin & Soft Delete**: Auto-remove after fixed retention period (typically 30 days), full restore capability. | Multiple DMS platforms | DOC-004: Trash system |
+| **File Preview**: In-app preview for PDF, images, video, Office documents, code files. | Multiple platforms | DOC-003: Preview components |
+| **Metadata & Custom Properties**: Structured metadata fields (dates, correspondents, status, custom). | Seafile Metadata Server | DOC-007: Metadata extraction & custom fields |
+| **Storage Quota & Analytics**: Storage usage monitoring, per-folder/file size analytics, quota warnings. | Google Drive, Proton Drive | DOC-013: Storage analytics |
 
 ---
 
@@ -46,1491 +40,753 @@
 
 | ID | Area | Requirement |
 |----|------|-------------|
-| **DOC-C01** | State Management | Zustand `documentsSlice` for active document, view mode, search, and collaboration state. URL sync for shareable document links. |
-| **DOC-C02** | Data Persistence | Centralized CommandCenterDB with module-prefixed stores (`documents_documents`, `documents_syncQueue`, `documents_embeddings`) for offline document storage; sync queue for pending mutations. Vector embeddings stored in IndexedDB for semantic search. |
-| **DOC-C03** | Content Types | Unified content model supporting: Markdown, PDF, images, videos, audio recordings, and embedded content. |
-| **DOC-C04** | Linking System | Bidirectional linking with `[[wikilink]]` syntax; auto-backlink discovery; graph visualization. |
-| **DOC-C05** | Search Architecture | Hybrid search: full-text + semantic (vector embeddings) + metadata filters. Results ranked by relevance score. |
-| **DOC-C06** | OCR Pipeline | Tesseract.js integration for image/PDF text extraction; progress indicators; error handling. |
-| **DOC-C07** | AI Integration | OpenAI-compatible API for embeddings, extraction, and Q&A. Cost tracking and rate limiting. |
-| **DOC-C08** | Collaboration | Yjs CRDT-based collaboration with y-indexeddb for offline persistence; automatic conflict resolution; presence indicators via awareness API. |
-| **DOC-C09** | Version Control | Immutable document versions; diff visualization; rollback capability. |
-| **DOC-C10** | Templates | 10+ built-in templates (Meeting Notes, Project Brief, Research Paper, etc.); custom template builder. |
-| **DOC-C11** | View Modes | Edit mode (Markdown), Preview mode (rendered), Split view, Graph view, Timeline view. |
-| **DOC-C12** | Accessibility | WCAG 2.2 AA: keyboard navigation, screen reader support for document content, focus management. |
-| **DOC-C13** | Motion | Alive tier for document transitions, link creation, collaboration cursors; Quiet tier for search results. |
+| **DOC-C01** | State Management | Zustand `documentsSlice` for view mode, filters, selection, navigation state. TanStack Query for server/backend state. |
+| **DOC-C02** | Data Persistence | Dexie for offline metadata cache, pending mutations, and local-only documents. Backend API for persistent storage. |
+| **DOC-C03** | Content Model | Unified `Document` type supporting files, folders, and shared items. Properties: metadata, tags, versions, permissions. |
+| **DOC-C04** | Virtualization | `@tanstack/react-virtual` for file lists with thousands of items. Grid dynamically calculates items per row. |
+| **DOC-C05** | Drag & Drop | dnd-kit with shared `useDndSensors` for file/folder drag, move, and upload drop zones. |
+| **DOC-C06** | Accessibility | WCAG 2.2 AA. File lists use `role="treegrid"` or `role="listbox"`. All actions keyboard-accessible. |
+| **DOC-C07** | Motion | Grid items: Quiet tier (fade). Upload progress: Alive tier (pulse). Modal open: Alive tier (spring). |
+| **DOC-C08** | AI Integration | Mock AI endpoints for classification, summarization, OCR, Q&A. Real implementation would use local LLM or API. |
+| **DOC-C09** | Security | Permissions enforced at UI level. Encryption indicators shown. Sensitive actions require confirmation. |
+| **DOC-C10** | Testing | All mutations follow optimistic update pattern with rollback. MSW handlers for all endpoints. |
 
 ### 🎯 Motion Tier Assignment
 
 | Component | Tier | Technique |
 |-----------|------|--------------------|
-| Document open/close | **Alive** | `scale: 0.95→1`, `opacity: 0→1`, spring `stiffness: 300, damping: 30` |
-| Link creation | **Alive** | Brief glow effect on linked text; graph node entrance |
-| OCR processing | **Quiet** | Progress bar with smooth width transition |
-| Search results | **Static** | Instant render; no animation during typing |
-| Collaboration cursor | **Alive** | Smooth position interpolation; subtle pulse |
-| Version diff | **Quiet** | Slide transition between versions |
-| Template selection | **Quiet** | `scale: 0.98→1` on hover |
-| Graph view navigation | **Alive** | Spring physics for node positioning |
-| Split view resize | **Quiet** | Resize handle with live preview |
+| File card/grid item entrance | **Quiet** | `opacity: 0→1`, 150ms fade, staggered by row |
+| Upload progress bar | **Alive** | Pulsing gradient, spring width transition |
+| Folder expand/collapse | **Quiet** | Height animation with `layout` prop |
+| AI processing indicator | **Alive** | Animated gradient border, status pulse |
+| Share dialog open | **Alive** | `scale: 0.95→1`, spring stiffness 400 damping 25 |
+| Trash restore animation | **Alive** | Slide in from opacity 0, y: 8→0 |
+| Search results | **Static** | Instant render |
+| View mode switcher | **Quiet** | Active indicator slides via `layoutId` |
 
 ---
 
-
-## 🗂️ Task DOC-000: Documents Domain Model & Mock Data
-
-**Priority:** 🔴 High
-**Est. Effort:** 2 hours
-**Depends On:** FND-004 (Testing), FND-006 (TanStack Query)
+## 🗂️ Task DOC‑000: Document Domain Model, Schemas & Utilities
+**Priority:** 🔴 High | **Est. Effort:** 1.5 hours | **Depends On:** FND‑001 (TypeScript Base)
 
 ### Related Files
-
-`src/domain/documents/types.ts` · `src/schemas/documentSchema.ts` · `src/mocks/factories/documents.ts` · `src/mocks/handlers/documents.ts` · `src/queries/documents.ts`
+- `src/domain/documents/types.ts` · `src/schemas/documents.ts` · `src/utils/documents.ts`
 
 ### Subtasks
 
-- [ ] **DOC-000A**: Define core domain types in `src/domain/documents/types.ts`:
-
+- [ ] **DOC‑000A**: Define core types in `src/domain/documents/types.ts`:
   ```ts
-  export type DocumentType = 'markdown' | 'pdf' | 'image' | 'audio' | 'video' | 'embedded'
-  export type DocumentStatus = 'draft' | 'published' | 'archived'
-  
+  export type DocumentType = 'file' | 'folder'
+  export type FileFormat = 'pdf' | 'image' | 'video' | 'audio' | 'document' | 'spreadsheet' | 'presentation' | 'code' | 'archive' | 'other'
+  export type ViewMode = 'grid' | 'list' | 'gallery' | 'table' | 'kanban'
+  export type SortField = 'name' | 'type' | 'size' | 'createdAt' | 'updatedAt' | 'owner'
+  export type Permission = 'view' | 'comment' | 'edit' | 'owner'
+  export type AIProcessingStatus = 'idle' | 'pending' | 'processing' | 'completed' | 'failed'
+
   export interface Document {
     id: string
-    title: string
+    name: string
     type: DocumentType
-    status: DocumentStatus
-    content: string // Markdown content or extracted text
-    rawContent?: string // Original file content for binary types
-    embeddings?: number[] // Vector embedding for semantic search
-    metadata: DocumentMetadata
-    links: DocumentLink[]
-    backlinks: DocumentLink[]
-    tags: string[]
-    version: number
+    format?: FileFormat
+    parentId: string | null       // null = root
+    path: string[]                // breadcrumb of parent folder IDs
+    size: number                  // bytes, 0 for folders
+    mimeType: string
+    thumbnailUrl?: string
+    previewUrl?: string
+    storageUrl: string            // actual file location
     createdAt: string
     updatedAt: string
     createdBy: string
-    updatedBy: string
-    templateId?: string
+    owner: string
+    isStarred: boolean
+    isTrashed: boolean
+    trashedAt?: string
+    autoPurgeAt?: string          // 30 days after trashed
+    tags: string[]                // tag IDs
+    metadata: DocumentMetadata
+    permissions: DocumentPermission[]
+    versions: DocumentVersion[]
+    aiData?: AIDocumentData
+    shareConfig?: ShareConfig
   }
-  
+
   export interface DocumentMetadata {
-    wordCount?: number
-    readingTimeMinutes?: number
+    description?: string
+    customProperties: Record<string, string | number | boolean | Date>
     extractedEntities?: Entity[]
-    extractedTopics?: Topic[]
-    summary?: string
-    ocrText?: string // For scanned documents
+    extractedDates?: Date[]
+    extractedCorrespondents?: string[]
     language?: string
-    lastSyncAt?: string
+    pageCount?: number            // for PDFs/documents
+    duration?: number             // seconds for audio/video
+    dimensions?: { width: number; height: number }
   }
-  
-  export interface DocumentLink {
+
+  export interface DocumentVersion {
     id: string
-    sourceId: string
-    targetId: string
-    linkText: string
-    type: 'wikilink' | 'external' | 'attachment'
-    position: { start: number; end: number }
+    versionNumber: number
+    storageUrl: string
+    size: number
+    createdAt: string
+    createdBy: string
+    changeSummary?: string
   }
-  
+
+  export interface DocumentPermission {
+    userId: string
+    userName: string
+    permission: Permission
+    grantedAt: string
+    grantedBy: string
+  }
+
+  export interface ShareConfig {
+    isShared: boolean
+    shareLink?: string
+    linkPassword?: string
+    linkExpiresAt?: string
+    accessMode: 'public' | 'authenticated' | 'restricted'
+    allowDownload: boolean
+    viewCount: number
+    lastAccessedAt?: string
+  }
+
+  export interface AIDocumentData {
+    status: AIProcessingStatus
+    summary?: string
+    ocrText?: string
+    suggestedTags?: string[]
+    suggestedCategory?: string
+    entities?: Entity[]
+    qaHistory?: QAInteraction[]
+    lastProcessedAt?: string
+    processingError?: string
+  }
+
   export interface Entity {
     text: string
-    type: 'person' | 'organization' | 'location' | 'date' | 'concept'
+    type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'email' | 'phone' | 'url' | 'concept'
     confidence: number
-    position: { start: number; end: number }
   }
-  
-  export interface Topic {
-    name: string
-    confidence: number
-    keywords: string[]
+
+  export interface AuditLogEntry {
+    id: string
+    documentId: string
+    action: 'created' | 'updated' | 'deleted' | 'viewed' | 'downloaded' | 'shared' | 'unshared' | 'restored' | 'permanently_deleted' | 'ai_processed' | 'comment_added'
+    userId: string
+    userName: string
+    timestamp: string
+    details?: Record<string, unknown>
+    ipAddress?: string
   }
   ```
 
-- [ ] **DOC-000B**: Create Zod schemas in `src/schemas/documentSchema.ts`:
-  - `DocumentSchema` with validation for all fields
-  - `DocumentMetadataSchema` with optional fields
-  - `DocumentLinkSchema` with position validation
-  - `EntitySchema` and `TopicSchema` for AI extraction results
+- [ ] **DOC‑000B**: Create Zod schemas in `src/schemas/documents.ts` mirroring all types with runtime validation.
 
-- [ ] **DOC-000C**: Create `src/mocks/factories/documents.ts` with factories:
-  - `createMockDocument(type, overrides?)` — Generates realistic documents
-  - `createMockMarkdownDocument(overrides?)` — Markdown with links and tags
-  - `createMockPDFDocument(overrides?)` — PDF with OCR text
-  - `createMockMeetingNotes()` — Pre-populated meeting notes template
-  - `createMockProjectBrief()` — Project brief with sections and links
-  - `createMockResearchPaper()` — Academic paper with citations
+- [ ] **DOC‑000C**: Create utilities in `src/utils/documents.ts`:
+  - `formatFileSize(bytes: number): string` — "1.2 MB", "345 KB"
+  - `formatDuration(seconds: number): string` — "2:34"
+  - `getFileFormat(mimeType: string): FileFormat`
+  - `getFileIcon(format: FileFormat): string` — Lucide icon name
+  - `buildBreadcrumbPath(doc: Document, allDocs: Document[]): Document[]`
+  - `canPerformAction(userId: string, doc: Document, action: string): boolean`
+  - `sortDocuments(docs: Document[], field: SortField, order: 'asc' | 'desc'): Document[]`
+  - `filterDocuments(docs: Document[], filters: DocumentFilters): Document[]`
 
-- [ ] **DOC-000D**: Create `src/mocks/handlers/documents.ts` with MSW handlers:
-  - `GET /api/documents` — Paginated document list with filters
-  - `GET /api/documents/:id` — Full document with content and metadata
-  - `POST /api/documents` — Create new document (supports templateId)
-  - `PATCH /api/documents/:id` — Update document content/metadata
-  - `DELETE /api/documents/:id` — Soft delete (sets status: 'archived')
-  - `POST /api/documents/:id/ocr` — Process OCR for uploaded images/PDFs
-  - `POST /api/documents/search` — Hybrid search (text + semantic)
-  - `POST /api/documents/embeddings` — Generate embeddings for document
-  - `POST /api/documents/extract` — AI extraction of entities/topics
-  - `POST /api/documents/qa` — Question-answering over documents
-  - `GET /api/documents/:id/versions` — Document version history
-  - `GET /api/documents/graph` — Link graph data for visualization
+- [ ] **[TEST] DOC‑000D**: Unit tests for all types, schemas, and utilities.
 
-- [ ] **DOC-000E**: Create `src/queries/documents.ts` with Query Key Factory:
+### Definition of Done
+- All entities typed with Zod schemas; utilities handle edge cases (0 bytes, null parent, etc.)
+
+---
+
+## 🗂️ Task DOC‑001: Mock Data Layer & Query Contracts
+**Priority:** 🔴 High | **Est. Effort:** 2 hours | **Depends On:** DOC‑000, FND‑004 (Testing), FND‑006 (TanStack Query)
+
+### Related Files
+- `src/mocks/factories/documents.ts` · `src/mocks/handlers/documents.ts` · `src/queries/documents.ts`
+
+### Subtasks
+
+- [ ] **DOC‑001A**: Create `src/mocks/factories/documents.ts`:
+  - `createMockDocument(overrides?)` — generates file or folder with realistic metadata
+  - `createMockFolder(name, children, overrides?)` — folder with nested children
+  - `createMockFileTree(depth, filesPerFolder)` — generates complete folder hierarchy
+  - `createMockShareConfig(overrides?)` — sharing configuration
+  - `createMockVersion(overrides?)` — version entry
+  - `createMockAuditLog(documentId, count)` — audit entries
+  - `createMockAIData(status, overrides?)` — AI processing data with summaries and tags
+  - Factory must produce: 5-10 folders at root, 3-5 levels deep, 50-200 files total, varied formats
+
+- [ ] **DOC‑001B**: Create `src/mocks/handlers/documents.ts` with MSW:
+  - `GET /api/documents?parentId=&view=&sort=&filter=` — paginated list
+  - `GET /api/documents/:id` — single document detail
+  - `POST /api/documents` — create file or folder
+  - `PATCH /api/documents/:id` — update metadata, rename, move
+  - `DELETE /api/documents/:id` — soft delete (move to trash)
+  - `POST /api/documents/:id/restore` — restore from trash
+  - `DELETE /api/documents/:id/permanent` — permanent delete
+  - `POST /api/documents/upload` — file upload with progress simulation
+  - `GET /api/documents/:id/download` — file download
+  - `GET /api/documents/:id/versions` — version history
+  - `POST /api/documents/:id/versions/:versionId/restore` — rollback
+  - `POST /api/documents/:id/share` — create/update share link
+  - `DELETE /api/documents/:id/share` — revoke share
+  - `POST /api/documents/:id/permissions` — add permission
+  - `DELETE /api/documents/:id/permissions/:userId` — remove permission
+  - `POST /api/documents/:id/star` / `DELETE /api/documents/:id/star`
+  - `POST /api/documents/bulk` — bulk delete, move, download
+  - `GET /api/documents/trash` — trash contents
+  - `GET /api/documents/search?q=&type=&tags=&date=` — search
+  - `POST /api/documents/:id/ai/ocr` — OCR processing
+  - `POST /api/documents/:id/ai/summarize` — AI summarization
+  - `POST /api/documents/:id/ai/classify` — auto-classification
+  - `POST /api/documents/:id/ai/qa` — Q&A over document
+  - `GET /api/documents/:id/audit-log` — audit trail
+  - `GET /api/documents/storage/quota` — storage quota info
+
+- [ ] **DOC‑001C**: Create `src/queries/documents.ts` with Query Key Factory:
   ```ts
   export const documentKeys = {
     all: ['documents'] as const,
-    documents: (filters: DocumentFilters) => [...documentKeys.all, 'list', filters] as const,
-    document: (id: string) => [...documentKeys.all, 'detail', id] as const,
-    search: (query: string, filters: DocumentFilters) => [...documentKeys.all, 'search', query, filters] as const,
-    graph: () => [...documentKeys.all, 'graph'] as const,
-    templates: () => [...documentKeys.all, 'templates'] as const,
-    versions: (id: string) => [...documentKeys.document(id), 'versions'] as const,
+    list: (parentId: string | null, filters?: DocumentFilters) => [...documentKeys.all, 'list', parentId, filters] as const,
+    detail: (id: string) => [...documentKeys.all, 'detail', id] as const,
+    trash: () => [...documentKeys.all, 'trash'] as const,
+    search: (query: string, filters?: DocumentFilters) => [...documentKeys.all, 'search', query, filters] as const,
+    versions: (id: string) => [...documentKeys.detail(id), 'versions'] as const,
+    auditLog: (id: string) => [...documentKeys.detail(id), 'audit'] as const,
+    storage: () => [...documentKeys.all, 'storage'] as const,
+    recent: () => [...documentKeys.all, 'recent'] as const,
+    starred: () => [...documentKeys.all, 'starred'] as const,
+    shared: () => [...documentKeys.all, 'shared'] as const,
   }
   ```
 
-- [ ] **DOC-000F**: Define query options and mutation hooks:
-  - `documentsQueryOptions(filters)` — Overview with `staleTime: 60_000`
-  - `documentDetailQueryOptions(id)` — Full document with `staleTime: 30_000`
-  - `useCreateDocument()` — Optimistic create with template support
-  - `useUpdateDocument()` — Optimistic update with version increment
-  - `useDeleteDocument()` — Optimistic archive
-  - `useSearchDocuments()` — Hybrid search with debouncing
-  - `useProcessOCR()` — OCR processing with progress tracking
-  - `useGenerateEmbeddings()` — Vector embedding generation
-  - `useExtractContent()` — AI extraction with optimistic updates
-  - `useQuestionAnswer()` — Q&A with source citations
-  - **Critical**: All mutations MUST use the shared `useOptimisticMutation()` wrapper from `src/lib/useOptimisticMutation.ts` (see FND-006H in 01-Foundations.md). This wrapper enforces the canonical pattern: `cancelQueries → snapshot → setQueryData → rollback → onSettled invalidate`. Do not implement inline optimistic patterns.
+- [ ] **DOC‑001D**: Create mutation hooks with full optimistic pattern:
+  - `useCreateFolder()`, `useUploadFile()`, `useRenameDocument()`, `useMoveDocument()`
+  - `useDeleteDocument()`, `useRestoreDocument()`, `usePermanentDelete()`
+  - `useStarDocument()`, `useUnstarDocument()`
+  - `useShareDocument()`, `useRevokeShare()`, `useUpdatePermissions()`
+  - `useBulkDelete()`, `useBulkMove()`, `useBulkDownload()`
+  - `useOCRDocument()`, `useSummarizeDocument()`, `useClassifyDocument()`, `useQADocument()`
+  - **Critical**: All mutations must use the shared `useOptimisticMutation()` wrapper.
 
-### Tests
-
-- [ ] Factory produces valid documents with all metadata fields
-- [ ] MSW handlers maintain in-memory state; mutations persist within session
-- [ ] `useSearchDocuments` returns relevant results with proper ranking
-- [ ] OCR processing mock returns realistic extracted text
-- [ ] Embedding generation mock returns vector arrays
-- [ ] Query keys are structurally distinct per entity
+- [ ] **[TEST] DOC‑001E**: Tests for factories, MSW handlers, query keys, and all mutation hooks.
 
 ### Definition of Done
-
-- Full domain model with document types, metadata, and linking
-- Mock factories for common document types (meeting notes, project briefs, research papers)
-- MSW handlers for all CRUD operations and AI features
-- Query key factory and mutation hooks with optimistic updates
-
-### Anti-Patterns
-- ❌ Storing binary content directly in document model — use separate storage
-- ❌ Not validating link positions — may cause invalid backlink detection
-- ❌ Missing version tracking — prevents proper change history
-- ❌ Not handling OCR errors gracefully — user needs feedback
-- ❌ Skipping `cancelQueries` in `onMutate` — creates race conditions when a background refetch overwrites the optimistic state
+- Mock data powers full file tree with realistic content. All CRUD + AI endpoints covered. Optimistic mutations with rollback.
 
 ---
 
-## 🔧 Task DOC-001: Documents State Management & Templates
-**Priority:** 🔴 High
-**Est. Effort:** 1.5 hours
-**Depends On:** FND-005 (Zustand), DOC-000
+## 🗂️ Task DOC‑002: Document State Management (Zustand Slice)
+**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** DOC‑001, FND‑005 (Zustand)
 
 ### Related Files
-`src/stores/slices/documentsSlice.ts` · `src/data/documentTemplates.ts` · `src/hooks/useDocumentTemplates.ts`
+- `src/stores/slices/documentsSlice.ts`
 
 ### Subtasks
 
-- [ ] **DOC-001A**: Create `src/stores/slices/documentsSlice.ts`:
+- [ ] **DOC‑002A**: Create `documentsSlice`:
   ```ts
   interface DocumentsSlice {
-    // Active state
-    activeDocumentId: string | null
-    activeViewMode: 'edit' | 'preview' | 'split' | 'graph' | 'timeline'
-    selectedDocumentIds: Set<string>
+    // Navigation
+    currentFolderId: string | null
+    breadcrumbs: { id: string; name: string }[]
+    // View
+    viewMode: ViewMode
+    sortField: SortField
+    sortOrder: 'asc' | 'desc'
+    // Selection
+    selectedDocumentIds: string[]
+    isBulkMode: boolean
+    // Upload
+    uploadQueue: UploadTask[]
+    // Filters
     searchQuery: string
-    searchFilters: DocumentFilters
-    
-    // Editor state
-    editorContent: string
-    editorCursorPosition: number
-    editorSelection: { start: number; end: number } | null
-    
-    // Linking state
-    linkingMode: boolean
-    suggestedLinks: DocumentSuggestion[]
-    
-    // Collaboration state
-    collaborationUsers: CollaborationUser[]
-    myCursor: CursorPosition | null
-    
-    // UI state
-    sidebarOpen: boolean
-    templateDrawerOpen: boolean
+    filterFormat: FileFormat | 'all'
+    filterTags: string[]
+    filterDateRange: { start: string | null; end: string | null }
+    // Panels
+    detailPanelOpen: boolean
+    detailDocumentId: string | null
     shareDialogOpen: boolean
-    versionHistoryOpen: boolean
-    
+    aiPanelOpen: boolean
+    trashViewOpen: boolean
     // Actions
-    setActiveDocument: (id: string | null) => void
-    setViewMode: (mode: DocumentsSlice['activeViewMode']) => void
-    toggleDocumentSelected: (id: string) => void
-    selectAllDocuments: () => void
-    clearSelection: () => void
-    setSearchQuery: (q: string) => void
-    setSearchFilters: (filters: Partial<DocumentFilters>) => void
-    setEditorContent: (content: string) => void
-    setCursorPosition: (position: number) => void
-    setSelection: (selection: { start: number; end: number } | null) => void
-    toggleLinkingMode: () => void
-    setSuggestedLinks: (links: DocumentSuggestion[]) => void
-    updateCollaborationUsers: (users: CollaborationUser[]) => void
-    setMyCursor: (cursor: CursorPosition | null) => void
-    toggleSidebar: () => void
-    openTemplateDrawer: () => void
-    closeTemplateDrawer: () => void
-    openShareDialog: () => void
-    closeShareDialog: () => void
-    openVersionHistory: () => void
-    closeVersionHistory: () => void
+    navigateToFolder(id: string | null): void
+    navigateUp(): void
+    setViewMode(mode: ViewMode): void
+    setSortField(field: SortField): void
+    toggleSortOrder(): void
+    toggleSelection(id: string): void
+    selectAll(ids: string[]): void
+    clearSelection(): void
+    addToUploadQueue(files: File[]): void
+    updateUploadTask(id: string, updates: Partial<UploadTask>): void
+    removeFromUploadQueue(id: string): void
+    clearCompletedUploads(): void
+    setFilter(key, value): void
+    clearFilters(): void
+    openDetailPanel(id: string): void
+    closeDetailPanel(): void
+    openShareDialog(id: string): void
+    closeShareDialog(): void
+    openAIPanel(id: string): void
+    closeAIPanel(): void
+    toggleTrashView(): void
   }
   ```
 
-- [ ] **DOC-001B**: Export atomic selectors:
-  - `useActiveDocument()`, `useViewMode()`, `useDocumentSearch()`, `useEditorState()`, `useLinkingState()`, `useCollaborationState()`
-
-- [ ] **DOC-001C**: Create `src/data/documentTemplates.ts` with built-in templates:
-  ```ts
-  export const BUILT_IN_TEMPLATES = [
-    { id: 'meeting-notes', name: 'Meeting Notes', icon: 'Users', type: 'markdown', template: '# Meeting Notes\n\n## Date: {{date}}\n## Attendees:\n- \n## Agenda:\n1. \n## Notes:\n\n## Action Items:\n- [ ] ' },
-    { id: 'project-brief', name: 'Project Brief', icon: 'Briefcase', type: 'markdown', template: '# Project Brief\n\n## Overview\n\n## Objectives\n\n## Timeline\n\n## Resources\n\n## Risks' },
-    { id: 'research-paper', name: 'Research Paper', icon: 'BookOpen', type: 'markdown', template: '# {{title}}\n\n## Abstract\n\n## Introduction\n\n## Methodology\n\n## Results\n\n## Conclusion\n\n## References' },
-    { id: 'personal-journal', name: 'Personal Journal', icon: 'Heart', type: 'markdown', template: '# {{date}}\n\n## Gratitude\n\n## Reflections\n\n## Learnings\n\n## Tomorrow' },
-    { id: 'product-spec', name: 'Product Spec', icon: 'Package', type: 'markdown', template: '# Product Specification\n\n## Problem Statement\n\n## Solution\n\n## Features\n\n## Technical Requirements\n\n## Success Metrics' },
-    { id: 'meeting-agenda', name: 'Meeting Agenda', icon: 'Calendar', type: 'markdown', template: '# Meeting Agenda\n\n## Date: {{date}}\n## Duration: {{duration}}\n\n## Topics\n1. \n2. \n3. \n\n## Pre-reading\n\n## Decisions Needed' },
-    { id: 'book-summary', name: 'Book Summary', icon: 'Book', type: 'markdown', template: '# {{title}}\n\n## Author: {{author}}\n\n## Key Takeaways\n\n## Notes\n\n## Quotes\n\n## Action Items' },
-    { id: 'decision-log', name: 'Decision Log', icon: 'CheckSquare', type: 'markdown', template: '# Decision Log\n\n## Date: {{date}}\n## Decision:\n\n## Context:\n\n## Options:\n1. \n2. \n3. \n\n## Rationale:\n\n## Outcome:' },
-    { id: 'travel-plan', name: 'Travel Plan', icon: 'MapPin', type: 'markdown', template: '# {{destination}} Trip\n\n## Dates: {{dates}}\n\n## Budget: {{budget}}\n\n## Itinerary\n\n### Day 1\n- \n\n## Packing List\n\n## Documents Needed' },
-    { id: 'weekly-review', name: 'Weekly Review', icon: 'RotateCcw', type: 'markdown', template: '# Weekly Review - {{week}}\n\n## Wins\n\n## Challenges\n\n## Learnings\n\n## Next Week Focus\n\n## Metrics' }
-  ] as const
-  ```
-
-- [ ] **DOC-001D**: Create `useDocumentTemplates()` hook:
-  - Returns built-in + user-created templates
-  - `createCustomTemplate(document)` mutation
-  - `deleteCustomTemplate(id)` mutation
-  - `applyTemplate(templateId, documentId)` mutation
-
-- [ ] **DOC-001E**: Persist view preferences to `localStorage`:
-  - Each document remembers user's preferred view mode
-  - Store sidebar state, editor preferences
-  - Use `partialize` to store only UI preferences
-
-### Tests
-- [ ] State updates correctly for all actions
-- [ ] Atomic selectors prevent unnecessary re-renders
-- [ ] Template data loads and creates documents with correct content
-- [ ] View mode persists across page reloads
-- [ ] Linking mode toggles correctly with UI updates
-
-### Definition of Done
-- Complete documents slice with editor, search, and collaboration state
-- 10 built-in templates with realistic content
-- Custom template creation supported
-- View mode and UI preferences persisted
-
-### Anti-Patterns
-- ❌ Persisting full document content to Zustand — use Dexie for content, Zustand for UI state only
-- ❌ Not using atomic selectors — causes re-renders on every document change
-- ❌ Hardcoding templates without user customization
+- [ ] **DOC‑002B**: Export atomic selector hooks.
+- [ ] **DOC‑002C**: Persist `viewMode`, `sortField`, `sortOrder` to localStorage. Never persist selection or upload queue.
+- [ ] **[TEST] DOC‑002D**: Tests for all actions and selectors.
 
 ---
 
-## 📝 Task DOC-002: Documents Page Layout & Editor
-**Priority:** 🔴 High
-**Est. Effort:** 3 hours
-**Depends On:** FND-007 (Router), DOC-001
+## 🗂️ Task DOC‑003: Document Browser — Layout, Views & Thumbnails
+**Priority:** 🔴 High | **Est. Effort:** 4 hours | **Depends On:** DOC‑002, FND‑007 (Router)
 
 ### Related Files
-`src/pages/DocumentsPage.tsx` · `src/components/documents/DocumentsLayout.tsx` · `src/components/documents/DocumentEditor.tsx` · `src/components/documents/DocumentPreview.tsx` · `src/components/documents/DocumentSidebar.tsx` · `src/router/routes.ts`
+- `src/pages/DocumentsPage.tsx` · `src/components/documents/DocumentBrowser.tsx`
+- `src/components/documents/DocumentGrid.tsx` · `src/components/documents/DocumentList.tsx`
+- `src/components/documents/DocumentCard.tsx` · `src/components/documents/DocumentRow.tsx`
+- `src/components/documents/FolderTree.tsx` · `src/components/documents/BreadcrumbNav.tsx`
+- `src/components/documents/FilePreview.tsx` · `src/components/documents/ThumbnailRenderer.tsx`
 
 ### Subtasks
 
-- [ ] **DOC-002A**: Configure `/documents` route in `src/router/routes.ts`:
-  ```ts
-  {
-    path: 'documents',
-    lazy: () => import('@/pages/DocumentsPage'),
-    loader: () => queryClient.ensureQueryData(documentsQueryOptions({})),
-  },
-  {
-    path: 'documents/:documentId',
-    lazy: () => import('@/pages/DocumentsPage'),
-    loader: ({ params }) => queryClient.ensureQueryData(documentDetailQueryOptions(params.documentId!)),
-  }
-  ```
-
-- [ ] **DOC-002B**: Create `src/pages/DocumentsPage.tsx` with flexible layout:
-  - Left sidebar (280px): Document list, search, tags, "New Document" button
-  - Main content (flex-1): Active document with view switcher
-  - Right panel (320px, collapsible): Document details, links, backlinks, versions
-  - Responsive: Stack on mobile, sidebar collapses to icons
-
-- [ ] **DOC-002C**: Build `DocumentEditor` component:
-  - Markdown editor with syntax highlighting (using `@uiw/react-md-editor` or similar)
-  - Real-time preview toggle
-  - Auto-save every 30 seconds or on blur
-  - Link creation on `[[` autocomplete
-  - Tag suggestion with `#` prefix
-  - Toolbar with formatting buttons (bold, italic, link, image, code)
-  - Word count and reading time display
-
-- [ ] **DOC-002D**: Build `DocumentPreview` component:
-  - Rendered Markdown with proper styling
-  - Clickable links (both internal and external)
-  - Image preview with lightbox
-  - Code block syntax highlighting
-  - Table of contents for long documents
-  - Print-friendly view
-  - Note: If any HTML content is rendered (e.g., from document imports), use shared `SanitizedHTML` component (see 01-Foundations.md)
-
-- [ ] **DOC-002E**: Implement split view mode:
-  - Side-by-side editor and preview
-  - Synchronized scrolling
-  - Resizable divider
-  - Mobile: toggle between editor and preview
-
-- [ ] **DOC-002F**: Build `DocumentSidebar` component:
-  - Search input with real-time filtering
-  - Document list with title, type icon, tags, last modified
-  - Tag cloud with click-to-filter
-  - "New Document" button opens template drawer
-  - Document status filter (draft/published/archived)
-  - Sort options (title, modified, created)
-
-- [ ] **DOC-002G**: Add view mode switcher in document header:
-  - Edit, Preview, Split, Graph, Timeline views
-  - Active state with `layoutId` animated indicator
-  - Keyboard shortcuts: `Cmd/Ctrl+E` (edit), `Cmd/Ctrl+R` (preview), `Cmd/Ctrl+S` (split)
-
-- [ ] **DOC-002H**: Implement auto-save and conflict detection:
-  - Debounced save (2 seconds after last change)
-  - Conflict detection when multiple users edit
-  - "Document changed by others" notification with merge options
-
-### Tests
-- [ ] Route renders with correct layout; document ID from URL loads correct document
-- [ ] Editor renders Markdown with syntax highlighting
-- [ ] Preview renders with clickable links and images
-- [ ] Split view synchronizes scrolling correctly
-- [ ] Auto-save triggers after inactivity
-- [ ] Search filters document list in real-time
+- [ ] **DOC‑003A**: Configure routes: `/documents`, `/documents/folder/:folderId`, `/documents/shared`, `/documents/starred`, `/documents/recent`, `/documents/trash`.
+- [ ] **DOC‑003B**: Build `DocumentsPage` layout: left sidebar (folder tree), top bar (breadcrumbs, search, view switcher, upload button), main content (file browser), right panel (detail/AI/share).
+- [ ] **DOC‑003C**: Build `FolderTree` with expandable hierarchy, drag-and-drop for move, context menu (new folder, rename, delete, share).
+- [ ] **DOC‑003D**: Build `BreadcrumbNav` with clickable segments, "root" icon, current folder name.
+- [ ] **DOC‑003E**: Build `DocumentGrid` with `@tanstack/react-virtual`, dynamic items-per-row, progressive image loading with blur placeholders.
+- [ ] **DOC‑003F**: Build `DocumentList` as table with columns: name, type, size, modified, owner, actions. Sortable headers.
+- [ ] **DOC‑003G**: Build `DocumentCard` with thumbnail, name, type icon, star toggle, select checkbox, hover actions. Right-click context menu.
+- [ ] **DOC‑003H**: Build `DocumentRow` for list view with same actions inline.
+- [ ] **DOC‑003I**: Build `ThumbnailRenderer` for PDF (first page), images, video (frame at 50%), documents, code files (syntax-highlighted).
+- [ ] **DOC‑003J**: Build `FilePreview` modal with zoom, navigation, download button. Support PDF, images, video, audio, text/code.
+- [ ] **DOC‑003K**: Implement Gallery view for images (masonry or uniform grid, lightbox).
+- [ ] **DOC‑003L**: Implement drag-and-drop file upload zone with progress indicators.
+- [ ] **DOC‑003M**: Add "New Folder" inline creation, rename with inline editing (PROJ‑C08 pattern).
+- [ ] **[TEST] DOC‑003N**: Tests for all view modes, virtualization, preview, folder navigation.
 
 ### Definition of Done
-- Documents page with responsive three-column layout
-- Full-featured Markdown editor with toolbar
-- Live preview with rendered Markdown
-- Split view with synchronized scrolling
-- Document sidebar with search and filtering
-- Auto-save with conflict detection
-
-### Anti-Patterns
-- ❌ Not implementing auto-save — users lose work
-- ❌ Using textarea without syntax highlighting — poor editing experience
-- ❌ Not handling large documents efficiently — causes performance issues
-- ❌ Missing keyboard shortcuts — power users expect them
+- Multiple view modes with virtualization. Thumbnails render for all supported formats. Drag-and-drop upload works.
 
 ---
 
-## 🔗 Task DOC-003: Bidirectional Linking & Graph Visualization
-**Priority:** 🔴 High
-**Est. Effort:** 3 hours
-**Depends On:** DOC-002, DOC-000
+## 🗂️ Task DOC‑004: File Operations — Upload, Download, Move, Delete & Trash
+**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** DOC‑003
 
 ### Related Files
-`src/components/documents/LinkingSystem.tsx` · `src/components/documents/DocumentGraph.tsx` · `src/components/documents/BacklinksPanel.tsx` · `src/hooks/useDocumentLinks.ts`
+- `src/components/documents/UploadManager.tsx` · `src/components/documents/TrashView.tsx`
+- `src/components/documents/MoveDialog.tsx` · `src/components/documents/RenameDialog.tsx`
+- `src/hooks/useFileUpload.ts` · `src/hooks/useFileDownload.ts`
 
 ### Subtasks
 
-- [ ] **DOC-003A**: Implement wikilink parsing and creation:
-  - Parse `[[document title]]` syntax in Markdown
-  - Auto-complete suggestions when typing `[[`
-  - Create links on selection or explicit action
-  - Handle link text: `[[document title|display text]]`
-  - Validate links (warn if target doesn't exist)
-
-- [ ] **DOC-003B**: Build `LinkingSystem` component:
-  - Link creation modal with document search
-  - Link type selection (wikilink, external, attachment)
-  - Preview of linked content
-  - Bulk link creation from selected text
-  - Link editing and removal
-
-- [ ] **DOC-003C**: Implement backlink discovery:
-  - Scan all documents for links to current document
-  - Update backlinks when documents are modified
-  - Index backlinks for fast lookup
-  - Show backlink count in document header
-
-- [ ] **DOC-003D**: Build `BacklinksPanel` component:
-  - List of all documents linking to current document
-  - Show context around each link (surrounding text)
-  - Click to navigate to linking document
-  - Filter by date or document type
-  - Export backlinks as report
-
-- [ ] **DOC-003E**: Create `DocumentGraph` visualization:
-  - Force-directed graph using `d3-force` or `vis-network`
-  - Nodes represent documents, edges represent links
-  - Node size based on link count or importance
-  - Color coding by document type or tags
-  - Interactive: click nodes to open documents, drag to reposition
-  - Zoom and pan controls
-  - Cluster detection for related document groups
-
-- [ ] **DOC-003F**: Implement graph interactions:
-  - Hover shows document preview tooltip
-  - Double-click opens document in new tab
-  - Right-click context menu (open, edit, delete link)
-  - Search within graph (highlight matching nodes)
-  - Filter graph by tags or date range
-  - Export graph as image or data
-
-- [ ] **DOC-003G**: Create `useDocumentLinks()` hook:
-  - `useLinks(documentId)` — outgoing links
-  - `useBacklinks(documentId)` — incoming links
-  - `useLinkGraph()` — full graph data
-  - `createLink(sourceId, targetId, linkText)` mutation
-  - `deleteLink(linkId)` mutation
-  - `updateLink(linkId, updates)` mutation
-
-- [ ] **DOC-003H**: Implement link analytics:
-  - Link density metrics
-  - Orphaned documents (no links)
-  - Hub documents (many outgoing links)
-  - Bridge documents (connecting clusters)
-  - Link strength based on frequency
-
-### Tests
-- [ ] Wikilink parsing correctly identifies all links
-- [ ] Auto-complete suggests relevant documents
-- [ ] Backlinks update when documents are modified
-- [ ] Graph visualization renders with correct nodes and edges
-- [ ] Graph interactions (zoom, pan, click) work smoothly
-- [ ] Link creation updates both forward and backward references
+- [ ] **DOC‑004A**: Build `UploadManager`: queue panel showing active/completed/failed uploads, progress bars, cancel, retry. Folder upload support. Size validation (max per file, max total).
+- [ ] **DOC‑004B**: Implement `useFileUpload` with chunked upload simulation, progress tracking, error handling, and optimistic file listing update.
+- [ ] **DOC‑004C**: Implement `useFileDownload` with progress, background download, ZIP bundling for multi-file download.
+- [ ] **DOC‑004D**: Build `MoveDialog`: folder tree selector, breadcrumb navigation, "Move here" button. Optimistic move with rollback.
+- [ ] **DOC‑004E**: Build `RenameDialog`: inline validation, name sanitization, conflict detection.
+- [ ] **DOC‑004F**: Implement delete flow: single delete → confirmation toast with undo; bulk delete → confirmation dialog. Both move to trash (soft delete).
+- [ ] **DOC‑004G**: Build `TrashView`: list of trashed items with "days remaining" indicator, restore button, permanent delete button, "Empty Trash" with confirmation.
+- [ ] **DOC‑004H**: Implement auto-purge: items in trash > 30 days auto-permanently-deleted with notification.
+- [ ] **DOC‑004I**: Implement bulk operations bar: when items selected, show "Move", "Download", "Delete", "Add Tags", "Change Permissions" actions.
+- [ ] **DOC‑004J**: Star/unstar with optimistic toggle, synced to starred filter view.
+- [ ] **[TEST] DOC‑004K**: Tests for upload, download, move, rename, delete, restore, bulk operations.
 
 ### Definition of Done
-- Full wikilink system with auto-complete
-- Automatic backlink discovery and display
-- Interactive graph visualization of document network
-- Link analytics and insights
-- Graph filtering and export capabilities
-
-### Anti-Patterns
-- ❌ Not updating backlinks dynamically — stale link data
-- ❌ Using heavy graph library without optimization — causes performance issues
-- ❌ Missing link validation — broken links frustrate users
-- ❌ Not handling orphaned documents — users lose track of content
+- Full file lifecycle managed. Trash with 30-day retention. Undo delete. Bulk operations throughout.
 
 ---
 
-## 📸 Task DOC-004: OCR Processing & Document Import
-**Priority:** 🔴 High
-**Est. Effort:** 2.5 hours
-**Depends On:** DOC-000
+## 🗂️ Task DOC‑005: OCR Processing Pipeline
+**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** DOC‑001, DOC‑003
 
 ### Related Files
-`src/components/documents/OCRProcessor.tsx` · `src/components/documents/DocumentImport.tsx` · `src/lib/ocr.ts` · `src/hooks/useOCRProcessing.ts`
+- `src/components/documents/OCRPanel.tsx` · `src/lib/ocrEngine.ts` · `src/hooks/useOCR.ts`
 
 ### Subtasks
 
-- [ ] **DOC-004A**: Install and configure Tesseract.js:
-  ```bash
-  pnpm add tesseract.js
-  ```
-
-- [ ] **DOC-004B**: Create `src/lib/ocr.ts` with OCR processing:
-  ```ts
-  export class OCRProcessor {
-    async processImage(imageFile: File, language?: string): Promise<OCRResult>
-    async processPDF(pdfFile: File): Promise<OCRResult>
-    async processBatch(files: File[]): Promise<OCRResult[]>
-    private createWorker(language: string): Promise<Tesseract.Worker>
-  }
-  
-  interface OCRResult {
-    text: string
-    confidence: number
-    words: OCRWord[]
-    blocks: OCRBlock[]
-    processingTime: number
-  }
-  ```
-
-- [ ] **DOC-004C**: Build `DocumentImport` component:
-  - Drag-and-drop zone for files
-  - Support for: PDF, images (JPG, PNG), text files, Markdown
-  - Multiple file selection with batch processing
-  - File preview before import
-  - Import options: OCR processing, auto-tagging, template assignment
-
-- [ ] **DOC-004D**: Build `OCRProcessor` component:
-  - Progress bar for processing status
-  - Real-time confidence score display
-  - Text preview with highlighted low-confidence regions
-  - Language selection (auto-detect or manual)
-  - Retry failed processing
-  - Batch processing queue
-
-- [ ] **DOC-004E**: Implement `useOCRProcessing()` hook:
-  - `processFile(file, options)` mutation with progress tracking
-  - `processBatch(files, options)` for multiple files
-  - `getOCRStatus(fileId)` for checking processing status
-  - Cancel processing functionality
-  - Error handling and retry logic
-
-- [ ] **DOC-004F**: Create document from OCR results:
-  - Extract text and create new document
-  - Preserve original file as attachment
-  - Auto-generate title from first line or filename
-  - Add OCR metadata (confidence, processing time)
-  - Suggest tags based on content analysis
-
-- [ ] **DOC-004G**: Implement OCR quality improvements:
-  - Image preprocessing (contrast, rotation, deskew)
-  - Multi-language support
-  - Table detection and extraction
-  - Handwriting recognition (if supported)
-  - PDF text layer extraction (fallback)
-
-- [ ] **DOC-004H**: Add OCR to existing documents:
-  - Upload images/PDFs to existing documents
-  - Append OCR text to document content
-  - Link original file as attachment
-  - Update document metadata with OCR info
-
-### Tests
-- [ ] OCR processing extracts text from images with reasonable accuracy
-- [ ] PDF processing handles both text and scanned PDFs
-- [ ] Batch processing processes multiple files sequentially
-- [ ] Progress indicators update correctly during processing
-- [ ] Error handling works for corrupted files
-- [ ] Language selection improves OCR accuracy
+- [ ] **DOC‑005A**: Create `src/lib/ocrEngine.ts` with `processDocument(file)`, supporting PDF, images (JPG, PNG, TIFF), with language detection and multi-language support.
+- [ ] **DOC‑005B**: Implement Tesseract.js integration (mock for MVP, real for production).
+- [ ] **DOC‑005C**: Build `OCRPanel`: "Run OCR" button, language selector, progress indicator, extracted text preview with confidence highlighting, "Copy text" / "Add to metadata" actions.
+- [ ] **DOC‑005D**: Implement `useOCR` hook with progress tracking and error handling.
+- [ ] **DOC‑005E**: Auto-trigger OCR on upload for image/PDF files (configurable in settings).
+- [ ] **DOC‑005F**: OCR results feed into full-text search index.
+- [ ] **[TEST] DOC‑005G**: Tests for OCR pipeline, progress tracking, error handling.
 
 ### Definition of Done
-- Full OCR pipeline using Tesseract.js
-- Support for image and PDF processing
-- Batch import with drag-and-drop
-- Progress tracking and error handling
-- Document creation from OCR results
-- Quality improvements and preprocessing
-
-### Anti-Patterns
-- ❌ Processing large files on main thread — blocks UI
-- ❌ Not providing progress feedback — users think it's broken
-- ❌ Ignoring OCR confidence scores — may accept poor results
-- ❌ Not handling file size limits — causes memory issues
+- OCR available for all image/PDF documents. Results searchable. Progress visible to user.
 
 ---
 
-## 🔍 Task DOC-005: Semantic Search & Vector Embeddings
-**Priority:** 🔴 High
-**Est. Effort:** 3 hours
-**Depends On:** DOC-000, DOC-004
+## 🗂️ Task DOC‑006: Full-Text Search & Advanced Filtering
+**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** DOC‑003, DOC‑005
 
 ### Related Files
-`src/components/documents/SearchInterface.tsx` · `src/lib/vectorSearch.ts` · `src/hooks/useSemanticSearch.ts` · `src/components/documents/SearchResults.tsx`
+- `src/components/documents/SearchBar.tsx` · `src/components/documents/SearchResults.tsx`
+- `src/components/documents/FilterPanel.tsx` · `src/hooks/useDocumentSearch.ts`
 
 ### Subtasks
 
-- [ ] **DOC-005A**: Create vector embedding system:
-  ```ts
-  // src/lib/vectorSearch.ts
-  export class VectorSearchEngine {
-    private embeddings: Map<string, number[]> = new Map()
-    
-    async generateEmbedding(text: string): Promise<number[]>
-    async search(query: string, topK: number = 10): Promise<SearchResult[]>
-    async addDocument(id: string, text: string): Promise<void>
-    async removeDocument(id: string): Promise<void>
-    async updateDocument(id: string, text: string): Promise<void>
-    private cosineSimilarity(a: number[], b: number[]): number
-  }
-  
-  interface SearchResult {
-    documentId: string
-    score: number
-    highlights: string[]
-    metadata: SearchResultMetadata
-  }
-  ```
-
-- [ ] **DOC-005B**: Implement embedding generation:
-  - Use OpenAI-compatible API for text embeddings
-  - Chunk long documents (500-1000 token chunks)
-  - Cache embeddings in IndexedDB for offline use
-  - Batch processing for efficiency
-  - Fallback to mock embeddings for development
-
-- [ ] **DOC-005C**: Build `SearchInterface` component:
-  - Unified search bar with real-time suggestions
-  - Search modes: Full-text, Semantic, Hybrid
-  - Advanced filters: tags, date range, document type, author
-  - Search history and saved searches
-  - Keyboard shortcut: `Cmd/Ctrl+K`
-
-- [ ] **DOC-005D**: Implement hybrid search algorithm:
-  - Combine full-text search (BM25) with semantic similarity
-  - Weighted scoring (tunable per user preference)
-  - Re-rank results using machine learning (optional)
-  - Personalization based on user interaction history
-
-- [ ] **DOC-005E**: Build `SearchResults` component:
-  - Result list with relevance scores
-  - Highlighted matching text
-  - Document preview with matched sections
-  - Faceted search sidebar (tags, types, dates)
-  - Sort options (relevance, date, title)
-  - Export results
-
-- [ ] **DOC-005F**: Create `useSemanticSearch()` hook:
-  - `searchDocuments(query, filters)` with debouncing
-  - `generateEmbeddings(documentIds)` for batch processing
-  - `updateSearchIndex()` when documents change
-  - `getSearchSuggestions(partialQuery)` for autocomplete
-
-- [ ] **DOC-005G**: Implement search analytics:
-  - Track search queries and click-through rates
-  - Identify failed searches (no results)
-  - Suggest query improvements
-  - Popular searches and trending topics
-
-- [ ] **DOC-005H**: Add advanced search features:
-  - Natural language queries ("find documents about machine learning")
-  - Boolean operators (AND, OR, NOT)
-  - Phrase searches with quotes
-  - Proximity searches (words within N tokens)
-  - Regular expression support
-
-### Tests
-- [ ] Vector embeddings generate consistently for same text
-- [ ] Semantic search returns relevant documents
-- [ ] Hybrid search combines text and semantic results correctly
-- [ ] Search filters work as expected
-- [ ] Search performance is acceptable (<500ms for 1000 documents)
-- [ ] Search suggestions improve user experience
+- [ ] **DOC‑006A**: Build `SearchBar`: global search input (⌘K), debounced 300ms, search-as-you-type with suggestions dropdown.
+- [ ] **DOC‑006B**: Implement `useDocumentSearch`: full-text search across name, content, OCR text, metadata, and tags. Fuzzy matching. Results ranked by relevance.
+- [ ] **DOC‑006C**: Build `SearchResults`: grouped by type (files, folders), highlighted match terms with `<mark>`, breadcrumb context, "Open location" action.
+- [ ] **DOC‑006D**: Build `FilterPanel`: format filter (chips), tag filter (multi-select), date range picker, size range filter, owner filter, "Clear all" button.
+- [ ] **DOC‑006E**: Implement filter URL sync for shareable filtered views.
+- [ ] **DOC‑006F**: Saved searches: save current filter/search as named view, list in sidebar.
+- [ ] **DOC‑006G**: Recent searches stored in localStorage (last 10).
+- [ ] **DOC‑006H**: Keyboard navigation in search results (ArrowUp/Down, Enter, Escape).
+- [ ] **[TEST] DOC‑006I**: Tests for search accuracy, highlighting, filters, saved searches.
 
 ### Definition of Done
-- Complete vector search engine with embeddings
-- Hybrid search combining text and semantic methods
-- Advanced search interface with filters
-- Search analytics and suggestions
-- Performance optimized for large document collections
-
-### Anti-Patterns
-- ❌ Not caching embeddings — expensive to regenerate
-- ❌ Using semantic search for everything — sometimes simple text search is better
-- ❌ Not providing search feedback — users don't know why results match
-- ❌ Ignoring search performance — slow search frustrates users
+- Full-text search across all document content including OCR. Faceted filtering. Saved searches.
 
 ---
 
-## 🤖 Task DOC-006: AI-Powered Content Extraction
-**Priority:** 🟠 Medium
-**Est. Effort:** 2.5 hours
-**Depends On:** DOC-004, DOC-005
+## 🗂️ Task DOC‑007: AI-Powered Auto-Tagging, Classification & Metadata Extraction
+**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** DOC‑003, DOC‑005
 
 ### Related Files
-`src/components/documents/ExtractionPanel.tsx` · `src/lib/contentExtractor.ts` · `src/hooks/useContentExtraction.ts` · `src/components/documents/EntityHighlight.tsx`
+- `src/components/documents/AIClassification.tsx` · `src/components/documents/TagManager.tsx`
+- `src/components/documents/MetadataEditor.tsx` · `src/hooks/useAIClassification.ts`
 
 ### Subtasks
 
-- [ ] **DOC-006A**: Create AI extraction service:
-  ```ts
-  // src/lib/contentExtractor.ts
-  export class ContentExtractor {
-    async extractEntities(text: string): Promise<Entity[]>
-    async extractTopics(text: string): Promise<Topic[]>
-    async generateSummary(text: string): Promise<string>
-    async extractKeywords(text: string): Promise<string[]>
-    async extractDates(text: string): Promise<Date[]>
-    async extractPeople(text: string): Promise<Person[]>
-    async extractOrganizations(text: string): Promise<Organization[]>
-  }
-  ```
-
-- [ ] **DOC-006B**: Implement entity extraction:
-  - Named Entity Recognition (NER) for people, organizations, locations
-  - Custom entity types (projects, products, concepts)
-  - Confidence scoring for each entity
-  - Entity linking to existing knowledge base
-  - Bulk entity extraction for document collections
-
-- [ ] **DOC-006C**: Build `ExtractionPanel` component:
-  - Toggle for different extraction types
-  - Entity list with confidence scores
-  - Topic modeling with hierarchical topics
-  - Summary generation with length control
-  - Keyword extraction with relevance scores
-  - Export extraction results
-
-- [ ] **DOC-006D**: Create `EntityHighlight` component:
-  - Highlight entities in document text
-  - Hover tooltips with entity details
-  - Click to search for similar entities
-  - Color coding by entity type
-  - Entity editing and correction
-
-- [ ] **DOC-006E**: Implement topic modeling:
-  - Latent Dirichlet Allocation (LDA) or similar
-  - Hierarchical topic discovery
-  - Topic evolution over time
-  - Topic-based document clustering
-  - Topic strength visualization
-
-- [ ] **DOC-006F**: Add automatic tagging:
-  - Suggest tags based on extracted entities and topics
-  - Learn from user tag corrections
-  - Tag hierarchy and relationships
-  - Auto-tag new documents based on content
-  - Tag cleanup and deduplication
-
-- [ ] **DOC-006G**: Create `useContentExtraction()` hook:
-  - `extractContent(documentId, types)` mutation
-  - `getExtractionResults(documentId)` query
-  - `updateEntity(entityId, corrections)` mutation
-  - `approveExtraction(documentId)` mutation
-
-- [ ] **DOC-006H**: Implement extraction workflows:
-  - Automatic extraction on document import
-  - Scheduled re-extraction for updated documents
-  - Manual extraction trigger
-  - Extraction quality metrics
-  - Human-in-the-loop correction interface
-
-### Tests
-- [ ] Entity extraction identifies relevant entities with good accuracy
-- [ ] Topic modeling produces coherent topics
-- [ ] Summary generation captures key points
-- [ ] Entity highlighting works correctly in documents
-- [ ] Auto-tagging suggests relevant tags
-- [ ] Extraction workflows run efficiently
+- [ ] **DOC‑007A**: Build `TagManager`: create/edit/delete tags, color assignment, hierarchical structure (parent-child drag), tag search, usage counts.
+- [ ] **DOC‑007B**: Implement `useAIClassification` hook:
+  - Auto-suggest tags based on document content and OCR text
+  - Auto-detect document category (invoice, contract, report, receipt, etc.)
+  - Extract entities: people, organizations, dates, amounts, emails, phones
+  - Extract correspondents and document dates
+  - Learning from user corrections
+- [ ] **DOC‑007C**: Build `AIClassification` panel: show AI suggestions with confidence scores, accept/reject/edit tags, "Apply All" bulk action, reprocess button.
+- [ ] **DOC‑007D**: Build `MetadataEditor`: view/edit custom properties, extracted entities, description, document date, correspondents.
+- [ ] **DOC‑007E**: Auto-classify on upload (configurable per folder).
+- [ ] **DOC‑007F**: Custom property templates: define metadata schemas per folder (e.g., "Invoices" folder has "Invoice #", "Amount", "Vendor" fields).
+- [ ] **[TEST] DOC‑007G**: Tests for tag CRUD, AI suggestions, entity extraction, metadata editing.
 
 ### Definition of Done
-- AI-powered entity, topic, and keyword extraction
-- Automatic document summarization
-- Entity highlighting and interaction
-- Topic modeling and visualization
-- Automatic tagging with user feedback
-- Extraction workflows and quality metrics
-
-### Anti-Patterns
-- ❌ Not providing extraction confidence — users can't trust results
-- ❌ Extracting everything indiscriminately — information overload
-- ❌ Not allowing user correction — extraction quality doesn't improve
-- ❌ Running extraction on every keystroke — performance issues
+- AI auto-tagging and classification with user feedback loop. Hierarchical tags. Custom metadata schemas per folder.
 
 ---
 
-## ❓ Task DOC-007: Question-Answering over Documents
-**Priority:** 🟠 Medium
-**Est. Effort:** 3 hours
-**Depends On:** DOC-005, DOC-006
+## 🗂️ Task DOC‑008: Version Control, Audit Trail & Document History
+**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** DOC‑003
 
 ### Related Files
-`src/components/documents/QAInterface.tsx` · `src/lib/qaEngine.ts` · `src/hooks/useQuestionAnswering.ts` · `src/components/documents/AnswerPanel.tsx`
+- `src/components/documents/VersionHistory.tsx` · `src/components/documents/AuditLog.tsx`
+- `src/components/documents/DiffViewer.tsx` · `src/hooks/useVersionControl.ts`
 
 ### Subtasks
 
-- [ ] **DOC-007A**: Create RAG (Retrieval-Augmented Generation) system:
-  ```ts
-  // src/lib/qaEngine.ts
-  export class QAEngine {
-    async askQuestion(
-      question: string, 
-      documentIds?: string[],
-      context?: string
-    ): Promise<QAResult>
-    
-    private async retrieveDocuments(question: string): Promise<RetrievedDocument[]>
-    private async generateAnswer(
-      question: string, 
-      contexts: string[]
-    ): Promise<GeneratedAnswer>
-    private async formatAnswer(
-      answer: GeneratedAnswer,
-      sources: RetrievedDocument[]
-    ): Promise<QAResult>
-  }
-  
-  interface QAResult {
-    answer: string
-    confidence: number
-    sources: SourceReference[]
-    followUpQuestions: string[]
-    relatedDocuments: string[]
-  }
-  ```
-
-- [ ] **DOC-007B**: Implement document retrieval:
-  - Semantic search for relevant document chunks
-  - Hybrid retrieval (semantic + keyword)
-  - Reranking based on question relevance
-  - Context window management
-  - Source attribution and citation
-
-- [ ] **DOC-007C**: Build `QAInterface` component:
-  - Question input with auto-complete
-  - Question history and suggestions
-  - Document scope selection (all vs specific documents)
-  - Question templates and examples
-  - Voice input support (Web Speech API)
-
-- [ ] **DOC-007D**: Create `AnswerPanel` component:
-  - Formatted answer with markdown rendering
-  - Source citations with clickable links
-  - Confidence score visualization
-  - Follow-up question suggestions
-  - Related documents list
-  - Answer feedback (helpful/not helpful)
-
-- [ ] **DOC-007E**: Implement conversation context:
-  - Maintain conversation history
-  - Context-aware follow-up questions
-  - Reference previous answers in current response
-  - Conversation summarization for long sessions
-
-- [ ] **DOC-007F**: Add advanced QA features:
-  - Multi-document question answering
-  - Comparative analysis ("compare documents about X")
-  - Synthesis questions ("summarize all documents about Y")
-  - Temporal questions ("what happened between date A and date B")
-  - Hypothetical questions based on document content
-
-- [ ] **DOC-007G**: Create `useQuestionAnswering()` hook:
-  - `askQuestion(question, options)` mutation
-  - `getConversationHistory()` query
-  - `rateAnswer(answerId, rating)` mutation
-  - `getQuestionSuggestions(partialQuestion)` query
-
-- [ ] **DOC-007H**: Implement QA analytics:
-  - Track question types and patterns
-  - Monitor answer quality and feedback
-  - Identify difficult questions (low confidence)
-  - Popular questions and topics
-  - User satisfaction metrics
-
-### Tests
-- [ ] QA system returns relevant answers with citations
-- [ ] Source attribution is accurate and clickable
-- [ ] Follow-up questions are contextually relevant
-- [ ] Multi-document questions synthesize information correctly
-- [ ] Conversation context maintains coherence
-- [ ] Answer feedback improves system quality
+- [ ] **DOC‑008A**: Build `VersionHistory`: timeline of versions with version number, date, user, size, change summary. "Restore this version" action, "Download this version" action.
+- [ ] **DOC‑008B**: Build `DiffViewer`: side-by-side text diff for text/code files, metadata comparison for other types.
+- [ ] **DOC‑008C**: Implement automatic version creation on file upload/replace edits.
+- [ ] **DOC‑008D**: Version retention: keep last 100 versions, configurable limit.
+- [ ] **DOC‑008E**: Build `AuditLog`: filterable log (action type, user, date range), export (CSV/JSON), real-time updates. Actions tracked: created, updated, deleted, viewed, downloaded, shared, unshared, restored, permanently deleted, AI processed, comment added.
+- [ ] **[TEST] DOC‑008F**: Tests for version restore, diff rendering, audit log filtering.
 
 ### Definition of Done
-- Full RAG-based question-answering system
-- Accurate source attribution and citations
-- Conversation context and history
-- Advanced question types (comparative, temporal, hypothetical)
-- Answer quality feedback and analytics
-- Voice input support
-
-### Anti-Patterns
-- ❌ Not providing source citations — users can't verify answers
-- ❌ Answering questions outside document scope — hallucination
-- ❌ Not maintaining conversation context — repetitive answers
-- ❌ Ignoring answer quality feedback — system doesn't improve
+- Complete version history with restore. Comprehensive audit trail. Diff visualization for text files.
 
 ---
 
-## 👥 Task DOC-008: Real-Time Collaboration
-**Priority:** 🟠 Medium
-**Est. Effort:** 1.5 hours
-**Depends On:** DOC-002
+## 🗂️ Task DOC‑009: Secure Sharing & Permissions
+**Priority:** 🔴 High | **Est. Effort:** 3 hours | **Depends On:** DOC‑003
 
 ### Related Files
-`src/components/documents/CollaborationPanel.tsx` · `src/lib/yjsDocument.ts` · `src/hooks/useRealTimeSync.ts` · `src/components/documents/CursorOverlay.tsx`
+- `src/components/documents/ShareDialog.tsx` · `src/components/documents/PermissionsPanel.tsx`
+- `src/hooks/useDocumentSharing.ts`
 
 ### Subtasks
 
-- [ ] **DOC-008A**: Implement Yjs document management:
-  ```ts
-  // src/lib/yjsDocument.ts
-  import * as Y from 'yjs'
-  import { IndexeddbPersistence } from 'y-indexeddb'
-  
-  export class YjsDocumentManager {
-    private ydoc: Y.Doc
-    private ytext: Y.Text
-    private persistence: IndexeddbPersistence
-    
-    constructor(documentId: string) {
-      this.ydoc = new Y.Doc()
-      this.ytext = this.ydoc.getText('content')
-      this.persistence = new IndexeddbPersistence(`doc-${documentId}`, this.ydoc)
-    }
-    
-    getText(): Y.Text {
-      return this.ytext
-    }
-    
-    getDoc(): Y.Doc {
-      return this.ydoc
-    }
-    
-    destroy(): void {
-      this.ydoc.destroy()
-    }
-  }
-  ```
-
-- [ ] **DOC-008B**: Configure Yjs network provider:
-  - Use `y-websocket` or `y-webrtc` provider for real-time sync
-  - Room-based collaboration (document-specific rooms)
-  - User presence and status via provider.awareness
-  - Yjs handles message queuing and ordering automatically
-  - CRDT-based conflict resolution (no manual protocols needed)
-
-- [ ] **DOC-008C**: Build `CollaborationPanel` component:
-  - Active users list with avatars and status
-  - User permissions (view, edit, comment, admin)
-  - Share link generation and management
-  - Activity feed (recent changes, comments)
-  - Collaboration settings
-
-- [ ] **DOC-008D**: Create `CursorOverlay` component using Yjs awareness:
-  - Use `provider.awareness.getStates()` to get all user cursors
-  - Use `provider.awareness.setLocalStateField('cursor', position)` to broadcast cursor
-  - User labels with custom colors from awareness state
-  - Selection highlighting from awareness state
-  - Hover tooltips with user info from awareness state
-  - Smooth cursor animations (Alive-tier motion)
-
-- [ ] **DOC-008E**: Implement real-time features:
-  - Live document editing with Yjs Y.Text (automatic CRDT sync)
-  - Comment system with threading
-  - @mention notifications
-  - Document locking for concurrent editing prevention (optional, Yjs handles conflicts)
-  - Change tracking with user attribution via awareness
-
-- [ ] **DOC-008F**: Add collaboration UI elements:
-  - User avatars in document header
-  - "X people editing" indicator
-  - Conflict resolution dialog
-  - Share button with permission settings
-  - Version comparison with user changes
-
-- [ ] **DOC-008G**: Create `useRealTimeSync()` hook:
-  - `joinDocument(documentId)` — initialize Yjs provider and persistence
-  - `sendOperation(operation)` — Yjs handles automatically via Y.Text mutations
-  - `receiveOperations()` — observe Y.Text changes with `ytext.observe()`
-  - `updateCursor(position)` — use `awareness.setLocalStateField('cursor', position)`
-  - `addComment(comment)` mutation
-
-- [ ] **DOC-008H**: Implement offline collaboration with y-indexeddb:
-  - y-indexeddb automatically queues operations when offline
-  - Sync when reconnected (handled by IndexeddbPersistence)
-  - CRDT-based conflict resolution for concurrent edits (automatic)
-  - Offline indicator and status (listen to `persistence.on('synced')`)
-
-### Tests
-- [ ] Yjs Y.Text handles concurrent edits correctly
-- [ ] Real-time cursors update smoothly via awareness
-- [ ] Comment system works with threading
-- [ ] CRDT conflict resolution preserves user intent
-- [ ] y-indexeddb persists and syncs operations properly
-- [ ] User permissions are enforced correctly
+- [ ] **DOC‑009A**: Build `ShareDialog`: generate share link, copy to clipboard, access mode selector (public, authenticated, restricted), password protection toggle + input, expiration date picker, "Allow download" toggle, view count display, revoke button.
+- [ ] **DOC‑009B**: Build `PermissionsPanel`: list of users with access + permission level, add user (email input + permission dropdown), change permission, remove access, inherited permissions indicator (from parent folder).
+- [ ] **DOC‑009C**: Implement `useDocumentSharing` hook with optimistic mutations.
+- [ ] **DOC‑009D**: Share link validation: if link expired or revoked, show "Link expired" page instead of content.
+- [ ] **DOC‑009E**: "Shared with me" filter view showing all documents shared with current user.
+- [ ] **DOC‑009F**: Notification on share: toast "Link copied" or "Invitation sent to user@email.com".
+- [ ] **DOC‑009G**: Inherited permissions from parent folders (optional, can be overridden).
+- [ ] **[TEST] DOC‑009H**: Tests for share creation, password enforcement, expiration, permissions management, revocation.
 
 ### Definition of Done
-- Full real-time collaboration with Yjs CRDT
-- Live cursors and user presence via awareness
-- Comment system with @mentions
-- Document sharing with permissions
-- Automatic conflict resolution and change tracking
-- Offline collaboration support via y-indexeddb
-
-### Anti-Patterns
-- ❌ Implementing custom operational transforms — Yjs handles this automatically
-- ❌ Not using y-indexeddb for offline — users lose work
-- ❌ Not showing other users' presence — confusing experience
-- ❌ Manual conflict resolution logic — Yjs CRDT handles this
+- Secure sharing with password, expiry, and granular permissions. Shared-with-me view. Link access lifecycle management.
 
 ---
 
-## 📚 Task DOC-009: Version Control & Document History
-**Priority:** 🟠 Medium
-**Est. Effort:** 2 hours
-**Depends On:** DOC-002
+## 🗂️ Task DOC‑010: AI-Powered Document Q&A & Summarization
+**Priority:** 🟠 Medium | **Est. Effort:** 3 hours | **Depends On:** DOC‑003, DOC‑005
 
 ### Related Files
-`src/components/documents/VersionHistory.tsx` · `src/components/documents/DiffViewer.tsx` · `src/lib/versionControl.ts` · `src/hooks/useVersionControl.ts`
+- `src/components/documents/AIPanel.tsx` · `src/components/documents/DocumentQA.tsx`
+- `src/components/documents/DocumentSummary.tsx` · `src/hooks/useDocumentAI.ts`
 
 ### Subtasks
 
-- [ ] **DOC-009A**: Create version control system:
-  ```ts
-  // src/lib/versionControl.ts
-  export class VersionControl {
-    async createVersion(documentId: string, content: string): Promise<Version>
-    async getVersions(documentId: string): Promise<Version[]>
-    async getVersion(documentId: string, versionId: string): Promise<Version>
-    async revertToVersion(documentId: string, versionId: string): Promise<void>
-    async compareVersions(v1: string, v2: string): Promise<DiffResult>
-  }
-  
-  interface Version {
-    id: string
-    documentId: string
-    content: string
-    timestamp: string
-    author: string
-    message: string
-    changes: Change[]
-  }
-  ```
-
-- [ ] **DOC-009B**: Implement diff algorithm:
-  - Line-based diff for text content
-  - Character-level diff for fine-grained changes
-  - Semantic diff (understand Markdown structure)
-  - Change summarization
-  - Visual diff rendering
-
-- [ ] **DOC-009C**: Build `VersionHistory` component:
-  - Timeline view of all versions
-  - Version metadata (author, timestamp, message)
-  - Quick preview of version content
-  - Compare any two versions
-  - Revert to previous version
-  - Branch and merge support (advanced)
-
-- [ ] **DOC-009D**: Create `DiffViewer` component:
-  - Side-by-side diff view
-  - Unified diff view
-  - Syntax highlighting in diff
-  - Change statistics (additions, deletions, modifications)
-  - Navigate between changes
-  - Export diff as patch
-
-- [ ] **DOC-009E**: Implement automatic versioning:
-  - Create version on significant changes
-  - Auto-save versions at intervals
-  - Version cleanup and retention policies
-  - Version compression for storage efficiency
-  - Version tagging and milestones
-
-- [ ] **DOC-009F**: Add version collaboration features:
-  - Branch creation for experimental changes
-  - Pull request-style merge requests
-  - Code review style comments on changes
-  - Conflict resolution for merge
-  - Version approval workflows
-
-- [ ] **DOC-009G**: Create `useVersionControl()` hook:
-  - `getVersions(documentId)` query
-  - `createVersion(documentId, message)` mutation
-  - `revertToVersion(documentId, versionId)` mutation
-  - `compareVersions(documentId, v1, v2)` query
-
-- [ ] **DOC-009H**: Implement version analytics:
-  - Change frequency analysis
-  - Contributor statistics
-  - Document evolution visualization
-  - Version quality metrics
-  - Rollback patterns analysis
-
-### Tests
-- [ ] Version creation stores correct content and metadata
-- [ ] Diff algorithm accurately identifies changes
-- [ ] Version revert restores document correctly
-- [ ] Version comparison shows meaningful differences
-- [ ] Automatic versioning works as configured
-- [ ] Merge conflict resolution preserves intended changes
+- [ ] **DOC‑010A**: Build `AIPanel` (right panel): tabs for Summary, Q&A, Classification.
+- [ ] **DOC‑010B**: Build `DocumentSummary`: generate summary button, summary display (3-5 sentences), key points list, regenerate with different length (brief/detailed).
+- [ ] **DOC‑010C**: Build `DocumentQA`: chat interface, question input, streaming answers, source citations ("From page 3, paragraph 2"), suggested questions, conversation history.
+- [ ] **DOC‑010D**: Implement "Ask Gemini"-style global search Q&A: ask natural language questions across all documents, get AI-generated answer with linked source documents.
+- [ ] **DOC‑010E**: AI Overviews for search results: when searching, show AI-generated summary at top of results.
+- [ ] **DOC‑010F**: Implement `useDocumentAI` hook with SSE streaming for Q&A.
+- [ ] **DOC‑010G**: Citation linking: clicking a citation opens the source document at the referenced location.
+- [ ] **[TEST] DOC‑010H**: Tests for summarization, Q&A streaming, citation accuracy, AI search overviews.
 
 ### Definition of Done
-- Complete version control system with diff visualization
-- Automatic versioning with configurable policies
-- Version history timeline with metadata
-- Branch and merge capabilities
-- Version collaboration features
-- Version analytics and insights
-
-### Anti-Patterns
-- ❌ Storing full document content for every version — storage inefficiency
-- ❌ Not providing meaningful diff visualization — hard to understand changes
-- ❌ Missing version metadata — can't track who changed what
-- ❌ Not handling merge conflicts — data corruption
+- Conversational Q&A over documents. AI summaries. Global AI search overviews. Streaming responses.
 
 ---
 
-## 📱 Task DOC-010: Offline Support & Data Sync
-**Priority:** 🔴 High
-**Est. Effort:** 2.5 hours
-**Depends On:** DOC-000, DOC-001
+## 🗂️ Task DOC‑011: Real-Time Collaboration (Comments & Annotations)
+**Priority:** 🟢 Low | **Est. Effort:** 2.5 hours | **Depends On:** DOC‑003
 
 ### Related Files
-`src/lib/db/documents.ts` · `src/hooks/useOfflineDocuments.ts` · `src/components/documents/OfflineStatusBar.tsx` · `src/lib/yjsDocument.ts`
+- `src/components/documents/CommentPanel.tsx` · `src/components/documents/CommentThread.tsx`
+- `src/hooks/useDocumentComments.ts`
 
 ### Subtasks
 
-- [ ] **DOC-010A**: Import centralized Dexie schema from `@/lib/db/commandCenterDB` with module-prefixed stores: `documents_documents`, `documents_syncQueue`, `documents_embeddings`. For collaborative documents, y-indexeddb handles persistence automatically via `IndexeddbPersistence` (see DOC-008A).
-
-- [ ] **DOC-010B**: Implement `useOfflineDocuments()` hook:
-  - Read documents from Dexie when offline
-  - Write to Dexie immediately on all operations
-  - Queue mutations in `pendingMutations` table
-  - Sync queue when connection restored
-  - Handle sync conflicts with resolution strategies
-  - For collaborative documents, y-indexeddb automatically handles offline persistence and sync
-
-- [ ] **DOC-010C**: Create sync engine for non-collaborative documents:
-  ```ts
-  // src/lib/syncEngine.ts
-  export class SyncEngine {
-    async syncPendingMutations(): Promise<SyncResult>
-    async handleConflict(local: any, remote: any): Promise<ConflictResolution>
-    async retryFailedMutations(): Promise<void>
-    async cleanupOldMutations(): Promise<void>
-    private async applyMutation(mutation: PendingMutation): Promise<void>
-  }
-  ```
-  Note: Collaborative documents use Yjs CRDT + y-indexeddb for automatic sync (no custom sync engine needed).
-
-- [ ] **DOC-010D**: Build `OfflineStatusBar` component:
-  - Connection status indicator
-  - Pending mutations count
-  - Last sync timestamp
-  - Manual sync button
-  - Sync progress indicator
-  - Error notifications with retry options
-
-- [ ] **DOC-010E**: Implement conflict resolution:
-  - Last-write-wins for simple conflicts
-  - Manual resolution for complex conflicts
-  - Three-way merge for text content
-  - Conflict preview and selection
-  - Conflict history and analytics
-  - For collaborative documents, Yjs CRDT automatically resolves conflicts (no manual resolution needed)
-
-- [ ] **DOC-010F**: Add offline features:
-  - Offline document creation and editing
-  - Cached search results
-  - Offline OCR processing (limited)
-  - Offline graph visualization (cached)
-  - Export documents for backup
-
-- [ ] **DOC-010G**: Implement incremental sync:
-  - Sync only changed documents
-  - Delta sync for large documents
-  - Background sync with throttling
-  - Sync prioritization (active documents first)
-  - Bandwidth usage monitoring
-
-- [ ] **DOC-010H**: Create sync analytics:
-  - Sync success/failure rates
-  - Conflict frequency and types
-  - Network usage patterns
-  - Offline usage statistics
-  - Performance metrics
-
-### Tests
-- [ ] Documents load from Dexie when offline
-- [ ] Mutations queue correctly when offline
-- [ ] Sync processes queue when connection restored
-- [ ] Conflict resolution preserves user data
-- [ ] Incremental sync reduces bandwidth usage
-- [ ] Offline status bar shows correct information
-- [ ] y-indexeddb persists collaborative documents and syncs on reconnect
+- [ ] **DOC‑011A**: Build `CommentPanel`: thread list, new comment input, @mention autocomplete, reply support, resolve/reopen, delete.
+- [ ] **DOC‑011B**: Build `CommentThread`: nested replies, timestamps, user avatars, edit own comments.
+- [ ] **DOC‑011C**: Implement `useDocumentComments` hook with optimistic add/edit/delete.
+- [ ] **DOC‑011D**: Comment notifications: email/in-app notification when mentioned.
+- [ ] **DOC‑011E**: Document-level annotations: highlight text, attach comment to selection.
+- [ ] **DOC‑011F**: Comment activity in audit log.
+- [ ] **[TEST] DOC‑011G**: Tests for comment CRUD, @mentions, threading.
 
 ### Definition of Done
-- Full offline support with IndexedDB storage
-- Robust sync engine with conflict resolution (for non-collaborative docs)
-- y-indexeddb for collaborative document persistence (automatic)
-- Offline status indicators and controls
-- Incremental sync with bandwidth optimization
-- Comprehensive sync analytics
-- Offline feature parity (where possible)
-
-### Anti-Patterns
-- ❌ Not queueing mutations offline — data loss
-- ❌ Silent sync failures — users unaware of problems
-- ❌ Not handling conflicts properly — data corruption
-- ❌ Full sync every time — bandwidth waste
-- ❌ Not using y-indexeddb for collaborative documents — unnecessary complexity
+- Comment system with threading and @mentions. Annotations linked to document selections.
 
 ---
 
-
-## 🗂️ Task DOC-011: Rich Content & Media Support
-**Priority:** 🟠 Medium
-**Est. Effort:** 2 hours
-**Depends On:** DOC-002
+## 🗂️ Task DOC‑012: Encryption & Security Indicators
+**Priority:** 🟠 Medium | **Est. Effort:** 1.5 hours | **Depends On:** DOC‑003
 
 ### Related Files
-`src/components/documents/MediaEmbed.tsx` · `src/components/documents/MediaGallery.tsx` · `src/lib/mediaProcessor.ts` · `src/hooks/useMediaContent.ts`
+- `src/components/documents/EncryptionBadge.tsx` · `src/components/documents/SecurityInfo.tsx`
+- `src/lib/encryption.ts`
 
 ### Subtasks
 
-- [ ] **DOC-011A**: Create media processing system:
-  ```ts
-  // src/lib/mediaProcessor.ts
-  export class MediaProcessor {
-    async processImage(file: File): Promise<ProcessedMedia>
-    async processVideo(file: File): Promise<ProcessedMedia>
-    async processAudio(file: File): Promise<ProcessedMedia>
-    async generateThumbnail(file: File): Promise<string>
-    async extractMetadata(file: File): Promise<MediaMetadata>
-  }
-  
-  interface ProcessedMedia {
-    id: string
-    type: 'image' | 'video' | 'audio'
-    originalUrl: string
-    thumbnailUrl?: string
-    metadata: MediaMetadata
-    size: number
-    duration?: number
-  }
-  ```
-
-- [ ] **DOC-011B**: Build `MediaEmbed` component:
-  - Image viewer with zoom and pan
-  - Video player with custom controls
-  - Audio player with waveform visualization
-  - PDF viewer with page navigation
-  - Code block with syntax highlighting and copy
-  - Embedded content (tweets, maps, charts)
-
-- [ ] **DOC-011C**: Create `MediaGallery` component:
-  - Grid view of all media in document
-  - Filter by media type
-  - Search within media captions
-  - Bulk operations (delete, move, tag)
-  - Slideshow mode
-  - Export media
-
-- [ ] **DOC-011D**: Implement media uploads:
-  - Drag-and-drop media upload
-  - Progress indicators for large files
-  - Multiple file selection
-  - File type validation and conversion
-  - Cloud storage integration (mock)
-  - Local storage fallback
-
-- [ ] **DOC-011E**: Add media annotations:
-  - Image annotation with shapes and text
-  - Video timestamp comments
-  - Audio transcription with highlights
-  - PDF annotations and bookmarks
-  - Collaborative annotation layers
-
-- [ ] **DOC-011F**: Create media optimization:
-  - Image compression and resizing
-  - Video transcoding for web
-  - Audio compression
-  - Thumbnail generation
-  - Lazy loading for performance
-
-- [ ] **DOC-011G**: Build `useMediaContent()` hook:
-  - `uploadMedia(file, documentId)` mutation
-  - `getMedia(documentId)` query
-  - `deleteMedia(mediaId)` mutation
-  - `updateMedia(mediaId, updates)` mutation
-
-- [ ] **DOC-011H**: Implement media search:
-  - Search within image OCR text
-  - Video transcript search
-  - Audio transcript search
-  - Media metadata search
-  - Content-based image retrieval
-
-### Tests
-- [ ] Media uploads work for all supported types
-- [ ] Media viewers render correctly with controls
-- [ ] Image annotations save and display properly
-- [ ] Video transcoding produces web-compatible formats
-- [ ] Media search returns relevant results
-- [ ] Lazy loading improves performance
+- [ ] **DOC‑012A**: Build `EncryptionBadge`: lock icon + "End-to-End Encrypted" / "Encrypted at Rest" / "Not Encrypted" indicator on file detail.
+- [ ] **DOC‑012B**: Build `SecurityInfo` panel: encryption type, key management info, last security audit date.
+- [ ] **DOC‑012C**: Create `src/lib/encryption.ts` with mock client-side encryption/decryption using Web Crypto API (SubtleCrypto).
+- [ ] **DOC‑012D**: Encryption toggle in settings: "Enable client-side encryption for sensitive documents".
+- [ ] **DOC‑012E**: Encrypted file download flow: decrypt in browser before download.
+- [ ] **[TEST] DOC‑012F**: Tests for encryption indicators, mock encrypt/decrypt roundtrip.
 
 ### Definition of Done
-- Support for images, videos, audio, PDFs, and code
-- Media viewers with full controls and features
-- Media upload with progress tracking
-- Annotation system for all media types
-- Media optimization and compression
-- Media search and organization
-
-### Anti-Patterns
-- ❌ Not optimizing media for web — slow loading
-- ❌ Missing media controls — poor user experience
-- ❌ Not handling large files — memory issues
-- ❌ Not providing media search — hard to find content
+- Encryption status visible on all documents. Mock client-side encryption available for sensitive files.
 
 ---
 
-
-## 🗂️ Task DOC-012: Split View & Advanced Layouts
-**Priority:** 🟢 Low
-**Est. Effort:** 2 hours
-**Depends On:** DOC-002
+## 🗂️ Task DOC‑013: Storage Analytics & Quota Management
+**Priority:** 🟢 Low | **Est. Effort:** 2 hours | **Depends On:** DOC‑003
 
 ### Related Files
-`src/components/documents/SplitView.tsx` · `src/components/documents/LayoutManager.tsx` · `src/hooks/useDocumentLayout.ts`
+- `src/components/documents/StorageAnalytics.tsx` · `src/components/documents/StorageQuota.tsx`
 
 ### Subtasks
 
-- [ ] **DOC-012A**: Create flexible layout system:
-  ```ts
-  // src/hooks/useDocumentLayout.ts
-  interface LayoutConfig {
-    type: 'single' | 'split-horizontal' | 'split-vertical' | 'grid'
-    panels: PanelConfig[]
-    resizable: boolean
-    persistLayout: boolean
-  }
-  
-  interface PanelConfig {
-    id: string
-    type: 'editor' | 'preview' | 'graph' | 'outline' | 'references'
-    size: number | 'auto'
-    minSize?: number
-    maxSize?: number
-    collapsible: boolean
-  }
-  ```
-
-- [ ] **DOC-012B**: Build `SplitView` component:
-  - Horizontal and vertical split layouts
-  - Resizable panels with drag handles
-  - Panel collapse and expand
-  - Layout presets (editor-focused, preview-focused, balanced)
-  - Keyboard shortcuts for layout switching
-
-- [ ] **DOC-012C**: Create `LayoutManager` component:
-  - Layout template selector
-  - Custom layout builder
-  - Layout persistence per document
-  - Layout sharing between documents
-  - Responsive layout adaptation
-
-- [ ] **DOC-012D**: Implement advanced layouts:
-  - Three-way split (editor, preview, references)
-  - Quad view (editor, preview, graph, outline)
-  - Tabbed panels within split areas
-  - Floating panels for tools
-  - Full-screen modes
-
-- [ ] **DOC-012E**: Add layout interactions:
-  - Drag to reorder panels
-  - Drop zones for panel types
-  - Context menu for panel options
-  - Keyboard navigation between panels
-  - Focus management
-
-- [ ] **DOC-012F**: Create layout persistence:
-  - Save layout preferences to localStorage
-  - Per-document layout memory
-  - Layout templates library
-  - Import/export layout configurations
-  - Reset to default layouts
-
-- [ ] **DOC-012G**: Build `useDocumentLayout()` hook:
-  - `setLayout(config)` mutation
-  - `getLayout(documentId)` query
-  - `saveLayoutTemplate(name, config)` mutation
-  - `applyLayoutTemplate(templateId)` mutation
-
-- [ ] **DOC-012H**: Implement layout analytics:
-  - Layout usage statistics
-  - Panel interaction tracking
-  - Layout efficiency metrics
-  - User preference patterns
-  - Layout recommendation engine
-
-### Tests
-- [ ] Split views resize smoothly with proper constraints
-- [ ] Layout persistence works across sessions
-- [ ] Panel reordering updates layout correctly
-- [ ] Responsive adaptation works on different screen sizes
-- [ ] Layout templates apply correctly
-- [ ] Keyboard navigation works between panels
+- [ ] **DOC‑013A**: Build `StorageQuota`: progress bar showing used vs total, breakdown by file type (chart), "Upgrade storage" CTA (mock), quota warning at 80%/90%/100%.
+- [ ] **DOC‑013B**: Build `StorageAnalytics`: largest files list, most active folders, storage growth over time chart, duplicate file detection, "Clean up" suggestions.
+- [ ] **DOC‑013C**: Per-folder storage usage in folder properties.
+- [ ] **DOC‑013D**: Duplicate file detection: find files with same name + size, suggest cleanup.
+- [ ] **[TEST] DOC‑013E**: Tests for quota calculation, analytics accuracy, duplicate detection.
 
 ### Definition of Done
-- Flexible split view system with multiple layouts
-- Resizable and collapsible panels
-- Layout persistence and templates
-- Advanced multi-panel layouts
-- Comprehensive layout interactions
-- Layout analytics and recommendations
+- Storage monitoring with quota warnings. Analytics dashboard. Duplicate detection.
 
-### Anti-Patterns
-- ❌ Fixed panel sizes — not adaptable to content
-- ❌ Not persisting layouts — users lose preferences
-- ❌ Missing responsive behavior — poor mobile experience
-- ❌ Complex layout without presets — confusing for users
+---
+
+## 🗂️ Task DOC‑014: Offline Support & Sync Engine
+**Priority:** 🟠 Medium | **Est. Effort:** 2.5 hours | **Depends On:** DOC‑001, DOC‑004
+
+### Related Files
+- `src/lib/db/documents.ts` · `src/hooks/useOfflineDocuments.ts` · `src/components/documents/OfflineStatusBar.tsx`
+
+### Subtasks
+
+- [ ] **DOC‑014A**: Create Dexie schema: `documents_metadata`, `documents_pending_mutations`, `documents_offline_files`.
+- [ ] **DOC‑014B**: Implement `useOfflineDocuments`: read from Dexie when offline, queue mutations, sync on reconnect.
+- [ ] **DOC‑014C**: Sync engine: process pending mutations FIFO, conflict resolution (last-write-wins), retry with exponential backoff.
+- [ ] **DOC‑014D**: Build `OfflineStatusBar`: connection indicator, pending mutation count, manual sync button, last sync timestamp.
+- [ ] **DOC‑014E**: Offline file access: mark files as "available offline", download and store locally, serve from IndexedDB when offline.
+- [ ] **DOC‑014F**: PWA service worker for caching UI shell and recently accessed metadata.
+- [ ] **[TEST] DOC‑014G**: Tests for offline read/write, sync queue, conflict resolution, reconnection.
+
+### Definition of Done
+- Documents accessible offline. Mutations queue and sync. Offline status visible.
+
+---
+
+## 🗂️ Task DOC‑015: Import, Export & Data Portability
+**Priority:** 🟢 Low | **Est. Effort:** 1.5 hours | **Depends On:** DOC‑004
+
+### Related Files
+- `src/components/documents/ImportExport.tsx`
+
+### Subtasks
+
+- [ ] **DOC‑015A**: Export: select items or entire folder, ZIP download with progress, format selection (original, PDF, CSV for metadata).
+- [ ] **DOC‑015B**: Import: batch file upload with folder structure preservation, CSV import for metadata, conflict resolution (skip, rename, overwrite).
+- [ ] **DOC‑015C**: Data portability: "Download all my data" button (GDPR), generates complete export including metadata, versions, audit log.
+- [ ] **DOC‑015D**: Export as archive with metadata JSON file alongside original files.
+- [ ] **[TEST] DOC‑015E**: Tests for export ZIP generation, import with conflict handling.
+
+### Definition of Done
+- Import/export with progress. GDPR data portability. Folder structure preservation.
+
+---
+
+## 🗂️ Task DOC‑016: Route Configuration, Page Shell & Integration
+**Priority:** 🔴 High | **Est. Effort:** 1 hour | **Depends On:** DOC‑002, FND‑007
+
+### Related Files
+- `src/pages/DocumentsPage.tsx` · `src/router/routes.ts` · `src/layouts/AppShell.tsx`
+
+### Subtasks
+
+- [ ] **DOC‑016A**: Configure all routes with lazy loading, loader prefetching.
+- [ ] **DOC‑016B**: Add sidebar nav item for Documents with storage usage badge.
+- [ ] **DOC‑016C**: Add global keyboard shortcut: `⌘Shift+D` opens Documents.
+- [ ] **DOC‑016D**: Wrap page in Suspense with skeleton loader and ErrorBoundary.
+- [ ] **[TEST] DOC‑016E**: Route rendering, navigation, keyboard shortcut.
+
+---
+
+## 🗂️ Task DOC‑017: Quality Gates, Testing & Accessibility
+**Priority:** 🔴 High | **Est. Effort:** 2.5 hours | **Depends On:** All DOC tasks
+
+### Subtasks
+
+- [ ] **DOC‑017A**: Unit tests for all domain utilities, schemas, selectors.
+- [ ] **DOC‑017B**: Component tests for all views, dialogs, panels.
+- [ ] **DOC‑017C**: Integration tests for full CRUD flows, sharing, AI features.
+- [ ] **DOC‑017D**: E2E tests: upload file → navigate folder → search → share → trash → restore.
+- [ ] **DOC‑017E**: Accessibility audit: keyboard navigation, screen reader, focus management, color contrast.
+- [ ] **DOC‑017F**: Performance: virtualized grid with 10,000+ files, search response < 500ms.
+- [ ] **DOC‑017G**: Verify all motion respects `useReducedMotion()`.
+- [ ] **DOC‑017H**: Zero axe violations across all views.
+
+### Definition of Done
+- Full test coverage. WCAG 2.2 AA compliance. Performance targets met.
 
 ---
 
 ## 📊 Dependency Graph
 
 ```
-DOC-000 (Domain Model & Mock Data)
+DOC‑000 (Domain Model & Utilities)
      │
-DOC-001 (State Management & Templates)
+DOC‑001 (Mock Data & Queries)
      │
-     ├── DOC-002 (Page Layout & Editor)
+DOC‑002 (State Management)
+     │
+DOC‑003 (Document Browser)
+     │
+     ├── DOC‑004 (File Operations & Trash)
+     │
+     ├── DOC‑005 (OCR Pipeline)
      │       │
-     │       ├── DOC-003 (Bidirectional Linking & Graph)
-     │       ├── DOC-004 (OCR Processing & Import)
-     │       ├── DOC-005 (Semantic Search & Embeddings)
-     │       ├── DOC-006 (AI Content Extraction)
-     │       ├── DOC-007 (Question-Answering)
-     │       ├── DOC-008 (Real-Time Collaboration)
-     │       ├── DOC-009 (Version Control & History)
-     │       ├── DOC-010 (Offline Support & Sync)
-     │       ├── DOC-011 (Rich Content & Media)
-     │       └── DOC-012 (Split View & Advanced Layouts)
+     │       └── DOC‑006 (Full-Text Search)
+     │
+     ├── DOC‑007 (AI Auto-Tagging & Metadata)
+     │
+     ├── DOC‑008 (Version Control & Audit)
+     │
+     ├── DOC‑009 (Secure Sharing & Permissions)
+     │
+     ├── DOC‑010 (AI Q&A & Summarization)
+     │
+     ├── DOC‑011 (Comments & Collaboration)
+     │
+     ├── DOC‑012 (Encryption & Security)
+     │
+     ├── DOC‑013 (Storage Analytics)
+     │
+     ├── DOC‑014 (Offline Support)
+     │
+     ├── DOC‑015 (Import/Export)
+     │
+     └── DOC‑016 (Route & Integration)
+
+DOC‑017 (Quality Gates) — depends on ALL
 ```
 
 ---
 
-## 🏁 Documents Module Completion Checklist
+## 🏁 Document Storage Module Completion Checklist
 
-**Core Infrastructure:**
-- [ ] Domain model with document types, metadata, and linking
-- [ ] Mock factories and MSW handlers for all operations
-- [ ] Zustand state management with atomic selectors
-- [ ] Template library with 10+ built-in templates
-- [ ] Query keys and mutation hooks with optimistic updates
+**Foundation:**
+- [ ] Domain model with document, folder, version, permissions, audit, AI types
+- [ ] Mock data with full file tree, realistic formats, sharing, and AI data
+- [ ] MSW handlers for all CRUD + AI + sharing + search + trash endpoints
+- [ ] Query key factory and optimistic mutation hooks
+- [ ] Zustand slice with navigation, selection, upload queue, filters
 
-**Editor & Viewing:**
-- [ ] Markdown editor with syntax highlighting and toolbar
-- [ ] Live preview with rendered Markdown and clickable links
-- [ ] Split view with synchronized scrolling
-- [ ] Document sidebar with search and filtering
-- [ ] Auto-save with conflict detection
+**Browser & Views:**
+- [ ] Grid, list, gallery, table views with virtualization
+- [ ] Thumbnails for PDF, images, video, documents
+- [ ] File preview modal with zoom and navigation
+- [ ] Folder tree with drag-and-drop and context menus
+- [ ] Breadcrumb navigation
 
-**Intelligence Features:**
-- [ ] OCR processing for images and PDFs
-- [ ] Semantic search with vector embeddings
-- [ ] AI-powered entity, topic, and keyword extraction
-- [ ] Question-answering with source citations
-- [ ] Automatic tagging and categorization
+**File Operations:**
+- [ ] Upload with progress, folder upload, drag-and-drop
+- [ ] Download with progress, ZIP bundling
+- [ ] Move, rename with optimistic updates
+- [ ] Delete to trash with undo, permanent delete, auto-purge after 30 days
+- [ ] Bulk operations (move, delete, download, tag)
+- [ ] Star/unstar
 
-**Collaboration & Organization:**
-- [ ] Bidirectional linking with backlink discovery
-- [ ] Graph visualization of document network
-- [ ] Real-time collaboration with operational transforms
-- [ ] Version control with diff visualization
-- [ ] Offline support with sync engine
+**AI Intelligence:**
+- [ ] OCR for images and PDFs with progress and results
+- [ ] AI auto-tagging and classification
+- [ ] Entity and metadata extraction
+- [ ] Document summarization
+- [ ] Conversational Q&A over documents with citations
+- [ ] AI search overviews
 
-**Rich Content & Layouts:**
-- [ ] Media support for images, videos, audio, PDFs
-- [ ] Media annotations and optimization
-- [ ] Flexible split view layouts
-- [ ] Layout persistence and templates
-- [ ] Advanced multi-panel configurations
+**Organization:**
+- [ ] Full-text search across names, content, OCR text, metadata
+- [ ] Advanced filters (format, tags, date, size, owner)
+- [ ] Hierarchical tags
+- [ ] Custom metadata schemas per folder
+- [ ] Saved searches
 
-**Quality & Performance:**
-- [ ] All components follow WCAG 2.2 AA accessibility
-- [ ] Motion respects reduced-motion preferences
-- [ ] Search performance <500ms for 1000 documents
-- [ ] Offline mode provides full functionality
-- [ ] Comprehensive error handling and user feedback
+**Sharing & Collaboration:**
+- [ ] Share links with password, expiration, access mode
+- [ ] Granular permissions (view, comment, edit, owner)
+- [ ] "Shared with me" filter view
+- [ ] Comments with threading and @mentions
+- [ ] Document annotations
+
+**Security & Compliance:**
+- [ ] Encryption indicators (E2E, at rest)
+- [ ] Version history with restore and diff
+- [ ] Audit trail with filtering and export
+- [ ] Permission enforcement
+
+**Storage & Offline:**
+- [ ] Storage quota monitoring with analytics
+- [ ] Duplicate detection and cleanup suggestions
+- [ ] Offline access with Dexie
+- [ ] Sync engine with conflict resolution
+- [ ] PWA service worker
+
+**Import/Export:**
+- [ ] Export to ZIP with metadata
+- [ ] Import with folder structure preservation
+- [ ] GDPR data portability
+
+**Quality:**
+- [ ] All tests passing
+- [ ] WCAG 2.2 AA accessibility
+- [ ] Performance targets met
+- [ ] Motion preferences respected
