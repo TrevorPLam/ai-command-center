@@ -134,7 +134,7 @@ The transactions workspace, overview dashboard, and recurring calendar.
 | BUDG-000, BUDG-001, BUDG-002, BUDG-003 | Domain, data, state, route |
 | BUDG-004, BUDG-005, BUDG-006 | Overview, planner, transactions with calendar view |
 | BUDG-010 | Recurring page & cash flow forecast (uses shared recurrence) |
-| *Defer goals, accounts, reports, offline, AI insights* | |
+| *Defer goals, accounts, reports, offline, AI insights, BUDG-013 (Financial Planning Dashboard)* | Deferred to Phase 6 for advanced financial home features |
 
 ### 4.2 Enhanced Recurring for Calendar & Projects
 - Apply shared recurrence engine to Calendar (CAL‑013) and Projects (PROJ‑013) in this phase.
@@ -172,7 +172,7 @@ Visual canvas for workflow building, complementing A2A orchestration.
 |------------|-------|
 | Settings completeness | SET-003 (API keys), SET-004, SET-006 (Danger Zone), SET-007 |
 | Polish & Validation | POL-001 (Performance), POL-002 (Testing gates), POL-003 (Analytics, Audit & RUM), POL-004 (Production hardening), POL-005 (UX polish), POL-006 (Security) |
-| Advanced Budget | BUDG-008 (Goals), BUDG-009 (Accounts), BUDG-011 (Reports), BUDG-013 (Financial Home) |
+| Advanced Budget | BUDG-008 (Goals), BUDG-009 (Accounts), BUDG-011 (Reports), BUDG-013 (Financial Planning Dashboard) |
 | Advanced Projects | Triage inbox (PROJ-018‑PROJ-020), Automations (PROJ-017), Practice Intelligence (PROJ-024) |
 | Cross-module RAG | CHAT-018 (Knowledge base) and CHAT-019 (Memory) after core modules are stable |
 
