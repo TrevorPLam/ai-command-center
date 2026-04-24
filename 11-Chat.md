@@ -7,6 +7,8 @@
 
 ---
 
+<!-- SECTION: Frontend Context -->
+
 ## 📋 Frontend Context (Module‑Wide Assumptions)
 
 > All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
@@ -55,13 +57,8 @@
 
 ---
 
-
-## 🗂️ Task CHAT-001: Chat Page Layout & Route Configuration
+## 🗂️ Task CHAT-002: Chat State Management — `useChatReducer`, Query Config & MSW Setup
 **Priority:** 🔴 High
-**Est. Effort:** 0.75 hours
-**Depends On:** FND-007 (Router), FND-008 (Provider Tree)
-
-### Related Files
 `src/pages/ChatPage.tsx` · `src/components/chat/ChatLayout.tsx` · `src/router/routes.ts`
 
 ### Subtasks
@@ -83,22 +80,9 @@
     loader: () => queryClient.ensureQueryData(chatThreadsQueryOptions),
   }
   ```
-  Route `loader` calls `ensureQueryData` so thread data is in cache before paint.
-- [ ] **[TEST] CHAT-001C**: Navigating to `/chat` triggers thread prefetch; `ChatPage` is reachable via router
-
-- [ ] **CHAT-001D**: Ensure `ChatPage` is wrapped by `AnimatePresence` at the router level (in root layout). Confirm `key={location.pathname}` on the motion wrapper so exit/enter animations fire on route change.
-- [ ] **[TEST] CHAT-001D**: Navigating away from `/chat` triggers exit animation (opacity reaches 0)
-
-### Definition of Done
-- `/chat` renders two-column layout; thread list prefetched by loader
-- Mobile: thread list in Sheet overlay
-- Page transition fires on enter and exit
-
----
-
-
-## 🗂️ Task CHAT-002: Chat State Management — `useChatReducer`, Query Config & MSW Setup
 **Priority:** 🔴 High
+**Est. Effort:** 0.75 hours
+**Depends On:** FND-007 (Router), FND-008 (Provider Tree)
 **Est. Effort:** 2.5 hours
 **Depends On:** FND-006 (TanStack Query)
 
@@ -181,7 +165,7 @@
 - [ ] **CHAT-002H**: Create `src/test/utils/createWrapper.tsx` — `QueryClient` wrapper factory for `renderHook` tests:
   ```ts
   export function createWrapper() {
-    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, cacheTime: 0 } } })
     return ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   }
   ```
@@ -196,19 +180,20 @@
 - `createWrapper` utility available for hook tests
 
 ### Anti-Patterns
-- ❌ `onSuccess` for invalidation — use `onSettled` (fires on both success and error)
 - ❌ `Date.now()` as temp ID — use `crypto.randomUUID()` (collision-safe, UUID-stable)
 - ❌ Replacing React `key` when server ID arrives — carry `clientMsgId` as permanent key
 - ❌ `gcTime` left at default with `staleTime: 0` — messages get GC'd from cache mid-conversation
-- ❌ `useState` for streaming/model/slash menu state — use the reducer for predictable transitions
+- ❌ `useState` for streaming/model/slash menu state — use a reducer for predictable transitions
+- ❌ Using `setTimeout` for debouncing search input — use `useTransition` for non-blocking React 19+ pattern
+
+<!-- ENDSECTION: Chat State Management -->
 
 ---
 
-## 🧵 Task CHAT-003: Thread List
-**Priority:** 🔴 High
-**Est. Effort:** 1.5 hours
-**Depends On:** CHAT-001, CHAT-002
+<!-- SECTION: Thread List -->
+<!-- BEGINSECTION: Thread List -->
 
+## 🧵 Task CHAT-003: Thread List
 ### Related Files
 `src/components/chat/ThreadList.tsx` · `src/components/chat/ThreadListItem.tsx`
 
@@ -254,17 +239,19 @@
 - "New Chat" creates optimistically with error rollback
 
 ### Anti-Patterns
-- ❌ Virtualizing the thread list — unnecessary at ≤100 items; adds complexity without gain
+- ❌ Virtualizing thread list — unnecessary at ≤100 items; adds complexity without gain
 - ❌ Path-param navigation for thread switching — causes page remount; use search params
 - ❌ `setTimeout`-based debounce for search — use `useTransition` for non-blocking React 19+ pattern
+- ❌ Using `Date.now()` as temp ID — use `crypto.randomUUID()` (collision-safe, UUID-stable)
 
 ---
+
+<!-- SECTION: Message Display -->
 
 ## 💬 Task CHAT-004: Message Display — MessageBubble & MessageList
 **Priority:** 🔴 High
 **Est. Effort:** 2 hours
 **Depends On:** CHAT-002
-
 ### Related Files
 `src/components/chat/MessageList.tsx` · `src/components/chat/MessageBubble.tsx`
 
@@ -407,16 +394,6 @@
 - DOM node count is bounded regardless of conversation length
 
 ### Anti-Patterns
-- ❌ `useEffect` + `scrollTop = scrollHeight` without virtual list — O(n) DOM nodes crash performance at 500+ messages
-- ❌ `estimateSize` fixed too large — wastes whitespace; measure actual heights with `measureElement`
-- ❌ `behavior: 'smooth'` on load-more prepend — causes visible jump; use instant scroll then restore position
-- ❌ Forgetting `scrollMargin` — virtual items misalign when scroll container has offset from viewport top
-
----
-
-## ⌨️ Task CHAT-006: ChatInput & LED Border
-**Priority:** 🔴 High
-**Est. Effort:** 1.5 hours
 **Depends On:** CHAT-002
 
 ### Related Files
@@ -449,6 +426,7 @@
     }
   }
   ```
+
   CSS:
   ```css
   .input-container {
@@ -468,8 +446,8 @@
   - `Enter` (no modifier) → call `sendMessage(input)` → dispatch `RESET_INPUT` → call `scrollToBottom`
   - `Shift+Enter` → insert newline (default textarea behavior; do not prevent)
   - `Cmd/Ctrl+Enter` → also sends (power-user alias)
-  - While streaming: Enter is blocked; send button is disabled; show "Stop" icon button that calls `abortStream()`
-- [ ] **[TEST] CHAT-006D**: Enter sends and clears input; Shift+Enter inserts newline; Cmd+Enter sends; Enter blocked during streaming; Stop button visible during streaming
+  - While streaming: Enter is blocked; send button is disabled; show "Stop" icon button that calls `abortStream()` and dispatches `END_STREAMING`
+  - [ ] **[TEST] CHAT-006D**: Enter sends and clears input; Shift+Enter newlines; Cmd+Enter sends; Enter blocked during streaming; Stop button visible during streaming
 
 ### Definition of Done
 - Textarea auto-resizes 1–5 rows; `cacheMeasurements` enabled
@@ -478,19 +456,6 @@
 - Model selector and attach placeholder present
 
 ### Anti-Patterns
-- ❌ Not using `cacheMeasurements` on `TextareaAutosize` — causes layout thrashing on every keystroke
-- ❌ `onKeyPress` (deprecated) — use `onKeyDown`
-- ❌ `setInterval` for flash timing — use `setTimeout` cleanup in state
-
----
-
-## 📡 Task CHAT-007: Streaming — `useSSEStream` Hook
-**Priority:** 🔴 High
-**Est. Effort:** 2 hours
-**Depends On:** CHAT-002, CHAT-006
-
-### Related Files
-`src/hooks/useSSEStream.ts`
 
 > **Why dedicated task:** The streaming hook is the most complex and failure-prone piece of the chat system. It deserves isolation with full test coverage independently of UI components.
 

@@ -29,7 +29,7 @@ Each placeholder is **blocking** — do not proceed past it until resolved.
 
 ### TASK-MD-001: Create Git Checkpoint for Migration
 
-**Status**: ⬜ Not Started  
+**Status**: ✅ Complete  
 **Priority**: 🔴 Critical  
 **Parent Task ID**: TASK-MD-001
 
@@ -116,7 +116,7 @@ N/A
 
 ### TASK-MD-002: Audit Risk Patterns in All Markdown Files
 
-**Status**: ⬜ Not Started  
+**Status**: ✅ Complete  
 **Priority**: 🔴 Critical  
 **Parent Task ID**: TASK-MD-002
 
@@ -259,9 +259,11 @@ N/A
 
 #### Subtasks
 
-- [ ] **TASK-MD-003-01**: Add `<!-- SECTION: <name> -->` and `<!-- ENDSECTION -->` comments to `11-Chat.md` at major section boundaries.  
+- [x] **TASK-MD-003-01**: Add `<!-- SECTION: <name> -->` and `<!-- ENDSECTION -->` comments to `11-Chat.md` at major section boundaries.  
+  [x] **TASK-MD-003-01**: Add `<!-- SECTION: <name> -->` and `<!-- ENDSECTION -->` comments to `11-Chat.md` at major section boundaries.  
   [VERIFY: Major sections are at `## ` headings; identify 10-15 logical boundaries] [VERIFY: Scan file for existing `<!-- SECTION:` comments to avoid duplicates or conflicts. Rename or retire any legacy sentinel-like comments before adding new ones.] [IMPLEMENT: Insert sentinel comments with blank lines before/after]  
-  **Target File**: `11-Chat.md`
+  **Target File**: `11-Chat.md`  
+  **COMPLETED**: All 13 major sections now have sentinel comments properly placed with blank lines before/after, following the format `<!-- SECTION: <name> -->` and `<!-- ENDSECTION: <name> -->`. No sentinels placed inside code fences or on lines immediately before/after fences.
 
 - [ ] **TASK-MD-003-02**: Add sentinel comments to `TODO.md` at phase boundaries.  
   [VERIFY: Phases marked with `## ` headings (Phase 1, Phase 2, etc.)] [IMPLEMENT: Use `<!-- PHASE: X - Name -->` format]  
