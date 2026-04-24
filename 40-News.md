@@ -5,6 +5,8 @@
 
 ---
 
+<!-- SECTION: Frontend Context -->
+
 ## 📋 Frontend Context (Module‑Wide Assumptions)
 
 > All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
@@ -24,6 +26,9 @@
 
 > **Migration Note**: Earlier versions of this specification referenced `react-window`'s `VariableSizeList` for virtualization. The corrected approach uses `@tanstack/react-virtual` (`useVirtualizer`) with `measureElement` for automatic dynamic height updates. This aligns with the TanStack ecosystem already in use (Query, Table). The scroll anchoring contract and IntersectionObserver sentinel pattern remain intact.
 
+<!-- ENDSECTION: Frontend Context -->
+
+<!-- SECTION: Research Findings -->
 
 ## 🔬 Research Findings — News Module
 
@@ -46,6 +51,9 @@
 | **`@tanstack/react-query` `staleTime` for news feed should be short (30–60 seconds)** for real-time topics, but the `gcTime` should remain longer (5–10 minutes) to preserve feed scroll position on tab switch. | TanStack Query best practices | NEWS-000: `staleTime: 30_000`, `gcTime: 600_000` |
 | **Article search must highlight matched terms.** Plain filter-and-display without highlighting leaves users confused about why a result matched. Use `mark.js` or a simple regex-based highlighter. | Feedly, Inoreader UX 2025 | NEWS-007: matched terms wrapped in `<mark>` elements |
 
+<!-- ENDSECTION: Research Findings -->
+
+<!-- SECTION: Cross-Cutting Foundations -->
 
 ## 🧱 Cross-Cutting Foundations
 
@@ -58,22 +66,11 @@
 | **NEWS-C05** | Accessibility (Cards) | `role="article"`, trust tier and sentiment must have text labels (not color alone). Web Share fallback explicit. |
 | **NEWS-C06** | Virtualization | `useVirtualizer` from `@tanstack/react-virtual` for feed. Sentinel for IO outside the virtual list container. `measureElement` on each card wrapper for automatic height updates. |
 | **NEWS-C07** | Reader Mode | `@mozilla/readability` for content extraction. Font, theme, line-height user prefs in Zustand. |
-| **NEWS-C08** | Audio | Controlled by dedicated `audioEnabled` preference — never gated on `useReducedMotion`. |
+| **NEWS-C08** | Audio | Controlled by dedicated `audioEnabled` user preference, not motion preference. |
 
-### 🎯 Motion Tier Assignment
+<!-- ENDSECTION: Cross-Cutting Foundations -->
 
-| Component | Tier | Technique |
-|-----------|------|--------------------|
-| Topic chip toggle | **Quiet** | `whileTap={{ scale: 0.95 }}` (spring ≤150ms) |
-| Sentiment dot | **Quiet** | Slow opacity pulse (2s loop, `useReducedMotion` guard) |
-| News card hover | **Quiet** | `boxShadow` glow (`oklch` electric blue) |
-| "N new articles" banner | **Quiet** | Slide down from top (`y: -8→0`) |
-| Card expand/collapse | **Quiet** | `height` animation via `motion.div` with `layout` |
-| Feed article entrance | **Static** | No animation — prevents jank during rapid scroll |
-| Sidebar preference toggles | **Static** | Instant |
-| Reader mode open | **Alive** | Cross-fade panel entrance (spring) |
-
-
+<!-- SECTION: Task NEWS-000 -->
 
 ## 🗂️ Task NEWS-000: Mock Data Layer
 **Priority:** 🔴 High
@@ -174,6 +171,13 @@
 
 - [ ] **[TEST] NEWS-000E**: Mutation snapshots cache on `onMutate`; rolls back on error; invalidates on `onSettled`
 
+- [ ] **NEWS-000F** Create `useFetchFeed()` query with `keepPreviousData`:
+  - `queryFn`: fetches feed with cursor pagination
+  - `staleTime`: 30 seconds
+  - `gcTime`: 10 minutes
+
+- [ ] **[TEST] NEWS-000F**: Query fetches feed with cursor pagination; `staleTime` and `gcTime` set correctly
+
 ### Tests
 - [ ] Factory produces articles with all required fields, correct `readTimeMinutes` derivation
 - [ ] `createMockFeed` with `cursor` returns a different page than without cursor
@@ -192,6 +196,9 @@
 - ❌ `staleTime: 0` on feed — causes waterfall re-fetches on every tab focus; use 30s
 - ❌ Hardcoding `pageSize` inside the factory without respecting `cursor` offset — breaks pagination tests
 
+<!-- ENDSECTION: Task NEWS-000 -->
+
+<!-- SECTION: Task NEWS-001 -->
 
 ## 🔧 Task NEWS-001: State Management & Route
 **Priority:** 🔴 High
@@ -303,6 +310,9 @@
 - ❌ Persisting `isPaused` — should reset to false on page load
 - ❌ Persisting `hiddenArticleIds` — session-only; a large persisted array of IDs bloats localStorage
 
+<!-- ENDSECTION: Task NEWS-001 -->
+
+<!-- SECTION: Task NEWS-002 -->
 
 ## 🧭 Task NEWS-002: Page Layout & Sidebar
 **Priority:** 🔴 High
@@ -400,6 +410,9 @@
 - ❌ Trust tier as color-only — WCAG 1.4.1 failure
 - ❌ `invalidateQueries` called inside a `useEffect` on filter change — use explicit user action or debounce
 
+<!-- ENDSECTION: Task NEWS-002 -->
+
+<!-- SECTION: Task NEWS-003 -->
 
 ## 📰 Task NEWS-003: Feed Infrastructure
 **Priority:** 🔴 High
@@ -584,6 +597,9 @@
 - ❌ `data.pages.flatMap(p => p.articles)` inline in render — must be `useMemo`
 - ❌ URL dedup on raw URL strings — normalize first (strip UTM params)
 
+<!-- ENDSECTION: Task NEWS-003 -->
+
+<!-- SECTION: Task NEWS-004 -->
 
 ## 🃏 Task NEWS-004: NewsCard Component
 **Priority:** 🔴 High
@@ -689,6 +705,9 @@
 - ❌ `line-through` for read articles — too aggressive; use opacity/muted color
 - ❌ Not calling `resetAfterIndex` after card expand — VirtualList renders with wrong row heights
 
+<!-- ENDSECTION: Task NEWS-004 -->
+
+<!-- SECTION: Task NEWS-005 -->
 
 ## 📖 Task NEWS-005: Bookmarks, Read Status & Offline
 **Priority:** 🟠 Medium
@@ -807,6 +826,9 @@
 - ❌ Calling Dexie operations inside `useEffect` without error handling — always `try/catch` for `QuotaExceededError`
 - ❌ Treating Zustand as source of truth for saved/read state — Dexie is authoritative; Zustand is a quick-lookup mirror
 
+<!-- ENDSECTION: Task NEWS-005 -->
+
+<!-- SECTION: Task NEWS-006 -->
 
 ## 📖 Task NEWS-006: In-App Article Reader Mode
 **Priority:** 🟠 Medium
@@ -912,6 +934,9 @@
 - ❌ Using `dangerouslySetInnerHTML` instead of shared `SanitizedHTML` component — security risk
 - ❌ Opening external links without `rel="noopener noreferrer"` — security vulnerability
 
+<!-- ENDSECTION: Task NEWS-006 -->
+
+<!-- SECTION: Task NEWS-007 -->
 
 ## 🔎 Task NEWS-007: Article Search & Advanced Filtering
 **Priority:** 🟠 Medium
@@ -1011,6 +1036,9 @@
 - ❌ Searching API on every keystroke — client-side filter of cached articles only; debounce for UX
 - ❌ Rendering 100+ highlighted results at once — cap at 30; add "Show more" if needed
 
+<!-- ENDSECTION: Task NEWS-007 -->
+
+<!-- SECTION: Task NEWS-008 -->
 
 ## 🔊 Task NEWS-008: Audio Summaries
 **Priority:** 🟢 Low
@@ -1100,10 +1128,13 @@
 - ❌ Not calling `window.speechSynthesis.cancel()` before starting new utterance — overlapping speech
 - ❌ Showing error when `speechSynthesis` unsupported — silently hide the button
 
+<!-- ENDSECTION: Task NEWS-008 -->
+
+<!-- SECTION: Dependency Graph -->
 
 ## 📊 Dependency Graph
 
-```
+```text
 NEWS-000 (Mock Data + Queries)
     │
 NEWS-001 (State Slice + Route)
@@ -1123,6 +1154,9 @@ NEWS-001 (State Slice + Route)
     └── NEWS-008 (Audio Summaries — optional, Low priority)
 ```
 
+<!-- ENDSECTION: Dependency Graph -->
+
+<!-- SECTION: Module Completion Checklist -->
 
 ## ✅ Module Completion Checklist
 

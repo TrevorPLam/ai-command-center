@@ -6,6 +6,8 @@ trigger: always_on
 
 Define CSS custom properties in globals.css for consistent theming:
 
+<!-- SECTION: token_definition -->
+
 <token_definition>
 
 Define these CSS custom properties in src/index.css or globals.css:
@@ -16,6 +18,10 @@ Define these CSS custom properties in src/index.css or globals.css:
 
 </token_definition>
 
+<!-- ENDSECTION: token_definition -->
+
+<!-- SECTION: tailwind_integration -->
+
 <tailwind_integration>
 
 Reference these tokens in tailwind.config.ts:
@@ -24,6 +30,10 @@ Reference these tokens in tailwind.config.ts:
 
 </tailwind_integration>
 
+<!-- ENDSECTION: tailwind_integration -->
+
+<!-- SECTION: usage -->
+
 <usage>
 
 - Use CSS variables instead of hardcoded values for themeable properties
@@ -31,3 +41,5 @@ Reference these tokens in tailwind.config.ts:
 - Direct CSS variable usage for custom components
 
 </usage>
+
+<!-- ENDSECTION: usage -->

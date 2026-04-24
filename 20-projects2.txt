@@ -1,0 +1,958 @@
+```yaml
+# 20-Projects.txt — AI Command Center Projects Module
+# Format: Contracted YAML (L0/L2) + TOON registry (L1) + TOON-prose hybrid (L3)
+# Generated: 2026-04-23 | Ready for cross-model deployment
+
+═══════════════════════════════════════════════════════════
+## 📦 CHECKPOINT BLOCK (paste at session start)
+═══════════════════════════════════════════════════════════
+version: "1.0"
+module: "20-Projects"
+last_updated: "2026-04-23"
+completed_tasks: []
+in_progress: null
+next_task: "PROJ-000"
+intent: "Implement the full Projects module following the task registry below. All contracts ($c, PROJ-C, $lc) are defined in the Global Contract block. Tasks use two-tier subtasks: pipe-table rows for mechanical steps, prose blocks for behavioral steps with code/timing."
+═══════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════
+## 🌐 GLOBAL CONTRACT BLOCK (L0 + L2)
+═══════════════════════════════════════════════════════════
+contracts:
+  $g:  # Global (from 01-Foundations)
+    "2": "Motion v12 — import { motion } from 'motion/react'"
+    "3": "TanStack Virtual — useVirtualizer"
+    "6": "useReducedMotion() guard before every animation"
+    "7": "AnimatePresence page transition — keyed by location.pathname"
+    "8": "Focus restoration — store trigger ref in uiSlice; restore on close"
+    "9": "Keyboard hints — <kbd> tags"
+    "10": "WCAG 2.2 AA — keyboard nav, focus indicators, aria attributes"
+    "11": "Test pattern — userEvent.setup() fresh per test; screen over container"
+    "12": "React Router imports — from 'react-router', never 'react-router-dom'"
+    "14": "Shared dnd-kit sensors — useDndSensors() from src/shared/dnd"
+    "15": "SanitizedHTML for all untrusted HTML"
+    "16": "No dangerouslySetInnerHTML outside of SanitizedHTML"
+
+  $c:  # Module-level (PROJ)
+    "C01": "Zustand selectors — useProjectStore(s => s.field); NEVER full store subscription"
+    "C02": "Optimistic mutations — cancelQueries → snapshot → setQueryData → onError rollback → onSettled invalidate; use onSettled, not onSuccess"
+    "C03": "Filter performance — useTransition for all filters; isPending drives loading indicator; NO setTimeout debounce"
+    "C04": "WCAG 2.5.7 — single-pointer button alternative required alongside keyboard drag; keyboard shortcuts alone insufficient"
+    "C05": "Virtualization stack — TanStack Table + TanStack Virtual; no react-window or react-base-table"
+    "C06": "dnd-kit sensors — useDndSensors() from src/shared/dnd; never configure sensors inline"
+    "C07": "DragOverlay clone pattern — clone with boxShadow: '0 0 16px oklch(62% 0.19 264 / 0.4)'; original card at opacity 0.4"
+    "C08": "Inline edit contract — useForm({defaultValues: current}); Enter/blur saves; Escape calls reset(original) and cancels; Zod validation; save via optimistic mutation"
+    "C09": "Hover prefetch — onMouseEnter: 200ms setTimeout → prefetchQuery; onMouseLeave: clearTimeout"
+    "C10": "Test infrastructure — MSW handlers in src/mocks/handlers/projects.ts; fresh QueryClient per test via createWrapper(); Zustand store reset via useProjectStore.setState(initialState) in beforeEach"
+
+  $lc:  # Local task-scoped contracts
+    focus: "Focus trap: Tab cycles within drawer only; use focus-trap-react or sentinel divs; restore focus on close ($g8)"
+    textarea: "TextareaAutosize: always cacheMeasurements={true}; submit via Cmd+Enter; Enter inserts newline; debounce saves 500ms"
+    debounce: "Auto-save: onBlur → 500ms debounce → optimistic mutation; cancel debounce in useEffect cleanup; show 'Last saved X min ago'"
+    tabstate: "Tab state: component useState ONLY; never URL params; drawer is an overlay, not a navigable page"
+    optkey: "Optimistic comment key: clientMsgId = crypto.randomUUID() generated ONCE at send time; used as React key permanently; never replaced with server ID"
+    dndreorder: "dnd-kit reorder: useSortable + useDndSensors() ($g14); onDragEnd: arrayMove(items, oldIdx, newIdx) → setQueryData with NEW array (never mutate in place); DragOverlay clone with oklch glow; original at opacity 0.4"
+
+  motion:  # PROJ module motion tier
+    ViewSwitcher_active: "Quiet — opacity fade 150ms; layoutId slides under icon"
+    Kanban_drag: "Alive — scale 1.02 + oklch(62% 0.19 264/0.4) glow; tilt 1deg"
+    Kanban_drop: "Alive — scaleY: 0→1 spring stiffness 400 damping 30"
+    Timeline_bar: "Alive — scaleX: 0→1 transformOrigin left staggered"
+    TaskDrawer: "Alive — x: 100%→0 slide spring stiffness 300 damping 35; AnimatePresence exit"
+    QuickPeek: "Alive — scale 0.95→1 + opacity spring stiffness 400 damping 25"
+    Triage_entry: "Alive — slide from top + opacity stagger 0.03s"
+    Comment_mention: "Quiet — opacity fade 100ms"
+
+  anti-patterns:  # Global severity rules
+    S: "Security-critical — NEVER compress; keep full rationale"
+    P: "Performance bug — keep verbatim"
+    B: "Implementation bug — keep verbatim"
+    ST: "Style preference — safe to compress to one line"
+
+═══════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════
+## L1 — MODULE REGISTRY (all 26 tasks)
+═══════════════════════════════════════════════════════════
+id       |stat|pri|eff |depends               |files (selected)                                              |$cut
+PROJ-000|P   |H  |1.5 |FND-004,FND-006       |factories/projects.ts, handlers/, queries/projects.ts        |$g11,$g15,$g16,$cC02,$cC10
+PROJ-001|P   |H  |1.0 |FND-005               |projectSlice.ts, triageSlice.ts                              |$cC01
+PROJ-002|P   |H  |1.5 |PROJ-000,PROJ-001,FND-007|ProjectsPage.tsx, ViewSwitcher, FilterBar, routes.ts       |$g6,$g7,$g9,$cC03,$cC10
+PROJ-003|P   |H  |2.5 |PROJ-000,PROJ-001,PRJ-002|ProjectListView.tsx, ProjectListColumns.tsx               |$g3,$g6,$g9,$cC03,$cC05,$cC08,$cC09
+PROJ-004|P   |H  |3.0 |PROJ-000,PROJ-001     |ProjectKanbanView.tsx, KanbanColumn, KanbanCard             |$g2,$g6,$g7,$g8,$g9,$g14,$cC01,$cC02,$cC04,$cC06,$cC07
+PROJ-005|P   |M  |2.5 |PROJ-000,PROJ-001     |ProjectTimelineView.tsx                                     |$g6,$g7,$g9,$cC02
+PROJ-006|P   |M  |2.5 |PROJ-000,PROJ-001     |MyWeekView.tsx, WeekLane, ColleagueWeekDropdown             |$g6,$g8,$g9,$g14,$cC01,$cC04,$cC06,$cC07
+PROJ-007|P   |M  |1.5 |PROJ-000,PROJ-001     |WorkloadView.tsx                                             |$g6,$g9
+PROJ-008|P   |H  |2.0 |PROJ-000,PROJ-001     |ProjectDetailPage.tsx, ProjectHeader, ProjectTabNav        |$g7,$g8,$g9,$cC01,$cC08
+PROJ-009|P   |H  |2.5 |PROJ-008              |ProjectTaskList.tsx, TaskRow, TaskSection                   |$g3,$g6,$g9,$cC02,$cC04,$cC06,$cC07,$cC08
+PROJ-010|P   |H  |3.0 |PROJ-009,PROJ-001     |TaskDetailDrawer.tsx, TaskChecklist, TaskComments           |$g6,$g8,$g9,$cC01,$cC02,$cC04,$cC06,$cC07,$cC08,$lc:focus,$lc:textarea,$lc:debounce,$lc:tabstate,$lc:optkey,$lc:dndreorder
+PROJ-011|P   |H  |1.5 |PROJ-000,PROJ-001,PRJ-004|QuickPeekOverlay.tsx                                    |$g6,$g8,$g9
+PROJ-012|P   |L  |1.5 |PROJ-000,PROJ-002     |ProjectTemplateLibrary.tsx                                   |$g6,$g9
+PROJ-013|P   |H  |2.5 |PROJ-000,PROJ-008     |RecurringWorkDialog, RecurringScheduleList                  |$g3,$g6,$g11,$cC02,$cC03
+PROJ-014|P   |M  |2.0 |PROJ-002,PROJ-001     |SavedViewsManager.tsx, SaveViewDialog                       |$g9
+PROJ-015|P   |M  |2.0 |PROJ-009,PROJ-010     |ClientTaskConfig.tsx, ClientTaskReminderSettings            |$g6,$g9,$cC08
+PROJ-016|P   |M  |2.0 |PROJ-008              |DocumentPanel.tsx, DocumentUploader, DocumentFolderTree     |$g6,$g9
+PROJ-017|P   |H  |3.0 |PROJ-000,PROJ-008     |AutomationRulesPanel, AutomationRuleBuilder, GlobalAutomators|$g6,$g9,$cC02
+PROJ-018|P   |H  |3.0 |PROJ-000,PROJ-001,FND-007|TriagePage.tsx, TriageStream, TriageItem                 |$g3,$g6,$g8,$g9,$cC05
+PROJ-019|P   |H  |2.5 |PROJ-018              |TriageActionTray.tsx, TriageDelegationSettings              |$g6,$g8,$g9
+PROJ-020|P   |H  |2.0 |PROJ-018,PROJ-019,DASH-006|TriageIntegrationHub.tsx, hooks/useTriage               |$g6,$g8,$g9
+PROJ-021|P   |M  |2.0 |PROJ-000,FND-007      |GlobalSearchDialog.tsx, SearchResultItem                    |$g6,$g9
+PROJ-022|P   |M  |2.0 |PROJ-000,PROJ-008     |TimeBudgetPanel.tsx, TimeEntryForm                          |$g6,$g9,$cC02
+PROJ-023|P   |L  |1.5 |PROJ-000              |FilingDeadlinesSettings, FilingDeadlineBadge                |$g6,$g9
+PROJ-024|P   |L  |3.0 |PROJ-000,DASH-006/007  |PracticeIntelligenceDashboard, AIAgentActivity, FIFOQueue  |$g6,$g9
+PROJ-025|P   |H  |3.0 |ALL                   |(all components)                                              |$g6,$g7,$g8,$g9,$g10,$g11,$g15,$g16,$cC01..$cC10
+
+═══════════════════════════════════════════════════════════
+## L3 — TASK DETAIL BLOCKS
+═══════════════════════════════════════════════════════════
+
+### sec-PROJ-000 — Mock Data Layer
+effort|pri|deps|$cut
+1.5h|H|FND-004,FND-006|$g11,$g15,$g16,$cC02,$cC10
+
+sub|type|description
+PROJ-000A|pipe|Factories: createMockProject, createMockTask, createMockSection, createMockProjectTemplate (named presets: Product Launch 12 tasks, Home Renovation 8, Marketing Campaign 10, Software Release 15, Event Planning 9, Blank 0). Use crypto.randomUUID(). Tests: valid typed data, IDs unique.
+PROJ-000B|pipe|Triage factory: createMockTriageItem with type + colorCode (grey=work, pink=client, white=email). Tests: isCleared items filter correctly.
+PROJ-000C|pipe|MSW handlers for projects CRUD, soft-delete (status: archived), bulk creation (up to 100 contacts from template). Tests: PATCH merges partially, 204 on delete.
+PROJ-000D|pipe|Triage handlers: paginated stream, mark read/cleared, delegation. Tests: reverse chronological; clearing sets isCleared.
+PROJ-000E|pipe|Automations handlers: global rules, tasklist automators (trigger→condition→action). Tests: creating returns generated ID.
+PROJ-000F|pipe|Query key factory: projectKeys (extended: triage, automations, saved views, recurring). Tests: list({status:'active'}) differs from list({status:'completed'}).
+PROJ-000G|pipe|Define queryOptions: projectsQueryOptions(filters) staleTime:30s gcTime:5min; projectDetailQueryOptions(id) staleTime:30s; triageQueryOptions(filters) staleTime:30s.
+PROJ-000H|behavioral|All mutation hooks (useCreateProject, useUpdateProject, useDeleteProject, etc.) must use useOptimisticMutation wrapper ($cC02). Example: useUpdateProject → onMutate snapshots, sets cache, returns context; onError rolls back; onSettled invalidates. Tests: optimistic prepend, error reverts.
+
+Anti-Patterns
+sev|description
+P|Skipping cancelQueries in onMutate — background refetch overwrites optimistic state
+
+DoD
+dod|criteria
+D1|Factories produce schema-valid data with crypto.randomUUID()
+D2|MSW handlers cover all CRUD, triage, automations
+D3|All mutation hooks use useOptimisticMutation wrapper ($cC02)
+D4|projectKeys factory fully typed with triage/automations/saved-views/recurring keys
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-001 — Project State (Zustand projectSlice)
+effort|pri|deps|$cut
+1.0h|H|FND-005|$cC01
+
+sub|type|description
+PROJ-001A|pipe|State shape: activeView (list/kanban/timeline/my-week/workload), filters (status[], priority[], tags[], assignee[], workType[], dueDateRange, search), sort (field+order), selectedProjectId, expandedTaskIds (array — Set not serializable), expandedSectionIds, taskDrawerTaskId, quickPeekProjectId, colleagueWeekUserId, selectedTaskIds (array), bulkActionBarVisible.
+PROJ-001B|pipe|Actions: setActiveView, setFilter, clearFilters, setSort, setSelectedProject, toggleTaskExpanded, toggleSectionExpanded, openTaskDrawer, closeTaskDrawer, openQuickPeek, closeQuickPeek, setColleagueWeekUser, toggleTaskSelected, selectAllTasks, clearTaskSelection, showBulkActionBar, hideBulkActionBar. Tests: each action produces correct next state.
+PROJ-001C|behavioral|EXPORT ATOMIC SELECTORS ONLY — never raw useProjectStore. Export: useActiveView(), useProjectFilters(), useProjectSort(), useTaskDrawer() (returns {taskId, open, close}), useQuickPeek() (returns {projectId, open, close}), useColleagueWeek() (returns {userId, setUser}), useBulkSelection() (returns {selectedIds, toggle, selectAll, clear}). Tests: filter change doesn't re-render component subscribed only to activeView.
+PROJ-001D|pipe|triageSlice: activeFilter (all/unread/cleared/assigned-to-me/decisions), selectedItemId, delegatedUserId, isDelegatedView. Actions: setFilter, selectItem, clearSelection, setDelegatedView, exitDelegatedView.
+PROJ-001E|pipe|Persist via Zustand persist/partialize: ONLY activeView and sort. Do NOT persist filters, expanded items, selections, or triage state. Tests: activeView survives reload, filters don't.
+
+Anti-Patterns
+sev|description
+B|useProjectStore() without selector — subscribes to full store, re-renders on every action
+B|Set in persisted state — JSON.stringify fails; store as array, derive Set via useMemo
+
+DoD
+dod|criteria
+D1|Slice covers all 5 views, filters, sort, drawer/quick-peek, colleague week, bulk selection
+D2|Atomic selectors exported; no component subscribes to full store
+D3|persist saves only view and sort preferences
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-002 — Projects Page Layout & View Switcher
+effort|pri|deps|$cut
+1.5h|H|PROJ-000,PROJ-001,FND-007|$g6,$g7,$g9,$cC03,$cC10
+
+sub|type|description
+PROJ-002A|pipe|Routes: /projects and /projects/:projectId with loader ensureQueryData. Tests: navigates, prefetches.
+PROJ-002B|behavioral|ProjectsPage: top bar (ViewSwitcher left, New Project + Bulk Create + Export right), collapsible ProjectFilterBar below, active view component in content area. Page transition: motion.div initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} 200ms. Tests: switching activeView renders correct component; filter bar collapses on mobile.
+PROJ-002C|behavioral|ViewSwitcher: 5 icon-buttons (List/Kanban/Timeline/MyWeek/Workload). Active state: bg-white/10 + motion.div layoutId="view-indicator" slides under active icon. Each button: aria-label, aria-pressed. Tests: click updates activeView; layoutId animation present; keyboard accessible.
+PROJ-002D|behavioral|ProjectFilterBar: status multi-select (Popover+Checkbox), priority multi-select, assignee multi-select, work-type multi-select, due date range picker, search input. ALL FILTERS use useTransition ($cC03); isPending drives loading indicator. "Clear filters" button visible when any filter active. "Save View As" button. Tests: filter changes update store; isPending shows.
+PROJ-002E|pipe|New Project dialog: RHF+Zod (name required 3-100 chars, status, priority, start/due dates, workType, budgetAmount, description optional). "Start from template" secondary link. Submit calls useCreateProject() → optimistically append → close dialog. Tests: form validates; optimistic row appears.
+PROJ-002F|pipe|Bulk Create dialog: template selector + contact multi-select (up to 100) → POST /api/projects/bulk → progress indicator → success toast "Created 47 work items". Tests: correct endpoint; progress shown; toast on success.
+PROJ-002G|pipe|Export button: downloads filtered view as CSV. Toast: "Export started — 142 rows". Tests: CSV contains filtered data only.
+
+Anti-Patterns
+sev|description
+P|setTimeout debounce for search — use useTransition ($cC03)
+B|Path-param navigation for view switching — use component state
+
+DoD
+dod|criteria
+D1|Routes with loader prefetch
+D2|Page layout with 5-view switcher, filter bar, new/bulk/export buttons
+D3|Filter bar uses useTransition; 6 filter dimensions
+D4|New Project dialog with Zod validation + optimistic mutation
+D5|Bulk Create with template+contact selection
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-003 — Project List View (TanStack Table + Virtual)
+effort|pri|deps|$cut
+2.5h|H|PROJ-000,PROJ-001,PROJ-002|$g3,$g6,$g9,$cC03,$cC05,$cC08,$cC09
+
+sub|type|description
+PROJ-003A|pipe|10 typed columns: select (checkbox), name (clickable), status (inline-edit badge), priority (chip), dueDate (relative), progress (mini bar), budgetUsed (% with color), members (avatar stack max 5 + overflow), plannedWeek (editable popover), actions (kebab menu).
+PROJ-003B|behavioral|useReactTable: getCoreRowModel, getSortedRowModel. Server-side filtering via filters from Zustand — do NOT use getFilteredRowModel for server-driven filters. Client-side sort. columnVisibility hides progress/budget/members on <768px. Tests: click header sorts; hidden columns absent on mobile.
+PROJ-003C|behavioral|useVirtualizer: estimateSize 52px, overscan 10. Render only virtualizer.getVirtualItems(). Table container fills viewport. Tests: at 200 mock projects, DOM ≤30 row elements.
+PROJ-003D|behavioral|Hover prefetch ($cC09): onMouseEnter → 200ms setTimeout → prefetchQuery(projectDetailQueryOptions(id)); onMouseLeave → clearTimeout. Tests: hover >200ms calls prefetch; leave before 200ms cancels.
+PROJ-003E|pipe|Inline status editing: click badge → Popover with status options → useUpdateProject optimistically. Escape closes without save. Tests: status updates immediately.
+PROJ-003F|pipe|Planned Week column: click → Popover (This Week/Next Week/Later/None) → useUpdateProject. Tests: selection updates store.
+PROJ-003G|behavioral|Bulk action bar: AnimatePresence slides in when rows selected. Actions: Change Status, Change Priority, Assign to…, Delete. Bulk mutations use Promise.allSettled; partial failure toast lists failed items. Tests: selecting 3 rows shows bar; delete calls 3 mutations; partial failure reported.
+
+Anti-Patterns
+sev|description
+P|getFilteredRowModel for server-driven filters — double-filters and stales
+P|position:relative + top for virtual rows — use transform:translateY
+P|Prefetch without debounce — fire on cursor pass-through; always add 200ms delay
+
+DoD
+dod|criteria
+D1|TanStack Table with 10 typed columns; sorting + server-side filtering
+D2|TanStack Virtual: bounded DOM at any dataset size
+D3|Hover prefetch with 200ms debounce + cancel
+D4|Inline status editing + Planned Week popover
+D5|Bulk actions bar with AnimatePresence + partial failure handling
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-003 — Project List View (TanStack Table + Virtual)
+effort|pri|deps|$cut
+2.5h|H|PROJ-000,PROJ-001,PROJ-002|$g3,$g6,$g9,$cC03,$cC05,$cC08,$cC09
+
+sub|type|description
+PROJ-003A|pipe|10 typed columns: select (checkbox), name (clickable), status (inline-edit badge), priority (chip), dueDate (relative), progress (mini bar), budgetUsed (% with color), members (avatar stack max 5 + overflow), plannedWeek (editable popover), actions (kebab menu).
+PROJ-003B|behavioral|useReactTable: getCoreRowModel, getSortedRowModel. Server-side filtering via filters from Zustand — do NOT use getFilteredRowModel for server-driven filters. Client-side sort. columnVisibility hides progress/budget/members on <768px. Tests: click header sorts; hidden columns absent on mobile.
+PROJ-003C|behavioral|useVirtualizer: estimateSize 52px, overscan 10. Render only virtualizer.getVirtualItems(). Table container fills viewport. Tests: at 200 mock projects, DOM ≤30 row elements.
+PROJ-003D|behavioral|Hover prefetch ($cC09): onMouseEnter → 200ms setTimeout → prefetchQuery(projectDetailQueryOptions(id)); onMouseLeave → clearTimeout. Tests: hover >200ms calls prefetch; leave before 200ms cancels.
+PROJ-003E|pipe|Inline status editing: click badge → Popover with status options → useUpdateProject optimistically. Escape closes without save. Tests: status updates immediately.
+PROJ-003F|pipe|Planned Week column: click → Popover (This Week/Next Week/Later/None) → useUpdateProject. Tests: selection updates store.
+PROJ-003G|behavioral|Bulk action bar: AnimatePresence slides in when rows selected. Actions: Change Status, Change Priority, Assign to…, Delete. Bulk mutations use Promise.allSettled; partial failure toast lists failed items. Tests: selecting 3 rows shows bar; delete calls 3 mutations; partial failure reported.
+
+Anti-Patterns
+sev|description
+P|getFilteredRowModel for server-driven filters — double-filters and stales
+P|position:relative + top for virtual rows — use transform:translateY
+P|Prefetch without debounce — fire on cursor pass-through; always add 200ms delay
+
+DoD
+dod|criteria
+D1|TanStack Table with 10 typed columns; sorting + server-side filtering
+D2|TanStack Virtual: bounded DOM at any dataset size
+D3|Hover prefetch with 200ms debounce + cancel
+D4|Inline status editing + Planned Week popover
+D5|Bulk actions bar with AnimatePresence + partial failure handling
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-004 — Kanban View (BEHAVIORAL — code blocks preserved)
+effort|pri|deps|$cut
+3.0h|H|PROJ-000,PROJ-001|$g2,$g6,$g7,$g8,$g9,$g14,$cC01,$cC02,$cC04,$cC06,$cC07
+
+sub|type|description
+PROJ-004A|pipe|Config-driven columns mapping project status (Planned→Ready→In Progress→In Review→Completed). Count badges + capacity indicators when sorted by assignee. Tests: 5 columns render; empty state shown.
+PROJ-004B|pipe|pnpm add @dnd-kit/core@6.3.1
+PROJ-004C|behavioral|DndContext setup using shared useDndSensors() ($cC06/$g14). Custom collision detection: pointerWithin first (cross-column), closestCenter fallback (within-column). Each column wrapped in <SortableContext items={columnCardIds}>. Each card uses useSortable. Track activeId on onDragStart. Render <DragOverlay> with cloned card: transform with scale(1.02), boxShadow '0 0 16px oklch(62% 0.19 264 / 0.4)', rotate 1deg. Original card at opacity 0.4.
+
+Implementation:
+```tsx
+import { useDndSensors } from '@/shared/dnd/useDndSensors';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable';
+
+const sensors = useDndSensors(); // shared hook — never inline
+
+// Custom collision detection
+const customCollisionDetection: CollisionDetection = (args) => {
+  const pointerCollisions = pointerWithin(args);
+  if (pointerCollisions.length > 0) return pointerCollisions;
+  return closestCenter(args);
+};
+
+<DndContext
+  sensors={sensors}
+  collisionDetection={customCollisionDetection}
+  onDragStart={(event) => setActiveId(event.active.id)}
+  onDragEnd={handleDragEnd}
+>
+  {columns.map(col => (
+    <SortableContext key={col.id} items={col.cardIds}>
+      <KanbanColumn column={col} />
+    </SortableContext>
+  ))}
+  <DragOverlay>
+    {activeId ? (
+      <KanbanCard
+        project={projects.find(p => p.id === activeId)}
+        isDragOverlay
+      />
+    ) : null}
+  </DragOverlay>
+</DndContext>
+```
+
+PROJ-004D|pipe|Drop indicator: animated insertion line scaleY 0→1, spring stiffness 400 damping 30, electric blue.
+PROJ-004E|behavioral|onDragEnd handler: 1) Determine source/target from active/over. 2) Same column: arrayMove within column → useReorderTask() optimistically. 3) Different column: move card, update status → useUpdateProject() optimistically. Rollback if mutation fails.
+
+```ts
+function handleDragEnd(event: DragEndEvent) {
+  const { active, over } = event;
+  if (!over || active.id === over.id) return;
+
+  const sourceCol = findColumn(active.id);
+  const targetCol = findColumn(over.id);
+
+  if (sourceCol.id === targetCol.id) {
+    // Same column reorder
+    const oldIdx = sourceCol.cardIds.indexOf(active.id);
+    const newIdx = sourceCol.cardIds.indexOf(over.id);
+    const reordered = arrayMove(sourceCol.cardIds, oldIdx, newIdx);
+    // Optimistic cache update ($cC02)
+    queryClient.setQueryData(
+      projectKeys.list(currentFilters),
+      (old) => /* update order in cache */
+    );
+    useReorderTask.mutate({ taskId: active.id, newOrder: reordered });
+  } else {
+    // Cross-column move — update status
+    const newStatus = targetCol.status;
+    queryClient.setQueryData(
+      projectKeys.detail(active.id),
+      (old) => ({ ...old, status: newStatus })
+    );
+    useUpdateProject.mutate({ id: active.id, status: newStatus });
+  }
+}
+```
+
+PROJ-004F|behavioral|WCAG 2.5.7 single-pointer alternative ($cC04): "Move to…" button in each card's ⋯ menu, renders <button> submenu with column names. Calls same mutation as drag. Tests: button moves card without dragging.
+PROJ-004G|pipe|Cards must NOT contain focusable children (<input>, <textarea>, <select>). Card click opens QuickPeekOverlay via useQuickPeek().open(projectId).
+PROJ-004H|pipe|"Plan Work" popover in ⋯ menu: shows team members' My Week planned status; update plannedWeek for self or colleagues.
+
+Anti-Patterns
+sev|description
+B|No keyboard-accessible drag alternative — violates WCAG 2.5.7 ($cC04)
+P|Cards with inputs inside — click hijacking; use click-to-open pattern
+B|Missing DragOverlay clone — cards disappear during drag
+
+DoD
+dod|criteria
+D1|Config-driven columns with count badges and capacity
+D2|DndContext with shared sensors + custom collision detection
+D3|DragOverlay clone with glow/tilt; original at 0.4 opacity; drop indicator animation
+D4|onDragEnd: same-column reorder + cross-column status update, both optimistic with rollback
+D5|WCAG 2.5.7 "Move to…" button alternative present
+D6|No focusable children inside cards; card click opens Quick Peek
+D7|Plan Work popover for team My Week assignments
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-005 — Timeline (Gantt) View
+effort|pri|deps|$cut
+2.5h|M|PROJ-000,PROJ-001|$g6,$g7,$g9,$cC02
+
+sub|type|description
+PROJ-005A|pipe|pnpm add @svar-ui/react-gantt; import CSS; dark theme overrides (override --wx-background, --wx-color-primary to electric blue).
+PROJ-005B|pipe|Transform projects to ganttTasks: startDate→today if null, dueDate→7days from start if null. Tests: missing dates handled.
+PROJ-005C|pipe|Zoom controls (Day/Week/Month/Quarter) as SegmentedControl; ephemeral useState. Tests: zoom updates Gantt scale.
+PROJ-005D|pipe|onTaskUpdate: drag bar → useUpdateProject({startDate, dueDate}) optimistically. Tests: bar move fires mutation.
+PROJ-005E|behavioral|CSS bar entrance animation: @keyframes scaleInLeft { from { transform:scaleX(0); opacity:0 } to { transform:scaleX(1); opacity:1 } }. Stagger delay via CSS custom property --stagger-index. Tests: bars animate, delay increases.
+PROJ-005F|pipe|Empty state: illustration + "Create your first project" CTA when projects.length===0.
+
+DoD
+dod|criteria
+D1|SVAR Gantt with dark theme, 4 zoom levels, drag-reschedule
+D2|CSS bar entrance animation with stagger
+D3|Empty state handled
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-006 — My Week View (BEHAVIORAL — code blocks preserved)
+effort|pri|deps|$cut
+2.5h|M|PROJ-000,PROJ-001|$g6,$g8,$g9,$g14,$cC01,$cC04,$cC06,$cC07
+
+sub|type|description
+PROJ-006A|pipe|Six swim lanes: Working on Now, This Week, Next Week, Later, To Plan, Done. Lane assignment: working-now ← time-tracked; this-week ← plannedWeek='this-week'; next-week ← plannedWeek='next-week'; later ← returnDate set; to-plan ← newly assigned; done ← completed. Tests: task with plannedWeek='this-week' lands correctly.
+PROJ-006B|behavioral|Colleague's Week dropdown: select team member → lanes populate with their items. Show capacity info (assigned vs available hours). Private items show banner "Some items are hidden." Tests: switching updates lanes.
+PROJ-006C|behavioral|Cross-lane drag via dnd-kit: each lane is useDroppable. Tasks within lane are useSortable. Shared useDndSensors() ($cC06/$g14). Drop behavior: Working on Now → set actively working; This Week → set plannedWeek='this-week'; Next Week → set plannedWeek='next-week'; Later → open date picker (return date up to 3 months); To Plan → clear plannedWeek; Done → set status='done'.
+
+```tsx
+// Lane droppable
+const { setNodeRef, isOver } = useDroppable({ id: lane.id });
+
+// Within-lane sortable
+const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: task.id });
+
+// onDragEnd handler
+function handleDragEnd(event: DragEndEvent) {
+  const { active, over } = event;
+  if (!over) return;
+  const targetLane = lanes.find(l => l.id === over.id);
+  if (!targetLane) return;
+
+  const task = tasks.find(t => t.id === active.id);
+  switch (targetLane.id) {
+    case 'working-now':
+      useUpdateTask.mutate({ id: task.id, activelyWorking: true });
+      break;
+    case 'this-week':
+      useUpdateTask.mutate({ id: task.id, plannedWeek: 'this-week' });
+      break;
+    case 'next-week':
+      useUpdateTask.mutate({ id: task.id, plannedWeek: 'next-week' });
+      break;
+    case 'later':
+      // Opens date picker inline before mutating
+      setPendingLaterTask(task);
+      break;
+    case 'to-plan':
+      useUpdateTask.mutate({ id: task.id, plannedWeek: null });
+      break;
+    case 'done':
+      useUpdateTask.mutate({ id: task.id, status: 'done' });
+      break;
+  }
+}
+```
+
+PROJ-006D|behavioral|WCAG 2.5.7 button alternative ($cC04): "Move to lane" submenu in ⋯ menu → buttons for Working Now / This Week / Next Week / Later / To Plan / Done. Same mutations as drag. Tests: button moves task without dragging.
+PROJ-006E|pipe|"Add a note" inline at bottom of each lane: text input, Enter saves note linked to lane context.
+PROJ-006F|pipe|Bulk selection: Shift+click range within lane; "Move selected to…" dropdown. Count badge during selection.
+PROJ-006G|pipe|Lane drop indicator: same animation as PROJ-004D (scaleY 0→1, spring 400/30, electric blue).
+PROJ-006H|behavioral|Calendar sidebar: toggle calendar panel on right. Drag work item from lane onto calendar day/time creates time block (default 30min, adjustable). Tests: calendar opens; drag creates time entry.
+PROJ-006I|pipe|In-page search: filters items across all lanes by client name, work name, email subject, note name. Lanes with no matches collapse or show "No matches".
+
+Anti-Patterns
+sev|description
+B|No keyboard alternative for lane moves — violates WCAG 2.5.7 ($cC04)
+B|Later lane without date picker — lost return date info
+
+DoD
+dod|criteria
+D1|Six lanes with correct assignment logic
+D2|Colleague week dropdown with capacity info + privacy banner
+D3|Cross-lane drag via dnd-kit with shared sensors; Later opens date picker
+D4|WCAG 2.5.7 "Move to lane" button alternative
+D5|Bulk selection with Shift+click; calendar sidebar drag-to-create time block
+D6|In-page search across all lanes
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-007 — Workload View
+effort|pri|deps|$cut
+1.5h|M|PROJ-000,PROJ-001|$g6,$g9
+
+sub|type|description
+PROJ-007A|pipe|Aggregate workload per member per day: taskCount, estimatedHours, capacity (8h default), overCapacity. Use useMemo. Tests: >8h → overCapacity true.
+PROJ-007B|pipe|recharts BarChart horizontal, ReferenceLine at capacity, red fill for overCapacity cells. Tooltip with member name, task count, hours, capacity.
+PROJ-007C|pipe|Granularity toggle (Week/2 Weeks/Month) as SegmentedControl; useState only.
+PROJ-007D|behavioral|Click bar → filter virtualized task list below showing only that member's tasks. "Clear filter" link above list. Tests: filtering works.
+PROJ-007E|pipe|Colleague Utilization summary table: name, capacity, assigned hours, actual hours, utilization %.
+
+DoD
+dod|criteria
+D1|BarChart with capacity reference line; over-capacity in red
+D2|Granularity toggle; click-to-filter with virtualized task list
+D3|Utilization summary panel
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-008 — Project Detail Page & Header
+effort|pri|deps|$cut
+2.0h|H|PROJ-000,PROJ-001|$g7,$g8,$g9,$cC01,$cC08
+
+sub|type|description
+PROJ-008A|pipe|Route /projects/:projectId with loader. Skeleton layout matching header+tabs+content shape. Error state: "Project not found" + back navigation. Tests: loading→skeleton; 404→error state.
+PROJ-008B|behavioral|Header: editable name ($cC08 inline edit), status dropdown (optimistic), priority badge (Popover), progress bar (computed from task %), budget bar (green<75%, amber 75-100%, red>100%), member avatars (stack max 5 + overflow), due date (DatePicker optimistic), filing deadline display, "Setup Repeating Work" button. ALL fields save via optimistic mutation. Tests: Enter/blur saves; Escape reverts.
+PROJ-008C|behavioral|TabNav: 6 tabs (Tasks/Timeline/Files/Notes/Activity/Automators). Active tab stored in URL search param ?tab=tasks (deep-linkable). motion.div layoutId="tab-indicator" under active tab. ARIA: role="tab", aria-selected. Keyboard: ArrowLeft/Right moves focus. Tests: URL updates; keyboard nav; indicator slides.
+PROJ-008D|pipe|Tab panels: Tasks→ProjectTaskList (PROJ-009); Files→DocumentPanel (PROJ-016); Notes→textarea debounced save; Activity→timestamped event list; Automators→AutomationRulesPanel (PROJ-017).
+
+DoD
+dod|criteria
+D1|Loading skeleton + error state handled
+D2|Inline name editing; status/priority/due-date/budget all optimistic
+D3|6 tabs with URL search params, animated indicator, keyboard nav
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-009 — Project Task List & Inline Creation
+effort|pri|deps|$cut
+2.5h|H|PROJ-008|$g3,$g6,$g9,$cC02,$cC04,$cC06,$cC07,$cC08
+
+sub|type|description
+PROJ-009A|pipe|Sections: render TaskSection components (collapsible, editable name, conditional toggle). "Add section" button at bottom. No virtualization at section level.
+PROJ-009B|behavioral|useVirtualizer for sections >50 tasks (estimateSize 44px). Sections ≤50 tasks render directly. Tests: DOM bounded for large sections.
+PROJ-009C|behavioral|TaskRow: checkbox (optimistic toggle status), title (click→drawer), task type badge (billable/non-billable), assignee avatar, priority badge, due date, subtask count, ⋯ menu. Client task: reminder badge + auto-reminder indicator. Conditional task: "Conditional" badge. Hover: reveals drag handle, assign button, due date picker. aria-label, role="row".
+PROJ-009D|behavioral|Within-section drag-to-reorder: useSortable + DragOverlay; useDndSensors() ($cC06/$g14). Drag handle is activation target (left edge icon). Updates order field optimistically ($cC02). Tests: reorder fires mutation.
+PROJ-009E|pipe|Inline "+ Add task" at section bottom: Enter creates task, input stays open for multi-add. Shift+Enter creates client task. Escape closes. Tests: sequential adds; client task created.
+PROJ-009F|pipe|Inline "+ Add section" at bottom: Enter creates section; Escape cancels.
+
+DoD
+dod|criteria
+D1|Sections with collapsible groups, conditional indicators, editable names
+D2|Virtualization for sections >50 tasks
+D3|Task rows with checkbox, hover actions, client/conditional badges, ARIA
+D4|Within-section drag-to-reorder with drag handle
+D5|Inline "+ Add task" stays open; Shift+Enter for client tasks
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-010 — Task Detail Drawer (BEHAVIORAL — code blocks preserved)
+effort|pri|deps|$cut
+3.0h|H|PROJ-009,PROJ-001|$g6,$g8,$g9,$cC01,$cC02,$cC04,$cC06,$cC07,$cC08,$lc:focus,$lc:textarea,$lc:debounce,$lc:tabstate,$lc:optkey,$lc:dndreorder
+
+sub|type|description
+PROJ-010A|behavioral|Drawer shell: triggered when useTaskDrawer().taskId≠null. Wrap in AnimatePresence.
+
+```tsx
+<AnimatePresence>
+  {taskId && (
+    <motion.aside
+      initial={{ x: '100%' }}
+      animate={{ x: 0 }}
+      exit={{ x: '100%' }}
+      transition={{ type: 'spring', stiffness: 300, damping: 35 }}
+      role="complementary"
+      aria-label="Task details"
+    >
+      {/* FocusTrap + content */}
+    </motion.aside>
+  )}
+</AnimatePresence>
+```
+
+Close: X button + Escape → useTaskDrawer().close(). Focus trap ($lc:focus): Tab cycles within drawer only; use focus-trap-react or sentinel <div tabIndex={0}> bookends. Focus restoration ($g8): on open store document.activeElement in uiSlice.focusTriggerRef; on close call focusTriggerRef.current?.focus(). Tests: spring animation, Escape close, Tab trapped, focus restored, aria-label present.
+
+PROJ-010B|pipe|Drawer header: editable title ($cC08), status dropdown, priority badge, assignee selector (avatar+name), due date DatePicker, task type toggle (billable/non-billable), client task toggle (shows reminder config, links to PROJ-015). All fields call useUpdateTask optimistically ($cC02). Tests: Enter/blur saves; Escape reverts; mutations called.
+PROJ-010C|pipe|Drawer tabs: Details · Checklist · Comments · Activity. Tab state: component useState ($lc:tabstate — NEVER URL params). ARIA: role="tab", aria-selected. layoutId="drawer-tab-indicator" for active underline. ArrowLeft/Right keyboard nav. Tests: tab switching renders correct content; keyboard nav; indicator slides.
+PROJ-010D|behavioral|Checklist tab (TaskChecklist): items with checkbox + editable text + optional assignee avatar + optional due date + delete button. Completion % = checkedCount/totalCount; displayed in tab label "Checklist (N/M)". Reorder via dnd-kit useSortable + useDndSensors() ($g14/$cC06). DragOverlay clone with oklch glow ($cC07). Keyboard alternative "Move to…" button per item ($cC04). All mutations via $cC02 pattern.
+
+```ts
+// onDragEnd for checklist reorder
+const { active, over } = event;
+if (!over || active.id === over.id) return;
+const oldIdx = items.findIndex(i => i.id === active.id);
+const newIdx = items.findIndex(i => i.id === over.id);
+const reordered = arrayMove(items, oldIdx, newIdx);
+// Optimistic: return NEW array, never mutate in place
+queryClient.setQueryData(
+  taskKeys.checklist(taskId),
+  () => reordered
+);
+useReorderChecklistItem.mutate({ taskId, itemIds: reordered.map(i => i.id) });
+```
+
+"+ Add item" inline input at bottom: Enter creates and keeps open; Escape closes. Tests: check updates %; reorder fires mutation; delete removes optimistically; multi-add works.
+
+PROJ-010E|behavioral|Comments tab (TaskComments): Internal/External toggle — blue bg pill = Internal (team only); white/outline = External (client-visible). New comments default to current toggle. @mention autocomplete: detect '@' → fetch team members → shadcn Command dropdown below cursor. Select inserts @Name token, queues notification.
+
+TextareaAutosize contract ($lc:textarea):
+```tsx
+<TextareaAutosize
+  cacheMeasurements={true}
+  minRows={2}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      submitComment();
+    }
+    // Enter alone → newline (default behavior)
+  }}
+/>
+```
+
+Optimistic comment lifecycle ($lc:optkey + $cC02):
+```ts
+const clientId = crypto.randomUUID(); // ONCE at send time
+
+// onMutate
+const snapshot = queryClient.getQueryData(taskKeys.comments(taskId));
+queryClient.setQueryData(taskKeys.comments(taskId), old => [
+  ...(old || []),
+  { ...optimisticComment, clientId, status: 'sending' }
+]);
+return { snapshot, clientId };
+
+// onError — rollback + show retry
+queryClient.setQueryData(taskKeys.comments(taskId), context.snapshot);
+// Mark comment with status:'failed' → render red outline + "Retry" link
+
+// onSettled — invalidate
+queryClient.invalidateQueries({ queryKey: taskKeys.comments(taskId) });
+```
+
+Tests: Cmd+Enter submits; Enter inserts newline; @mention dropdown; internal/external toggle; optimistic with status:'sending'; error shows retry; clientId is permanent React key.
+
+PROJ-010F|behavioral|Description field (Details tab): TextareaAutosize minRows={3} cacheMeasurements={true} ($lc:textarea). Auto-save on blur with 500ms debounce ($lc:debounce):
+
+```ts
+const debouncedSave = useMemo(
+  () => debounce((value: string) => {
+    updateTask.mutate({ taskId, description: value });
+    setLastSaved(new Date());
+  }, 500),
+  [taskId]
+);
+
+// Cancel on unmount to prevent stale closure
+useEffect(() => () => debouncedSave.cancel(), [debouncedSave]);
+```
+
+"Last saved X min ago" via date-fns formatDistanceToNow, refreshed every 60s. File drag-drop into textarea wrapper → POST /api/tasks/:id/attachments → insert markdown link. Tests: blur queues save after 500ms; unmount cancels; timestamp updates; file upload inserts link.
+
+PROJ-010G|pipe|Activity tab: fetch via useTaskActivity(taskId), staleTime:30s. Render reverse-chronological list. Entry types: status_change, reassignment, comment_added, checklist_completed, file_uploaded. Each entry: timestamp, user avatar, action description, optional detail expansion. Empty state: "No activity yet" illustration.
+
+Anti-Patterns
+sev|description
+B|Tab state in URL params — drawer is overlay; use useState ($lc:tabstate)
+P|TextareaAutosize without cacheMeasurements — layout thrash ($lc:textarea)
+B|Missing focus trap — Tab escapes drawer ($lc:focus)
+P|Saving description on every keystroke — debounce on blur ($lc:debounce)
+B|Replacing React key on server confirm — use clientMsgId permanently ($lc:optkey)
+S|dangerouslySetInnerHTML in comments — use SanitizedHTML ($g15)
+B|useProjectStore() without selector — full re-render; use useTaskDrawer() ($cC01)
+
+DoD
+dod|criteria
+D1|Drawer slides spring stiffness:300 damping:35; AnimatePresence exit; useReducedMotion guard ($g6)
+D2|Focus trapped inside; restored to trigger on close ($lc:focus, $g8)
+D3|Header: 7 fields all editable; Enter/save Escape/cancel; optimistic ($cC02, $cC08)
+D4|Tabs: component useState ($lc:tabstate); layoutId indicator; ArrowKey nav; ARIA roles
+D5|Checklist: live % in tab label; dnd-kit reorder ($g14); drag+button alt ($cC04); multi-add
+D6|Comments: Cmd+Enter submit; @mention dropdown; internal/external toggle; optimistic+retry
+D7|Description: 500ms debounce on blur; cancel on unmount; last-saved timestamp; file drag-drop
+D8|Activity: reverse-chronological; 5 entry types; empty state
+D9|Zero axe violations; keyboard-only navigation ($g10)
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-011 — Quick Peek Overlay
+effort|pri|deps|$cut
+1.5h|H|PROJ-000,PROJ-001,PROJ-004|$g6,$g8,$g9
+
+sub|type|description
+PROJ-011A|behavioral|Trigger: useQuickPeek().projectId≠null. motion.div initial={{scale:0.95,opacity:0}} animate={{scale:1,opacity:1}} spring stiffness 400 damping 25. Dismiss: click outside, Escape, "View Full Detail". Shows: project name, status, priority, due date, budget progress bar, first 5 tasks with checkboxes (optimistic toggle), next 3 upcoming tasks. "View Full Detail" navigates to /projects/:projectId. Tests: spring open; task checkboxes work; navigate button.
+PROJ-011B|pipe|Data from useProject(id) — leverages cache from hover prefetch ($cC09). Skeleton while loading. Tests: cached data used; skeleton on miss.
+PROJ-011C|pipe|role="dialog", aria-modal="true", aria-label="Quick peek: {name}". Focus trap.
+
+DoD
+dod|criteria
+D1|Overlay opens with spring entrance
+D2|Task checkboxes + upcoming tasks; "View Full Detail" navigates
+D3|Uses cached data; accessible dialog with focus trap
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-012 — Project Template Library
+effort|pri|deps|$cut
+1.5h|L|PROJ-000,PROJ-002|$g6,$g9
+
+sub|type|description
+PROJ-012A|pipe|Template grid: 3 cols desktop, 2 tablet, 1 mobile. Cards: icon, name, description, task count badge. Hover lift with boxShadow (Quiet tier, pure CSS).
+PROJ-012B|pipe|Click template → New Project dialog (PROJ-002E) pre-filled with name + templateId. Submit calls useCreateProject({templateId}).
+PROJ-012C|pipe|Entry points: "Start from template" link in New Project dialog; "Choose a template" CTA in projects empty state.
+PROJ-012D|pipe|"Save as Template" in project ⋯ menu: creates template from current sections+tasks.
+
+DoD
+dod|criteria
+D1|6 templates, responsive grid, pre-fill dialog, "Save as Template"
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-013 — Recurring Work Scheduler
+effort|pri|deps|$cut
+2.5h|H|PROJ-000,PROJ-008|$g3,$g6,$g11,$cC02,$cC03
+
+sub|type|description
+PROJ-013A|behavioral|RecurringWorkDialog: uses RecurrenceEditor from @/shared/recurrence. Additional project-specific fields: due date offset, assignee, naming convention, folder, work creation timing, resource planning. Preview updates live as fields change.
+PROJ-013B|pipe|Validation: recurrenceRuleSchema from @/shared/recurrence + Zod for project fields (due date offset positive int, naming includes placeholder). Tests: errors on invalid offset.
+PROJ-013C|behavioral|Submit: useCreateRecurringSchedule with RRULE string from editor. Use RecurrenceEngine.getNextOccurrences() to preview next 5 instances with dates, assignee, status. Tests: preview renders; schedule saves.
+PROJ-013D|pipe|RecurringScheduleList in project header: edit/pause/delete actions. Visual indicator on projects part of a series.
+PROJ-013E|pipe|"Edit Schedule" reopens dialog pre-filled. Tests: loads existing values; edit saves.
+
+DoD
+dod|criteria
+D1|Dialog with 7 configurable areas; Zod validation; naming preview
+D2|Upcoming instances preview (next 5); schedule list with edit/pause/delete
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-014 — Saved Views
+effort|pri|deps|$cut
+2.0h|M|PROJ-002,PROJ-001|$g9
+
+sub|type|description
+PROJ-014A|pipe|SaveViewDialog: captures current filter+sort+view state from Zustand. Persists to localStorage + mock endpoint.
+PROJ-014B|behavioral|SavedViewsManager: dropdown/sidebar list; click applies view (filters+sort+mode); active highlighted. "Edit Saved Views": reorder via drag, rename inline, delete. "Share" generates URL with view ID param. Tests: click applies all; reorder works; share URL correct.
+PROJ-014C|pipe|URL sharing: ?view=view-id loads saved view, applies filters. Tests: navigation applies.
+PROJ-014D|pipe|3 default saved views: Overdue Work (status!=completed, due<today), Over Budget (used>75%), My Active Projects (assignee=me, status=active).
+
+DoD
+dod|criteria
+D1|Save dialog; list with reorder/rename/delete; share URL; 3 default views
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-015 — External Task Assignment (Client Tasks)
+effort|pri|deps|$cut
+2.0h|M|PROJ-009,PROJ-010|$g6,$g9,$cC08
+
+sub|type|description
+PROJ-015A|behavioral|ClientTaskConfig: toggle in TaskDrawer "This is a client task". When on: auto-reminder schedule (every N days, up to M reminders). After 5 reminders no response → auto-update status (configurable). Tests: toggle changes type; reminder saves; status auto-updates on 5.
+PROJ-015B|pipe|Reminder count badge on TaskRow; days since last reminder displayed.
+PROJ-015C|pipe|Client task sections: distinct styling; automator support ("When all client tasks completed, update status").
+PROJ-015D|pipe|Client task comments: default to External visibility; toggle in comment input.
+
+DoD
+dod|criteria
+D1|Client task toggle with reminder schedule; auto-update after 5 reminders
+D2|Reminder badge on rows; client sections; external comment default
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-016 — Document Panel
+effort|pri|deps|$cut
+2.0h|M|PROJ-008|$g6,$g9
+
+sub|type|description
+PROJ-016A|behavioral|DocumentPanel: folder tree (client name→service type), file list with type icon/size/date. Upload via drag-drop (max 10MB). Preview modal for images/PDFs; download for other types. Delete with confirmation. Tests: upload adds to folder; preview works; delete removes.
+PROJ-016B|pipe|"Connect Folder" placeholder (Google Drive/OneDrive mock). "Auto-create folder" checkbox for recurring work items. Breadcrumb navigation.
+PROJ-016C|pipe|Document sidebar toggle: compact right panel with search, same data.
+
+DoD
+dod|criteria
+D1|Folder tree; file upload drag-drop; preview/delete; connect folders; sidebar
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-017 — Workflow Automation Engine (BEHAVIORAL — code blocks preserved)
+effort|pri|deps|$cut
+3.0h|H|PROJ-000,PROJ-008|$g6,$g9,$cC02
+
+sub|type|description
+PROJ-017A|pipe|GlobalAutomatorsSettings: 6 rules with on/off toggles and configurable statuses. "When planned work reaches start date, update status to…"; "When email/note assigned, set default status to…"; "When first task completed, update to In Progress"; "When all tasks completed, mark Completed"; "When 5 client reminders sent, update status to…".
+PROJ-017B|behavioral|AutomationRuleBuilder: Trigger ("When") dropdown options: "All tasks in this section", "All tasks in section above", "All sections & tasks above", "The work" (work-level), "All tasks in specific section" (picker). Condition ("Have the status"): multi-select from workflow statuses. Action ("Then"): Change Status (dropdown), Change Due Date (date picker or offset), Change Assignee (user picker). Visual preview: "When [trigger] have status [condition], then [action]". Multiple rules per section.
+
+```ts
+// Rule data model (mock)
+interface AutomatorRule {
+  id: string;
+  sectionId: string;
+  trigger: 'this-section' | 'section-above' | 'sections-above' | 'the-work' | 'specific-section';
+  triggerSectionId?: string;
+  conditionStatuses: ProjectStatus[];
+  actionType: 'change-status' | 'change-due-date' | 'change-assignee';
+  actionValue: string; // new status, date, or user ID
+  isActive: boolean;
+  isTriggered: boolean; // strikethrough when triggered
+}
+```
+
+Tests: rule builder creates valid rule; preview renders correctly; multiple rules per section. PROJ-017C|pipe|AutomationRulesPanel (Automators tab): lists all tasklist automators grouped by section. Each rule: description text, active toggle, edit button (pre-fills builder), delete button. Triggered rules: strikethrough + reset option. "Add Automator" per section.
+PROJ-017D|behavioral|Trigger simulation: when tasks in section are completed and automator condition is met, action fires (mock). Visual feedback: brief blue pulse (keyframe) on affected work item card + activity timeline entry. Conditional sections: activatable/deactivatable manually or via automators.
+
+```ts
+// Simulated trigger check (mock — runs after task status update)
+function checkAutomators(sectionId: string, tasks: Task[]) {
+  const rules = getAutomatorsForSection(sectionId);
+  for (const rule of rules) {
+    if (!rule.isActive || rule.isTriggered) continue;
+    const relevantTasks = getTasksByTrigger(rule.trigger, tasks);
+    const allMatch = relevantTasks.every(t => rule.conditionStatuses.includes(t.status));
+    if (allMatch) {
+      // Fire action
+      executeRule(rule);
+      markRuleTriggered(rule.id);
+    }
+  }
+}
+```
+
+Tests: completing all tasks triggers automator; pulse animation plays; activity entry created; conditional sections toggle.
+
+DoD
+dod|criteria
+D1|Global automators: 6 configurable rules with toggles
+D2|Rule builder: trigger → condition → action; visual preview; multiple per section
+D3|Rules panel grouped by section; strikethrough when triggered; reset option
+D4|Trigger simulation: blue pulse + activity entry on fire; conditional sections support
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-018 — Triage Inbox Shell & Items
+effort|pri|deps|$cut
+3.0h|H|PROJ-000,PROJ-001,FND-007|$g3,$g6,$g8,$g9,$cC05
+
+sub|type|description
+PROJ-018A|pipe|Route /triage with loader; add to sidebar nav. Left filter sidebar (All, Unread, Cleared, Assigned to Me, Decisions, Drafts, Scheduled, Sent).
+PROJ-018B|behavioral|TriagePage: left filter, center TriageStream (unified emails, notifications, work assignments, client tasks, comments, decisions), right action tray (when item selected). Split view toggle: list only or stream+actions.
+PROJ-018C|behavioral|TriageItem color coding: grey bg=work assignments & internal notes; pink bg=client tasks & requests; white=emails & notifications. Unread: bold subject + blue dot. Cleared: reduced opacity, moved to "Cleared". Click selects item, highlights, opens action tray. Keyboard: E=clear, A=assign self, P=plan this week — with <kbd> hints on hover.
+PROJ-018D|behavioral|Virtualize TriageStream via useVirtualizer (estimateSize 72, overscan 15). New items slide in from top: motion.div y:-20→0, opacity 0→1, spring stagger 0.03s. Tests: 500+ items bounded DOM; animation plays.
+PROJ-018E|pipe|"Clear to zero" progress: counter showing "12 items remaining" or "Triage zero! 🎉". Empty state with illustration.
+
+DoD
+dod|criteria
+D1|Triage page: sidebar filter, virtualized stream, split view
+D2|Items color-coded (grey/pink/white); unread/cleared states; keyboard shortcuts
+D3|Slide-in animation for new items; clear-to-zero goal with celebration
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-019 — Triage Action Tray & Item Actions
+effort|pri|deps|$cut
+2.5h|H|PROJ-018|$g6,$g8,$g9
+
+sub|type|description
+PROJ-019A|pipe|ActionTray (right panel when item selected): 5 sections — Timeline (link to existing work), My Week (plan toggle, clears from triage), Assignment (assign self/colleague), Notify Me (toggle: future replies return to triage), Visibility (who can see; private option).
+PROJ-019B|pipe|Comment within email: Reply All/Reply/Forward + Comment button. Comment has blue bg (internal only); emails white bg. @mention colleagues.
+PROJ-019C|pipe|Quick actions: swipe right→clear; swipe left→plan week; keyboard E=clear, A=assign, P=plan.
+PROJ-019D|behavioral|DelegationSettings: grant colleague access to your triage (temporary or permanent). Delegate can manage emails, reply as themselves, assign, clear, add to timelines. "View as [colleague]" toggle. Tests: granting works; removal revokes.
+PROJ-019E|pipe|Shared Triage: shared inboxes (info@) appear alongside personal inbox in sidebar.
+
+DoD
+dod|criteria
+D1|Action tray: 5 sections; plan clears item; comments (blue internal, white external)
+D2|Quick actions via swipe + keyboard; delegated triage with view-as toggle
+D3|Shared inbox management
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-020 — Triage Integration Hub
+effort|pri|deps|$cut
+2.0h|H|PROJ-018,PROJ-019,DASH-006,DASH-007|$g6,$g8,$g9
+
+sub|type|description
+PROJ-020A|behavioral|Triage items from: agent outputs (DASH-006) → decisions/alerts; decision packets (DASH-007) → Approve/Reject inline; project work assignments → when assigned; budget alerts → when >75%/100%; @mentions → when mentioned in comments; recurring work → when created. Each type has specific inline actions.
+PROJ-020B|pipe|Type icons: 🤖 agent (grey), ⚡ decision (amber), 📋 work (grey), 💰 budget (red), 💬 mention (blue dot), 👤 client (pink).
+PROJ-020C|pipe|Notification preferences per source type: enable/disable, sound toggle, digest mode (Real-time/Hourly/Daily).
+
+DoD
+dod|criteria
+D1|Integration with 6 data sources; type-specific icons + colors
+D2|Notification preferences per source with digest modes
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-021 — Global Search
+effort|pri|deps|$cut
+2.0h|M|PROJ-000,FND-007|$g6,$g9
+
+sub|type|description
+PROJ-021A|behavioral|GlobalSearchDialog: Cmd+K or Cmd+Shift+F. Search across: Projects, Tasks, Emails/Triage, Notes, Comments, Documents, Contacts. Results grouped by entity type with section headers. Real-time filtering as user types.
+PROJ-021B|pipe|Advanced search operators: type:, before:, after:, status:. Keyboard: ArrowUp/Down nav, Enter open, Escape close.
+PROJ-021C|pipe|Click result navigates: Project→ /projects/:id; Task→ opens ProjectDetailPage with TaskDrawer; Email→ opens Triage with item selected; Note→ relevant project Notes tab; Document→ DocumentPanel with file preview.
+PROJ-021D|pipe|Recent searches (last 10) in localStorage. Empty state with suggestions.
+
+DoD
+dod|criteria
+D1|Global search: cross-entity, grouped results, real-time filtering
+D2|Advanced search operators; keyboard navigation; entity navigation on click
+D3|Recent searches + empty state
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-022 — Time & Budget Tracking
+effort|pri|deps|$cut
+2.0h|M|PROJ-000,PROJ-008|$g6,$g9,$cC02
+
+sub|type|description
+PROJ-022A|pipe|Budget panel: total, used, remaining; progress bar color-coded (green<75%, amber 75-100%, red>100%). Time: estimated hours, actual hours, remaining. Breakdown by member (table) and by task type (billable/non-billable).
+PROJ-022B|pipe|TimeEntryForm: "Clock In"/"Clock Out" button. Manual entry: hours, minutes, date, task type, description. Weekly timesheet table view. Submit for approval (mock).
+PROJ-022C|pipe|Budget settings: task types CRUD (toggle billable), default capacity per member, estimate mode (amount or hours).
+PROJ-022D|pipe|WIP panel: filterable list with billable time, fee type, client, work type.
+
+DoD
+dod|criteria
+D1|Budget panel with progress; time tracking (clock+manual); breakdowns
+D2|Weekly timesheet; budget settings; WIP panel
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-023 — Filing Deadlines Configuration
+effort|pri|deps|$cut
+1.5h|L|PROJ-000|$g6,$g9
+
+sub|type|description
+PROJ-023A|pipe|Settings table: name, standard due date, extension due date; add/edit/delete. "Apply to template" checkbox rolls deadline across all work items using that template.
+PROJ-023B|behavioral|FilingDeadlineBadge: color-coded countdown — green (>30d), amber (7-30d), red (<7d), red pulsing (overdue). Extension indicator: "Extension filed — due [date]". Tests: badge colors correct at each range.
+PROJ-023C|pipe|Automated extension: "File Extension" button updates deadline to extension date. Automator rule: "When extension filed, update due date." Bulk extension up to 100 items.
+
+DoD
+dod|criteria
+D1|Deadline settings CRUD; template application; badge with countdown
+D2|Extension management with automator; bulk extension
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-024 — Practice Intelligence Dashboard (BEHAVIORAL — code blocks preserved)
+effort|pri|deps|$cut
+3.0h|L|PROJ-000,DASH-006/007|$g6,$g9
+
+sub|type|description
+PROJ-024A|pipe|Dashboard: portfolio performance (revenue, utilization, realization rate, hours, billed rate — filterable by client, colleague, work type, date). AI agents status panel (active agents, tokens consumed, actions taken). Revenue trend chart (recharts LineChart, monthly revenue vs target). Realization rate gauge.
+PROJ-024B|pipe|AIAgentActivity: agentic AI embedded in task lists. Agent activity log: timestamped entries with expandable details. Agent control: pause/resume individual agents; configure behavior.
+PROJ-024C|behavioral|FIFOQueue: First-In-First-Out ordered list by intake date.
+
+```ts
+// FIFO queue data model
+interface FIFOQueueItem {
+  id: string;
+  workItemId: string;
+  intakeDate: string;
+  priority: 'normal' | 'urgent';
+  position: number;
+}
+
+// Reorder capability (manager override)
+function reorderQueue(itemId: string, newPosition: number) {
+  const queue = [...currentQueue];
+  const [moved] = queue.splice(queue.findIndex(i => i.id === itemId), 1);
+  queue.splice(newPosition, 0, moved);
+  // Update positions
+  const updated = queue.map((item, idx) => ({ ...item, position: idx }));
+  queryClient.setQueryData(projectKeys.fifoQueue(), updated);
+  useUpdateQueue.mutate(updated);
+}
+```
+
+Urgent items highlighted. Position badge on each work item. Reorder via manager drag or "Move to position" input. Tests: queue renders in intake order; reorder updates positions; urgent items highlighted.
+
+PROJ-024D|pipe|AI pricing recommendations (mock): suggested pricing for client proposals based on historical data. Confidence score per recommendation. Accept/Reject/Adjust actions.
+
+DoD
+dod|criteria
+D1|Portfolio dashboard with filters; AI agent status; revenue chart; gauge
+D2|Agent activity log with pause/resume; FIFO queue with position badges + reorder
+D3|AI pricing recommendations with confidence scores
+
+────────────────────────────────────────────────────────
+
+### sec-PROJ-025 — Final Polish (Projects Module)
+effort|pri|deps|$cut
+3.0h|H|ALL|$g6,$g7,$g8,$g9,$g10,$g11,$g15,$g16,$cC01..$cC10
+
+sub|type|description
+PROJ-025A|pipe|Skeleton loaders: every TanStack Query loading state uses Skeleton matching content shape (list rows, Kanban cards, task rows, triage items, detail sections).
+PROJ-025B|pipe|Empty states: every list uses EmptyState component with illustration, heading, subtext, CTA button.
+PROJ-025C|behavioral|useMotionPreference() ($g6) in EVERY animated component; reduced motion → instant state changes or ≤150ms fades.
+PROJ-025D|behavioral|AnimatePresence wrapping main content; motion.div keyed by location.pathname ($g7).
+PROJ-025E|behavioral|Focus restoration after ANY modal/drawer/overlay close: store trigger ref in Zustand; restore on close ($g8).
+PROJ-025F|pipe|Keyboard hints: <kbd> tags for common shortcuts visible on hover or in tooltips ($g9).
+PROJ-025G|behavioral|Accessibility audit: all interactive elements keyboard-reachable; focus indicators visible (electric blue, focus-visible); color contrast ≥4.5:1; screen reader announcements for dynamic content; aria-* attributes on all ARIA-relevant components ($g10).
+PROJ-025H|pipe|Zero console errors or warnings in dev console; tsc --noEmit passes.
+PROJ-025I|pipe|npm run build completes successfully; all routes render without crashing.
+
+DoD
+dod|criteria
+D1|Skeletons on all loading states matching content shape
+D2|Empty states with illustration + CTA on all empty lists
+D3|useMotionPreference in all animated components ($g6)
+D4|Page transitions via AnimatePresence ($g7); focus restoration ($g8)
+D5|Full keyboard accessibility; screen reader support; color contrast ($g10)
+D6|Zero console errors; tsc --noEmit passes; build succeeds
+
+═══════════════════════════════════════════════════════════
+## END OF 20-Projects.txt
+## Checkpoint: PROJ-000 through PROJ-025 ready for execution.
+## Paste the CHECKPOINT BLOCK at top into any new session.
+## For any task, first load Global Contract block, then navigate to sec-PROJ-XXX.
+═══════════════════════════════════════════════════════════
+```

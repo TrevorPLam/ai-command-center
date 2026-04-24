@@ -9,12 +9,18 @@ This project uses React Router v6 for client-side routing. Follow these patterns
 
 Note: React Router v7 was released in November 2024, but this project is locked to v6 per tech-stack constraints.
 
+<!-- SECTION: router_setup -->
+
 <router_setup>
 - Use createBrowserRouter for route configuration
 - Define all routes in a central router configuration
 - Use BrowserRouter in main.tsx to wrap the app
 - Configure error boundaries for route-level error handling
 </router_setup>
+
+<!-- ENDSECTION: router_setup -->
+
+<!-- SECTION: route_structure -->
 
 <route_structure>
 
@@ -71,12 +77,20 @@ export const router = createBrowserRouter([
 
 </route_structure>
 
+<!-- ENDSECTION: route_structure -->
+
+<!-- SECTION: route_parameters -->
+
 <route_parameters>
 - Use useParams hook to access route parameters
 - Type parameters with TypeScript interfaces
 - Use useSearchParams for query parameters
 - Handle undefined parameters gracefully
 </route_parameters>
+
+<!-- ENDSECTION: route_parameters -->
+
+<!-- SECTION: navigation_patterns -->
 
 <navigation_patterns>
 - Use useNavigate hook for programmatic navigation
@@ -86,12 +100,20 @@ export const router = createBrowserRouter([
 - Preserve state with navigate(location, { state: {} })
 </navigation_patterns>
 
+<!-- ENDSECTION: navigation_patterns -->
+
+<!-- SECTION: lazy_loading -->
+
 <lazy_loading>
 - Use React.lazy() for route-based code splitting
 - Wrap lazy routes in Suspense with loading fallback
 - Load heavy components on demand
 - Split by route for optimal bundle size
 </lazy_loading>
+
+<!-- ENDSECTION: lazy_loading -->
+
+<!-- SECTION: error_handling -->
 
 <error_handling>
 - Create errorElement for route-level error boundaries
@@ -101,12 +123,20 @@ export const router = createBrowserRouter([
 - Offer recovery options (retry, go back)
 </error_handling>
 
+<!-- ENDSECTION: error_handling -->
+
+<!-- SECTION: route_protection -->
+
 <route_protection>
 - Use wrapper components for protected routes
 - Check authentication in route loaders if needed
 - Redirect unauthorized users to login
 - Store redirect location for post-login navigation
 </route_protection>
+
+<!-- ENDSECTION: route_protection -->
+
+<!-- SECTION: accessibility -->
 
 <accessibility>
 - Use semantic HTML for navigation
@@ -116,10 +146,17 @@ export const router = createBrowserRouter([
 - Announce route changes to screen readers
 </accessibility>
 
+<!-- ENDSECTION: accessibility -->
+
+<!-- SECTION: performance -->
+
 <performance>
 - Use React.lazy() for code splitting
 - Implement route-level caching
 - Prefetch routes on hover or intent
 - Avoid unnecessary re-renders on navigation
 - Use transition API for non-urgent navigation
+
 </performance>
+// Sentinel: END performance
+<!-- ENDSECTION: performance -->

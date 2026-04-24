@@ -1,0 +1,310 @@
+# 10-Dashboard — Personal AI Command Center Frontend
+# Format: Hybrid (L1 registry + L3 detail blocks)
+# Generated: 2026-04-24 | Aligned with updated 01-Foundations
+# Ready for cross-model deployment
+
+════════════════════════════════════════════════════════════
+## 📦 CHECKPOINT BLOCK (paste at session start)
+════════════════════════════════════════════════════════════
+version: "1.0"
+module: "10-Dashboard"
+last_updated: "2026-04-24"
+completed_tasks: []
+in_progress: null
+next_task: "DASH-000"
+intent: "Implement all Dashboard tasks following the registry below. Global contracts ($g, $c, $lc) are inherited from 01-Foundations and extended with dashboard-specific rules. Tasks use two‑tier subtasks: pipe (mechanical) and behavioral (code‑preserving)."
+════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+## 🌐 GLOBAL CONTRACT BLOCK (L0 + L2)
+════════════════════════════════════════════════════════════
+contracts:
+  $g:  # Inherited from 01-Foundations (apply without repeating)
+    # All 18 global contracts are active; only key ones for Dashboard noted:
+    "6": "useReducedMotion() guard before every animation"
+    "7": "AnimatePresence + motion.div keyed by location.pathname"
+    "8": "Focus restoration — store trigger ref in uiSlice; restore on close"
+    "10": "WCAG 2.2 AA — keyboard nav, focus indicators, target size"
+    "13": "Motion tokens — shared from src/lib/motion.ts"
+    "15": "HTML sanitization — all untrusted HTML via SanitizedHTML component"
+    "16": "No dangerouslySetInnerHTML outside SanitizedHTML"
+    # Others are inherited; see 01-Foundations.
+
+  $c:  # Dashboard-specific cross-cutting contracts
+    "DASH-C01": "Scroll-triggered animations: viewport={{ once: true }}"
+    "DASH-C02": "Animate only transform and opacity properties"
+    "DASH-C03": "Virtualization: @tanstack/react-virtual for ActivityFeed"
+    "DASH-C04": "Filter updates via useTransition + startTransition"
+    "DASH-C05": "Optimistic updates via canonical pattern (useOptimisticMutation)"
+    "DASH-C06": "ActivityFeed: role='log' + aria-live='polite'"
+    "DASH-C07": "RightPanel on / injected with AttentionQueue"
+
+  $lc:  # Local task-scoped contracts
+    decisionpacket: "Countdown: useMotionValue + useSpring (skipInitialAnimation: true); never setInterval + useState"
+    animatedqueue: "AnimatePresence mode='popLayout' with layout prop on items for smooth removal"
+    agentcard: "Staggered entrance: staggerChildren: 0.08; hover glow via oklch()"
+    filter: "Filter state: single state, updated via startTransition; useMemo for derived list"
+
+  motion:  # Dashboard motion tier
+    AmbientStatusBanner: "Alive — animated conic-gradient border, spring height"
+    AgentCard: "Alive — staggered entrance, hover oklch glow, layoutId morph"
+    ActivityEntry: "Alive — spring slide-in for new items"
+    DecisionPacket: "Quiet — entrance fade (≤200ms), spring countdown"
+    ActivityFeed_Rows: "Static — no animation"
+
+  anti-patterns:  # Global severity (inherited)
+    S: "Security — keep verbatim"
+    P: "Performance — keep verbatim"
+    B: "Implementation bug — keep verbatim"
+    ST: "Style preference — safe to compress"
+
+════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+## L1 — MODULE REGISTRY (all 8 Dashboard tasks)
+════════════════════════════════════════════════════════════
+id       |stat|pri|eff |depends               |files (selected)                                          |$cut
+DASH-000 |P   |H  |0.75|FND-006 (foundations) |types/dashboard.ts, schemas/dashboard.ts, queries/dashboard.ts|$g15,$g16
+DASH-001 |P   |H  |1.0 |DASH-000, FND-004    |mocks/factories/dashboard.ts, handlers/dashboard.ts, hooks/useDashboard.ts|$c:DASH-C05
+DASH-002 |P   |H  |0.5 |FND-007, FND-008     |pages/Dashboard.tsx, router/routes.ts                  |$g7,$g8
+DASH-003 |P   |H  |1.5 |DASH-001, DASH-002   |components/dashboard/AmbientStatusBanner.tsx, hooks/useAgentStatus.ts|$g6
+DASH-004 |P   |H  |2.5 |DASH-001, DASH-002   |components/dashboard/AgentFleetPanel.tsx, AgentCard.tsx|$g6,$g13
+DASH-005 |P   |H  |3.5 |DASH-001, DASH-002   |components/dashboard/ActivityFeed.tsx, ActivityEntry.tsx|$c:DASH-C03,$c:DASH-C04,$c:DASH-C06
+DASH-006 |P   |M  |3.0 |DASH-001, DASH-002   |components/dashboard/AttentionQueue.tsx, DecisionPacket.tsx|$lc:decisionpacket,$lc:animatedqueue,$g6,$g8
+DASH-007 |P   |M  |2.0 |DASH-004             |components/agents/AgentDetailDrawer.tsx, stores/slices/uiSlice.ts|$g8,$g13
+
+════════════════════════════════════════════════════════════
+
+## L3 — TASK DETAIL BLOCKS
+════════════════════════════════════════════════════════════
+
+### sec-DASH-000 — Domain Contract Layer
+effort|pri|deps|$cut
+0.75|H|FND-006|$g15,$g16
+
+sub|type|description
+DASH-000A|pipe|Define TypeScript interfaces for Agent, ActivityEntry, and DecisionPacket in `src/types/dashboard.ts`
+DASH-000B|pipe|Create Zod schemas mirroring those types in `src/schemas/dashboard.ts` for runtime API validation
+DASH-000C|pipe|Create `queryOptions` for agents, activity, and attention-queue in `src/queries/dashboard.ts`; apply Zod parsing at query boundary
+DASH-000D|pipe|Create stub fetch functions in `src/api/dashboard.ts` that return typed promises (can return mock data initially)
+
+dod|criteria
+D1|Types strictly match API contract (even if mocked)
+D2|Zod schemas correctly validate data shapes
+D3|All types exported and compile without errors
+D4|`queryOptions` defined as single source of truth for cache keys
+
+anti|description
+A1|Using `any` instead of proper type definitions
+A2|Zod schemas defined inside React components (performance penalty)
+
+────────────────────────────────────────────────────────
+
+### sec-DASH-001 — Mock Data & Custom Hooks
+effort|pri|deps|$cut
+1.0|H|DASH-000,FND-004|$c:DASH-C05
+
+sub|type|description
+DASH-001A|pipe|Create data factories in `src/mocks/factories/dashboard.ts` using `@faker-js/faker` with reproducible seeds; export a `resetDashboardDb()` function
+DASH-001B|pipe|Implement stateful MSW handlers in `src/mocks/handlers/dashboard.ts` that persist mutations in-memory and include `delay()` for loading state testing
+DASH-001C|pipe|Create custom hooks in `src/hooks/useDashboard.ts` consuming `queryOptions` with full type inference: `useAgents()`, `useActivity()`, `useAttentionQueue()`
+DASH-001D|behavioral|Implement optimistic mutations for decision approvals/rejections using `useOptimisticMutation` wrapper (DASH-C05)
+DASH-001E|behavioral|[TEST] Verify hooks return correct data from MSW; simulate error and confirm optimistic rollback restores previous state
+
+dod|criteria
+D1|Factories produce deterministic, valid test data
+D2|MSW handlers mutate in-memory state; GET returns updated data after POST
+D3|Optimistic updates feel instant (no UI stutter) and rollback correctly on error
+D4|All tests pass
+
+anti|description
+A1|Using inline `fetch` in components instead of hooks
+A2|Not implementing `delay()` — loading states won't be testable
+A3|Mutation cache updates that mutate original array instead of returning new array
+
+────────────────────────────────────────────────────────
+
+### sec-DASH-002 — Page Layout & Route Configuration
+effort|pri|deps|$cut
+0.5|H|FND-007,FND-008|$g7,$g8
+
+sub|type|description
+DASH-002A|pipe|Build `src/pages/Dashboard.tsx` with two-column layout (main content + right panel area) using responsive breakpoints; main column: 65%, right column: 35% on lg+
+DASH-002B|pipe|In `src/router/routes.ts`, define route for `/` with `lazy: () => import('@/pages/Dashboard')` and a loader that calls `queryClient.ensureQueryData(agentsQueryOptions())`
+DASH-002C|pipe|Inject `AttentionQueue` into `RightPanel` via outlet context (or Zustand `rightPanel.content`) for the `/` route
+DASH-002D|behavioral|[TEST] Navigate to `/`, verify Dashboard renders with correct layout; verify agents data is prefetched and no loading waterfall occurs
+
+dod|criteria
+D1|Dashboard renders as index route
+D2|Agents data prefetched before component mount (no spinner on first load)
+D3|Page transitions use location-keyed AnimatePresence (inherited from AppShell)
+D4|All tests pass
+
+anti|description
+A1|Missing `lazy()` — entire module included in main bundle
+A2|Loader that doesn't call `ensureQueryData` — causes waterfall fetch
+
+────────────────────────────────────────────────────────
+
+### sec-DASH-003 — AmbientStatusBanner Implementation
+effort|pri|deps|$cut
+1.5|H|DASH-001,DASH-002|$g6
+
+sub|type|description
+DASH-003A|pipe|Create `useAgentStatus` hook that derives fleet-wide thinking state (e.g., any agent `status === 'thinking'`) from cached agent data
+DASH-003B|behavioral|Build `AmbientStatusBanner` component: when active, render a banner with animated conic-gradient border (using `@property --conic-angle`, `--conic-color` from FND-000F). Animate via background angular rotation.
+DASH-003C|pipe|Wrap banner in `<AnimatePresence>` and `motion.div` with `layout` prop for smooth entrance/exit; use `initial={{ height: 0, opacity: 0 }}` `animate={{ height: 'auto', opacity: 1 }}` `exit={{ height: 0, opacity: 0 }}`
+DASH-003D|pipe|Persist dismiss state in local storage (via Zustand persist slice or dedicated `useLocalStorage`); banner hidden when dismissed
+DASH-003E|behavioral|[TEST] Verify banner appears when an agent is thinking; verify dismiss hides it and state persists; confirm animation respects `useReducedMotion()` (instantaneous appearance)
+
+dod|criteria
+D1|Banner only visible when agents are actively working
+D2|Conic-gradient border animates smoothly (GPU-accelerated)
+D3|Dismiss state persists across sessions
+D4|Reduced motion: no animation, instant toggle
+D5|All tests pass
+
+anti|description
+A1|Using `setInterval` to animate; use CSS `@property` + `animation`
+A2|Banner not in `AnimatePresence` — abrupt disappearance
+A3|Forgetting `layout` prop — banner height changes jerky
+
+────────────────────────────────────────────────────────
+
+### sec-DASH-004 — Agent Fleet Panel & Cards
+effort|pri|deps|$cut
+2.5|H|DASH-001,DASH-002|$g6,$g13
+
+sub|type|description
+DASH-004A|behavioral|Build `AgentCard`: displays avatar, name, status, last activity. Status pulses: a small green dot that scales continuously (`animate: { scale: [1, 1.3] }` with `repeat: Infinity`) only when `status === 'thinking'`. Glow on hover: `boxShadow: '0 0 20px oklch(...)'` via `motion` values.
+DASH-004B|pipe|Each card wrapped in `motion.div` with `layoutId="agent-card-{agent.id}"` for later morph to drawer (DASH-007). Wrap in `React.memo`.
+DASH-004C|pipe|Build `AgentFleetPanel`: responsive grid (`grid-cols-1 sm:2 lg:3`). Entrance: container with `staggerChildren: 0.08`, children fade in from opacity 0, y: 10.
+DASH-004D|pipe|Wrap entire panel in `<LayoutGroup id="agent-fleet">` to namespace layoutIds.
+DASH-004E|behavioral|[TEST] Verify cards stagger in on mount; status pulse only active for thinking agents; hover glow is smooth; layoutIds are present and unique.
+
+dod|criteria
+D1|Cards animate in gracefully on first load
+D2|Status pulses only during `thinking` state, otherwise static
+D3|Hover effects use spring physics (responsive, not jumpy)
+D4|All tests pass
+
+anti|description
+A1|Using `:hover` CSS for glow — bypasses spring physics; use `whileHover` from motion
+A2|Missing `react/memo` — unnecessary re-renders when other agents update
+A3|Omitting `LayoutGroup` — layoutId collisions outside the panel
+
+────────────────────────────────────────────────────────
+
+### sec-DASH-005 — Activity Feed Virtualization
+effort|pri|deps|$cut
+3.5|H|DASH-001,DASH-002|$c:DASH-C03,$c:DASH-C04,$c:DASH-C06
+
+sub|type|description
+DASH-005A|pipe|Build `ActivityEntry`: displays timestamp, agent name, action description, optional expandable details. Chevron rotates with spring: `animate: { rotate: expanded ? 180 : 0 }`. Memoize with `React.memo`.
+DASH-005B|behavioral|Implement virtualization using `@tanstack/react-virtual` (`useVirtualizer`) with dynamic row heights; use `estimateSize` and `measureElement` callback for accurate sizing.
+DASH-005C|pipe|Add filter tabs (All, Thinking, Done, Error) at top. Filter state managed via `useState`; wrap `setFilter` in `startTransition` to keep UI responsive. Derive filtered list with `useMemo`.
+DASH-005D|pipe|Set `role="log"` on feed container and `aria-live="polite"` (implicit with `role="log"`). Each `ActivityEntry` has `role="listitem"`.
+DASH-005E|behavioral|[TEST] Verify virtualization: only visible rows rendered; expanding an item adjusts row height correctly; filter changes are non‑blocking (input stays responsive); screen reader announces new entries.
+
+dod|criteria
+D1|Smooth scrolling with thousands of entries
+D2|Row height adjusts after expand without visual glitch (call `virtualizer.measure()`)
+D3|Filter switches without blocking UI (via `useTransition` indicator)
+D4|ActivityFeed accessible: screen reader announces new items
+D5|All tests pass
+
+anti|description
+A1|Not using `React.memo` on row components — every scroll re-render
+A2|Forgetting to call `virtualizer.measure()` after expand — row height remains stale
+A3|Using `setFilter` without `startTransition` — filter change can block heavy list
+
+────────────────────────────────────────────────────────
+
+### sec-DASH-006 — AttentionQueue & DecisionPackets
+effort|pri|deps|$cut
+3.0|M|DASH-001,DASH-002|$lc:decisionpacket,$lc:animatedqueue,$g6,$g8
+
+sub|type|description
+**Implementation:**
+DASH-006A|pipe|Build `DecisionPacket` component:
+  - Props: `id`, `title`, `summary`, `reasoning`, `priority` (critical/high/medium/low), `deadline` (timestamp)
+  - Priority badge with color coding (`bg-red/20` for critical, etc.)
+  - Expandable AI-reasoning block (collapsible with spring height)
+  - Approve/Reject/Defer buttons
+  - Countdown timer using `useMotionValue` (initial deadline - now) updated with `useMotionValueEvent` and a microtask timer; render via `useSpring` with `skipInitialAnimation: true` for smooth countdown. No React state updates per tick.
+DASH-006B|pipe|Build `AttentionQueue` component:
+  - Wraps list of `DecisionPacket` in `<AnimatePresence mode="popLayout">`
+  - Each packet inside a `motion.div` with `layout` prop so remaining items animate to new positions when one is removed
+  - Apply entrance/exit animations: new packets slide in from left, exiting scale down and fade out
+DASH-006C|pipe|Wire up optimistic mutations: on approve/reject, use `useOptimisticMutation` to immediately remove the packet from the cached list; on error, roll back.
+DASH-006D|pipe|If queue empty, render an empty state: `No pending decisions` with a check icon.
+DASH-006E|pipe|Countdown timer: if deadline is past, show “Overdue” label; use red color.
+
+**Tests:**
+DASH-006F|behavioral|[TEST] Packets render with correct priority badge class
+DASH-006G|behavioral|[TEST] Approve button calls `approveDecision(packet.id)` and packet is optimistically removed
+DASH-006H|behavioral|[TEST] Failed approval restores packet and shows error toast
+DASH-006I|behavioral|[TEST] Countdown timer updates every second (use `vi.useFakeTimers()`)
+DASH-006J|behavioral|[TEST] Empty state renders when packets list is empty
+
+dod|criteria
+D1|`AnimatePresence mode="popLayout"` — exiting packets don't block remaining items
+D2|`layout` prop on packet wrappers — remaining packets animate to new positions
+D3|Countdown uses `useMotionValue` + `useSpring` (no `useState`/rerender per second)
+D4|Approve/Reject/Defer: optimistic remove with rollback on error
+D5|All 5 tests pass
+
+anti|description
+A1|`AnimatePresence` without `mode="popLayout"` — exiting packet holds space while animating out; remaining items don't reflow
+A2|`setInterval` countdown updating `useState` — triggers React re-render every second; use `useMotionValue`
+A3|Mutating the cache array directly in `setQueryData` — always return a new array
+A4|Missing `layout` prop — remaining items jump to new positions without animation
+
+────────────────────────────────────────────────────────
+
+### sec-DASH-007 — AgentDetailDrawer
+effort|pri|deps|$cut
+2.0|M|DASH-004|$g8,$g13
+
+sub|type|description
+**Implementation:**
+DASH-007A|pipe|Extend `uiSlice` in `src/stores/slices/uiSlice.ts`:
+  - Add `agentDrawerOpen: boolean`, `selectedAgentId: string | null`
+  - Add `openAgentDrawer(id: string)` and `closeAgentDrawer()` actions
+DASH-007B|pipe|Build `AgentDetailDrawer` using shadcn/ui `Sheet` (right side, 480px):
+  - Header: large avatar, agent name, `StatusIndicator`
+  - Body: current task description, token usage sparkline placeholder, session history list, config read-only (model, temperature)
+  - Footer: "Send Message" CTA
+DASH-007C|behavioral|`layoutId` morph from AgentCard:
+  - In `AgentDetailDrawer`, the main card content area uses `motion.div layoutId={`agent-card-${selectedAgentId}`}`
+  - This `layoutId` must exactly match the one in `AgentCard` (DASH-004B)
+  - Wrap the drawer's `motion.div` with the matching `layoutId` inside a `LayoutGroup` if possible; cross‑tree morphing is allowed if the layoutId is unique. Ensure `layoutScroll` prop on scrollable container inside drawer to account for scroll offset during morph.
+DASH-007D|pipe|Focus restoration: on `openAgentDrawer()`, store `document.activeElement` as `HTMLElement` in `uiSlice.focusTriggerRef`. On drawer close, call `focusTriggerRef?.focus()`.
+DASH-007E|pipe|"Send Message" button navigates to `/chat` with state `{ agentId: selectedAgentId, prefill: true }`.
+DASH-007F|pipe|Fetch agent detail data: `useAgent(selectedAgentId)` uses `select` to pick from cached fleet list (cached via DASH-001); no additional network request.
+
+**Tests:**
+DASH-007G|behavioral|[TEST] Drawer opens when `openAgentDrawer(id)` is called
+DASH-007H|behavioral|[TEST] Correct agent data displays (mock `useAgent`)
+DASH-007I|behavioral|[TEST] "Send Message" navigates to `/chat` with state payload
+DASH-007J|behavioral|[TEST] Focus returns to the expand button that triggered the drawer after close
+
+dod|criteria
+D1|Drawer opens with `layoutId` morph from the corresponding AgentCard
+D2|`layoutScroll` applied on scrollable drawer content
+D3|Focus restoration works correctly (focus back to trigger element)
+D4|`useAgent` uses `select` — no duplicate API request
+D5|All tests pass
+
+anti|description
+A1|`layoutId` in drawer not matching the card's exact `layoutId` string — morph breaks silently
+A2|Missing `layoutScroll` on scrollable drawer content — morph animates to wrong position when page is scrolled
+A3|Separate `/api/agents/:id` call for drawer when fleet is already cached — use `select` on existing cache
+
+════════════════════════════════════════════════════════════
+## END OF 10-Dashboard.txt
+## Checkpoint: DASH-000 through DASH-007 ready for execution.
+## Global contracts ($g, $c, $lc) inherited and extended.
+## Paste the CHECKPOINT BLOCK at top into any new session.
+## For any task, first load Global Contract block, then navigate to sec-DASH-XXX.
+════════════════════════════════════════════════════════════

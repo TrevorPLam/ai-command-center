@@ -7,10 +7,16 @@ globs: src/api/*.ts
 
 All API calls must follow this pattern:
 
+<!-- SECTION: base_url -->
+
 <base_url>
 - Base URL: http://localhost:8000
 - All endpoints are under /api/v1/
 </base_url>
+
+<!-- ENDSECTION: base_url -->
+
+<!-- SECTION: client_setup -->
 
 <client_setup>
 - Use TanStack Query v5 for all data fetching
@@ -18,6 +24,10 @@ All API calls must follow this pattern:
 - Use TypeScript interfaces for request/response types
 - Return mock data from src/lib/mockData/ for development
 </client_setup>
+
+<!-- ENDSECTION: client_setup -->
+
+<!-- SECTION: endpoints -->
 
 <endpoints>
 Follow these endpoint patterns (all return mocked data):
@@ -69,9 +79,15 @@ Follow these endpoint patterns (all return mocked data):
 - PUT /api/v1/settings/integrations/:id
 </endpoints>
 
+<!-- ENDSECTION: endpoints -->
+
+<!-- SECTION: mock_data -->
+
 <mock_data>
 - All mock data must be in src/lib/mockData/
 - Use realistic placeholder values
 - Ensure mock data matches TypeScript interfaces
 - Include edge cases and error states in mock data
 </mock_data>
+
+<!-- ENDSECTION: mock_data -->

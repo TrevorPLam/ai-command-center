@@ -6,12 +6,18 @@ trigger: always_on
 
 This project uses `react-window` for virtualizing large lists to maintain performance.
 
+<!-- SECTION: when_to_virtualize -->
+
 <when_to_virtualize>
 - Use virtualization for any list with >50 items
 - Required for: ActivityFeed, transaction lists, news feed, calendar events
 - Optional for: Project lists, task lists (if <50 items typically)
 - Do NOT virtualize small lists (<20 items) - overhead not worth it
 </when_to_virtualize>
+
+<!-- ENDSECTION: when_to_virtualize -->
+
+<!-- SECTION: library_usage -->
 
 <library_usage>
 - Package: `react-window` (NOT react-virtual - use only one)
@@ -20,6 +26,10 @@ This project uses `react-window` for virtualizing large lists to maintain perfor
 - Import: `areEqual` for custom item comparison
 - Use `AutoSizer` for responsive container sizing
 </library_usage>
+
+<!-- ENDSECTION: library_usage -->
+
+<!-- SECTION: fixed_vs_variable -->
 
 <fixed_vs_variable>
 - **FixedSizeList**: Use when all items have same height
@@ -31,7 +41,11 @@ This project uses `react-window` for virtualizing large lists to maintain perfor
   - Requires `itemSize` function (index => height)
   - More complex, necessary for content with varying line counts
   - Example: ActivityFeed entries, news cards with different summaries
-</variable_vs_variable>
+</fixed_vs_variable>
+
+<!-- ENDSECTION: fixed_vs_variable -->
+
+<!-- SECTION: accessibility -->
 
 <accessibility>
 - Virtualized lists MUST support keyboard navigation
@@ -45,6 +59,10 @@ This project uses `react-window` for virtualizing large lists to maintain perfor
 - Screen reader announcements for dynamic content
 </accessibility>
 
+<!-- ENDSECTION: accessibility -->
+
+<!-- SECTION: integration_patterns -->
+
 <integration_patterns>
 - Integrate with TanStack Query data
 - Use `itemData` prop to pass additional data to item renderer
@@ -52,6 +70,10 @@ This project uses `react-window` for virtualizing large lists to maintain perfor
 - Handle loading states with skeleton loaders above/below list
 - Implement infinite scroll with `onItemsRendered` callback
 </integration_patterns>
+
+<!-- ENDSECTION: integration_patterns -->
+
+<!-- SECTION: performance -->
 
 <performance>
 - Virtualization maintains constant memory usage regardless of list size
@@ -62,6 +84,10 @@ This project uses `react-window` for virtualizing large lists to maintain perfor
 - Test with 1000+ items to verify performance
 </performance>
 
+<!-- ENDSECTION: performance -->
+
+<!-- SECTION: keyboard_navigation -->
+
 <keyboard_navigation>
 - Implement custom keyboard handlers for virtualized lists
 - Arrow Up/Down: Move focus between items
@@ -71,6 +97,10 @@ This project uses `react-window` for virtualizing large lists to maintain perfor
 - Ensure focus stays within list bounds
 - Sync scroll position with focus when keyboard navigation used
 </keyboard_navigation>
+
+<!-- ENDSECTION: keyboard_navigation -->
+
+<!-- SECTION: common_patterns -->
 
 <common_patterns>
 ```tsx
@@ -146,6 +176,10 @@ const { data } = useQuery(['items'], fetchItems);
 ```
 </common_patterns>
 
+<!-- ENDSECTION: common_patterns -->
+
+<!-- SECTION: anti_patterns -->
+
 <anti_patterns>
 - Do NOT use array index as itemKey - use stable unique IDs
 - Do NOT virtualize small lists (<20 items)
@@ -154,3 +188,5 @@ const { data } = useQuery(['items'], fetchItems);
 - Do NOT set overscanCount too high (wastes memory)
 - Do NOT forget to memoize item renderers (causes re-renders)
 </anti_patterns>
+
+<!-- ENDSECTION: anti_patterns -->

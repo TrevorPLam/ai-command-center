@@ -6,6 +6,8 @@ trigger: always_on
 
 This project uses the `motion` library (formerly framer-motion) version ≥11.0 for all animations.
 
+<!-- SECTION: library_usage -->
+
 <library_usage>
 - Package name: `motion` (not `framer-motion`)
 - Import from: `motion/react` for React components
@@ -14,12 +16,20 @@ This project uses the `motion` library (formerly framer-motion) version ≥11.0 
 - Use `LazyMotion` for code splitting animation bundles
 </library_usage>
 
+<!-- ENDSECTION: library_usage -->
+
+<!-- SECTION: spring_animations -->
+
 <spring_animations>
 - Use spring physics for primary interactions (navigation, state changes, user feedback)
 - Spring config: `type: "spring", stiffness: 300, damping: 30`
 - Avoid spring for informational elements (tooltips, hover details) - use quiet fade instead
 - Spring animations feel "alive" and premium when used appropriately
 </spring_animations>
+
+<!-- ENDSECTION: spring_animations -->
+
+<!-- SECTION: stagger_animations -->
 
 <stagger_animations>
 - Use `staggerChildren` for list reveals (AgentCard grid, command palette items)
@@ -28,12 +38,20 @@ This project uses the `motion` library (formerly framer-motion) version ≥11.0 
 - Creates premium, orchestrated reveal effect
 </stagger_animations>
 
+<!-- ENDSECTION: stagger_animations -->
+
+<!-- SECTION: layout_animations -->
+
 <layout_animations>
 - Use `layoutId` for shared element transitions (active nav pill, moving elements)
 - Enables smooth morphing between element positions
 - Example: Active selection pill moving between sidebar nav items
 - Use `layout` prop for automatic layout animations when content size changes
 </layout_animations>
+
+<!-- ENDSECTION: layout_animations -->
+
+<!-- SECTION: exit_animations -->
 
 <exit_animations>
 - Wrap removable elements in `AnimatePresence` component
@@ -43,6 +61,10 @@ This project uses the `motion` library (formerly framer-motion) version ≥11.0 
 - Required for modals, drawers, list item removals
 </exit_animations>
 
+<!-- ENDSECTION: exit_animations -->
+
+<!-- SECTION: performance -->
+
 <performance>
 - **Only animate transform and opacity properties** for GPU acceleration
 - Never animate width, height, left, top, or margin (causes layout thrashing)
@@ -51,6 +73,10 @@ This project uses the `motion` library (formerly framer-motion) version ≥11.0 
 - Use `LazyMotion` to load animation features on demand
 - Test animations on low-end devices
 </performance>
+
+<!-- ENDSECTION: performance -->
+
+<!-- SECTION: reduced_motion -->
 
 <reduced_motion>
 - Wrap all motion animations in `useReducedMotion()` hook check
@@ -62,6 +88,10 @@ This project uses the `motion` library (formerly framer-motion) version ≥11.0 
 - Respect `prefers-reduced-motion: reduce` media query
 </reduced_motion>
 
+<!-- ENDSECTION: reduced_motion -->
+
+<!-- SECTION: micro_interactions -->
+
 <micro_interactions>
 - **LED border effect**: Gradient border that glows on focus, flashes brighter on keypress (100ms)
 - **Hover lift**: Subtle `y: -1` or `y: -2` lift on interactive elements
@@ -70,12 +100,20 @@ This project uses the `motion` library (formerly framer-motion) version ≥11.0 
 - Keep micro-interactions subtle - don't overwhelm
 </micro_interactions>
 
+<!-- ENDSECTION: micro_interactions -->
+
+<!-- SECTION: animation_hierarchy -->
+
 <animation_hierarchy>
 - **Alive tier** (core navigation, state changes): Spring physics, shared layout, glow on hover
 - **Quiet tier** (secondary elements, tooltips): Opacity fades, ≤150ms transitions, no glow
 - **Static tier** (dense data tables, repeated items): No animation - instant changes
 - Apply hierarchy consistently across the application
 </animation_hierarchy>
+
+<!-- ENDSECTION: animation_hierarchy -->
+
+<!-- SECTION: common_patterns -->
 
 <common_patterns>
 ```tsx
@@ -133,6 +171,10 @@ const transition = shouldReduceMotion ? { duration: 0 } : { type: "spring", stif
 ```
 </common_patterns>
 
+<!-- ENDSECTION: common_patterns -->
+
+<!-- SECTION: anti_patterns -->
+
 <anti_patterns>
 - Do NOT animate layout properties (width, height, margin, padding)
 - Do NOT use spring animations for every element - reserve for primary interactions
@@ -141,3 +183,5 @@ const transition = shouldReduceMotion ? { duration: 0 } : { type: "spring", stif
 - Do NOT animate elements that are off-screen or not visible
 - Do NOT use `framer-motion` package name - use `motion`
 </anti_patterns>
+
+<!-- ENDSECTION: anti_patterns -->

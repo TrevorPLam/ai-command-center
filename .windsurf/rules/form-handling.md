@@ -7,6 +7,8 @@ globs: src/components/**/*Form.tsx, src/components/**/*Settings.tsx
 
 All forms must follow consistent patterns for validation and error handling:
 
+<!-- SECTION: form_library -->
+
 <form_library>
 
 - Use React Hook Form for all form state management
@@ -15,6 +17,10 @@ All forms must follow consistent patterns for validation and error handling:
 - Keep form logic separate from UI components
 
 </form_library>
+
+<!-- ENDSECTION: form_library -->
+
+<!-- SECTION: validation -->
 
 <validation>
 
@@ -26,6 +32,10 @@ All forms must follow consistent patterns for validation and error handling:
 
 </validation>
 
+<!-- ENDSECTION: validation -->
+
+<!-- SECTION: error_handling -->
+
 <error_handling>
 
 - Display clear, actionable error messages
@@ -35,6 +45,10 @@ All forms must follow consistent patterns for validation and error handling:
 - Show loading states during submission
 
 </error_handling>
+
+<!-- ENDSECTION: error_handling -->
+
+<!-- SECTION: form_structure -->
 
 <form_structure>
 
@@ -46,6 +60,10 @@ All forms must follow consistent patterns for validation and error handling:
 
 </form_structure>
 
+<!-- ENDSECTION: form_structure -->
+
+<!-- SECTION: typescript_types -->
+
 <typescript_types>
 
 - Use TypeScript interfaces for form data
@@ -54,3 +72,5 @@ All forms must follow consistent patterns for validation and error handling:
 - Use proper typing for custom form components
 
 </typescript_types>
+
+<!-- ENDSECTION: typescript_types -->

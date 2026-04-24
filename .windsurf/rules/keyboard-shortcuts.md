@@ -6,6 +6,8 @@ trigger: always_on
 
 Display keyboard shortcuts using <kbd> tags:
 
+<!-- SECTION: kbd_usage -->
+
 <kbd_usage>
 
 - Use <kbd> tags for common actions (e.g., ⌘K, Ctrl+K)
@@ -14,6 +16,10 @@ Display keyboard shortcuts using <kbd> tags:
 - Style with Tailwind: px-2 py-1 bg-white/10 rounded text-xs font-mono
 
 </kbd_usage>
+
+<!-- ENDSECTION: kbd_usage -->
+
+<!-- SECTION: common_shortcuts -->
 
 <common_shortcuts>
 
@@ -25,6 +31,10 @@ Display keyboard shortcuts using <kbd> tags:
 
 </common_shortcuts>
 
+<!-- ENDSECTION: common_shortcuts -->
+
+<!-- SECTION: styling -->
+
 <styling>
 
 ```css
@@ -34,3 +44,5 @@ Display keyboard shortcuts using <kbd> tags:
 ```
 
 </styling>
+
+<!-- ENDSECTION: styling -->

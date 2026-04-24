@@ -6,9 +6,15 @@ trigger: always_on
 
 Blank lines and indentation are structural. Preserve them exactly.
 
+<!-- SECTION: Critical Rule -->
+
 ## Critical Rule
 
 **Preserve ALL existing blank lines and indentation.**
+
+<!-- ENDSECTION: Critical Rule -->
+
+<!-- SECTION: Specific Requirements -->
 
 ## Specific Requirements
 
@@ -23,6 +29,10 @@ Blank lines and indentation are structural. Preserve them exactly.
 - Use spaces (not tabs) consistent with the file
 - Common indent sizes: 2 spaces, 4 spaces
 - Nested structures maintain relative indentation
+
+<!-- ENDSECTION: Specific Requirements -->
+
+<!-- SECTION: Examples -->
 
 ## Examples
 
@@ -51,9 +61,15 @@ When inserting after a heading:
 New paragraph here.  (one blank line between heading and paragraph)
 ```
 
+<!-- ENDSECTION: Examples -->
+
+<!-- SECTION: Enforcement Checklist -->
+
 ## Enforcement Checklist
 
 - [ ] Count blank lines before and after edit - they must match
 - [ ] Verify indentation levels unchanged
 - [ ] Confirm no lines were inadvertently joined
 - [ ] Ensure no spurious blank lines added
+
+<!-- ENDSECTION: Enforcement Checklist -->

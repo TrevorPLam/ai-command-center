@@ -6,6 +6,8 @@ trigger: always_on
 
 All components and pages must follow performance best practices:
 
+<!-- SECTION: code_splitting -->
+
 <code_splitting>
 
 - Use React.lazy() for route-based code splitting
@@ -14,6 +16,10 @@ All components and pages must follow performance best practices:
 - Split by route using React Router
 
 </code_splitting>
+
+<!-- ENDSECTION: code_splitting -->
+
+<!-- SECTION: rendering_optimization -->
 
 <rendering_optimization>
 
@@ -26,6 +32,10 @@ All components and pages must follow performance best practices:
 
 </rendering_optimization>
 
+<!-- ENDSECTION: rendering_optimization -->
+
+<!-- SECTION: image_optimization -->
+
 <image_optimization>
 
 - Use standard HTML img tags with loading="lazy" for below-the-fold images
@@ -35,6 +45,10 @@ All components and pages must follow performance best practices:
 - Consider using a lightweight image optimization library if needed
 
 </image_optimization>
+
+<!-- ENDSECTION: image_optimization -->
+
+<!-- SECTION: data_fetching -->
 
 <data_fetching>
 
@@ -46,6 +60,10 @@ All components and pages must follow performance best practices:
 
 </data_fetching>
 
+<!-- ENDSECTION: data_fetching -->
+
+<!-- SECTION: bundle_optimization -->
+
 <bundle_optimization>
 
 - Analyze bundle size regularly
@@ -56,6 +74,10 @@ All components and pages must follow performance best practices:
 
 </bundle_optimization>
 
+<!-- ENDSECTION: bundle_optimization -->
+
+<!-- SECTION: motion_performance -->
+
 <motion_performance>
 
 - Use CSS transforms and opacity for animations
@@ -65,3 +87,5 @@ All components and pages must follow performance best practices:
 - Test animations on low-end devices
 
 </motion_performance>
+
+<!-- ENDSECTION: motion_performance -->

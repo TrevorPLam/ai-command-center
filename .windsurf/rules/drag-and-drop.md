@@ -7,6 +7,8 @@ globs: src/components/projects/**/*.tsx, src/components/calendar/**/*.tsx
 
 This project uses @dnd-kit for drag and drop functionality. Follow these patterns for consistent, accessible drag and drop interactions.
 
+<!-- SECTION: library_usage -->
+
 <library_usage>
 
 - Use @dnd-kit/core for core drag and drop functionality
@@ -16,6 +18,10 @@ This project uses @dnd-kit for drag and drop functionality. Follow these pattern
 - Provide visual feedback during drag operations
 
 </library_usage>
+
+<!-- ENDSECTION: library_usage -->
+
+<!-- SECTION: basic_drag_and_drop -->
 
 <basic_drag_and_drop>
 
@@ -47,6 +53,10 @@ function DroppableZone({ id, children }: { id: string; children: React.ReactNode
 
 </basic_drag_and_drop>
 
+<!-- ENDSECTION: basic_drag_and_drop -->
+
+<!-- SECTION: sortable_lists -->
+
 <sortable_lists>
 
 ```typescript
@@ -71,6 +81,10 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 
 </sortable_lists>
 
+<!-- ENDSECTION: sortable_lists -->
+
+<!-- SECTION: accessibility -->
+
 <accessibility>
 
 - All draggable items must have aria-grabbed attribute
@@ -81,6 +95,10 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 - Use proper button roles for drag handles
 
 </accessibility>
+
+<!-- ENDSECTION: accessibility -->
+
+<!-- SECTION: visual_feedback -->
 
 <visual_feedback>
 
@@ -93,6 +111,10 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 
 </visual_feedback>
 
+<!-- ENDSECTION: visual_feedback -->
+
+<!-- SECTION: kanban_patterns -->
+
 <kanban_patterns>
 
 - Use columns as droppable zones
@@ -103,6 +125,10 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 - Support reordering within columns
 
 </kanban_patterns>
+
+<!-- ENDSECTION: kanban_patterns -->
+
+<!-- SECTION: my_week_patterns -->
 
 <my_week_patterns>
 
@@ -115,6 +141,10 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 
 </my_week_patterns>
 
+<!-- ENDSECTION: my_week_patterns -->
+
+<!-- SECTION: performance -->
+
 <performance>
 
 - Use collision detection algorithms for performance
@@ -126,6 +156,10 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 
 </performance>
 
+<!-- ENDSECTION: performance -->
+
+<!-- SECTION: error_handling -->
+
 <error_handling>
 
 - Handle drag errors gracefully
@@ -135,4 +169,6 @@ function SortableItem({ id, children }: { id: string; children: React.ReactNode 
 - Log drag operations in development
 
 </error_handling>
+
+<!-- ENDSECTION: error_handling -->
 

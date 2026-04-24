@@ -5,6 +5,8 @@
 
 ---
 
+<!-- SECTION: Frontend Context -->
+
 ## 📋 Frontend Context (Module‑Wide Assumptions)
 
 > All tasks in this module implicitly rely on the shared infrastructure defined in `00‑Foundations.md`.
@@ -22,6 +24,10 @@
 - **Offline**: Dexie (centralised `CommandCenterDB`)
 - **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
 
+<!-- ENDSECTION: Frontend Context -->
+
+<!-- SECTION: Research Findings -->
+
 ## 🔬 Research Findings — Contacts Module
 
 | Finding | Source | Action Required |
@@ -36,6 +42,10 @@
 | **Communication tracking** — Users want to see recent emails, calls, and meetings with contacts in one place. | Communication hubs 2025 | CONT-007: Implement unified communication timeline per contact. |
 | **Bulk operations essential** — Import/export, bulk tagging, and batch updates are power-user requirements. | CRM onboarding patterns | CONT-009: Implement comprehensive bulk operations. |
 | **Offline access critical** — Contacts needed in poor connectivity; must sync when online. | PWA best practices | CONT-010: Implement Dexie-based offline storage with sync. |
+
+<!-- ENDSECTION: Research Findings -->
+
+<!-- SECTION: Cross-Cutting Foundations -->
 
 ## 🧱 Cross-Cutting Foundations
 
@@ -54,6 +64,10 @@
 | **CONT-C11** | Accessibility | WCAG 2.2 AA: keyboard navigation, ARIA labels, focus management, reduced-motion support. |
 | **CONT-C12** | Motion | Alive tier for contact entry/exit, relationship animations; Quiet tier for tag toggles and updates. |
 
+<!-- ENDSECTION: Cross-Cutting Foundations -->
+
+<!-- SECTION: Motion Tier Assignment -->
+
 ### 🎯 Motion Tier Assignment
 
 | Component | Tier | Technique |
@@ -68,6 +82,9 @@
 | Enrichment loading | **Quiet** | Pulse animation on contact card during AI processing |
 | Bulk action bar | **Alive** | `y: 100%→0` slide-up with `AnimatePresence` |
 
+<!-- ENDSECTION: Motion Tier Assignment -->
+
+<!-- SECTION: Task CONT-000 -->
 
 ## 🗂️ Task CONT-000: Contacts Domain Model & Mock Data
 **Priority:** 🔴 High
@@ -209,6 +226,10 @@
 - ❌ Synchronous enrichment processing — blocks UI and feels slow
 - ❌ Skipping `cancelQueries` in `onMutate` — creates race conditions when a background refetch overwrites the optimistic state
 
+<!-- ENDSECTION: Task CONT-000 -->
+
+<!-- SECTION: Task CONT-001 -->
+
 ## 🔧 Task CONT-001: Contacts State Management & Privacy Controls
 **Priority:** 🔴 High
 **Est. Effort:** 1.5 hours
@@ -299,6 +320,10 @@
 - ❌ Missing privacy controls — potential data protection violations
 - ❌ Not using atomic selectors — causes re-renders on every contact change
 
+<!-- ENDSECTION: Task CONT-001 -->
+
+<!-- SECTION: Task CONT-002 -->
+
 ## 📱 Task CONT-002: Contacts Page Layout & Quick Capture
 **Priority:** 🔴 High
 **Est. Effort:** 2.5 hours
@@ -380,6 +405,10 @@
 - ❌ Not supporting mobile capture — misses essential mobile use cases
 - ❌ Missing phonetic search — users can't find contacts with misspelled names
 
+<!-- ENDSECTION: Task CONT-002 -->
+
+<!-- SECTION: Task CONT-003 -->
+
 ## 👤 Task CONT-003: Contact Details & Field Management
 **Priority:** 🔴 High
 **Est. Effort:** 3 hours
@@ -456,6 +485,10 @@
 - ❌ Missing validation for phone/email formats — poor data quality
 - ❌ No inline editing — forces modal-heavy interaction
 - ❌ Not handling avatar upload errors — confusing UX
+
+<!-- ENDSECTION: Task CONT-003 -->
+
+<!-- SECTION: Task CONT-004 -->
 
 ## 🌐 Task CONT-004: AI-Powered Contact Enrichment
 **Priority:** 🟠 Medium
@@ -534,6 +567,10 @@
 - ❌ Missing rate limiting — API abuse potential
 - ❌ Not providing user control over enrichment — feels invasive
 
+<!-- ENDSECTION: Task CONT-004 -->
+
+<!-- SECTION: Task CONT-005 -->
+
 ## 🕸️ Task CONT-005: Relationship Mapping & Network Visualization
 **Priority:** 🟠 Medium
 **Est. Effort:** 3 hours
@@ -600,6 +637,10 @@
 - ❌ Missing relationship management — incomplete feature set
 - ❌ Not integrating with other modules — missed opportunities
 
+<!-- ENDSECTION: Task CONT-005 -->
+
+<!-- SECTION: Task CONT-006 -->
+
 ## 🔗 Task CONT-006: Cross-Module Integration & Autocomplete
 **Priority:** 🔴 High
 **Est. Effort:** 2 hours
@@ -665,6 +706,10 @@
 - ❌ Not maintaining references — broken links over time
 - ❌ Missing autocomplete in key modules — poor UX
 - ❌ Not handling contact updates across modules — stale data
+
+<!-- ENDSECTION: Task CONT-006 -->
+
+<!-- SECTION: Task CONT-007 -->
 
 ## 📞 Task CONT-007: Communication Timeline & Interaction Tracking
 **Priority:** 🟠 Medium
@@ -733,6 +778,10 @@
 - ❌ Not providing quick actions — inefficient workflows
 - ❌ Not aggregating from multiple sources — fragmented view
 
+<!-- ENDSECTION: Task CONT-007 -->
+
+<!-- SECTION: Task CONT-008 -->
+
 ## 🏷️ Task CONT-008: Tag System & Smart Lists
 **Priority:** 🟠 Medium
 **Est. Effort:** 2 hours
@@ -798,6 +847,10 @@
 - ❌ Missing smart lists — forces manual filtering
 - ❌ Not supporting tag automation — tedious manual tagging
 - ❌ No tag analytics — missed optimization opportunities
+
+<!-- ENDSECTION: Task CONT-008 -->
+
+<!-- SECTION: Task CONT-009 -->
 
 ## 📥📤 Task CONT-009: Import/Export & Data Portability
 **Priority:** 🟢 Low
@@ -875,6 +928,10 @@
 - ❌ Missing field mapping — poor import experience
 - ❌ No privacy controls on export — potential data leakage
 - ❌ Not handling duplicates — data quality issues
+
+<!-- ENDSECTION: Task CONT-009 -->
+
+<!-- SECTION: Task CONT-010 -->
 
 ## 📱 Task CONT-010: Offline Support & Data Sync
 **Priority:** 🔴 High
@@ -957,6 +1014,9 @@
 - ❌ No visual indication of sync status — users unsure if changes saved
 - ❌ Not handling enrichment queue offline — missed enrichment opportunities
 
+<!-- ENDSECTION: Task CONT-010 -->
+
+<!-- SECTION: Task CONT-011 -->
 
 ## 🗂️ Task CONT-011: Quality Gates, Testing & Accessibility
 **Priority:** 🔴 High
@@ -1016,6 +1076,10 @@
 - ❌ Missing E2E tests — integration failures
 - ❌ Not testing privacy controls — data protection risks
 
+<!-- ENDSECTION: Task CONT-011 -->
+
+<!-- SECTION: Task CONT-012 -->
+
 ## ⚙️ Task CONT-012: Workflow Automation & Follow-Up Reminders
 **Priority:** 🟠 Medium
 **Est. Effort:** 2.5 hours
@@ -1041,6 +1105,7 @@
   interface Workflow {
     id: string
     name: string
+    description: string
     trigger: WorkflowTrigger
     actions: WorkflowAction[]
     enabled: boolean
@@ -1099,6 +1164,9 @@
 - ❌ Not supporting recurring reminders — limits usefulness
 - ❌ No workflow testing capability — difficult to debug
 
+<!-- ENDSECTION: Task CONT-012 -->
+
+<!-- SECTION: Task CONT-013 -->
 
 ## 🗂️ Task CONT-013: Contact Analytics Dashboard
 **Priority:** 🟠 Medium
@@ -1174,6 +1242,10 @@
 - ❌ Missing context for metrics — numbers without meaning
 - ❌ Not providing recommendations — data without action
 
+<!-- ENDSECTION: Task CONT-013 -->
+
+<!-- SECTION: Task CONT-014 -->
+
 ## 🔗 Task CONT-014: Social Media Integration
 **Priority:** 🟢 Low
 **Est. Effort:** 1.5 hours
@@ -1247,6 +1319,10 @@
 - ❌ Not respecting social API rate limits — API abuse
 - ❌ Missing privacy controls for social data — data protection risk
 - ❌ Over-fetching social data — performance and privacy issues
+
+<!-- ENDSECTION: Task CONT-014 -->
+
+<!-- SECTION: Task CONT-015 -->
 
 ## ⭐ Task CONT-015: Contact Scoring & Prioritization
 **Priority:** 🟢 Low
@@ -1328,6 +1404,9 @@
 - ❌ Over-weighting single criteria — skewed results
 - ❌ Not updating scores regularly — stale prioritization
 
+<!-- ENDSECTION: Task CONT-015 -->
+
+<!-- SECTION: Task CONT-016 -->
 
 ## 🗂️ Task CONT-016: Custom Fields & Contact Templates
 **Priority:** 🟠 Medium
@@ -1412,7 +1491,11 @@
 - ❌ Too many custom field types — complexity for users
 - ❌ Missing validation — poor data quality
 - ❌ Not supporting field deletion — data bloat
-- ❌ Templates not flexible enough — limited usefulness
+- ❌ Not providing field type conversions — data loss
+
+<!-- ENDSECTION: Task CONT-016 -->
+
+<!-- SECTION: Task CONT-017 -->
 
 ## 📧 Task CONT-017: Email Sequences & Outreach Automation
 **Priority:** 🟢 Low
@@ -1497,6 +1580,9 @@
 - ❌ Not tracking sequence errors — silent failures
 - ❌ Too complex sequence builder — poor UX
 
+<!-- ENDSECTION: Task CONT-017 -->
+
+<!-- SECTION: Task CONT-018 -->
 
 ## 🗂️ Task CONT-018: Advanced Duplicate Management
 **Priority:** 🟠 Medium
@@ -1573,6 +1659,10 @@
 - ❌ Missing undo functionality — irreversible mistakes
 - ❌ Not allowing custom rules — inflexible detection
 
+<!-- ENDSECTION: Task CONT-018 -->
+
+<!-- SECTION: Task CONT-019 -->
+
 ## 📜 Task CONT-019: Contact History & Audit Trail
 **Priority:** 🟢 Low
 **Est. Effort:** 1.5 hours
@@ -1643,6 +1733,10 @@
 - ❌ Not protecting audit logs — tampering risk
 - ❌ Storing sensitive data in audit — privacy risk
 
+<!-- ENDSECTION: Task CONT-019 -->
+
+<!-- SECTION: Task CONT-020 -->
+
 ## ⭐ Task CONT-020: Contact Favorites & Quick Access
 **Priority:** 🟢 Low
 **Est. Effort:** 1 hour
@@ -1708,6 +1802,10 @@
 - ❌ Too many favorite categories — decision paralysis
 - ❌ Missing bulk operations — tedious for power users
 
+<!-- ENDSECTION: Task CONT-020 -->
+
+<!-- SECTION: Task CONT-021 -->
+
 ## 🔍 Task CONT-021: Advanced Search & Saved Queries
 **Priority:** 🟠 Medium
 **Est. Effort:** 1.5 hours
@@ -1771,6 +1869,10 @@
 - ❌ Not providing search preview — users don't know what they'll get
 - ❌ Missing boolean operators — limited search power
 - ❌ Not caching search results — performance issues
+
+<!-- ENDSECTION: Task CONT-021 -->
+
+<!-- SECTION: Task CONT-022 -->
 
 ## 📁 Task CONT-022: Contact Groups & Collections
 **Priority:** 🟢 Low
@@ -1856,6 +1958,10 @@
 - ❌ Missing group statistics — no visibility
 - ❌ Not supporting group operations — manual work
 
+<!-- ENDSECTION: Task CONT-022 -->
+
+<!-- SECTION: Task CONT-023 -->
+
 ## 📝 Task CONT-023: Rich Text Notes & Attachments
 **Priority:** 🟢 Low
 **Est. Effort:** 1.5 hours
@@ -1927,6 +2033,10 @@
 - ❌ Not handling attachment errors — confusing UX
 - ❌ Missing note history — can't revert changes
 - ❌ Not supporting @mentions — poor collaboration
+
+<!-- ENDSECTION: Task CONT-023 -->
+
+<!-- SECTION: Task CONT-024 -->
 
 ## 👥 Task CONT-024: Contact Sharing & Permissions
 **Priority:** 🟢 Low
@@ -2001,6 +2111,10 @@
 - ❌ Missing sharing audit — compliance risk
 - ❌ No expiration on shares — permanent access
 
+<!-- ENDSECTION: Task CONT-024 -->
+
+<!-- SECTION: Task CONT-025 -->
+
 ## 🌡️ Task CONT-025: Activity Heatmaps & Engagement Patterns
 **Priority:** 🟢 Low
 **Est. Effort:** 1.5 hours
@@ -2058,6 +2172,9 @@
 - ❌ Missing context for patterns — data without meaning
 - ❌ Not responsive on mobile — poor UX
 
+<!-- ENDSECTION: Task CONT-025 -->
+
+<!-- SECTION: Task CONT-026 -->
 
 ## 🗂️ Task CONT-026: Contact Validation & Data Quality
 **Priority:** 🟠 Medium
@@ -2142,6 +2259,10 @@
 - ❌ Missing severity levels — can't prioritize issues
 - ❌ Not providing fix suggestions — manual work required
 
+<!-- ENDSECTION: Task CONT-026 -->
+
+<!-- SECTION: Task CONT-027 -->
+
 ## 💾 Task CONT-027: Backup & Restore
 **Priority:** 🟢 Low
 **Est. Effort:** 1.5 hours
@@ -2221,50 +2342,6 @@
 - ❌ Missing encryption — security risk
 - ❌ No retention policy — storage bloat
 
-## 📊 Dependency Graph
-
-```
-CONT-000 (Domain Model & Mock Data)
-     │
-CONT-001 (State Management & Privacy)
-     │
-CONT-002 (Page Layout & Quick Capture)
-     │
-     ├── CONT-003 (Contact Details & Fields)
-     ├── CONT-004 (AI Enrichment)
-     ├── CONT-005 (Relationship Mapping)
-     ├── CONT-006 (Cross-Module Integration)
-     ├── CONT-007 (Communication Timeline)
-     ├── CONT-008 (Tag System & Smart Lists)
-     ├── CONT-009 (Import/Export)
-     ├── CONT-010 (Offline Support & Sync)
-     ├── CONT-011 (Quality Gates & Testing)
-     ├── CONT-012 (Workflow Automation) ← depends on CONT-007
-     ├── CONT-013 (Analytics Dashboard) ← depends on CONT-005, CONT-007
-     ├── CONT-014 (Social Media) ← depends on CONT-004
-     ├── CONT-015 (Contact Scoring) ← depends on CONT-007
-     ├── CONT-016 (Custom Fields) ← depends on CONT-003
-     ├── CONT-017 (Email Sequences) ← depends on CONT-012
-     ├── CONT-018 (Duplicate Management) ← depends on CONT-009
-     ├── CONT-019 (Audit Trail) ← depends on CONT-003
-     ├── CONT-020 (Favorites) ← depends on CONT-002
-     ├── CONT-021 (Advanced Search) ← depends on CONT-002
-     ├── CONT-022 (Groups) ← depends on CONT-008
-     ├── CONT-023 (Rich Notes) ← depends on CONT-003
-     ├── CONT-024 (Sharing) ← depends on CONT-001
-     ├── CONT-025 (Heatmaps) ← depends on CONT-007, CONT-013
-     ├── CONT-026 (Validation) ← depends on CONT-003
-     └── CONT-027 (Backup) ← depends on CONT-009, CONT-010
-```
-
-## 🏁 Contacts Module Completion Checklist
-
-**Domain & Data:**
-- [ ] Full contact domain model with fields, interactions, and relationships
-- [ ] Mock factories for professional, personal, and vendor networks
-- [ ] MSW handlers for all CRUD operations and enrichment
-- [ ] Query key factory and mutation hooks with optimistic updates
-
 **Core Features:**
 - [ ] Contact detail view with all field types and privacy controls
 - [ ] Quick Add with smart parsing and mobile capture
@@ -2305,3 +2382,5 @@ CONT-002 (Page Layout & Quick Capture)
 - [ ] Performance optimization for large contact lists
 - [ ] Comprehensive testing coverage
 - [ ] Error handling and conflict resolution
+
+<!-- ENDSECTION: Task CONT-027 -->

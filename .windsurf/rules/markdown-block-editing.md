@@ -6,9 +6,15 @@ trigger: always_on
 
 Prevent structural damage by treating multi-line structures as atomic units.
 
+<!-- SECTION: Core Principle -->
+
 ## Core Principle
 
 **NEVER edit single lines inside lists, tables, or code blocks.** Always regenerate entire blocks.
+
+<!-- ENDSECTION: Core Principle -->
+
+<!-- SECTION: Block Types and Requirements -->
 
 ## Block Types and Requirements
 
@@ -46,8 +52,14 @@ When asked to fix a typo in a list item:
 - Third item
 ```
 
+<!-- ENDSECTION: Example Pattern -->
+
+<!-- SECTION: Enforcement -->
+
 ## Enforcement
 
 - Before any Markdown edit, identify the block type
 - If edit affects a multi-line structure, expand scope to entire block
 - Verify output maintains block boundaries
+
+<!-- ENDSECTION: Enforcement -->

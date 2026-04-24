@@ -6,6 +6,8 @@ trigger: always_on
 
 INP is a Core Web Vital metric that measures overall page responsiveness, replacing FID (First Input Delay). It measures the time from user interaction to the next visual update.
 
+<!-- SECTION: inp_thresholds -->
+
 <inp_thresholds>
 
 - **Good**: INP ≤ 200ms
@@ -15,6 +17,10 @@ INP is a Core Web Vital metric that measures overall page responsiveness, replac
 Measure at 75th percentile of page loads, segmented by mobile and desktop.
 
 </inp_thresholds>
+
+<!-- ENDSECTION: inp_thresholds -->
+
+<!-- SECTION: measured_interactions -->
 
 <measured_interactions>
 
@@ -28,6 +34,10 @@ Note: Scrolling and hovering are NOT measured by INP.
 
 </measured_interactions>
 
+<!-- ENDSECTION: measured_interactions -->
+
+<!-- SECTION: interaction_components -->
+
 <interaction_components>
 
 An interaction consists of:
@@ -39,6 +49,10 @@ An interaction consists of:
 INP = longest duration among all three phases.
 
 </interaction_components>
+
+<!-- ENDSECTION: interaction_components -->
+
+<!-- SECTION: optimization_strategies -->
 
 <optimization_strategies>
 
@@ -86,6 +100,10 @@ const handleClick = useCallback(() => {
 - Avoid unnecessary re-renders with proper dependency arrays
 
 </optimization_strategies>
+
+<!-- ENDSECTION: optimization_strategies -->
+
+<!-- SECTION: project_specific_optimizations -->
 
 <project_specific_optimizations>
 
@@ -148,6 +166,10 @@ import { FixedSizeList } from 'react-window';
 
 </project_specific_optimizations>
 
+<!-- ENDSECTION: project_specific_optimizations -->
+
+<!-- SECTION: measurement -->
+
 <measurement>
 
 **Lab Testing**
@@ -169,6 +191,10 @@ getINP((metric) => {
 - Segment by device type and connection speed
 
 </measurement>
+
+<!-- ENDSECTION: measurement -->
+
+<!-- SECTION: common_issues -->
 
 <common_issues>
 
@@ -194,6 +220,10 @@ getINP((metric) => {
 
 </common_issues>
 
+<!-- ENDSECTION: common_issues -->
+
+<!-- SECTION: best_practices -->
+
 <best_practices>
 
 - Aim for INP under 200ms (good threshold)
@@ -205,6 +235,10 @@ getINP((metric) => {
 
 </best_practices>
 
+<!-- ENDSECTION: best_practices -->
+
+<!-- SECTION: anti_patterns -->
+
 <anti_patterns>
 
 - Do NOT block main thread with long-running tasks
@@ -215,3 +249,5 @@ getINP((metric) => {
 - Do NOT measure INP only on high-end devices
 
 </anti_patterns>
+
+<!-- ENDSECTION: anti_patterns -->

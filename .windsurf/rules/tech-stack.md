@@ -6,6 +6,8 @@ trigger: always_on
 
 This project uses a locked tech stack. Do not deviate from these technologies:
 
+<!-- SECTION: core_technologies -->
+
 <core_technologies>
 - React 18 + TypeScript (Vite build tool, NOT Next.js)
 - Tailwind CSS + shadcn/ui for all UI components
@@ -13,6 +15,10 @@ This project uses a locked tech stack. Do not deviate from these technologies:
 - Zustand for UI-only state (sidebar, command palette, active panel)
 - React Router v6 for all routing
 </core_technologies>
+
+<!-- ENDSECTION: core_technologies -->
+
+<!-- SECTION: vite_specific_requirements -->
 
 <vite_specific_requirements>
 - Use Vite for all builds and development server
@@ -26,6 +32,10 @@ This project uses a locked tech stack. Do not deviate from these technologies:
 - All builds must be static SPA bundles
 </vite_specific_requirements>
 
+<!-- ENDSECTION: vite_specific_requirements -->
+
+<!-- SECTION: strict_constraints -->
+
 <strict_constraints>
 - Do NOT use Next.js, Remix, or any SSR framework
 - Do NOT create backend files, server code, database schemas, or .env files
@@ -38,9 +48,14 @@ This project uses a locked tech stack. Do not deviate from these technologies:
 - Configure Vite proxy for API calls during development only
 </strict_constraints>
 
+<!-- ENDSECTION: strict_constraints -->
+
+<!-- SECTION: component_requirements -->
 <component_requirements>
 - Every component must be fully built with realistic mock data rendered
 - No page, subpage, or component should be a stub
 - Use shadcn/ui components as the base for all UI elements
 - All components must use TypeScript with proper typing
+
 </component_requirements>
+<!-- ENDSECTION: component_requirements -->

@@ -6,9 +6,15 @@ trigger: always_on
 
 Prevent code fence collisions between file content and response formatting.
 
+<!-- SECTION: Problem -->
+
 ## Problem
 
 Triple-backtick fences in Markdown files collide with AI response formatting, corrupting edits.
+
+<!-- ENDSECTION: Problem -->
+
+<!-- SECTION: Solutions -->
 
 ## Solutions
 
@@ -55,6 +61,10 @@ When appropriate, use indented code blocks (4 spaces) instead of fenced:
     This is an indented code block
     It avoids fence collisions entirely
 
+<!-- ENDSECTION: Solutions -->
+
+<!-- SECTION: Response Format Decision Tree -->
+
 ## Response Format Decision Tree
 
 1. Does the file contain backtick fences?
@@ -66,8 +76,14 @@ When appropriate, use indented code blocks (4 spaces) instead of fenced:
 3. Is this a complex multi-part edit?
    → Use HTML comment markers as boundaries
 
+<!-- ENDSECTION: Response Format Decision Tree -->
+
+<!-- SECTION: Anti-Patterns -->
+
 ## Anti-Patterns
 
 ❌ Nesting backticks inside backticks
 ❌ Using ```suggestion blocks that collide with file content
 ❌ Forgetting to escape or alternate fence characters
+
+<!-- ENDSECTION: Anti-Patterns -->

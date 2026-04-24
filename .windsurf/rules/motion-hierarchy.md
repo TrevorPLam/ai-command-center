@@ -6,6 +6,8 @@ trigger: always_on
 
 To keep the UI disciplined and premium, categorize every animated element:
 
+<!-- SECTION: motion_levels -->
+
 <motion_levels>
 
 **Alive Level**
@@ -25,10 +27,16 @@ To keep the UI disciplined and premium, categorize every animated element:
 
 </motion_levels>
 
+<!-- ENDSECTION: motion_levels -->
+
+<!-- SECTION: rule_of_thumb -->
+
 <rule_of_thumb>
 
 If an interaction is primary (navigation, sending a message, moving a task), use spring.
 If it is informational (tooltip, hover detail), use quiet fade.
-If it is data-dense (table rows), keep static.
+- If it is data-dense (table rows), keep static.
 
 </rule_of_thumb>
+
+<!-- ENDSECTION: rule_of_thumb -->

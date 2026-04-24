@@ -7,6 +7,8 @@ globs: src/components/calendar/**/*.tsx, src/lib/formatters.ts
 
 This project uses date-fns for date manipulation and formatting. Follow these patterns for consistent date handling across the application.
 
+<!-- SECTION: library_usage -->
+
 <library_usage>
 
 - Use date-fns for all date operations (format, parse, manipulate, compare)
@@ -16,6 +18,10 @@ This project uses date-fns for date manipulation and formatting. Follow these pa
 - Respect user timezone preferences
 
 </library_usage>
+
+<!-- ENDSECTION: library_usage -->
+
+<!-- SECTION: date_formatting -->
 
 <date_formatting>
 
@@ -44,6 +50,10 @@ function formatDateTime(date: string): string {
 ```
 
 </date_formatting>
+
+<!-- ENDSECTION: date_formatting -->
+
+<!-- SECTION: date_manulation -->
 
 <date_manulation>
 
@@ -76,6 +86,10 @@ function getDayRange(date: string): { start: string; end: string } {
 
 </date_manulation>
 
+<!-- ENDSECTION: date_manulation -->
+
+<!-- SECTION: user_settings -->
+
 <user_settings>
 
 - Store user date format preference in settings
@@ -85,6 +99,10 @@ function getDayRange(date: string): { start: string; end: string } {
 - Format dates in components using the user's preferences
 
 </user_settings>
+
+<!-- ENDSECTION: user_settings -->
+
+<!-- SECTION: calendar_components -->
 
 <calendar_components>
 
@@ -97,6 +115,10 @@ function getDayRange(date: string): { start: string; end: string } {
 
 </calendar_components>
 
+<!-- ENDSECTION: calendar_components -->
+
+<!-- SECTION: recurring_events -->
+
 <recurring_events>
 
 - Handle repeat rules: none, daily, weekly, monthly, custom
@@ -106,6 +128,10 @@ function getDayRange(date: string): { start: string; end: string } {
 - Handle edge cases (month boundaries, leap years)
 
 </recurring_events>
+
+<!-- ENDSECTION: recurring_events -->
+
+<!-- SECTION: timezone_handling -->
 
 <timezone_handling>
 
@@ -117,6 +143,10 @@ function getDayRange(date: string): { start: string; end: string } {
 
 </timezone_handling>
 
+<!-- ENDSECTION: timezone_handling -->
+
+<!-- SECTION: accessibility -->
+
 <accessibility>
 
 - Provide alt text for date information
@@ -127,6 +157,10 @@ function getDayRange(date: string): { start: string; end: string } {
 
 </accessibility>
 
+<!-- ENDSECTION: accessibility -->
+
+<!-- SECTION: performance -->
+
 <performance>
 
 - Cache formatted dates where appropriate
@@ -136,4 +170,6 @@ function getDayRange(date: string): { start: string; end: string } {
 - Virtualize long lists of dates
 
 </performance>
+
+<!-- ENDSECTION: performance -->
 

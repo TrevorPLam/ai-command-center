@@ -6,6 +6,8 @@ trigger: always_on
 
 Respect user's motion preferences for accessibility:
 
+<!-- SECTION: hook_implementation -->
+
 <hook_implementation>
 
 Create useMotionPreference() hook that reads prefers-reduced-motion:
@@ -19,6 +21,10 @@ const useMotionPreference = () => {
 
 </hook_implementation>
 
+<!-- ENDSECTION: hook_implementation -->
+
+<!-- SECTION: behavior -->
+
 <behavior>
 
 When reduced motion is requested:
@@ -29,6 +35,10 @@ When reduced motion is requested:
 
 </behavior>
 
+<!-- ENDSECTION: behavior -->
+
+<!-- SECTION: usage -->
+
 <usage>
 
 - Call useMotionPreference() in all animated components
@@ -37,6 +47,10 @@ When reduced motion is requested:
 - Example: `transition={reducedMotion ? { duration: 0 } : { duration: 0.15 }}`
 
 </usage>
+
+<!-- ENDSECTION: usage -->
+
+<!-- SECTION: css_media_query -->
 
 <css_media_query>
 
@@ -51,3 +65,5 @@ Wrap all CSS animations in @media (prefers-reduced-motion: no-preference):
 ```
 
 </css_media_query>
+
+<!-- ENDSECTION: css_media_query -->

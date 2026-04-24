@@ -6,6 +6,8 @@ trigger: always_on
 
 Follow these visual design guidelines for all components:
 
+<!-- SECTION: color_scheme -->
+
 <color_scheme>
 - Base backgrounds: #050507 (slightly blue-shifted near-black) and #0a0a0a
 - Card surfaces: Deep charcoal (#111111, #1a1a1a)
@@ -13,12 +15,20 @@ Follow these visual design guidelines for all components:
 - Accent uses: CTAs, focus rings, active nav, status pulses
 </color_scheme>
 
+<!-- ENDSECTION: color_scheme -->
+
+<!-- SECTION: typography -->
+
 <typography>
 - Font: Inter or system-ui
 - Base size: 14px
 - Line height: Generous for readability
 - Headings: Tight letter-spacing
 </typography>
+
+<!-- ENDSECTION: typography -->
+
+<!-- SECTION: glass_panels -->
 
 <glass_panels>
 - Use backdrop-blur-md on selected shell surfaces (main frame, drawer surfaces, command palette, hero cards)
@@ -28,6 +38,10 @@ Follow these visual design guidelines for all components:
 - Rounded corners: rounded-xl
 - Ordinary content cards use quieter dark surface (bg-[#111111])
 </glass_panels>
+
+<!-- ENDSECTION: glass_panels -->
+
+<!-- SECTION: motion -->
 
 <motion>
 - Transition duration: 150ms
@@ -39,9 +53,15 @@ Follow these visual design guidelines for all components:
 - See motion-hierarchy.md for Alive/Quiet/Static categorization
 </motion>
 
+<!-- ENDSECTION: motion -->
+
+<!-- SECTION: layout_structure -->
+
 <layout_structure>
 - Fixed left sidebar: 64px collapsed / 240px expanded
 - Scrollable main content area
 - Collapsible right utility panel: 320px
 - Persistent bottom status bar: 32px
 </layout_structure>
+
+<!-- ENDSECTION: layout_structure -->

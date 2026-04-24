@@ -6,12 +6,18 @@ trigger: always_on
 
 This project uses Vite as the build tool. Follow these configuration patterns.
 
+<!-- SECTION: project_setup -->
+
 <project_setup>
 - Use Vite for React 18 + TypeScript projects
 - Configure path aliases in vite.config.ts for clean imports
 - Use @/ alias for src directory imports
 - Configure environment variables with VITE_ prefix
 </project_setup>
+
+<!-- ENDSECTION: project_setup -->
+
+<!-- SECTION: configuration_structure -->
 
 <configuration_structure>
 
@@ -54,6 +60,10 @@ export default defineConfig({
 
 </configuration_structure>
 
+<!-- ENDSECTION: configuration_structure -->
+
+<!-- SECTION: tsconfig_paths -->
+
 <tsconfig_paths>
 
 ```json
@@ -69,6 +79,10 @@ export default defineConfig({
 
 </tsconfig_paths>
 
+<!-- ENDSECTION: tsconfig_paths -->
+
+<!-- SECTION: environment_variables -->
+
 <environment_variables>
 - Use VITE_ prefix for all environment variables
 - Access via import.meta.env.VITE_VARIABLE_NAME
@@ -77,12 +91,20 @@ export default defineConfig({
 - Use .env.example as template
 </environment_variables>
 
+<!-- ENDSECTION: environment_variables -->
+
+<!-- SECTION: proxy_configuration -->
+
 <proxy_configuration>
 - Configure proxy for API calls to http://localhost:8000
 - Use /api prefix for all API routes
 - Enable changeOrigin for proper CORS handling
 - Proxy only in development mode
 </proxy_configuration>
+
+<!-- ENDSECTION: proxy_configuration -->
+
+<!-- SECTION: build_optimization -->
 
 <build_optimization>
 - Enable source maps for debugging (hidden in production)
@@ -97,6 +119,10 @@ export default defineConfig({
 - Enable reportCompressedSize for accurate bundle analysis
 </build_optimization>
 
+<!-- ENDSECTION: build_optimization -->
+
+<!-- SECTION: dev_server -->
+
 <dev_server>
 - Run on port 3000 by default
 - Enable HMR (Hot Module Replacement)
@@ -104,10 +130,19 @@ export default defineConfig({
 - Use proxy for API calls during development
 </dev_server>
 
+<!-- ENDSECTION: dev_server -->
+
+<!-- SECTION: strict_constraints -->
+
 <strict_constraints>
+// {{ start: strict_constraints }}
 - Do NOT use Next.js, Remix, or any SSR framework
 - Do NOT configure server-side rendering
 - Do NOT use Vercel-specific build configurations
 - All builds must be static SPA bundles
 - No server-side environment variables at runtime
+// {{ end: strict_constraints }}
+
 </strict_constraints>
+
+<!-- ENDSECTION: strict_constraints -->

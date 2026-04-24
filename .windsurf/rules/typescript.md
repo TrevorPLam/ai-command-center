@@ -7,6 +7,8 @@ globs: src/**/*.ts, src/**/*.tsx
 
 This project uses TypeScript 5.8+ with strict mode enabled. Follow these patterns for type safety and developer experience.
 
+<!-- SECTION: configuration -->
+
 <configuration>
 
 - Enable strict mode in tsconfig.json
@@ -19,6 +21,10 @@ This project uses TypeScript 5.8+ with strict mode enabled. Follow these pattern
 - Target ES2020+ for modern JavaScript features
 
 </configuration>
+
+<!-- ENDSECTION: configuration -->
+
+<!-- SECTION: type_definitions -->
 
 <type_definitions>
 
@@ -47,6 +53,10 @@ enum Direction {
 
 </type_definitions>
 
+<!-- ENDSECTION: type_definitions -->
+
+<!-- SECTION: generics -->
+
 <generics>
 
 ```typescript
@@ -74,6 +84,10 @@ function createArray<T = string>(length: number, defaultValue?: T): T[] {
 
 </generics>
 
+<!-- ENDSECTION: generics -->
+
+<!-- SECTION: utility_types -->
+
 <utility_types>
 
 ```typescript
@@ -97,6 +111,10 @@ type AwaitedType = Awaited<AsyncReturnType>; // string
 ```
 
 </utility_types>
+
+<!-- ENDSECTION: utility_types -->
+
+<!-- SECTION: component_typing -->
 
 <component_typing>
 
@@ -129,6 +147,10 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 ```
 
 </component_typing>
+
+<!-- ENDSECTION: component_typing -->
+
+<!-- SECTION: hook_typing -->
 
 <hook_typing>
 
@@ -168,6 +190,10 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
 
 </hook_typing>
 
+<!-- ENDSECTION: hook_typing -->
+
+<!-- SECTION: api_typing -->
+
 <api_typing>
 
 ```typescript
@@ -200,6 +226,10 @@ async function createProject(data: CreateProjectRequest): Promise<ProjectRespons
 ```
 
 </api_typing>
+
+<!-- ENDSECTION: api_typing -->
+
+<!-- SECTION: type_guards -->
 
 <type_guards>
 
@@ -243,6 +273,10 @@ function handleResponse(response: ApiResponse) {
 
 </type_guards>
 
+<!-- ENDSECTION: type_guards -->
+
+<!-- SECTION: type_inference -->
+
 <type_inference>
 
 ```typescript
@@ -266,6 +300,10 @@ type Config = typeof config;
 
 </type_inference>
 
+<!-- ENDSECTION: type_inference -->
+
+<!-- SECTION: strict_mode_compliance -->
+
 <strict_mode_compliance>
 
 - Avoid any type (use unknown instead)
@@ -278,6 +316,10 @@ type Config = typeof config;
 - Use strict null checks
 
 </strict_mode_compliance>
+
+<!-- ENDSECTION: strict_mode_compliance -->
+
+<!-- SECTION: error_handling -->
 
 <error_handling>
 
@@ -309,6 +351,10 @@ class ErrorBoundary extends React.Component<
 
 </error_handling>
 
+<!-- ENDSECTION: error_handling -->
+
+<!-- SECTION: performance -->
+
 <performance>
 
 - Use type annotations sparingly (let TypeScript infer)
@@ -319,4 +365,6 @@ class ErrorBoundary extends React.Component<
 - Use type imports for performance (import type { X } from 'y')
 
 </performance>
+
+<!-- ENDSECTION: performance -->
 

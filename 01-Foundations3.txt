@@ -1,0 +1,779 @@
+```text
+# 01-Foundations — Personal AI Command Center Frontend
+# Format: Hybrid (L1 registry + L3 detail blocks)
+# Generated: 2026-04-24 | Updated: 2026-04-24 (100% coverage)
+# Ready for cross-model deployment
+
+════════════════════════════════════════════════════════════
+## 📦 CHECKPOINT BLOCK (paste at session start)
+════════════════════════════════════════════════════════════
+version: "1.0"
+module: "01-Foundations"
+last_updated: "2026-04-24"
+completed_tasks: []
+in_progress: null
+next_task: "FND-000"
+intent: "Implement all foundation tasks following the registry below. Global contracts ($g, $c, $lc) are defined in the Global Contract block. Tasks use two‑tier subtasks: pipe (mechanical) and behavioral (code‑preserving)."
+════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+## 🌐 GLOBAL CONTRACT BLOCK (L0 + L2)
+════════════════════════════════════════════════════════════
+contracts:
+  $g:  # Global (shared across all modules)
+    "1": "BackgroundColor #050507 via --background CSS var"
+    "2": "Motion v12 — import { motion } from 'motion/react'"
+    "3": "Virtualization — @tanstack/react-virtual with useVirtualizer"
+    "4": "Design tokens — CSS custom props + @theme inline, oklch()"
+    "5": "Glass scope .noise-overlay only for shells, drawers, command palette"
+    "6": "useReducedMotion() guard before every animation"
+    "7": "Page transitions — AnimatePresence + motion.div keyed by location.pathname"
+    "8": "Focus restoration — store trigger ref in uiSlice; restore on close"
+    "9": "Keyboard hints — <kbd> tags"
+    "10": "WCAG 2.2 AA — keyboard nav, focus indicators, target size"
+    "11": "Test pattern — userEvent.setup() fresh per test; screen over container"
+    "12": "React Router imports — from 'react-router', never 'react-router-dom'"
+    "13": "Motion tokens — shared from src/lib/motion.ts"
+    "14": "dnd-kit sensors — shared useDndSensors() hook"
+    "15": "HTML sanitization — all untrusted HTML via SanitizedHTML component"
+    "16": "Security — no dangerouslySetInnerHTML outside SanitizedHTML"
+    "17": "Offline-first — centralized IndexedDB via Dexie CommandCenterDB (src/lib/db.ts)"
+    "18": "Storage quota — use useStorageQuota hook; warn at ≥80%"
+
+  $c:  # Module-specific (none for foundations)
+    "DONE": "Foundations module uses only $g contracts — no module-specific yet."
+
+  $lc:  # Local task-scoped contracts (shared across all foundations tasks)
+    focus: "Focus trap: Tab cycles within modal/drawer; use sentinel divs; restore on close ($g8)"
+    textarea: "TextareaAutosize: cacheMeasurements=true; submit Cmd+Enter; Enter newline; debounce 500ms"
+    debounce: "Auto-save: onBlur → 500ms debounce → optimistic mutation; cancel in cleanup"
+    tabstate: "Tab state: component useState ONLY; never URL params for overlay components"
+    optkey: "Optimistic key: clientMsgId = crypto.randomUUID() once; used as React key permanently"
+    dndreorder: "dnd-kit reorder: useSortable + useDndSensors() ($g14); onDragEnd: arrayMove → setQueryData with NEW array; DragOverlay clone with glow; original at opacity 0.4"
+    offline: "All persistent local data via CommandCenterDB; module-prefixed stores; use migrations for schema changes"
+
+  motion:  # Foundations motion tier
+    AppShell: "Alive — page transitions, spring physics, layoutId"
+    Sidebar: "Alive — spring width animation, layoutId active pill, accordion height"
+    StatusBar: "Quiet — pulse animation (disabled reduced motion), tooltips"
+    RightPanel: "Alive — spring slide-in/out"
+    CmdPalette: "Alive — spring scale-up, staggered children, backdrop fade"
+    VoiceShell: "Alive — spring scale-up, waveform animation"
+
+  anti-patterns:  # Global severity
+    S: "Security-critical — NEVER compress; keep full rationale"
+    P: "Performance bug — keep verbatim"
+    B: "Implementation bug — keep verbatim"
+    ST: "Style preference — safe to compress to one line"
+
+════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+## L1 — MODULE REGISTRY (all 15 foundation tasks, updated)
+════════════════════════════════════════════════════════════
+id       |stat|pri|eff |depends               |files (selected)                                          |$cut
+FND-000  |P   |H  |2.0 |—                     |index.css, lib/tokens.ts, lib/motion.ts                  |$g1,$g4,$g5,$g13
+FND-001  |P   |H  |0.5 |—                     |package.json,vite.config.ts,tsconfig.json,index.html    |$g2,$g12
+FND-002  |P   |H  |1.0 |FND-001               |package.json,components.json,lib/utils.ts,lib/db.ts,components/shared/SanitizedHTML.tsx,hooks/useStorageQuota.ts|$g2,$g12,$g15,$g16,$g17,$g18
+FND-003  |P   |H  |1.0 |FND-001               |eslint.config.js,.prettierrc,.husky/,lint-staged.config |$g11
+FND-004  |P   |H  |1.5 |FND-001,FND-002       |vitest.config.ts,test/setup.ts,mocks/server.ts          |$g11
+FND-005  |P   |H  |1.5 |FND-002               |stores/index.ts,slices/uiSlice.ts,slices/projectSlice.ts|$g8
+FND-006  |P   |H  |1.0 |FND-002               |lib/queryClient.ts,queries/,lib/useOptimisticMutation.ts|—
+FND-007  |P   |H  |1.0 |FND-002               |router/index.tsx,router/routes.ts,pages/                |$g12
+FND-008  |P   |H  |0.5 |FND-005,FND-006,FND-007|main.tsx,layouts/AppShell.tsx                         |$g7,$g8
+FND-009  |P   |H  |2.0 |FND-005,FND-008       |components/layout/Sidebar.tsx,NavItem.tsx               |$g6,$g9,$g10
+FND-010  |P   |H  |1.0 |FND-008               |components/layout/StatusBar.tsx                         |$g6,$g10,$g18
+FND-011  |P   |H  |1.0 |FND-005,FND-008       |components/layout/RightPanel.tsx                        |$g6,$g8
+FND-012  |P   |H  |2.0 |FND-005,FND-008       |components/layout/CommandPalette.tsx,hooks/useIntentHandler|$g6,$g8,$g9,$lc:focus
+FND-013  |P   |H  |1.5 |FND-009,FND-010,FND-011,FND-012|layouts/AppShell.tsx,hooks/useFocusRestoration    |$g8,$g9,$g10
+FND-014  |P   |H  |2.5 |FND-005,FND-008,FND-012|components/layout/VoiceShell.tsx,hooks/useWebSpeech   |$g6,$g9,$g10
+
+════════════════════════════════════════════════════════════
+
+## L3 — TASK DETAIL BLOCKS
+════════════════════════════════════════════════════════════
+
+### sec-FND-000 — Design tokens & CSS-first theme system
+effort|pri|deps|$cut
+2.0|H|—|$g1,$g4,$g5,$g13
+
+sub|type|description
+FND-000A|pipe|Define @theme inline block with oklch() color tokens (--background, --foreground, etc.)
+FND-000B|pipe|Dark mode variant: @custom-variant dark (&:where(.dark, .dark *))
+FND-000C|pipe|Semantic tokens: --background oklch(9.8% 0.006 264) + others; --foreground, --muted...
+FND-000D|pipe|@layer base body background-color and color-scheme
+FND-000E|pipe|.noise-overlay utility in @layer utilities (background-image: url("data:image/svg+xml,..."))
+FND-000F|pipe|@property declarations for animated conic-gradient borders (--conic-angle, --conic-color)
+FND-000G|pipe|ThemeProvider (next-themes) wrapping app; enableSystem, attribute="class"
+FND-000H|pipe|ThemeToggle component (icon button cycling light/dark/system)
+FND-000I|pipe|src/lib/tokens.ts: export typed constant objects (colors, spacing, radii) derived from CSS vars
+FND-000J|pipe|src/lib/motion.ts: export shared animation tokens (spring configs, durations) using $g6
+
+dod|criteria
+D1|No tailwind.config.ts file
+D2|@theme inline with all tokens in oklch()
+D3|@custom-variant dark present
+D4|Dark mode toggles via class switching, immediate reflection
+D5|body background #050507
+D6|.noise-overlay class available
+D7|tokens.ts + motion.ts export typed constants
+D8|All tests pass
+D9|Animated conic-gradient borders work (e.g., on AmbientStatusBanner)
+
+anti|description
+A1|tailwind.config.ts usage
+A2|Hex or HSL color values
+A3|@apply for component styles
+A4|Dark mode via media query alone
+A5|Missing motion token usage in components
+
+────────────────────────────────────────────────────────
+
+### sec-FND-001 — Vite + TS scaffold
+effort|pri|deps|$cut
+0.5|H|—|$g2,$g12
+
+sub|type|description
+FND-001A|pipe|pnpm create vite@latest . --template react-ts
+FND-001B|pipe|vite.config.ts: @tailwindcss/vite plugin, resolve.alias {'@': '/src'}, build.target esnext
+FND-001C|pipe|tsconfig.json: strict, paths {"@/*": ["src/*"]}, moduleResolution bundler, skipLibCheck
+FND-001D|pipe|pnpm add -D @types/node
+FND-001E|pipe|Create initial src/index.css (empty, will be populated by FND-000)
+FND-001F|pipe|Clean boilerplate: remove App.css, logo, unused imports, simplify App.tsx to just <div>Hello</div>
+FND-001G|behavioral|[TEST] pnpm dev starts on :5173, tsc --noEmit passes with 0 errors, @/ alias resolves
+
+dod|criteria
+D1|dev server on localhost:5173
+D2|tsc --noEmit: 0 errors
+D3|@/ paths resolve correctly
+D4|No tailwind.config.ts
+D5|All tests pass
+
+anti|description
+A1|"moduleResolution": "node"
+A2|Path alias mismatch between Vite and tsconfig
+A3|Forgetting to add @types/node
+
+────────────────────────────────────────────────────────
+
+### sec-FND-002 — Core dependencies installation & shared infrastructure
+effort|pri|deps|$cut
+1.0|H|FND-001|$g2,$g12,$g15,$g16,$g17,$g18
+
+sub|type|description
+FND-002A|pipe|pnpm add tailwindcss@next @tailwindcss/vite@next
+FND-002B|pipe|pnpm add @radix-ui/react-* (shadcn runtime deps) + npx shadcn-ui@latest init
+FND-002C|pipe|pnpm add motion@12
+FND-002D|pipe|pnpm add zustand @tanstack/react-query zod
+FND-002E|pipe|pnpm add react-router@7
+FND-002F|pipe|pnpm add @tanstack/react-virtual
+FND-002G|pipe|pnpm add next-themes
+FND-002H|pipe|pnpm add -D tw-animate-css @types/node
+FND-002I|pipe|Create src/lib/utils.ts with cn() utility (clsx + tailwind-merge)
+FND-002J|pipe|Create components.json (shadcn config: style new-york, css src/index.css, alias @/components)
+FND-002K|behavioral|[TEST] Add Button component via shadcn, render in App.tsx, see styled button
+FND-002L|pipe|pnpm add @tanstack/react-query-devtools
+FND-002M|pipe|pnpm add dexie dompurify html-react-parser
+FND-002N|pipe|Create src/lib/db.ts with centralized CommandCenterDB class, version 1 schema, migration rules (code block below)
+FND-002O|pipe|Create src/components/shared/SanitizedHTML.tsx with DOMPurify sanitization, external link hardening (code block below)
+FND-002P|pipe|Create src/hooks/useStorageQuota.ts implementing quota estimation, polling, and formatting (code block below)
+
+**FND-002N Code: src/lib/db.ts**
+```ts
+import { Dexie } from 'dexie';
+
+export class CommandCenterDB extends Dexie {
+  news_articles: Dexie.Table<NewsArticle, string>;
+  news_bookmarks: Dexie.Table<Bookmark, string>;
+  news_readStatus: Dexie.Table<ReadStatus, string>;
+  budget_transactions: Dexie.Table<Transaction, string>;
+  budget_recurring: Dexie.Table<RecurringItem, string>;
+  budget_goals: Dexie.Table<Goal, string>;
+  email_messages: Dexie.Table<EmailMessage, string>;
+  email_queue: Dexie.Table<QueuedAction, string>;
+  email_attachments: Dexie.Table<Attachment, string>;
+  contacts_records: Dexie.Table<Contact, string>;
+  contacts_interactions: Dexie.Table<ContactInteraction, string>;
+  lists_items: Dexie.Table<ListItem, string>;
+  lists_templates: Dexie.Table<ListTemplate, string>;
+  docs_metadata: Dexie.Table<DocumentMetadata, string>;
+  docs_queue: Dexie.Table<QueuedDocumentAction, string>;
+  docs_versions: Dexie.Table<DocumentVersion, string>;
+
+  constructor() {
+    super('CommandCenterDB');
+    this.version(1).stores({
+      'news_articles': 'id, sourceId, publishedAt, topics, url, [sourceId+publishedAt]',
+      'news_bookmarks': 'id, articleId, createdAt',
+      'news_readStatus': 'id, articleId, readAt',
+      'budget_transactions': 'id, accountId, categoryId, date, type, amount',
+      'budget_recurring': 'id, accountId, categoryId, nextDate, isActive',
+      'budget_goals': 'id, targetAmount, currentAmount, deadline, status',
+      'email_messages': 'id, accountId, threadId, subject, date, isRead',
+      'email_queue': 'id, type, payload, createdAt, retryCount',
+      'email_attachments': 'id, messageId, filename, size, mimeType',
+      'contacts_records': 'id, email, phone, name, createdAt',
+      'contacts_interactions': 'id, contactId, type, timestamp',
+      'lists_items': 'id, listId, parentId, position, contentType',
+      'lists_templates': 'id, name, type, isBuiltIn',
+      'docs_metadata': 'id, parentId, name, mimeType, size, createdAt',
+      'docs_queue': 'id, type, documentId, payload, createdAt',
+      'docs_versions': 'id, documentId, version, createdAt, checksum'
+    });
+  }
+}
+
+export const db = new CommandCenterDB();
+```
+
+**Migration Strategy (inline comment):**
+When adding new stores or modifying schemas, increment DB version and re‑declare **all** previous stores. Use `.upgrade()` for data transformations. Always test migrations on fresh and existing databases.
+
+**FND-002O Code: src/components/shared/SanitizedHTML.tsx**
+```tsx
+import DOMPurify from 'dompurify';
+import parse from 'html-react-parser';
+
+interface SanitizedHTMLProps {
+  html: string;
+  allowlist?: DOMPurify.Config['ALLOWED_TAGS'];
+  className?: string;
+}
+
+const DEFAULT_ALLOWLIST = {
+  ALLOWED_TAGS: [
+    'p','h1','h2','h3','h4','h5','h6','ul','ol','li','strong','em','a',
+    'img','blockquote','pre','code','br','hr','table','thead','tbody','tr','th','td'
+  ],
+  ALLOWED_ATTR: ['href','src','alt','title','target','rel','class'],
+};
+
+export function SanitizedHTML({ html, allowlist = DEFAULT_ALLOWLIST, className }: SanitizedHTMLProps) {
+  const cleanHtml = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: allowlist.ALLOWED_TAGS,
+    ALLOWED_ATTR: allowlist.ALLOWED_ATTR,
+    FORBID_TAGS: ['script','iframe','object','embed','form','input'],
+    FORBID_ATTR: ['onclick','onload','onerror','onmouseover'],
+  });
+
+  const processedHtml = cleanHtml.replace(
+    /<a\s+href=(["'])(https?:\/\/[^"']+)\1/gi,
+    '<a href="$1$2$1" target="_blank" rel="noopener noreferrer"'
+  );
+
+  return <div className={className}>{parse(processedHtml)}</div>;
+}
+```
+
+**FND-002P Code: src/hooks/useStorageQuota.ts**
+```ts
+import { useEffect, useState } from 'react';
+
+export function useStorageQuota() {
+  const [quota, setQuota] = useState<{ usage: number; quota: number; percentage: number; isNearLimit: boolean } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const estimate = async () => {
+      try {
+        const est = await navigator.storage.estimate();
+        const usage = est.usage || 0, quotaLimit = est.quota || 0;
+        const percentage = quotaLimit > 0 ? (usage / quotaLimit) * 100 : 0;
+        setQuota({ usage, quota: quotaLimit, percentage, isNearLimit: percentage >= 80 });
+      } catch (error) {
+        console.warn('Storage estimate failed:', error);
+      } finally { setIsLoading(false); }
+    };
+    estimate();
+    const interval = setInterval(estimate, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatBytes = (bytes: number) => {
+    const units = ['B','KB','MB','GB'];
+    let size = bytes, idx = 0;
+    while (size >= 1024 && idx < units.length-1) { size /= 1024; idx++; }
+    return `${size.toFixed(1)} ${units[idx]}`;
+  };
+
+  return {
+    quota, isLoading, formatBytes,
+    shouldShowWarning: quota?.isNearLimit ?? false,
+    warningMessage: quota
+      ? `Storage usage at ${quota.percentage.toFixed(1)}% (${formatBytes(quota.usage)} / ${formatBytes(quota.quota)})`
+      : undefined
+  };
+}
+```
+
+dod|criteria
+D1|All packages installed, no peer dependency warnings
+D2|`import { motion } from "motion/react"` compiles
+D3|`import { Link } from "react-router"` compiles
+D4|shadcn Button component renders correctly
+D5|`pnpm build` succeeds
+D6|`CommandCenterDB` instance exports from `@/lib/db`
+D7|`SanitizedHTML` component renders safe HTML and blocks XSS vectors
+D8|`useStorageQuota` hook returns quota data and warning state
+
+anti|description
+A1|Installing framer-motion instead of motion
+A2|Installing react-router-dom instead of react-router
+A3|Zod schemas defined inside React components (performance)
+A4|Missing tailwind-merge in cn()
+A5|Using `dangerouslySetInnerHTML` outside of SanitizedHTML
+A6|Forgetting to add `dompurify` and `html-react-parser` as explicit dependencies
+
+────────────────────────────────────────────────────────
+
+### sec-FND-003 — Code quality toolchain
+effort|pri|deps|$cut
+1.0|H|FND-001|$g11
+
+sub|type|description
+FND-003A|pipe|pnpm add -D eslint@9 @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-config-prettier prettier
+FND-003B|pipe|eslint.config.js: import defineConfig, tseslint.config; extend recommended, prettier last
+FND-003C|pipe|.prettierrc: semi true, singleQuote true, tabWidth 2, trailingComma all
+FND-003D|pipe|.prettierignore: node_modules, dist, pnpm-lock, coverage
+FND-003E|pipe|Add scripts: "lint": "eslint .", "format": "prettier --write .", "format:check": "prettier --check ."
+FND-003F|pipe|npx husky init; echo "pnpm lint-staged" > .husky/pre-commit
+FND-003G|pipe|Install commitlint/cli + conventional config; add commit-msg hook
+FND-003H|behavioral|[TEST] pnpm lint passes with 0 warnings, pnpm format:check passes, commit with wrong format blocked
+
+dod|criteria
+D1|pnpm lint: 0 warnings
+D2|Invalid code blocked by Husky
+D3|Conventional commits enforced
+D4|Type-aware linting active (parserOptions.project)
+D5|All tests pass
+
+anti|description
+A1|Legacy .eslintrc format
+A2|Prettier plugin not last in ESLint config
+A3|Missing commitlint config
+
+────────────────────────────────────────────────────────
+
+### sec-FND-004 — Testing infrastructure
+effort|pri|deps|$cut
+1.5|H|FND-001,FND-002|$g11
+
+sub|type|description
+FND-004A|pipe|pnpm add -D vitest @vitest/ui @vitejs/plugin-react @testing-library/react @testing-library/jest-dom msw happy-dom
+FND-004B|pipe|vitest.config.ts: environment 'happy-dom', setupFiles ['./src/test/setup.ts'], coverage thresholds 80%
+FND-004C|pipe|test/setup.ts: import '@testing-library/jest-dom'; mock matchMedia, ResizeObserver (functional observe/unobserve), IntersectionObserver
+FND-004D|pipe|src/mocks/server.ts: setupServer(...handlers), export with onUnhandledRequest: 'error'
+FND-004E|pipe|Configure Vitest Browser Mode with Playwright (optional for component tests)
+FND-004F|pipe|Add scripts: "test": "vitest", "test:coverage": "vitest run --coverage"
+FND-004G|behavioral|[TEST] Write test for cn() utility, confirm vitest runs and passes
+FND-004H|pipe|Create test/motion-helpers.ts: mock useReducedMotion, wrap with MotionProvider
+FND-004I|behavioral|Verify pnpm test passes with at least one component test
+FND-004J|pipe|Add coverage/, .nyc_output/ to .gitignore
+
+dod|criteria
+D1|pnpm test and pnpm test:coverage pass
+D2|MSW blocks unhandled requests
+D3|Browser Mode config exists
+D4|motion-helpers.ts available for animation tests
+D5|All tests pass
+
+anti|description
+A1|Omitting onUnhandledRequest: 'error' in MSW
+A2|Testing animations without fake timers
+A3|Not mocking global APIs (matchMedia, ResizeObserver, IntersectionObserver) → test failures
+
+────────────────────────────────────────────────────────
+
+### sec-FND-005 — Zustand store architecture
+effort|pri|deps|$cut
+1.5|H|FND-002|$g8
+
+sub|type|description
+FND-005A|pipe|Define AppStateCreator type: <T>() => (set, get, api) => Slice<T> for cross‑slice access
+FND-005B|behavioral|Implement uiSlice: sidebarOpen, rightPanel, theme, focusTriggerRef (stored as HTMLElement|null)
+```ts
+const uiSlice: StateCreator<UIState> = (set) => ({
+  sidebarOpen: true,
+  rightPanel: { isOpen: false, content: null },
+  theme: 'dark',
+  focusTriggerRef: null,
+  setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  setRightPanel: (isOpen, content) => set({ rightPanel: { isOpen, content } }),
+  setFocusTrigger: (ref) => set({ focusTriggerRef: ref }),
+  clearFocusTrigger: () => set({ focusTriggerRef: null }),
+})
+```
+FND-005C|pipe|Implement projectSlice: activeView, filters, selectedProjectId, etc.
+FND-005D|pipe|Compose slices in stores/index.ts using only devtools and persist at root; no middleware on individual slices
+FND-005E|pipe|Export atomic selector hooks: useSidebarOpen, useActiveView, etc. (never export entire store)
+FND-005F|behavioral|Implement imperative focus registry: setFocusTrigger, clearFocusTrigger (store ref, not React ref)
+```ts
+// uiSlice actions
+setFocusTrigger: (element: HTMLElement | null) => set({ focusTriggerRef: element }),
+clearFocusTrigger: () => set({ focusTriggerRef: null }),
+```
+FND-005G|behavioral|[TEST] Unit tests for each slice action, verify selectors prevent re-renders
+
+dod|criteria
+D1|Middleware applied only at combined root store
+D2|persist uses partialize to limit scope (sidebarOpen, activeView, sort)
+D3|Atomic selectors returned by custom hooks, not store direct use
+D4|No React refs stored in Zustand
+D5|All tests pass
+
+anti|description
+A1|Storing server state in Zustand (use TanStack Query)
+A2|Naming slice creator functions with "use" prefix
+A3|Storing React refs (store HTMLElement|null only)
+
+────────────────────────────────────────────────────────
+
+### sec-FND-006 — TanStack Query v5 configuration
+effort|pri|deps|$cut
+1.0|H|FND-002|—
+
+sub|type|description
+FND-006A|pipe|Create src/lib/queryClient.ts with global defaults: staleTime 5 min, gcTime 30 min, retry 1
+FND-006B|pipe|Create src/queries/ directory with domain files (dashboard.ts, chat.ts, projects.ts, etc.)
+FND-006C|pipe|Define queryOptions per domain: e.g., agentsQueryOptions(), messagesQueryOptions(threadId)
+FND-006D|pipe|Create custom hooks consuming those options: useAgents(), useMessages(threadId)
+FND-006E|pipe|For static data (topics, templates) set staleTime: Infinity
+FND-006F|pipe|Lazy‑load React Query DevTools: const DevTools = lazy(() => import('...'))
+FND-006G|behavioral|[TEST] Query hook tests using MSW handlers and createWrapper
+FND-006H|behavioral|Implement useOptimisticMutation wrapper (see code below)
+
+```ts
+// src/lib/useOptimisticMutation.ts
+import { useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
+
+export function useOptimisticMutation<TData, TError, TVariables>({
+  mutationFn,
+  queryKey,
+  optimisticUpdate,
+  onSettled,
+}: {
+  mutationFn: (vars: TVariables) => Promise<TData>;
+  queryKey: QueryKey;
+  optimisticUpdate: (old: TData | undefined, vars: TVariables) => TData;
+  onSettled?: () => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn,
+    onMutate: async (vars) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<TData>(queryKey);
+      queryClient.setQueryData<TData>(queryKey, (old) => optimisticUpdate(old, vars));
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(queryKey, context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+      onSettled?.();
+    },
+  });
+}
+```
+All module mutations **must** use this wrapper — no inline onMutate/onError patterns.
+
+dod|criteria
+D1|queryOptions pattern used consistently; no manual key strings
+D2|Optimistic mutations via wrapper only
+D3|staleTime: Infinity for truly static data
+D4|DevTools lazy loaded
+D5|All tests pass
+
+anti|description
+A1|Not setting staleTime (excessive refetching)
+A2|Using useEffect for data fetching
+A3|Inline onMutate/onError patterns in modules
+
+────────────────────────────────────────────────────────
+
+### sec-FND-007 — React Router v7 route architecture
+effort|pri|deps|$cut
+1.0|H|FND-002|$g12
+
+sub|type|description
+FND-007A|pipe|Create createBrowserRouter in router/index.tsx
+FND-007B|pipe|Define route tree: root → AppShell with children: Dashboard (index), Chat, Projects, Calendar, Lists, etc.
+FND-007C|pipe|All routes use lazy: () => import('@/pages/...') for code splitting
+FND-007D|pipe|Loaders call queryClient.ensureQueryData for prefetching (e.g., agents, threads)
+FND-007E|pipe|Add root errorElement: <GlobalErrorFallback>
+FND-007F|pipe|Wrap RouterProvider in <Suspense fallback={<Skeleton/>}>
+FND-007G|behavioral|[TEST] Navigate between all routes, verify lazy loading and prefetching
+
+dod|criteria
+D1|Data loaders eliminate request waterfalls
+D2|Route‑level code splitting active (separate chunks)
+D3|No console errors when navigating
+D4|All tests pass
+
+anti|description
+A1|Using <BrowserRouter> (Declarative Mode)
+A2|Importing from react-router-dom
+A3|Missing lazy() on routes
+
+────────────────────────────────────────────────────────
+
+### sec-FND-008 — App entry point & provider composition
+effort|pri|deps|$cut
+0.5|H|FND-005,FND-006,FND-007|$g7,$g8
+
+sub|type|description
+FND-008A|pipe|main.tsx: StrictMode > QueryClientProvider > ThemeProvider > RouterProvider
+FND-008B|pipe|AppShell: layout with Sidebar (left), main <Outlet />, StatusBar (bottom), RightPanel (overlay)
+FND-008C|behavioral|Page transitions: wrap <Outlet /> in <AnimatePresence mode="wait">, motion.div keyed by location.pathname
+```tsx
+<AnimatePresence mode="wait">
+  <motion.div
+    key={location.pathname}
+    initial={{ opacity: 0, y: 8 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -8 }}
+    transition={{ duration: 0.2 }}
+  >
+    <Outlet />
+  </motion.div>
+</AnimatePresence>
+```
+FND-008D|pipe|SkipLink: first focusable element, skips to main content
+FND-008E|behavioral|[TEST] Render full tree, verify providers wrap correctly, transitions work
+
+dod|criteria
+D1|Provider order: QueryClient > Theme > Router
+D2|Root layout wraps all routes
+D3|Page transitions active between routes (fade+slide)
+D4|SkipLink present and functional
+D5|All tests pass
+
+anti|description
+A1|RouterProvider above QueryClientProvider (loaders can't access queryClient)
+A2|Not wrapping outlet in AnimatePresence
+
+────────────────────────────────────────────────────────
+
+### sec-FND-009 — Sidebar shell
+effort|pri|deps|$cut
+2.0|H|FND-005,FND-008|$g6,$g9,$g10
+
+sub|type|description
+FND-009A|pipe|Sidebar controlled by Zustand uiSlice (sidebarOpen)
+FND-009B|behavioral|Width animation: spring from 240px ↔ 64px (collapsed)
+```tsx
+<motion.aside
+  animate={{ width: sidebarOpen ? 240 : 64 }}
+  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+  className="relative ..."
+>
+```
+FND-009C|pipe|NavItems for all 7 modules: Dashboard, Chat, Projects, Calendar, Lists, Email, Settings
+FND-009D|behavioral|Active route indicator: layoutId="active-nav" moves under current NavItem
+```tsx
+{isActive && (
+  <motion.div
+    layoutId="active-nav"
+    className="absolute inset-y-0 left-0 w-1 bg-electric-blue rounded-r-full"
+    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+  />
+)}
+```
+FND-009E|pipe|Settings accordion with spring height animation (sub‑items)
+FND-009F|pipe|Glass styling: backdrop-blur, bg-white/5, border-white/10, noise overlay
+FND-009G|behavioral|[TEST] Verify expand/collapse, active state updates, keyboard navigation (Enter/Space)
+FND-009H|behavioral|useReducedMotion(): true → instant width change instead of spring
+
+dod|criteria
+D1|Smooth expansion/collapse
+D2|Active state matches current route
+D3|Touch targets ≥24px (WCAG 2.5.8)
+D4|Works with keyboard only
+D5|All tests pass
+
+anti|description
+A1|Managing open state with local useState
+A2|Missing layoutId for active indicator
+
+────────────────────────────────────────────────────────
+
+### sec-FND-010 — StatusBar shell
+effort|pri|deps|$cut
+1.0|H|FND-008|$g6,$g10,$g18
+
+sub|type|description
+FND-010A|pipe|Fixed 32px height at bottom, z-50, flex items-center justify-between px-4
+FND-010B|behavioral|Connection status pulse: green dot with opacity animation (Quiet tier, disabled if reduced motion)
+```css
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+```
+FND-010C|pipe|Display items: connection status, active agent count, current time, token spend (mock), and storage quota usage (via useStorageQuota)
+FND-010D|pipe|Each item keyboard‑focusable, with tooltip
+FND-010E|behavioral|[TEST] Pulse animation respects useReducedMotion, all items visible, storage warning appears at ≥80%
+
+dod|criteria
+D1|Non‑intrusive, visible at all times
+D2|Focus indicators clearly visible
+D3|Pulse disabled when reduced motion
+D4|Storage quota warning integration functional
+D5|All tests pass
+
+────────────────────────────────────────────────────────
+
+### sec-FND-011 — RightPanel shell
+effort|pri|deps|$cut
+1.0|H|FND-005,FND-008|$g6,$g8
+
+sub|type|description
+FND-011A|pipe|320px width panel, slides from right, fixed position
+FND-011B|behavioral|AnimatePresence: animate={{ x: isOpen ? 0 : 320 }} transition spring
+```tsx
+<AnimatePresence>
+  {isOpen && (
+    <motion.aside
+      initial={{ x: 320 }}
+      animate={{ x: 0 }}
+      exit={{ x: 320 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 35 }}
+      className="fixed right-0 top-0 bottom-0 w-80 ..."
+    >
+      {children}
+    </motion.aside>
+  )}
+</AnimatePresence>
+```
+FND-011C|pipe|Glass + noise styling
+FND-011D|pipe|On close, restore focus to trigger element stored in uiSlice
+FND-011E|behavioral|[TEST] Slide animation, focus return after close, overflow hidden
+
+dod|criteria
+D1|Opens/closes via Zustand uiSlice
+D2|Backdrop blur layers correctly
+D3|Focus restored to trigger
+D4|All tests pass
+
+────────────────────────────────────────────────────────
+
+### sec-FND-012 — CommandPalette shell
+effort|pri|deps|$cut
+2.0|H|FND-005,FND-008|$g6,$g8,$g9,$lc:focus
+
+sub|type|description
+FND-012A|pipe|Global Cmd+K listener via useEffect + keydown
+FND-012B|pipe|Portal to document.body, centered overlay, dark backdrop
+FND-012C|behavioral|Spring scale (0.95→1) + opacity, staggered children (0.03s delay)
+```tsx
+<motion.div
+  initial={{ opacity: 0, scale: 0.95 }}
+  animate={{ opacity: 1, scale: 1 }}
+  exit={{ opacity: 0, scale: 0.95 }}
+  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+>
+  <ul>
+    {items.map((item, i) => (
+      <motion.li
+        key={item.id}
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: i * 0.03 }}
+      >
+        {item.label}
+      </motion.li>
+    ))}
+  </ul>
+</motion.div>
+```
+FND-012D|pipe|ARIA: role="combobox", aria-expanded, focus trap (first/last items), listbox
+FND-012E|pipe|Categorized results: Commands (built-in), Pages, Recent
+FND-012F|pipe|Connect to useIntentHandler: parse user input via AI (mock), show preview of action
+FND-012G|behavioral|[TEST] Keyboard nav: ArrowUp/Down, Enter to execute, Escape to close, focus return
+
+dod|criteria
+D1|Lightning fast, keyboard‑first
+D2|AI intent parsing with visual preview
+D3|All categories populated
+D4|All tests pass
+
+────────────────────────────────────────────────────────
+
+### sec-FND-013 — Accessibility foundation
+effort|pri|deps|$cut
+1.5|H|FND-009,FND-010,FND-011,FND-012|$g8,$g9,$g10
+
+sub|type|description
+FND-013A|pipe|Add ARIA landmarks: <header banner>, <nav navigation>, <main>, <footer contentinfo>
+FND-013B|pipe|SkipLink component: first focusable, moves focus to <main>
+FND-013C|pipe|Audit focus indicators: outline-2 outline-electric-blue on all interactive elements
+FND-013D|pipe|StatusBar updates: aria-live="polite" region for dynamic content
+FND-013E|pipe|Scroll-padding-top: 0 to prevent fixed elements from covering focused items (WCAG 2.4.12)
+FND-013F|behavioral|[TEST] axe audit (zero violations), VoiceOver/ChromeVox smoke test
+
+dod|criteria
+D1|Zero axe violations across all routes
+D2|Keyboard‑only navigation for full app flow
+D3|Screen reader announces status changes
+D4|All tests pass
+
+────────────────────────────────────────────────────────
+
+### sec-FND-014 — Voice shell
+effort|pri|deps|$cut
+2.5|H|FND-005,FND-008,FND-012|$g6,$g9,$g10
+
+sub|type|description
+FND-014A|behavioral|useWebSpeech: STT via SpeechRecognition, TTS via SpeechSynthesis; return { transcript, listening, speak }
+```ts
+// src/hooks/useWebSpeech.ts
+export function useWebSpeech() {
+  const [transcript, setTranscript] = useState('');
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  const startListening = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    recognitionRef.current = new SpeechRecognition();
+    recognitionRef.current.onresult = (event) => {
+      setTranscript(event.results[0][0].transcript);
+    };
+    recognitionRef.current.start();
+    setListening(true);
+  };
+
+  const speak = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return { transcript, listening, startListening, speak };
+}
+```
+FND-014B|pipe|VoiceShell: Portal‑based orb, shows waveform animation (CSS keyframes) when listening
+FND-014C|pipe|Lifecycle: idle → listening (orb expands) → processing (pulse) → preview (transcript shown) → execute
+FND-014D|pipe|Global shortcut Ctrl+Space (configurable) to toggle voice input
+FND-014E|pipe|On final transcript, pass to useIntentHandler (same as CommandPalette) and execute
+FND-014F|behavioral|[TEST] Mock SpeechRecognition, simulate transcript, verify API call, orb animation respects reduced motion
+
+dod|criteria
+D1|Hands‑free command execution
+D2|Visual feedback at every state
+D3|aria-live="assertive" transcript region
+D4|All tests pass
+
+════════════════════════════════════════════════════════════
+## END OF 01-Foundations.txt
+## Checkpoint: FND-000 through FND-014 ready for execution.
+## All original infrastructure (db.ts, SanitizedHTML, useStorageQuota) now explicitly included.
+## Paste the CHECKPOINT BLOCK at top into any new session.
+## For any task, first load Global Contract block, then navigate to sec-FND-XXX.
+════════════════════════════════════════════════════════════
+```

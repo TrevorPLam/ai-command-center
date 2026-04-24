@@ -7,6 +7,8 @@ globs: src/**/*.tsx, src/**/*.ts
 
 All code should be testable and follow testing best practices:
 
+<!-- SECTION: testing_approach -->
+
 <testing_approach>
 
 - Use React Testing Library for component testing
@@ -17,6 +19,10 @@ All code should be testable and follow testing best practices:
 
 </testing_approach>
 
+<!-- ENDSECTION: testing_approach -->
+
+<!-- SECTION: component_testing -->
+
 <component_testing>
 
 - Test user interactions and state changes
@@ -26,6 +32,10 @@ All code should be testable and follow testing best practices:
 - Use describe/it/test blocks with clear descriptions
 
 </component_testing>
+
+<!-- ENDSECTION: component_testing -->
+
+<!-- SECTION: hook_testing -->
 
 <hook_testing>
 
@@ -38,6 +48,10 @@ All code should be testable and follow testing best practices:
 
 </hook_testing>
 
+<!-- ENDSECTION: hook_testing -->
+
+<!-- SECTION: testing_coverage -->
+
 <testing_coverage>
 
 - Aim for 80%+ code coverage on critical paths
@@ -48,6 +62,10 @@ All code should be testable and follow testing best practices:
 
 </testing_coverage>
 
+<!-- ENDSECTION: testing_coverage -->
+
+<!-- SECTION: test_naming -->
+
 <test_naming>
 
 - Use descriptive test names that explain what is being tested
@@ -56,3 +74,5 @@ All code should be testable and follow testing best practices:
 - Use beforeEach/afterEach for setup/teardown
 
 </test_naming>
+
+<!-- ENDSECTION: test_naming -->

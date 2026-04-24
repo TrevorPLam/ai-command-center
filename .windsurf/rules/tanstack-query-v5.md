@@ -7,6 +7,8 @@ globs: src/hooks/*.ts, src/api/*.ts
 
 This project uses TanStack Query v5 for server state management. Follow these v5-specific patterns.
 
+<!-- SECTION: v5_api_changes -->
+
 <v5_api_changes>
 - isLoading is now derived: isPending && isFetching
 - isInitialLoading is deprecated, use isLoading
@@ -14,6 +16,10 @@ This project uses TanStack Query v5 for server state management. Follow these v5
 - Use isFetching for any refetch in progress
 - QueryClient defaults have changed
 </v5_api_changes>
+
+<!-- ENDSECTION: v5_api_changes -->
+
+<!-- SECTION: query_setup -->
 
 <query_setup>
 
@@ -36,6 +42,10 @@ const queryClient = new QueryClient({
 ```
 
 </query_setup>
+
+<!-- ENDSECTION: query_setup -->
+
+<!-- SECTION: hook_patterns -->
 
 <hook_patterns>
 
@@ -61,6 +71,10 @@ export function useProjects() {
 ```
 
 </hook_patterns>
+
+<!-- ENDSECTION: hook_patterns -->
+
+<!-- SECTION: mutation_patterns -->
 
 <mutation_patterns>
 
@@ -91,6 +105,10 @@ export function useCreateProject() {
 
 </mutation_patterns>
 
+<!-- ENDSECTION: mutation_patterns -->
+
+<!-- SECTION: query_keys -->
+
 <query_keys>
 - Use arrays for query keys: ['resource', 'id', 'params']
 - Include all parameters that affect the data
@@ -98,6 +116,10 @@ export function useCreateProject() {
 - Serialize complex parameters in query keys
 - Use queryKeyFactory for reusable key patterns
 </query_keys>
+
+<!-- ENDSECTION: query_keys -->
+
+<!-- SECTION: cache_management -->
 
 <cache_management>
 - Use staleTime to control data freshness
@@ -107,6 +129,10 @@ export function useCreateProject() {
 - Use cancelQueries to cancel in-flight requests
 </cache_management>
 
+<!-- ENDSECTION: cache_management -->
+
+<!-- SECTION: error_handling -->
+
 <error_handling>
 - Handle error states in components
 - Show user-friendly error messages
@@ -115,6 +141,10 @@ export function useCreateProject() {
 - Use error boundaries for catastrophic failures
 </error_handling>
 
+<!-- ENDSECTION: error_handling -->
+
+<!-- SECTION: loading_states -->
+
 <loading_states>
 - Use isPending for initial loading state
 - Use isFetching for refetching state
@@ -122,6 +152,10 @@ export function useCreateProject() {
 - Show subtle indicators for isFetching
 - Use Suspense boundaries for loading states
 </loading_states>
+
+<!-- ENDSECTION: loading_states -->
+
+<!-- SECTION: pagination -->
 
 <pagination>
 - Use infiniteQuery for infinite scroll
@@ -134,6 +168,10 @@ export function useCreateProject() {
 - getNextPageParam can return null to indicate no more pages (in addition to undefined)
 </pagination>
 
+<!-- ENDSECTION: pagination -->
+
+<!-- SECTION: optimistic_updates -->
+
 <optimistic_updates>
 - Use setQueryData for immediate UI updates
 - Rollback on mutation failure
@@ -141,6 +179,10 @@ export function useCreateProject() {
 - Keep updates simple and predictable
 - Test rollback scenarios
 </optimistic_updates>
+
+<!-- ENDSECTION: optimistic_updates -->
+
+<!-- SECTION: devtools -->
 
 <devtools>
 - Install @tanstack/react-query-devtools
@@ -150,10 +192,17 @@ export function useCreateProject() {
 - Inspect mutation history
 </devtools>
 
+<!-- ENDSECTION: devtools -->
+
+<!-- SECTION: typescript_types -->
+
 <typescript_types>
 - Define interfaces for all data types
 - Use generics for query hooks
 - Type mutation variables and responses
 - Use infer types from Zod schemas
 - Enable strict mode in TypeScript
+
 </typescript_types>
+// Sentinel end: typescript_types
+<!-- ENDSECTION: typescript_types -->

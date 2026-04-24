@@ -6,6 +6,8 @@ trigger: always_on
 
 Ensure proper focus management for accessibility:
 
+<!-- SECTION: focus_restoration -->
+
 <focus_restoration>
 
 - After closing any modal/drawer, return focus to the element that triggered it
@@ -14,6 +16,10 @@ Ensure proper focus management for accessibility:
 - Use React.useRef to capture the trigger element
 
 </focus_restoration>
+
+<!-- ENDSECTION: focus_restoration -->
+
+<!-- SECTION: implementation -->
 
 <implementation>
 
@@ -36,6 +42,10 @@ if (focusTriggerRef?.current) {
 
 </implementation>
 
+<!-- ENDSECTION: implementation -->
+
+<!-- SECTION: accessibility -->
+
 <accessibility>
 
 - This is required for WCAG 2.2 AA compliance
@@ -43,3 +53,5 @@ if (focusTriggerRef?.current) {
 - Ensures predictable navigation flow
 
 </accessibility>
+
+<!-- ENDSECTION: accessibility -->

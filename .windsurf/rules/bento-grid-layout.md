@@ -6,6 +6,8 @@ trigger: always_on
 
 Bento Grid Design is a modular layout pattern inspired by Japanese bento boxes, using asymmetric content blocks in varying sizes to create organized, visually striking interfaces.
 
+<!-- SECTION: core_principles -->
+
 <core_principles>
 
 - **Hierarchy through Size**: Important elements get more space
@@ -14,6 +16,10 @@ Bento Grid Design is a modular layout pattern inspired by Japanese bento boxes, 
 - **Rounded Corners**: Soft, modern aesthetic
 
 </core_principles>
+
+<!-- ENDSECTION: core_principles -->
+
+<!-- SECTION: css_grid_foundation -->
 
 <css_grid_foundation>
 
@@ -41,6 +47,10 @@ Bento Grid Design is a modular layout pattern inspired by Japanese bento boxes, 
 ```
 
 </css_grid_foundation>
+
+<!-- ENDSECTION: css_grid_foundation -->
+
+<!-- SECTION: responsive_breakpoints -->
 
 <responsive_breakpoints>
 
@@ -81,6 +91,10 @@ Bento Grid Design is a modular layout pattern inspired by Japanese bento boxes, 
 
 </responsive_breakpoints>
 
+<!-- ENDSECTION: responsive_breakpoints -->
+
+<!-- SECTION: project_integration -->
+
 <project_integration>
 
 Use Bento Grid for:
@@ -92,6 +106,10 @@ Use Bento Grid for:
 
 </project_integration>
 
+<!-- ENDSECTION: project_integration -->
+
+<!-- SECTION: visual_identity -->
+
 <visual_identity>
 
 - Card background: `bg-[#111111]` for content cards
@@ -101,6 +119,10 @@ Use Bento Grid for:
 - Padding: `p-4` to `p-6` depending on content density
 
 </visual_identity>
+
+<!-- ENDSECTION: visual_identity -->
+
+<!-- SECTION: motion_integration -->
 
 <motion_integration>
 
@@ -145,6 +167,10 @@ const itemVariants = {
 
 </motion_integration>
 
+<!-- ENDSECTION: motion_integration -->
+
+<!-- SECTION: accessibility -->
+
 <accessibility>
 
 - Use semantic HTML: `<article>` for bento items, `<section>` for grid container
@@ -156,6 +182,10 @@ const itemVariants = {
 
 </accessibility>
 
+<!-- ENDSECTION: accessibility -->
+
+<!-- SECTION: performance -->
+
 <performance>
 
 - Use CSS Grid for layout (GPU-accelerated)
@@ -165,6 +195,10 @@ const itemVariants = {
 - Test with 50+ items to ensure smooth scrolling
 
 </performance>
+
+<!-- ENDSECTION: performance -->
+
+<!-- SECTION: best_practices -->
 
 <best_practices>
 
@@ -177,6 +211,10 @@ const itemVariants = {
 
 </best_practices>
 
+<!-- ENDSECTION: best_practices -->
+
+<!-- SECTION: anti_patterns -->
+
 <anti_patterns>
 
 - Do NOT use fixed pixel widths for columns
@@ -187,3 +225,5 @@ const itemVariants = {
 - Do NOT ignore mobile - always provide single-column fallback
 
 </anti_patterns>
+
+<!-- ENDSECTION: anti_patterns -->

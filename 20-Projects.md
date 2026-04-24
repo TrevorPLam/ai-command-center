@@ -1,10 +1,12 @@
 # 20‑Projects — Personal AI Command Center Frontend (Enhanced v4)
 
-> **Status Indicators**: 🟡 Pending, 🟢 In Progress, ✅ Done.
-> **Priority**: 🔴 High, 🟠 Medium, 🟢 Low.
+> **Status Indicators**: Pending, In Progress, Done.
+> **Priority**: High, Medium, Low.
 > **Source Research**: Karbon accounting practice management software — feature analysis conducted April 2026. Karbon combines email, tasks, workflows, Kanban boards, My Week personal planning, automators, AI agents, time/budget tracking, document management, and Practice Intelligence into one platform.
 
+
 ---
+<!-- SECTION: Frontend Context -->
 
 ## 📋 Frontend Context (Module‑Wide Assumptions)
 
@@ -22,6 +24,10 @@
 - **Forms**: react‑hook‑form + zod
 - **Offline**: Dexie (centralised `CommandCenterDB`)
 - **Accessibility**: WCAG 2.2 AA, keyboard navigation, focus restoration
+
+<!-- ENDSECTION: Frontend Context -->
+
+<!-- SECTION: Cross-Cutting Foundations -->
 
 ## 🧱 Cross-Cutting Foundations
 
@@ -59,6 +65,10 @@
 
 ---
 
+
+<!-- ENDSECTION: Cross-Cutting Foundations -->
+
+<!-- SECTION: Mock Data Layer -->
 
 ## 🗂️ Task PROJ-000: Mock Data Layer
 **Priority:** 🔴 High
@@ -148,6 +158,10 @@
 
 ---
 
+<!-- ENDSECTION: Mock Data Layer -->
+
+<!-- SECTION: Project State -->
+
 ## 🔧 Task PROJ-001: Project State — Zustand `projectSlice`
 **Priority:** 🔴 High
 **Est. Effort:** 1 hour
@@ -234,6 +248,10 @@
 ---
 
 
+<!-- ENDSECTION: Project State -->
+
+<!-- SECTION: Projects Page Layout -->
+
 ## 🗂️ Task PROJ-002: Projects Page Layout, Route & View Switcher
 **Priority:** 🔴 High
 **Est. Effort:** 1.5 hours
@@ -312,6 +330,10 @@
 
 ---
 
+
+<!-- ENDSECTION: Projects Page Layout -->
+
+<!-- SECTION: Project List View -->
 
 ## 🗂️ Task PROJ-003: Project List View — TanStack Table + Virtual
 **Priority:** 🔴 High
@@ -393,6 +415,10 @@
 
 ---
 
+<!-- ENDSECTION: Project List View -->
+
+<!-- SECTION: Kanban View -->
+
 ## 📌 Task PROJ-004: Kanban View
 **Priority:** 🔴 High
 **Est. Effort:** 3 hours
@@ -455,6 +481,10 @@
 
 ---
 
+<!-- ENDSECTION: Kanban View -->
+
+<!-- SECTION: Timeline View -->
+
 ## 📅 Task PROJ-005: Timeline (Gantt) View
 **Priority:** 🟠 Medium
 **Est. Effort:** 2.5 hours
@@ -514,6 +544,10 @@
 - Empty state handled
 
 ---
+
+<!-- ENDSECTION: Timeline View -->
+
+<!-- SECTION: My Week View -->
 
 ## 📆 Task PROJ-006: My Week View
 **Priority:** 🟠 Medium
@@ -580,6 +614,10 @@
 ---
 
 
+<!-- ENDSECTION: My Week View -->
+
+<!-- SECTION: Workload View -->
+
 ## 🗂️ Task PROJ-007: Workload View
 **Priority:** 🟠 Medium
 **Est. Effort:** 1.5 hours
@@ -624,6 +662,10 @@
 - Colleague Utilization summary panel
 
 ---
+
+<!-- ENDSECTION: Workload View -->
+
+<!-- SECTION: Project Detail Page -->
 
 ## 📄 Task PROJ-008: Project Detail Page & Header
 **Priority:** 🔴 High
@@ -674,6 +716,10 @@
 
 ---
 
+
+<!-- ENDSECTION: Project Detail Page -->
+
+<!-- SECTION: Project Task List -->
 
 ## 🗂️ Task PROJ-009: Project Task List & Inline Creation
 **Priority:** 🔴 High
@@ -730,6 +776,10 @@
 
 ---
 
+
+<!-- ENDSECTION: Project Task List -->
+
+<!-- SECTION: Task Detail Drawer -->
 
 ## 🗂️ Task PROJ-010: Task Detail Drawer
 **Priority:** 🔴 High
@@ -796,6 +846,10 @@
 ---
 
 
+<!-- ENDSECTION: Task Detail Drawer -->
+
+<!-- SECTION: Quick Peek Overlay -->
+
 ## 🗂️ Task PROJ-011: Quick Peek Overlay
 **Priority:** 🔴 High
 **Est. Effort:** 1.5 hours
@@ -829,6 +883,10 @@
 - Accessible dialog with focus trap
 
 ---
+
+<!-- ENDSECTION: Quick Peek Overlay -->
+
+<!-- SECTION: Project Template Library -->
 
 ## 📚 Task PROJ-012: Project Template Library
 **Priority:** 🟢 Low
@@ -870,6 +928,10 @@
 
 ---
 
+<!-- ENDSECTION: Project Template Library -->
+
+<!-- SECTION: Recurring Work Scheduler -->
+
 ## 🔁 Task PROJ-013: Recurring Work Scheduler
 **Priority:** 🔴 High
 **Est. Effort:** 2.5 hours
@@ -908,6 +970,10 @@
 - "Edit Schedule" from project options
 
 ---
+
+<!-- ENDSECTION: Recurring Work Scheduler -->
+
+<!-- SECTION: Saved Views -->
 
 ## 💾 Task PROJ-014: Saved Views
 **Priority:** 🟠 Medium
@@ -949,6 +1015,10 @@
 
 ---
 
+<!-- ENDSECTION: Saved Views -->
+
+<!-- SECTION: External Task Assignment -->
+
 ## 🤝 Task PROJ-015: External Task Assignment (Client Tasks)
 **Priority:** 🟠 Medium
 **Est. Effort:** 2 hours
@@ -982,6 +1052,10 @@
 - Comments default to External visibility with toggle
 
 ---
+
+<!-- ENDSECTION: External Task Assignment -->
+
+<!-- SECTION: Document Panel -->
 
 ## 📁 Task PROJ-016: Document Panel
 **Priority:** 🟠 Medium
@@ -1018,6 +1092,10 @@
 - Document sidebar for quick access
 
 ---
+
+<!-- ENDSECTION: Document Panel -->
+
+<!-- SECTION: Workflow Automation Engine -->
 
 ## ⚙️ Task PROJ-017: Workflow Automation Engine — Rule Builder
 **Priority:** 🔴 High
@@ -1075,6 +1153,10 @@
 
 ---
 
+<!-- ENDSECTION: Workflow Automation Engine -->
+
+<!-- SECTION: Triage Inbox Shell -->
+
 ## 📥 Task PROJ-018: Triage Inbox — Shell & Item Rendering
 **Priority:** 🔴 High
 **Est. Effort:** 3 hours
@@ -1131,6 +1213,10 @@
 ---
 
 
+<!-- ENDSECTION: Triage Inbox Shell -->
+
+<!-- SECTION: Triage Inbox Actions -->
+
 ## 🗂️ Task PROJ-019: Triage Inbox — Action Tray & Item Actions
 **Priority:** 🔴 High
 **Est. Effort:** 2.5 hours
@@ -1181,6 +1267,10 @@
 
 ---
 
+<!-- ENDSECTION: Triage Inbox Actions -->
+
+<!-- SECTION: Triage Integration Hub -->
+
 ## 🔗 Task PROJ-020: Triage Inbox — Integration Hub
 **Priority:** 🔴 High
 **Est. Effort:** 2 hours
@@ -1221,6 +1311,10 @@
 - Notification preferences per source type with digest modes
 
 ---
+
+<!-- ENDSECTION: Triage Integration Hub -->
+
+<!-- SECTION: Global Search -->
 
 ## 🔍 Task PROJ-021: Global Search
 **Priority:** 🟠 Medium
@@ -1267,6 +1361,10 @@
 
 ---
 
+<!-- ENDSECTION: Global Search -->
+
+<!-- SECTION: Time Budget Tracking -->
+
 ## ⏱️ Task PROJ-022: Time & Budget Tracking Panel
 **Priority:** 🟠 Medium
 **Est. Effort:** 2 hours
@@ -1310,6 +1408,10 @@
 
 ---
 
+<!-- ENDSECTION: Time Budget Tracking -->
+
+<!-- SECTION: Filing Deadlines -->
+
 ## 📅 Task PROJ-023: Filing Deadlines Configuration
 **Priority:** 🟢 Low
 **Est. Effort:** 1.5 hours
@@ -1347,6 +1449,10 @@
 
 ---
 
+
+<!-- ENDSECTION: Filing Deadlines -->
+
+<!-- SECTION: Practice Intelligence Dashboard -->
 
 ## 🗂️ Task PROJ-024: Practice Intelligence Dashboard (AI Agents)
 **Priority:** 🟢 Low
@@ -1393,6 +1499,10 @@
 ---
 
 
+<!-- ENDSECTION: Practice Intelligence Dashboard -->
+
+<!-- SECTION: Final Polish -->
+
 ## 🗂️ Task PROJ-025: Final Polish — Projects Module
 **Priority:** 🔴 High
 **Est. Effort:** 3 hours
@@ -1430,6 +1540,10 @@ All project components.
 - Zero console errors; `tsc --noEmit` passes; `npm run build` succeeds
 
 ---
+
+<!-- ENDSECTION: Final Polish -->
+
+<!-- SECTION: Dependency Graph -->
 
 ## 📊 Dependency Graph
 
@@ -1478,6 +1592,10 @@ PROJ-025 (Final Polish) ──→ ALL PROJ tasks
 ```
 
 ---
+
+<!-- ENDSECTION: Dependency Graph -->
+
+<!-- SECTION: Completion Checklist -->
 
 ## 🏁 Projects Module Completion Checklist
 

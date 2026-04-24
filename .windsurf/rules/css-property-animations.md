@@ -6,6 +6,8 @@ trigger: always_on
 
 Modern CSS provides native support for animated gradient borders using the `@property` rule, eliminating the need for JavaScript-heavy solutions.
 
+<!-- SECTION: property_rule -->
+
 <property_rule>
 
 - Use `@property` to register custom properties as animatable types
@@ -13,6 +15,10 @@ Modern CSS provides native support for animated gradient borders using the `@pro
 - Browser support: All modern browsers (Firefox added support Dec 2023)
 
 </property_rule>
+
+<!-- ENDSECTION: property_rule -->
+
+<!-- SECTION: implementation_pattern -->
 
 <implementation_pattern>
 
@@ -55,6 +61,10 @@ Modern CSS provides native support for animated gradient borders using the `@pro
 
 </implementation_pattern>
 
+<!-- ENDSECTION: implementation_pattern -->
+
+<!-- SECTION: use_cases -->
+
 <use_cases>
 
 - **AmbientStatusBanner**: Animated conic-gradient border for system health indicator
@@ -66,6 +76,10 @@ Modern CSS provides native support for animated gradient borders using the `@pro
 - **CTA buttons**: Animated gradient borders on hover for premium feel
 
 </use_cases>
+
+<!-- ENDSECTION: use_cases -->
+
+<!-- SECTION: performance_considerations -->
 
 <performance_considerations>
 
@@ -79,6 +93,10 @@ Modern CSS provides native support for animated gradient borders using the `@pro
 
 </performance_considerations>
 
+<!-- ENDSECTION: performance_considerations -->
+
+<!-- SECTION: accessibility -->
+
 <accessibility>
 
 - Wrap animations in `@media (prefers-reduced-motion: no-preference)`
@@ -90,6 +108,10 @@ Modern CSS provides native support for animated gradient borders using the `@pro
 - Animated borders should not distract from content
 
 </accessibility>
+
+<!-- ENDSECTION: accessibility -->
+
+<!-- SECTION: reduced_motion -->
 
 <reduced_motion>
 
@@ -105,6 +127,10 @@ Modern CSS provides native support for animated gradient borders using the `@pro
 
 </reduced_motion>
 
+<!-- ENDSECTION: reduced_motion -->
+
+<!-- SECTION: anti_patterns -->
+
 <anti_patterns>
 
 - Do NOT use JavaScript to continuously redraw gradients
@@ -117,6 +143,10 @@ Modern CSS provides native support for animated gradient borders using the `@pro
 
 </anti_patterns>
 
+<!-- ENDSECTION: anti_patterns -->
+
+<!-- SECTION: color_integration -->
+
 <color_integration>
 
 - Use project's electric blue gradient: `#0066ff → #00aaff`
@@ -124,3 +154,5 @@ Modern CSS provides native support for animated gradient borders using the `@pro
 - Ensure gradient colors match the visual identity tokens
 
 </color_integration>
+
+<!-- ENDSECTION: color_integration -->

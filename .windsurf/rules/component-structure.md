@@ -7,6 +7,8 @@ globs: src/components/**/*.tsx
 
 Follow this structure for all React components:
 
+<!-- SECTION: file_organization -->
+
 <file_organization>
 - Layout components: src/components/layout/
 - Dashboard components: src/components/dashboard/
@@ -21,6 +23,10 @@ Follow this structure for all React components:
 - Reusable UI components: src/components/ui/
 </file_organization>
 
+<!-- ENDSECTION: file_organization -->
+
+<!-- SECTION: component_best_practices -->
+
 <component_best_practices>
 - Use functional components with hooks
 - Use TypeScript interfaces for props
@@ -29,6 +35,10 @@ Follow this structure for all React components:
 - Keep components focused and single-purpose
 - Extract reusable logic into custom hooks in src/hooks/
 </component_best_practices>
+
+<!-- ENDSECTION: component_best_practices -->
+
+<!-- SECTION: shadcn_ui_usage -->
 
 <shadcn_ui_usage>
 - Use shadcn/ui components as base
@@ -41,9 +51,15 @@ Follow this structure for all React components:
 - Note: toast component is available; sonner can be used as alternative
 </shadcn_ui_usage>
 
+<!-- ENDSECTION: shadcn_ui_usage -->
+
+<!-- SECTION: state_management -->
+
 <state_management>
 - Use Zustand for UI-only state (sidebar, command palette, active panel)
 - Use TanStack Query for server state
 - Keep component state local when possible
 - Lift state up only when necessary
 </state_management>
+
+<!-- ENDSECTION: state_management -->

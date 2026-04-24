@@ -6,17 +6,28 @@ trigger: always_on
 
 Prefer self-contained inline links over reference-style to prevent breakage.
 
+<!-- SECTION: Primary Rule -->
+
 ## Primary Rule
 
 **Use inline links `[text](url)` whenever possible.**
+
+<!-- ENDSECTION: Primary Rule -->
+
+<!-- SECTION: Rationale -->
 
 ## Rationale
 
 Inline links are self-contained. Reference-style links risk broken references when text moves without its definition.
 
+<!-- ENDSECTION: Rationale -->
+
+<!-- SECTION: Patterns -->
+
 ## Patterns
 
 ### Preferred: Inline Links
+
 ```markdown
 [Visit Google](https://google.com)
 
@@ -28,10 +39,7 @@ Inline links are self-contained. Reference-style links risk broken references wh
 If reference-style must be used, keep definitions **immediately after** the paragraph:
 
 ```markdown
-Visit [Google][1] or [Bing][2] for search.
-
-[1]: https://google.com
-[2]: https://bing.com
+Visit [Google](https://google.com) or [Bing](https://bing.com) for search.
 ```
 
 Or use a dedicated section at end of file:
@@ -39,20 +47,28 @@ Or use a dedicated section at end of file:
 ```markdown
 ## Footnotes and References
 
-[ref-1]: https://example.com/1
-[ref-2]: https://example.com/2
+[Link text](https://example.com/1)
+[Another link](https://example.com/2)
 ```
+
+<!-- ENDSECTION: Patterns -->
+
+<!-- SECTION: Reference Label Generation -->
 
 ## Reference Label Generation
 
 When creating new reference-style links, use unique dated labels:
 
 ```markdown
-[Link text][ref-2026-04-23-01]
-[Another link][ref-2026-04-23-02]
+[Link text](https://example.com/1)
+[Another link](https://example.com/2)
 ```
 
 Format: `ref-YYYY-MM-DD-NN` where NN is sequential.
+
+<!-- ENDSECTION: Reference Label Generation -->
+
+<!-- SECTION: Editing Rules -->
 
 ## Editing Rules
 
@@ -61,9 +77,16 @@ Format: `ref-YYYY-MM-DD-NN` where NN is sequential.
 3. **Converting inline to reference?** Add definition immediately or to Footnotes section
 4. **Converting reference to inline?** Remove the definition
 
+<!-- ENDSECTION: Editing Rules -->
+
+<!-- SECTION: Validation -->
+
 ## Validation
 
 After any link edit:
+
 - [ ] All reference definitions have at least one usage
 - [ ] All reference usages have a matching definition
 - [ ] No orphaned definitions remain
+
+<!-- ENDSECTION: Validation -->

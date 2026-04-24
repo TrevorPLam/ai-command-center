@@ -7,6 +7,8 @@ globs: src/**/*.tsx
 
 All components must handle errors gracefully:
 
+<!-- SECTION: error_boundaries -->
+
 <error_boundaries>
 
 - Wrap route components in error boundaries
@@ -16,6 +18,10 @@ All components must handle errors gracefully:
 - Preserve component state when possible
 
 </error_boundaries>
+
+<!-- ENDSECTION: error_boundaries -->
+
+<!-- SECTION: api_errors -->
 
 <api_errors>
 
@@ -27,6 +33,10 @@ All components must handle errors gracefully:
 
 </api_errors>
 
+<!-- ENDSECTION: api_errors -->
+
+<!-- SECTION: loading_states -->
+
 <loading_states>
 
 - Show skeleton loaders for all data fetches
@@ -36,6 +46,10 @@ All components must handle errors gracefully:
 - Show progress for long-running operations
 
 </loading_states>
+
+<!-- ENDSECTION: loading_states -->
+
+<!-- SECTION: empty_states -->
 
 <empty_states>
 
@@ -47,6 +61,10 @@ All components must handle errors gracefully:
 
 </empty_states>
 
+<!-- ENDSECTION: empty_states -->
+
+<!-- SECTION: user_feedback -->
+
 <user_feedback>
 
 - Show toast notifications for actions
@@ -57,6 +75,10 @@ All components must handle errors gracefully:
 
 </user_feedback>
 
+<!-- ENDSECTION: user_feedback -->
+
+<!-- SECTION: fallback_uis -->
+
 <fallback_uis>
 
 - Provide fallback for failed component loads
@@ -66,3 +88,5 @@ All components must handle errors gracefully:
 - Handle service worker errors
 
 </fallback_uis>
+
+<!-- ENDSECTION: fallback_uis -->
