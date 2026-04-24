@@ -1295,7 +1295,7 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 **Priority:** 🔴 High
 **Est. Effort:** 6 hours
-**Depends On:** CHAT-001 (Layout), TASK-005 (Hooks/Stores)
+**Depends On:** CHAT-001 (Layout), FND-005 (Zustand), FND-006 (TanStack Query)
 
 **Why this matters:** MCP is the "USB-C of AI integrations" — 5,800+ servers, 97M+ monthly SDK downloads, adopted by Anthropic, OpenAI, Google, and Microsoft. Without MCP, your command center cannot connect to Gmail, GitHub, Slack, or any external tool. This task builds the **frontend configuration shell**; the real protocol client will be wired in a future Agent Backend phase.
 
@@ -1518,7 +1518,7 @@ The 21 parent tasks below are organized into **six modules** reflecting the natu
 
 **Priority:** 🔴 High
 **Est. Effort:** 14 hours
-**Depends On:** TASK-003 (UI Components), TASK-005 (Hooks/Stores)
+**Depends On:** CHAT-001, CHAT-002, FND-004 (Testing), FND-005 (Zustand), FND-006 (TanStack Query)
 
 **Why this matters:** Claude Projects allows users to upload a 50MB knowledge library that gets ingested into a vector DB and referenced automatically in conversations. ChatGPT has cross-chat memory. Without a knowledge base, your AI only knows what's in the current conversation context. This task implements a **fully client-side RAG system** using in-browser embeddings and vector search — no server required.
 

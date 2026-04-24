@@ -1078,7 +1078,7 @@
 ## 📥 Task PROJ-018: Triage Inbox — Shell & Item Rendering
 **Priority:** 🔴 High
 **Est. Effort:** 3 hours
-**Depends On:** PROJ-000, PROJ-001, TASK-002
+**Depends On:** PROJ-000, PROJ-001, FND-007
 
 ### Related Files
 `src/pages/TriagePage.tsx` · `src/components/triage/TriageStream.tsx` · `src/components/triage/TriageItem.tsx` · `src/components/triage/TriageActionTray.tsx`
@@ -1225,7 +1225,7 @@
 ## 🔍 Task PROJ-021: Global Search
 **Priority:** 🟠 Medium
 **Est. Effort:** 2 hours
-**Depends On:** PROJ-000, TASK-002
+**Depends On:** PROJ-000, FND-007
 
 ### Related Files
 `src/components/search/GlobalSearchDialog.tsx` · `src/components/search/SearchResultItem.tsx`
