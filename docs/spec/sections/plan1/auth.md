@@ -1,0 +1,15 @@
+---
+id: section.plan1.auth
+type: raw-section
+format: plan1
+section: AUTH
+hash: f1164421e93dae1f
+length: 902
+compressed_length: 712
+last_updated: '2026-04-25T00:03:49.226529+00:00'
+compressed_data: H4sIAOUE7GkC/2VTwY7TMBC98xUjcdguCikrcWpRpYULQkis2iKO1dSZpKaOXexJwnLg23l2S1mxpySamffevHl5Sfdftx8XtBlOvOckdD/oYSY9Wzc/TdWX/Hlb00ZSssFT3/VK+8d/7cZZ8VrT+vOGUGfnSHnvJNW0DUfxZP3zZgboxlkjpJHNMdGQJNb0EIOKUWkohkEl0Wi59FI3cGxqKmooSmMj+ujAvnHofqKnpk/fttSGOGHA+m5BvwE9girN+WRrTSQ/MyletOhrY+gp/R3PbHUnetl3dlsRq7I5QE0mD9H+YkVlQe+Fo0R6xwbgaVfQVgAtHszHu/krKP0xSNK0vHBFaaOkQ9kr+Iy3UVb5gEU6WdLbN3cwxHadxPSfpMvkVRbpoeBpfASSkYrEweCrNZDhQmd9TSF2O9sQrCou72JwQtLvpWlgHa6TDcuCzJA09Lun6+wOIRxp9hCSdqCndvAmLw92VmpFiy8Fsdh4JUiFDy7bUbKCczlL6TN1TIjUOvctiJve+qpnz1i7Oper0cqEB04l0bM7x+sUEBmbCaWVKNi6hKP+PikMeb1a0c1VwE0RcN4duYGCNFnILZHIXZTESU5BVgcX0LIpHSiZ0J+CR1KXZHDMRM/dDxT2ypjzMmUHl+XquDbuYc5xsX5kZxvct6loLezU9vgFcGsvBdMEvOW41y/+AKELnfKGAwAA
+---
+
+# AUTH
+
+Compressed section data stored in frontmatter.

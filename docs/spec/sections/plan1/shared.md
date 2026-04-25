@@ -1,0 +1,15 @@
+---
+id: section.plan1.shared
+type: raw-section
+format: plan1
+section: SHARED
+hash: b492940a07fd1311
+length: 765
+compressed_length: 688
+last_updated: '2026-04-25T00:03:49.258835+00:00'
+compressed_data: H4sIAOUE7GkC/1VSTW8TQQy98ysscdkqbVMEB0ROTZsSoIUqWzhwQd4Z72aU2ZmVZybtRlXEiTv8xP4SPNkQ4LIf9vOz/Z6fQzk/X8wu38BWjcMSmfS4RGei2ZCe391cT2C7DzOpxExO0Xhx+Jy5xjgazbSJngvmZOn45dP3n63XBCTRY3pQ1EXjXTiawIzZ89Qnp5F7aKyv0I46YmCfIoH1zYU15OJsLY8JTJNdnatcPEWewNsdviRktbw0KOjiotWjD6DYhyBdpcjEXvpceW6LFCi/RxuvgSl4uyaWXCmTYkMl8doogth3pOGesZM5im0YwmEcBthpDKC8k9IYXp2dweK6fPrxa89xS9yaEGS+3WJCnnsSxsR0ZbEpbn2Ic988lqnDCgNBPSS/1ZINELESvaBGaytUK9BUY7LxC9pEQnZDEe9MtCQTtJ13sh4UTKjiyZJsS/EEQ+8UHATMNd6h8oMfYHHT/62dgJIno83egnZaGisUn4qtHcuvrCoE5sVrByZfQAZiFn8HyPEBsaK+8sgawtJzVCmKuo0JURzNwD/pARywpr1a0BqtLd3LNUEt031NIaLT4iu5z+8W5DRxtuBwiP/Fj6DFLvyjhMKYTwCiByGXwPvy00exVygr/0B6UEJuCnXYyyJ7gZFDwCgCmJqxpdNnvwFNFB9jAwMAAA==
+---
+
+# SHARED
+
+Compressed section data stored in frontmatter.

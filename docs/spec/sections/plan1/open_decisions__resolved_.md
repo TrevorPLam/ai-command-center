@@ -1,0 +1,15 @@
+---
+id: section.plan1.open_decisions__resolved_
+type: raw-section
+format: plan1
+section: OPEN_DECISIONS (resolved)
+hash: 5914526ae6454dc8
+length: 664
+compressed_length: 660
+last_updated: '2026-04-25T00:03:49.282049+00:00'
+compressed_data: H4sIAOUE7GkC/y2SzY7TQBCE7zxFSVwcIUdk2QNggZTNzyoi2VgJisQF1Bm3kyHjGWtm7Kw5ceIOj7hPQjvJ0aWurq96/BrrfPb0YzqbLLaL9dMWiefgTMvF4CMeFsvl4unx5c+//EiB7zJsd+MNHsnGKOJq8RUTV1WN1bEDFzpqZ1E6j9UuR9LUB08FX4TAvmWfBi3f+XQ+yLDStlhRPROX87KsIn+qqM7g9wq1tiJ9Hw1HH4b3GXJ2teGx2TeVyJ4rJ3wovauuSVc6nHU8Qjkb2EZJmN3NEJ0zPb6h7uz14RiRuLrHJIPQ6HilU17QlUilcefQw3EkRDqESxypmB7ZVBxTCp1VGabrVd54XXaQVkHWydznT++G91eGyQLUSLEMc6bYeEkxsuySxc81e10JouSRLXCDL6+TIUNhi/SkozQRo3HqdCsmFk9G/+qrk+ovm4ynm5fff9+O3gvzUrf8RWzjgwwGtKP+ihm+pdszc5RLnNiCbVE7bYVsss3hudSWexapLDdRDkGQ9u45w+ZhPLkFNyHKpZUhXfV4XBvX9SbUhqJ0qrBjr9ggkSexUTIGeIO56YbaIdmTOvVSBuusYmj7k9XlT2k1gbxKQ02pCvL0rfZNQFBkrbaHDNRXAbdkwvDVf1VAGGOqAgAA
+---
+
+# OPEN_DECISIONS (resolved)
+
+Compressed section data stored in frontmatter.

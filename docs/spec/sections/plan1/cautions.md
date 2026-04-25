@@ -1,0 +1,15 @@
+---
+id: section.plan1.cautions
+type: raw-section
+format: plan1
+section: CAUTIONS
+hash: 51975f72a0c3f13b
+length: 724
+compressed_length: 684
+last_updated: '2026-04-25T00:03:49.280200+00:00'
+compressed_data: H4sIAOUE7GkC/02S0W4TMRBF3/mKK/ESpNQkKS0qAUQUqIhKmsCGIvGA5NizyShee2t7t8kbv8Av8iXMJqLwsNKsvffO3LPzFNPJ19VscVu8whfSJmMaqpodRdC+psgV+axdb7nViUYIdT5j30fKeu0Iib0hLEQ1GowunimstC+yNjt8bige0F4ofG/kY2+lhvglThmeyCZE2h5s1JkmzhU5REroiZ9rrFT3TcgaVfAsN+j01LLJHLx0WUZOlUb7EolSkrPfP39VwRLqELrJRTExhqQUd4V605LpbD7eFt/gQ8bs7vra6axOkYdXqNkjrg1+DNXwSr1A78RCbozg0JklrTR+Z70923F+bmRcXKpzNRyL4b/z2MleD9VgDCPgonYotdFWplgVl2oAo70WMNOZwvvFfNlELuXt7kOH475hcX375lwG6BJPZ9CN5QxtYkgJYucTZ24Jluok4wjY1OE+9T1rOeZGWlb6ABc2WJPnjUfpmrQtDt7gQUfPfoPGW8H0mLHIUdjOheBYeu18eHBkN2QhVCy1sMGk/uPPKLuH93381zSkAJ0kq3NrcVCYB69NANmjJEmcddj/zWiPHtNieaTrWMsWKXySYDeSNocd+YRK9kYSiKaU1diKaE1lh132kuNhjK2Yuu7eBO/puBtdajbqyR8zma8w1gIAAA==
+---
+
+# CAUTIONS
+
+Compressed section data stored in frontmatter.

@@ -1,0 +1,15 @@
+---
+id: section.plan.ui
+type: raw-section
+format: plan
+section: UI
+hash: 98f530c64155c160
+length: 548
+compressed_length: 572
+last_updated: '2026-04-25T00:03:49.147761+00:00'
+compressed_data: H4sIAOUE7GkC/y1RS24bMQzd6xRcetqZehLHQasCBpoiaFOkH8TOATgSIwvWZyDRiZ1Flj1AL9F79Cg9STlGNxQlPvK9R/35fX+jKqPZaeCni9adtU7isk2sKibP/pk0rP9n9vPm6+3MnS0Fd9moh2z2VcMDt+6tsgWdBpss7Og4ZCwWKqWay+xq0cCjR3gJcym/4Qqz9YiG5teJqQAa9o/I1MJ1NTgSGEyGQqN2g9Xg3inOWFl4ak5J8ENmzrEr3m25jXhYtPtks3rufLJ00GCi/YGBmGnZr2K2GC76lah7orLoV3VLxOf96jT0slcho/VJlNcdSVNOf3/+qlsfI5UpG/3EOXOLvlEURz5q8CHsKxdkn9Prj5sPUpyWthRAKbkIIAWfxM6AU28LJypxN1WvsojFcpSm80ZFYtRQSFbQbSnItcN6TAZG8VnynkndbW41hOy8wQBjyVJhT7LCWLtXbSQJ45SNU8Z04E5+s/Cckm3UJ0r3NxpOx528UJG5EccK6CgxfFl//ybygIs4IiubZxSu95AyYBm8uCxHmD5d/QMb9suMKQIAAA==
+---
+
+# UI
+
+Compressed section data stored in frontmatter.

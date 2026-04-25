@@ -1,0 +1,15 @@
+---
+id: section.plan.test
+type: raw-section
+format: plan
+section: TEST
+hash: 2af2fe64ae2ad7d2
+length: 506
+compressed_length: 516
+last_updated: '2026-04-25T00:03:49.153121+00:00'
+compressed_data: H4sIAOUE7GkC/z1RO27cMBDteYppAtgIY60NF4naWK7iwFhukHpMjSVa/AjDkRbbbBkgbe4Q5B45ik8SctdIQfANMXyfmb9/dp3ZqWfGQPvEUwurE8ry/iX3KeiXAj9UsGTibqUoV5lkmS8uYSaG2qlsWolxoBZef/7+uHkHR9/o41hO+bM6S7nCEZn6hskuzBQtNQqvrw8toPdgU5hTLOT5xAgTHZ4Scq8hWyaKwIQ9sS53v1jqISRxKSoXhQbGigvRIqO2I4oWzBN83n670xY9xR5ZU0Dn1RKdtLD976GLg4sEd2an4d5sjQYjqUYxZ+OvP369PTwSB5dzEeqYE6uQ7JRbeDDfwZhOw/aLgdvNpjhEIfAuOIHbm08avh48ZtjT05jSVAOgFxcIZnZrbS2GYySfFd2UAaa5ZkEPjx4Pe3bDKHBh2YkrSeDZp32+VLSiL9rFVRSoBeSl7gxchGOdX3PqaNR5Sm0Jxc7KQ+qp6A9Mpxzn3f0D9DyX/P8BAAA=
+---
+
+# TEST
+
+Compressed section data stored in frontmatter.

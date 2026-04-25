@@ -1,0 +1,15 @@
+---
+id: section.plan1.ci_cd
+type: raw-section
+format: plan1
+section: CI_CD
+hash: 08f9ace2bcc1728c
+length: 1029
+compressed_length: 804
+last_updated: '2026-04-25T00:03:49.247792+00:00'
+compressed_data: H4sIAOUE7GkC/31TPY/TQBDt+RUj0SQ62xEFTRBFLrl8SAcEIq6gQWvv2B5lP8zu2lEoEBU9/MT7JYzXzqE7ENWu7Zn3Zt57fg7L3eflag4bCts2h0URyBqfwdpZE9DI+R0FvP/x6w5dgQomN7JCWLdmqIPSOlge9mCsKXCawbUojn3XWviw2O+gYBRBBh19RTnZtIYK68zVxy6eU7AG1uqckc1gdT3fO/JagKbKiYAgsVH2DDkyC0I+QCe+qFGLVCiqjEYTgJ+LI/jCURNg8m24+FnHFZJh0qcNWXOegqSyJFPBSLla3ULn4fD+dqH68jNoK1H5V3+/ggp5HwaWUDqrLwh/iC/fU/9FiaE1HVp75gwObSNy4XH+WPOo5WN5k9wJU9TQOOwIT2zLAQuHwV9ax8cMlqu30CgRGENnsEWhQj2f1fHM4BM6m0p7MoE0grNK9asP8nLzdWukYoFbJg+AhkEKjNJ2JMCzdffffyrSFMAHbNiqd2/2raPyDIEH9BSoQxCt5AIynCiYmEaPL9I0nqnCDtXrmqoaSkEsI1u/2R4Ws+XdDWx3m+0VS7OoelZk6yIT5MoWR8/7W9lGSfqrtvFGJXvOwfC8COdFIs8VN4qTu9bk1h7nvXbpGKTJcpeM4eoBBlET+N+syTBMI7yfJr3f8ae4JHMy/hVkfBBM6k+i4bIxqQ9Vzb9incCKd0P3YMeJQg2DY0OkGenJ33bpbKwPl6W8tkeEgD7AFSfUUOAYvXipySQRuh8m+jjMOvvAkzFrjJRtPZAWFWbPfgNWhGc2CQQAAA==
+---
+
+# CI_CD
+
+Compressed section data stored in frontmatter.

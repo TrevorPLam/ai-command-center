@@ -1,0 +1,15 @@
+---
+id: section.plan1.routes
+type: raw-section
+format: plan1
+section: ROUTES
+hash: e08a5d7611bc2698
+length: 812
+compressed_length: 560
+last_updated: '2026-04-25T00:03:49.233524+00:00'
+compressed_data: H4sIAOUE7GkC/21SwW7bMAy97ysM7KJibV3s6JvnFNiAbvWSbj0zEmNrVSRDolt4Xz9KobNg2IV6fI8UKVLvq+3jj6f7XVPVMNNYuzBYrx6y7WHAq+sTnezg50ntynEpaHBuD/pFPbbsduJdRkRMSKqHlN5CNNvsXcqvGO1hUfdHsO5nxlYD2SDVq1ptII37ANFwhh6BVMdGbsh+3dAYEcwXc11zhZeDC29JPQt6sImuLoS6seYsduBfIbE8xfALNSXVC5D7V75kibZB4lZZpGg5Sj2VY20IHHoDUXUChMf8vNMj18jgCXLJTsBf/oARvcasCBSNIvjkyni47BmL6pHf/Y2N+Cbo+YieS2xWJEpeCUQ9qq0A4Y9oLKiv2Qqzn83A2/tUDuF4gWT9kNROwD983SQeE/fFG/bgFrI6qXZF590bSzf821SbEX+4VRi40ZtEzAbVZmdX8H/kuileXvyJnhwsQwyzN6fM/uyX7Nuqda5y8Hv5gD7NEb/PGJcNEFRTxAMST+Rz4A/58e7umHJ4X02cWJW53777A98tin0sAwAA
+---
+
+# ROUTES
+
+Compressed section data stored in frontmatter.

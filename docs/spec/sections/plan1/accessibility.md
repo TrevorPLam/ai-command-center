@@ -1,0 +1,15 @@
+---
+id: section.plan1.accessibility
+type: raw-section
+format: plan1
+section: ACCESSIBILITY
+hash: 592515f9918a261d
+length: 832
+compressed_length: 764
+last_updated: '2026-04-25T00:03:49.237567+00:00'
+compressed_data: H4sIAOUE7GkC/1VSwW7bMAy97ysI7NKiitd1xQ4pMsBN2sxAuhaxsWIrioKWaEerLBkSnSX7+tFpUWwXUaDE9x7J9x7y+fyqLIvLYlVUP6bQfjw9up/ny7PsLM8V7miiQ6TjDM7P+x1wGPRGPdO+DhgNoGMwEVvVBD0k4Ih9yiAGRx9caBVGixNnt5RBSZ5tJ8ciMDDtGBzW5FQVh8SXaFo6ZDO4DrFL05/BnByqDSUdbU2m3mewdKFGB/PyDnqKUH6Go0QEkRrryYx50bm4vbkbom32oINvbDuFfLW6vb9aPFX5spQKRm9G8Z31otk2ETtSI0vPKtS/SLOiThilqdgp6/uBj9UbSF5VazjaCKdKUSuZgGLLjpR2mJJKvJc7Y2yJVSQnlde368vilf3h5d1Z/6w6YlQ1Jnp8+3MAfwieYgxRBe8CGgnaWf0ssQtDorCl+Piq52mRV/lLVYMu0f9kJzPh27aqQ948yuogsTQJ1gs9Qfl9eTEeYGzqHe5lgFuLsCbULKPrepHhOYGokNF/C2DQtxRFgtuXxIUXlV+rmxWEgZM1Aojesv1DZsz+uwcRnGzw0MmqoSb4MvuUncNvyxuYF4CDsSyitJOLb0cT+SRAWwJDo50WYrCJ7GxiYuin8Ga+RD6FKJ8aHNyIIO0NmoUpAXofBq+lp7FtHYm82ASNKLkQ17qDa1usHSXYoFAx1oU3tJudqoN/Z/XAHLyCgwvHzIsT+xF/Jrw8Fmfv/gKBw/oFQAMAAA==
+---
+
+# ACCESSIBILITY
+
+Compressed section data stored in frontmatter.
