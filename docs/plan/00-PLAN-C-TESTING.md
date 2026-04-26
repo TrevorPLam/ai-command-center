@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-TESTING.md
 document_type: testing_strategy
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 description: Comprehensive testing strategy including coverage targets and AI evaluation thresholds
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-KNOWLEDGE.md]
+related_adrs: [ADR_028]
+related_rules: [TESTC_01, TESTC_02, TESTC_03, TESTC_04, TESTC_05, TESTC04b, TESTC07]
+complexity: high
+risk_level: critical
 ---
 
 # TEST - Testing Strategy

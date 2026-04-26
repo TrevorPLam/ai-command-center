@@ -1,8 +1,11 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-CSP.md
 document_type: component_specification
 module: CrossCutting
 tier: infrastructure
+status: stable
+owner: Security / GRC
 component_count: 1
 dependencies:
 - ~h/useCSPNonce
@@ -15,6 +18,11 @@ performance:
 - Minimal CSP header overhead
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-SHELL.md]
+related_adrs: [ADR_021]
+related_rules: [S6, S7, S11]
+complexity: high
+risk_level: critical
 ---
 
 # C Components|name|mod|type|pats|rules|deps(non-local)|notes

@@ -1,11 +1,19 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-7-FLOWS.md
 document_type: critical_flows
 tier: infrastructure
+status: stable
+owner: Product Engineering
 description: Essential user interaction flows with state management and error handling
 flow_count: 8
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-2-ZV.md, 00-PLAN-5-EP.md]
+related_adrs: [ADR_032, ADR_058, ADR_062, ADR_063, ADR_064, ADR_065, ADR_067, ADR_077, ADR_079, ADR_082]
+related_rules: [XCT_01, XCT_02, XCT_03, FLOWC_01, FLOWC_02, EVNT_01, EVNT_02, SECM_02, SECM_03, GRDL_01, PRIV_01, STKB_01, YJS_01, NYLS_01, CRDB_01, RCLL_01]
+complexity: medium
+risk_level: high
 ---
 
 # FLOWS - Critical User Flows

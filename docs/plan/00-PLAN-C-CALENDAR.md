@@ -1,8 +1,11 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-CALENDAR.md
 document_type: component_specification
 module: Calendar
 tier: feature
+status: stable
+owner: Product Engineering
 component_count: 11
 dependencies:
 - calendarSlice
@@ -25,6 +28,10 @@ performance:
 - Virtualization for large datasets
 last_updated: 2026-04-25
 version: 1.0
+related_adrs: [ADR_082]
+related_rules: [g10, dnd, B3, g4, B1, Q, zod, g9, g10]
+complexity: medium
+risk_level: medium
 ---
 
 # C Components|name|mod|type|pats|rules|deps(non-local)|notes

@@ -1,9 +1,11 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-XCT.md
 document_type: component_specification
 module: CrossCutting
-
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 component_count: 17
 dependencies:
 - ~h/useShouldAnimate
@@ -25,6 +27,11 @@ performance:
 - Channel memory monitoring
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-KNOWLEDGE.md]
+related_adrs: [ADR_054, ADR_058, ADR_062, ADR_063, ADR_064, ADR_065, ADR_067, ADR_076, ADR_077, ADR_079, ADR_082]
+related_rules: [XCT_01, XCT_02, XCT_03, XCT_04, XCT_05, XCT_06, FLOWC_01, FLOWC_02, APIC_01, APIC_02, EVNT_01, EVNT_02, TESTC_01, TESTC_02, TESTC_03, TESTC_04, TESTC_05, OPSR_01, OPSR_02, OPSR_03, FFLG_01, FFLG_02, COST_01, MIGR_01, OBSS_01, OBSS_02, SECM_01, SECM_02, SECM_03, PASS_01, GRDL_01, PRIV_01, STKB_01, COMP_01, YJS_01, NYLS_01, CRDB_01, RLMT_01, UPSC_01, RCLL_01]
+complexity: high
+risk_level: critical
 ---
 
 # C Components|name|mod|type|pats|rules|deps(non-local)|notes

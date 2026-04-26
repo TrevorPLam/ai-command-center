@@ -1,13 +1,44 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-AI.md
 document_type: ai_architecture
 tier: infrastructure
-description: AI system architecture including memory, safety, cost tracking, and observability
+status: stable
+owner: AI/ML Engineering
+description: AI system architecture including Intent Dispatcher, memory, safety, cost tracking, and observability
 last_updated: 2026-04-25
-version: 1.0
+version: 2.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-KNOWLEDGE.md]
+related_adrs: [ADR_004, ADR_028, ADR_030, ADR_035, ADR_036, ADR_058, ADR_063, ADR_065, ADR_067, ADR_077, ADR_079, ADR_082, ADR_086, ADR_087, ADR_089, ADR_093, ADR_094, ADR_095, ADR_096, ADR_097, ADR_098, ADR_099, ADR_100]
+related_rules: [GRDL_01, GRDL_02, PRIV_01, STKB_01, YJS_01, NYLS_01, OTEL_01, OTEL_02]
+complexity: high
+risk_level: critical
 ---
 
-# AI - Artificial Intelligence Architecture
+# AI - Artificial Intelligence Architecture (Revised)
+
+## Intent Dispatcher (New)
+
+The **Intent Dispatcher** is a pure‑code middleware that sits between the AI orchestrator and the tool execution layer. Its job is to route every potential action to the **cheapest, fastest, most reliable executor** that can handle it.
+
+- **Layer 1: Deterministic Code.** Database queries, rule engines, schema validators. Called directly by the orchestrator via a tool definition. No LLM involved in execution.
+- **Layer 2: Lightweight Models (Haiku 4.5 or local).** Simple NLP tasks: extract structured data from an email, classify intent, summarize a short thread.
+- **Layer 3: Powerful Models (Sonnet 4.6 / Opus 4.7).** Complex reasoning, multi‑step planning, open‑ended conversation.
+
+The orchestrator (an LLM itself) selects tools. The dispatcher ensures each tool is executed optimally and that the orchestrator never wastes tokens on work that code can do.
+
+### Example: Conflict Detection Flow
+1. User says "Check for scheduling conflicts."
+2. Orchestrator (Sonnet 4.6) decides to call the `detect_conflicts` tool.
+3. Dispatcher sees `detect_conflicts` is a pure‑code function (overlap algorithm on DB records) → executes it directly, returns result.
+4. Orchestrator formats a natural‑language response from the result.
+**No Opus call. Only one Sonnet call for intent and formatting.**
+
+### Configuration
+- Tool definitions include a `preferred_executor` field (code, haiku, sonnet, opus).
+- Run‑time cost and latency budgets can force fallback (e.g., code if under budget, else haiku).
+
+---
 
 // AI
 MemArch|3-tier: Working(Zustand),Episodic(messages+pgvector,FIFO50,Ebbinghaus decay),Semantic(pgvector+facts,promotion)

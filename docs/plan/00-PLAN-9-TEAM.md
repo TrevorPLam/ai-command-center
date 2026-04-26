@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-9-TEAM.md
 document_type: team_ownership
 tier: strategic
+status: stable
+owner: Executive / HR
 description: RACI matrix, ownership, on-call rotation, escalation paths
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-3-PRD.md]
+related_adrs: []
+related_rules: []
+complexity: low
+risk_level: medium
 ---
 
 # TEAM - Team & Ownership

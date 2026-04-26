@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-8-ARCH.md
 document_type: architecture_specification
 tier: strategic
+status: stable
+owner: Platform Engineering
 description: C4 architecture diagrams, deployment maps, data flow visualizations
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-4-TBL.md, 00-PLAN-5-EP.md, 00-PLAN-6-EXT.md]
+related_adrs: [ADR_001, ADR_002, ADR_003, ADR_004, ADR_005, ADR_006, ADR_007, ADR_008, ADR_011, ADR_012, ADR_014, ADR_016, ADR_017, ADR_018, ADR_019, ADR_020, ADR_021, ADR_022, ADR_023, ADR_024, ADR_025, ADR_027, ADR_028, ADR_030, ADR_031, ADR_032, ADR_033, ADR_034, ADR_035, ADR_036, ADR_054, ADR_058, ADR_062, ADR_063, ADR_064, ADR_065, ADR_067, ADR_076, ADR_077, ADR_079, ADR_082, ADR_083, ADR_084, ADR_085, ADR_086, ADR_087, ADR_088, ADR_089, ADR_090, ADR_091, ADR_092, ADR_093, ADR_094, ADR_095, ADR_096, ADR_097, ADR_098, ADR_099, ADR_100]
+related_rules: [L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12]
+complexity: high
+risk_level: critical
 ---
 
 # ARCH - Architecture

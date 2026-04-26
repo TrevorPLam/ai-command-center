@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-DESIGN-SYSTEM.md
 document_type: design_system
 tier: infrastructure
+status: stable
+owner: Product Engineering
 description: Tailwind v4 OKLCH tokens, motion, LiquidGlass, colour rules
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md]
+related_adrs: []
+related_rules: [DSNOKEYUI, g2, g5, g6, g13]
+complexity: low
+risk_level: low
 ---
 
 #DS

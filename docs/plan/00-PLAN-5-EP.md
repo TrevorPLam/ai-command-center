@@ -1,11 +1,19 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-5-EP.md
 document_type: api_endpoints
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 description: FastAPI endpoint specifications with security and performance patterns
 endpoint_count: 49
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-4-TBL.md, 00-PLAN-8-ARCH.md]
+related_adrs: [ADR_011]
+related_rules: [S9, S14, S15]
+complexity: medium
+risk_level: high
 ---
 
 # EP - API Endpoints

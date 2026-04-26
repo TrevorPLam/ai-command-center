@@ -1,8 +1,11 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-PLATFORM.md
 document_type: component_specification
 module: Platform
 tier: core
+status: stable
+owner: Platform Engineering
 component_count: 11
 dependencies:
 - ~l/env.ts
@@ -20,6 +23,11 @@ performance:
 - Agent analytics
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-SHELL.md]
+related_adrs: []
+related_rules: [g10]
+complexity: medium
+risk_level: medium
 ---
 
 # C Components|name|mod|type|pats|rules|deps(non-local)|notes

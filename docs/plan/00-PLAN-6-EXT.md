@@ -1,11 +1,19 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-6-EXT.md
 document_type: external_services
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 description: Third-party service integrations with security and performance patterns
 integration_count: 12
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-8-ARCH.md]
+related_adrs: [ADR_004, ADR_005, ADR_006, ADR_007, ADR_017, ADR_019, ADR_020, ADR_027, ADR_035, ADR_058, ADR_063, ADR_067, ADR_076, ADR_077, ADR_083, ADR_084, ADR_086, ADR_087, ADR_088, ADR_089, ADR_090, ADR_091, ADR_092, ADR_093, ADR_094, ADR_095, ADR_096, ADR_097, ADR_098, ADR_099, ADR_100]
+related_rules: [LITELLM_PIN, ORVAL_PIN, MCP_INSPECTOR_DEVSEC, Y_SWEET_SELFHOST, NO_CRSQLITE, NO_REPLICACHE, MCP_SDK_AUDIT, GRANT_EXPIRED_WEBHOOK, EDGE_NO_DB, OPENAI_RESPONSES_MIGRATE, TRIVYISOLATION, GRYPEREPLACE]
+complexity: high
+risk_level: critical
 ---
 
 # EXT - External Service Integrations

@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-KNOWLEDGE.md
 document_type: knowledge_base
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 description: Core infrastructure patterns and architectural knowledge
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md]
+related_adrs: [ADR_001, ADR_002, ADR_003, ADR_004, ADR_005, ADR_006, ADR_007, ADR_011, ADR_012, ADR_014, ADR_016, ADR_017, ADR_018, ADR_019, ADR_020, ADR_021, ADR_022, ADR_023, ADR_024, ADR_025, ADR_027, ADR_028, ADR_030, ADR_031, ADR_032, ADR_033, ADR_034, ADR_035, ADR_036, ADR_054, ADR_058, ADR_062, ADR_063, ADR_064, ADR_065, ADR_067, ADR_076, ADR_077, ADR_079, ADR_082, ADR_083, ADR_084, ADR_085, ADR_086, ADR_087, ADR_088, ADR_089, ADR_090, ADR_091, ADR_092, ADR_093, ADR_094, ADR_095, ADR_096, ADR_097, ADR_098, ADR_099, ADR_100]
+related_rules: [S1-S21, GRDL_01, GRDL_02, PRIV_01, STKB_01, YJS_01, NYLS_01, OTEL_01, OTEL_02]
+complexity: high
+risk_level: critical
 ---
 
 # KV - Knowledge Base

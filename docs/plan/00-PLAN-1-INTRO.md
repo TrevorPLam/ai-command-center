@@ -397,33 +397,47 @@ Stripe_Markup|30%  Compliance_Refresh|quarterly  OTel_Version|1.39.0
 Upload_CA_Version|≥1.4.x freshclam hourly  RBAC_Target|100% HARD rule→control  MCP_OAuth_Target|≥90%
 
 #MIL+TSK
-// Milestones
-Foundation|Jan-Apr2026  Dashboard|Apr-Jun2026  Chat|Jun-Aug2026(Canvas active)
-Workflows|Aug-Sep2026  Projects|Oct-Dec2026  Calendar|Jan-Feb2027
-Phase2|H2 2027: ContextualRetrieval,AgentCard ecosystem,GraphRAG,PragmaticDnD,ReactCompiler opt
-Spec_Framework|Q32026: frontmatter parser,tier classifier,9-section validator
-CrossCutting_P1|Q32026: motion,optimistic,realtime-streaming,search specs
-CrossCutting_P2|Q42026: offline-sync,auth-org,uploads,sandbox-csp,recurrence specs
-FlowContracts|Q42026: workflow SM,optimistic transitions,Loading/Error/Empty
-APIContracts|Q42026: OAI3.1 source of truth,OR codegen,SC CI gate
-EventContracts|Q42026: SSE/RT/Webhook validators,IC strategy
-TestPlans|Q12027: unit/component/integration/security/AI eval generators+CI gates
-Ops_P1|Q32026: incident response,AI failure runbook,SB outage runbook
-Ops_P2|Q42026: feature flags+kill switch,cost control,migrations,observability
-Sec_P1|Q32026: MCP security(OWASP Top10+MS AGT),SSRF prevention
-Sec_P2|Q42026: passkeys/WebAuthn,desktop(Tauri),mobile notif,AI guardrails,privacy-AI
-Intg_P1|Q42026: NY v3 upsert-first+Sync Policy,ST token billing(@stripe/ai-sdk)
-Intg_P2|Q12027: offline-first sync eval(cr-sqlite/ElectricSQL),OTel GenAI root span
-Data_P1|Q42026: Yjs lifecycle(GC+undo+snapshots),RT limits monitoring,CA server-side
-Data_P2|Q12027: recurrence DST testing,compliance-as-code evidence pipeline
-// Tasks (status|id|notes)
-in-progress|C078|ArtifactSandbox CSP revoke
-in-progress|W012|ExecutionViewer blue pulse
-pending|C081|CollabCanvas YS token integration
-pending|P101|Bulk create projects from template
-pending|B015|Recurring Calendar shared engine
-pending|A030|WeekDay keyboard reschedule
-pending|E050|Snooze modal recurring rules
+// Revised Milestones for Phased Delivery
+
+## Phase 0: Foundation + Single App (current)
+- Auth / org creation
+- Dashboard shell with notification list
+- Calendar app (manual events)
+- Basic Chat with MCP tool calling
+- All data scoped to org_id with RLS
+
+### Core tasks for Phase 0
+in-progress|F001|Full-stack plumbing: Vite→FastAPI→Supabase (RLS verified)
+pending|F002|Calendar month view with event CRUD
+pending|F003|Chat page with agent tool use (create/modify calendar events)
+pending|F004|Dashboard notification feed (static/polling)
+pending|F005|Deploy on Fly.io + Vercel
+
+## Phase 1: Conflict Agent MVP (next)
+- Project board app (tasks, due dates)
+- Conflict detection agent (calendar + projects)
+- Dashboard notification with action buttons
+- Stripe billing
+- External calendar sync (read-only)
+- Intent Dispatcher v1
+
+### Core tasks for Phase 1
+pending|C001|Project board with tasks
+pending|C002|Conflict rule engine (deterministic overlap check)
+pending|C003|Agent orchestration: detect conflict → notify → execute action
+pending|C004|Chat integration: ask agent to find/resolve conflicts
+pending|C005|Stripe subscription and metering
+pending|C006|Google Calendar / Outlook read-only integration
+
+## Phase 2: Email + Proactive (future)
+pending|E001|Nylas email integration
+pending|E002|Auto-trigger conflict detection on incoming reschedule email
+pending|E003|Configurable agent proactivity per plan
+
+## Phase 3+: Full Suite Expansion (future)
+// The original milestones (Workflows, Projects, Calendar, etc.) are preserved as future targets.
+
+// Existing #LEX, #DICT, #C, #RULES, #VER, #ROUTE, #KV, #RUNBOOKS, #TEST, #BUDG sections remain unchanged.
 // Additional pending tasks (Apr 2026)
 pending|P099|dnd-kit core lock verification (no migration)
 pending|P100|LiteLLM upgrade to >=1.83.7 + cosign

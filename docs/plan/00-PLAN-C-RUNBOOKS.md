@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-RUNBOOKS.md
 document_type: operational_runbooks
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 description: Critical operational procedures and incident response playbooks
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-KNOWLEDGE.md]
+related_adrs: [ADR_062, ADR_063, ADR_064, ADR_065]
+related_rules: [OPSR_01, OPSR_02, OPSR_03]
+complexity: high
+risk_level: critical
 ---
 
 # RUNBOOKS - Operational Procedures

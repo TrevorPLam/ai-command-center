@@ -1,8 +1,11 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-CHAT.md
 document_type: component_specification
 module: Chat
 tier: core
+status: stable
+owner: Product Engineering
 component_count: 22
 dependencies:
 - ~p/ChatPage
@@ -21,6 +24,10 @@ performance:
 - Prefetching
 last_updated: 2026-04-25
 version: 1.0
+related_adrs: [ADR_035, ADR_036, ADR_054, ADR_086]
+related_rules: [P2, g4, FT, B10, B9, g10]
+complexity: high
+risk_level: critical
 ---
 
 # C Components|name|mod|type|pats|rules|deps(non-local)|notes

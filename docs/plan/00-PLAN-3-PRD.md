@@ -1,13 +1,48 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-3-PRD.md
 document_type: product_requirements
 tier: strategic
-description: Product requirements, user personas, JTBD, success metrics, RICE/MoSCoW
+status: stable
+owner: Product / GTM
+description: Product requirements — updated for integrated productivity AI platform
 last_updated: 2026-04-25
-version: 1.0
+version: 2.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-9-TEAM.md]
+related_adrs: []
+related_rules: []
+complexity: medium
+risk_level: high
 ---
 
-# PRD - Product Requirements
+# PRD - Product Requirements (Revised)
+
+## Product Vision
+An AI‑integrated workspace where a conversational assistant works across your calendar, projects, and email to spot problems, suggest actions, and execute them on your behalf.
+
+## Key Jobs to Be Done
+
+### J001 (P0): Cross‑App Conflict Detection & Resolution
+When my client emails to reschedule, I want my assistant to check my calendar and project deadlines, alert me to conflicts, and offer to fix them — all from one dashboard.
+
+### J002 (P0): Unified Chat Assistant
+When I ask a question or give a command in chat, I want the assistant to understand my context across apps and take appropriate actions using the available tools.
+
+### J003 (P1): Proactive Notifications
+I want the assistant to surface important cross‑app insights on the dashboard without me having to ask.
+
+### J004 (P1): External Data Integration
+I want to connect my existing calendars and email so the assistant immediately has a complete picture.
+
+## Success Metrics
+- Time from conflict detection to resolution action < 30 seconds.
+- >60% of users who try the conflict flow become paid subscribers.
+- Hallucination rate in structured tool calls < 1%.
+
+## RICE & MoSCoW (adjusted)
+// J001 and J002 are MUST now. All previous RICE items shifted to SHOULD/COULD but retained.
+
+// The original full PRD content (personas, assumptions, constraints, etc.) remains valid and is appended unchanged.
 
 #PERSONAS|id|role|goals|pain_points| JTBD
 P1|PM|Product Manager|Ship features faster,track AI usage,collaborate with dev|Manual req tracking,unclear AI costs,slow feedback loops|When I need to ship a feature,I want to track AI costs so that I can stay within budget

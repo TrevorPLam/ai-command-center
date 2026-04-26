@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-2-ZV.md
 document_type: zustand_slices
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 description: Zustand store slice configurations with persistence settings
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-DEPENDENCIES.md]
+related_adrs: [ADR_003, ADR_034]
+related_rules: [ZUSTANDCIRCULAR, B1, B5, B6, B7]
+complexity: low
+risk_level: medium
 ---
 
 # ZV - Zustand Slices

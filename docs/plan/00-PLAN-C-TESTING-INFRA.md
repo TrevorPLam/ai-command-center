@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-TESTING-INFRA.md
 document_type: testing_infrastructure
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 description: Vitest, MSW, Playwright, pgTAP, contract testing, CI matrix
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-TESTING.md]
+related_adrs: [ADR_058]
+related_rules: [TESTC_01, TESTC_02, TESTC_03, TESTC_04, TESTC_05, TESTC04b, TESTC07]
+complexity: high
+risk_level: critical
 ---
 
 #TestInfra

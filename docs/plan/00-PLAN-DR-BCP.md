@@ -1,7 +1,18 @@
 ---
-steering: TO PARSE
+steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-DR-BCP.md
 document_type: disaster_recovery
+tier: infrastructure
+status: stable
+owner: Platform Engineering
+description: Disaster recovery procedures and business continuity planning
 last_updated: 2026-04-25
+version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-8-ARCH.md]
+related_adrs: []
+related_rules: []
+complexity: medium
+risk_level: high
 ---
 
 # DR/BCP

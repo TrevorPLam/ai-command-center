@@ -1,11 +1,19 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-4-TBL.md
 document_type: database_schema
 tier: infrastructure
+status: stable
+owner: Data Platform
 description: PostgreSQL database table schemas with RLS and multi-tenant patterns
 table_count: 63
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-8-ARCH.md]
+related_adrs: [ADR_002, ADR_033]
+related_rules: [P3, S5, S19]
+complexity: high
+risk_level: critical
 ---
 
 # TBL - Database Tables

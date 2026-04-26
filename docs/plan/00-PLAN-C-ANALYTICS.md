@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-ANALYTICS.md
 document_type: analytics_spec
 tier: business
+status: stable
+owner: Product / GTM
 description: PostHog event taxonomy, Group Analytics, OpenFeature integration
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-OBSERVABILITY.md]
+related_adrs: [ADR_062]
+related_rules: []
+complexity: low
+risk_level: medium
 ---
 
 #Analytics

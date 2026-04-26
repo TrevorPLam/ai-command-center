@@ -1,10 +1,18 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-SANITIZATION.md
 document_type: sanitization_spec
 tier: security
+status: stable
+owner: Security / GRC
 description: DOMPurify profiles, ClamAV, Zod sanitisation, SSRF+XSS test matrix
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-KNOWLEDGE.md]
+related_adrs: [ADR_017, ADR_027]
+related_rules: [S10, S16, SECM_03, UPSC_01]
+complexity: high
+risk_level: critical
 ---
 
 #San

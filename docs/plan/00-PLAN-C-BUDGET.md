@@ -1,8 +1,11 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-BUDGET.md
 document_type: component_specification
 module: Budget
 tier: feature
+status: stable
+owner: Product Engineering
 component_count: 7
 dependencies:
 - budgetSlice
@@ -26,6 +29,10 @@ performance:
 - Virtualization for large lists
 last_updated: 2026-04-25
 version: 1.0
+related_adrs: [ADR_063]
+related_rules: [g10, g27, P2, P3, dnd, B3, LCP]
+complexity: medium
+risk_level: medium
 ---
 
 #C Components|name|mod|type|pats|rules|deps(non-local)|notes

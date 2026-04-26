@@ -1,8 +1,11 @@
 ---
 steering: TO PARSE - READ INTRO
+file_name: 00-PLAN-C-SECRETS.md
 document_type: component_specification
 module: CrossCutting
 tier: infrastructure
+status: stable
+owner: Platform Engineering
 component_count: 1
 dependencies:
 - Doppler
@@ -15,6 +18,11 @@ performance:
 - <100ms secret fetch
 last_updated: 2026-04-25
 version: 1.0
+dependencies: [00-PLAN-1-INTRO.md, 00-PLAN-C-KNOWLEDGE.md]
+related_adrs: [ADR_063]
+related_rules: [S8, SECREC01]
+complexity: high
+risk_level: critical
 ---
 
 # C Components|name|mod|type|pats|rules|deps(non-local)|notes
