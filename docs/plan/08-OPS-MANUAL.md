@@ -15,7 +15,7 @@ This document describes the operational procedures including disaster recovery, 
   - LCP ≤ 800 ms at p75
   - INP ≤ 200 ms
 - (HARD) Multi‑burn‑rate alerting: P1 incidents fire if burn rate > 2% in 1 hour + 5 minutes; P2 fires at 6‑hour window; P3 at 3‑day window.
-- (HARD) Error budget actions: at 50% consumed – notify; at 80% – feature freeze; at 100% – declare incident.
+- (HARD) Error budget actions: at 50% consumed - notify; at 80% - feature freeze; at 100% - declare incident.
 
 ---
 
@@ -506,7 +506,7 @@ Nylas uses a two-tier failure state model for webhook endpoints:
 - Triggered when Nylas receives 95% non-200 responses or non-responses over 15 minutes
 - While in failing state, Nylas continues delivering webhook notifications for 72 hours with exponential backoff
 - Email notification sent when endpoint transitions to failing state
-- Add `@nylas.com` to email allowlist to prevent notifications from going to spam
+- Add ``@nylas`.com` to email allowlist to prevent notifications from going to spam
 
 **Failed State (72-hour window)**
 - Triggered when 95% non-200 responses or non-responses persist over 72 hours

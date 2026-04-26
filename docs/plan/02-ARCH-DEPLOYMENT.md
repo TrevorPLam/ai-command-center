@@ -1,12 +1,12 @@
-# Service Deployment Details
+# Service deployment details
 
 This document contains detailed deployment configurations and implementation specifications for external services integrated into the AI Command Center platform. For high-level architecture, see [02-ARCH-OVERVIEW.md](02-ARCH-OVERVIEW.md).
 
 ---
 
-## Y-Sweet Deployment
+## Y-Sweet deployment
 
-### Fly.io Deployment Patterns
+### Fly.io deployment patterns
 
 **Docker Image:**
 
@@ -81,10 +81,10 @@ fly deploy
 
 ```bash
 # Run with local filesystem storage
-npx y-sweet@latest serve /path/to/data
+npx y-sweet`@latest` serve /path/to/data
 
 # Run with S3 storage
-npx y-sweet@latest serve s3://my-bucket/path
+npx y-sweet`@latest` serve s3://my-bucket/path
 ```
 
 ### Y-Sweet Limits
@@ -106,7 +106,7 @@ npx y-sweet@latest serve s3://my-bucket/path
 
 ---
 
-## LiveKit Integration
+## LiveKit integration
 
 ### Voice AI Pipeline Architecture
 
@@ -187,8 +187,9 @@ npx y-sweet@latest serve s3://my-bucket/path
 
 **Redis Configuration:**
 
+livekit.yaml -- distributed deployment configuration
+
 ```yaml
-# livekit.yaml — distributed deployment configuration
 redis:
   address: redis-cluster:6379
   username: livekit

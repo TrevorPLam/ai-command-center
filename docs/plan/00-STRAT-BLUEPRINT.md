@@ -51,7 +51,9 @@ See the authoritative phased plan in **[01-PLAN-MILESTONES.md](01-PLAN-MILESTONE
 A **pure‑code decision layer** in Domain C (AI Core) that routes every potential AI call:
 
 1. **Deterministic tools** that can be called directly by the orchestrator without an LLM for that specific sub‑step (e.g., check a database for conflicts).
+
 2. **Lightweight models** for simple NLP tasks (email parsing, keyword extraction).
+
 3. **Powerful models** for complex reasoning, conversational chat, and multi‑step planning.
 
 The orchestrator itself (an LLM) uses this dispatcher to execute tools efficiently.
@@ -66,7 +68,7 @@ A comprehensive review of each major technology component confirms the blueprint
 
 ## Critical analysis of original organization
 
-The original 18-pillar linear structure (Pillars 0–17) suffered from structural weaknesses that led to the six-domain reorganization. For detailed analysis of the original structure and the rationale for reorganization, see **[docs/archive/ORGANIZATION-ANALYSIS.md](../archive/ORGANIZATION-ANALYSIS.md)**.
+The original 18-pillar linear structure (Pillars 0-17) suffered from structural weaknesses that led to the six-domain reorganization. For detailed analysis of the original structure and the rationale for reorganization, see **[docs/archive/ORGANIZATION-ANALYSIS.md](../archive/ORGANIZATION-ANALYSIS.md)**.
 
 ---
 

@@ -1,10 +1,10 @@
-# Horizon Scanning
+# Horizon scanning
 
 This document tracks emerging technologies, standards, and market trends that may impact the AI Command Center platform. It supports strategic planning and technology roadmap decisions.
 
 ---
 
-## Emerging Technologies
+## Emerging technologies
 
 ### Temporal API
 
@@ -13,6 +13,7 @@ This document tracks emerging technologies, standards, and market trends that ma
 **Description**: A modern JavaScript API for date and time handling that addresses the limitations of the current Date object.
 
 **Potential Impact**:
+
 - Could replace or complement Temporal.ZonedDateTime usage
 - May simplify time zone handling across the platform
 - Evaluation needed for migration path
@@ -28,6 +29,7 @@ This document tracks emerging technologies, standards, and market trends that ma
 **Description**: Pattern matching syntax for JavaScript, similar to Rust's match expressions.
 
 **Potential Impact**:
+
 - Could simplify complex conditional logic in agent orchestration
 - May improve code readability in Domain C (AI Core)
 - Evaluation needed for adoption feasibility
@@ -43,6 +45,7 @@ This document tracks emerging technologies, standards, and market trends that ma
 **Description**: WebGPU provides low-level access to modern GPUs for web applications.
 
 **Potential Impact**:
+
 - Could enhance local model execution (Domain C.7)
 - May enable more powerful client-side AI processing
 - Potential for improved inference performance
@@ -58,6 +61,7 @@ This document tracks emerging technologies, standards, and market trends that ma
 **Description**: Quantum computing promises exponential speedups for certain computational problems.
 
 **Potential Impact**:
+
 - Long-term: Could revolutionize cryptographic security (Domain E)
 - Long-term: May enable new AI model architectures
 - Current impact: Minimal, but worth monitoring for strategic planning
@@ -143,13 +147,13 @@ This document tracks emerging technologies, standards, and market trends that ma
 
 - **Scenario 1**: Local models become dominant over cloud models
   - Response: Accelerate Domain C.7 (Local Model Infrastructure)
-  
+
 - **Scenario 2**: New AI protocol supersedes MCP/A2A
   - Response: Evaluate adoption, plan migration path
-  
+
 - **Scenario 3**: Regulatory requirements tighten significantly
   - Response: Enhance Domain E (Security & Compliance)
-  
+
 - **Scenario 4**: Major cloud provider launches competing product
   - Response: Emphasize differentiation, consider partnership opportunities
 

@@ -8,7 +8,7 @@ This document describes the complete AI architecture including intent dispatcher
 
 These control which models are used, how they are secured, and how their performance is evaluated.
 
-### Model Selection & Routing
+### Model selection & routing
 - (HARD) Default orchestrator: Gemma 4 E2B (local, native tool calling). Fallback: Qwen3.5 4B. Cloud models are premium only.
 - (HARD) Free‑tier users are restricted to local models only; AI must never make cloud API calls for them.
 - (HARD) Claude Sonnet 4.6 is the default cloud model when authorised; Opus 4.7 for complex tasks.
@@ -43,7 +43,7 @@ These control which models are used, how they are secured, and how their perform
 - (HARD) Chat cache hit rate target >70%, RAG cache hit rate >90%.
 - (HARD) Contextual Retrieval activated only when corpus >50K chunks, precision improvement >15%, and cache hit rate >60%.
 
-### Local Model Lifecycle
+### Local model lifecycle
 - All local models must be registered in the Model Trust Registry before use in agentic workflows.
 - Model quantisation: default GGUF Q4_K_M (<4.5 GB RAM); evaluated weekly for tool‑calling pass rate.
 - The Verifier cascade (Phi‑4‑mini‑reasoning) checks reasoning, schema validity, and budget before an action is committed (Phase 1).
@@ -52,7 +52,7 @@ These control which models are used, how they are secured, and how their perform
 
 ## Section 1: AI Architecture
 
-### Intent Dispatcher
+### Intent dispatcher
 
 The **Intent Dispatcher** is a pure-code middleware that sits between the AI orchestrator and the tool execution layer. Its job is to route every potential action to the **cheapest, fastest, most reliable executor** that can handle it.
 
@@ -62,20 +62,20 @@ The **Intent Dispatcher** is a pure-code middleware that sits between the AI orc
 
 The orchestrator itself (an LLM) uses this dispatcher to execute tools efficiently.
 
-### Local-First Gateway Extension
+### Local-first gateway extension
 
 The multi-provider AI gateway is extended with a **local execution tier** as the default route. Every model definition now includes:
 - `execution_location`: `local` | `cloud` | `hybrid`
 - `privacy_tier`: `sovereign` | `shared` | `third_party`
 
 **Default routing policy (Phase 0):**
-1. Gemma 4 E2B/E4B (local) – orchestrator
-2. Qwen3.5 4B (local) – tool executor, 97.5% tool-calling accuracy
-3. Phi-4-mini-reasoning (local) – verifier (Phase 1)
-4. Claude Sonnet 4.6 (cloud) – paid tier only, for tasks exceeding local capability
-5. Claude Opus 4.7 (cloud) – premium tier only, for complex multi-step reasoning
+1. Gemma 4 E2B/E4B (local) - orchestrator
+2. Qwen3.5 4B (local) - tool executor, 97.5% tool-calling accuracy
+3. Phi-4-mini-reasoning (local) - verifier (Phase 1)
+4. Claude Sonnet 4.6 (cloud) - paid tier only, for tasks exceeding local capability
+5. Claude Opus 4.7 (cloud) - premium tier only, for complex multi-step reasoning
 
-### Verifier Cascade
+### Verifier cascade
 
 Before any agentic action is committed, a lightweight local verifier model (Phi-4-mini-reasoning) performs a structured check:
 1. **Reasoning soundness**: Was the orchestrator's plan coherent?
@@ -84,7 +84,7 @@ Before any agentic action is committed, a lightweight local verifier model (Phi-
 
 All verifier decisions are logged to `audit_logs`. Verifier model is evaluated monthly; if accuracy drops below 90%, it is retrained or replaced.
 
-### Updated Cost Model
+### Updated cost model
 
 | Execution Mode | Cost Model | Marginal Cost | Used By |
 |----------------|------------|---------------|---------|
@@ -92,7 +92,7 @@ All verifier decisions are logged to `audit_logs`. Verifier model is evaluated m
 | Self-hosted GPU (vLLM) | Fixed: GPU amortization + electricity | ~$0.0001/1K tokens | Team tier with dedicated hardware |
 | Cloud API (Claude/Gemini) | Variable: per-token pricing | $3-$75/1M tokens | Paid tiers only |
 
-### Model Trust Registry
+### Model trust registry
 
 A structured catalog of all models (local and cloud) with attested capabilities:
 - Tool-calling pass rate (from automated test suite)
@@ -103,7 +103,7 @@ A structured catalog of all models (local and cloud) with attested capabilities:
 
 All models must be registered before they can participate in agentic workflows. The registry is part of Agent Studio.
 
-### Example: Conflict Detection Flow
+### Example: Conflict detection flow
 1. User says "Check for scheduling conflicts."
 2. Orchestrator (Sonnet 4.6) decides to call the `detect_conflicts` tool.
 3. Dispatcher sees `detect_conflicts` is a pure-code function (overlap algorithm on DB records) → executes it directly, returns result.
@@ -118,18 +118,18 @@ All models must be registered before they can participate in agentic workflows. 
 
 ## Section 2: Memory Architecture
 
-### Working Memory (Zustand)
+### Working memory (Zustand)
 - Short-term context storage
 - Session-specific state
 - Fast access, limited capacity
 
-### Episodic Memory (PostgreSQL + pgvector)
+### Episodic memory (PostgreSQL + pgvector)
 - Message history with embeddings
 - FIFO50 eviction policy
 - Ebbinghaus decay algorithm
 - Conversation context retrieval
 
-### Semantic Memory (pgvector + Facts)
+### Semantic memory (pgvector + Facts)
 - Long-term knowledge storage
 - Fact promotion system
 - Vector similarity search
@@ -139,12 +139,12 @@ All models must be registered before they can participate in agentic workflows. 
 
 ## Section 3: Evaluation Pipeline & CI Gates
 
-### Continuous Integration
+### Continuous integration
 - Vitest-based evaluation framework
 - Custom evaluation metrics
 - Automated CI gates
 
-### Evaluation Data (Golden Dataset Curation)
+### Evaluation data (Golden dataset curation)
 
 Golden datasets are curated collections of high-quality data (often question-answer pairs) that serve as benchmarks for model performance evaluation. They contain human-validated "ground truth" labels against which LLM outputs are measured.
 
@@ -175,16 +175,16 @@ Golden datasets are curated collections of high-quality data (often question-ans
 - Dataset quality: Evaluation quality hinges on dataset quality; careful curation crucial
 - Data diversity: Essential for covering wide range of scenarios, but resource-intensive to achieve
 
-### Performance Thresholds
+### Performance thresholds
 - **Accuracy**: ≥base-2% (blocking)
 - **Latency**: ≤base+10% (warning), >20% (blocking)
 - **Tokens**: ≤base+15% (warning)
 - **Tool Precision**: ≥90% (blocking), <85% (fail)
 - **Hallucination Rate**: ≤2% (blocking)
 
-### Test Outcomes
+### Test outcomes
 
-#### Three-Valued Verdicts
+#### Three-valued verdicts
 
 For non-deterministic AI agent testing, traditional binary pass/fail verdicts are insufficient. AgentAssay introduces three-valued probabilistic outcomes backed by statistical confidence intervals.
 
@@ -194,7 +194,7 @@ For non-deterministic AI agent testing, traditional binary pass/fail verdicts ar
 - **Fail**: Upper bound of confidence interval < threshold
 - **Inconclusive**: Confidence interval straddles threshold (insufficient evidence)
 
-#### Inconclusive Rate Analysis
+#### Inconclusive rate analysis
 
 **Causes of Inconclusive Results**:
 
@@ -217,7 +217,7 @@ For non-deterministic AI agent testing, traditional binary pass/fail verdicts ar
 - **True Pass Rate Guarantee**: p ≥ θ - ε(n) with probability ≥ 1-α, where ε(n) = O(1/√n)
 - **Confidence Interval Method**: Wilson score bounds (or Clopper-Pearson for formal bounds)
 
-#### Mitigation Strategies
+#### Mitigation strategies
 
 **1. Sequential Probability Ratio Test (SPRT)**
 
@@ -270,21 +270,21 @@ Inconclusive verdicts map to manual review rather than automatic blocking:
 
 ## Section 4: Safety & Guardrails
 
-### Three-Layer Protection
+### Three-layer protection
 
-#### Input Layer
+#### Input layer
 - PII detection and filtering
 - Jailbreak attempt detection
 - Toxicity screening
 - Content sanitization
 
-#### Output Layer
+#### Output layer
 - Hallucination detection
 - Safety validation
 - Schema compliance
 - Content filtering
 
-#### Runtime Layer
+#### Runtime layer
 - Tool authorization
 - Cost threshold enforcement
 - Resource limits
@@ -294,31 +294,31 @@ Inconclusive verdicts map to manual review rather than automatic blocking:
 
 ## Section 5: Cost Attribution & Prompt Caching
 
-### Multi-Level Tracking
+### Multi-level tracking
 - Organization level
 - Team level
 - User level
 - Model level
 
-### Alerting System
+### Alerting system
 - 15% usage → admin alert
 - 5% usage → admin + engineering alert
 - 0% usage → 429 hard stop + CostLimitBanner
 
-### Billing Integration
+### Billing integration
 - x-litellm-tags for attribution
 - ai_cost_log TimescaleDB hypertable
 - Stripe token meter integration
 - 30% markup for automation
 
-### Prompt Caching
+### Prompt caching
 
-#### Cache Control
+#### Cache control
 - Anthropic cache_control headers
 - OpenAI automatic prefix caching
 - Static-first structure optimization
 
-#### Performance Monitoring
+#### Performance monitoring
 - Chat cache hit rate target: >70%
 - RAG cache hit rate target: >90%
 - Cache efficiency analytics
@@ -327,7 +327,7 @@ Inconclusive verdicts map to manual review rather than automatic blocking:
 
 ## Section 6: Observability & Privacy
 
-### OpenTelemetry Integration
+### OpenTelemetry integration
 - OTel v1.40.0 GenAI specification (released Feb 2026, commit 7fe5373)
 - **Status**: Experimental/Development (as of March 2026)
 - DataPrepper root span propagation
@@ -337,7 +337,7 @@ Inconclusive verdicts map to manual review rather than automatic blocking:
 - **Transition Plan**: Will be updated to include stable version before GenAI conventions are marked as stable (no timeline provided)
 - **Production Readiness**: Not production-ready for stable adoption; experimental conventions suitable for testing and early adoption with opt-in
 
-### Required Attributes
+### Required attributes
 - gen_ai.system
 - gen_ai.model
 - gen_ai.usage.input_tokens
@@ -345,28 +345,28 @@ Inconclusive verdicts map to manual review rather than automatic blocking:
 - gen_ai.usage.finish_reason
 - gen_ai.usage.cost.usd
 
-### Conversation Tracking
+### Conversation tracking
 - **Attribute**: `gen_ai.conversation.id` (string type)
 - **Purpose**: Unique identifier for a conversation (session, thread), used to store and correlate messages within this conversation
 - **Example**: `conv_5j66UpCpwteGg4YSxUnt7lPY`
 - **Usage**: Set this attribute on all spans related to the same conversation to enable correlation across multiple LLM calls and tool executions
 
-### Privacy Protection
+### Privacy protection
 - PII redaction at collector level
 - Sensitive data filtering
 - Compliance with data protection regulations
 
-### Training Controls
+### Training controls
 - Organization-level opt-out flags
 - Data segregation for opted-out organizations
 - Differential privacy (ε configurable)
 
-### Security Measures
+### Security measures
 - Trusted Execution Environment (TEE) for sensitive data
 - Annual Privacy Impact Assessment (PIA)
 - GDPR compliance measures
 
-### Data Handling
+### Data handling
 - Training data isolation
 - Audit trail for all AI operations
 - Secure data lifecycle management
@@ -375,14 +375,14 @@ Inconclusive verdicts map to manual review rather than automatic blocking:
 
 ## Section 7: Local Model Infrastructure
 
-### Serving Stack (Phase 0)
+### Serving stack (Phase 0)
 
-- **Primary**: Ollama (≥0.5.0) – OpenAI-compatible API, native tool calling support, model management, Metal/CUDA/CPU backends. 52M+ monthly downloads.
-- **Backend**: llama.cpp (March 2026, 100K GitHub stars) – GGUF quantization, speculative decoding, CPU-optimized.
+- **Primary**: Ollama (≥0.5.0) - OpenAI-compatible API, native tool calling support, model management, Metal/CUDA/CPU backends. 52M+ monthly downloads.
+- **Backend**: llama.cpp (March 2026, 100K GitHub stars) - GGUF quantization, speculative decoding, CPU-optimized.
 - **Orchestration**: Docker Compose for reproducible local environments. Bifrost (model gateway) evaluated for Phase 2.
 - **Fallback**: LiteLLM proxy already routes cloud API calls when local model is unavailable or insufficient.
 
-### Model Registry
+### Model registry
 
 Every local model is tracked with the following metadata:
 
@@ -408,13 +408,13 @@ Every local model is tracked with the following metadata:
 | Phi-4-mini-reasoning | 3.8B | Prompt | Verifier (Phase 1) |
 | Llama4-7B | 7B (MoE) | Prompt | High-throughput chat (optional) |
 
-### Quantization Policy
+### Quantization policy
 
 - **Default format**: GGUF Q4_K_M (memory <4.5GB, human reading speed on CPU).
 - **Migration path**: When llama.cpp integrates ternary support (FairyFuse), models will be re-quantized and re-registered. The registry tracks quantization format per model version.
 - **Non-uniform quantization**: QIGen (Apache-2.0) available if per-layer sensitivity optimization is needed for specific models.
 
-### Hardware Tiers
+### Hardware tiers
 
 | Tier | Requirements | Typical Setup | Target Models |
 |------|--------------|---------------|---------------|
@@ -424,7 +424,7 @@ Every local model is tracked with the following metadata:
 
 **NUMA consideration**: For Phase 0, deploy on single-NUMA-node machines (Fly.io shared-cpu-1x is fine). For Phase 2+, ArcLight NUMA-aware orchestration may be configured for multi-socket servers.
 
-### Model Lifecycle Pipeline
+### Model lifecycle pipeline
 
 1. **Pull**: Download model from HuggingFace/Ollama registry with SHA-256 verification.
 2. **Quantize** (if needed): Convert to GGUF Q4_K_M using llama.cpp tools.
@@ -433,7 +433,7 @@ Every local model is tracked with the following metadata:
 5. **Update**: New model version → parallel deployment → capability re-benchmark → traffic shift → deprecate old version after grace period.
 6. **Sunset**: Notify users 30 days before model removal. Auto-migrate to successor model if compatible.
 
-### Verifier Cascade (Phase 1)
+### Verifier cascade (Phase 1)
 
 A lightweight local model (Phi-4-mini-reasoning) performs pre-action validation:
 1. **Reasoning check**: Is the orchestrator's plan consistent with the user intent?
@@ -442,20 +442,20 @@ A lightweight local model (Phi-4-mini-reasoning) performs pre-action validation:
 
 Verifier decisions are logged to `audit_logs` with confidence score. If verifier rejects, the orchestrator is re-prompted with feedback.
 
-### Fine-Tuning Pipeline (Phase 2)
+### Fine-tuning pipeline (Phase 2)
 
 - **Primary tool**: Unsloth (2× faster training, 70% less VRAM). QLoRA adapters.
 - **CPU-only alternative**: LoFT CLI for small models (1-3B), exports to GGUF.
 - **Apple Silicon**: MLX-LM (Apple's MLX framework) for local fine-tuning on Mac.
 - **Use cases**: Domain-specific task models, per-organization style adaptation, user-personalised agent behavior (LoRA adapters loaded dynamically).
 
-### Distributed Inference (Phase 3+)
+### Distributed inference (Phase 3+)
 
 - **Prima.cpp** (ICLR 2026): 30-70B models on home clusters with mixed CPUs/GPUs, Wi-Fi links. 26 TPS on 32B model with speculative decoding.
 - **Mesh LLM** (GitHub, 2026): Pools spare GPU capacity, OpenAI-compatible API.
 - **Goal**: Serve larger models (8-32B) across multiple on-premise or edge devices, reducing reliance on cloud even for complex tasks.
 
-### Model Evaluation Harness
+### Model evaluation harness
 
 All models undergo automated testing before registration:
 - Tool-calling pass rate (schema-aware deterministic scoring, 40+ test cases)
@@ -465,7 +465,7 @@ All models undergo automated testing before registration:
 
 Results stored in model registry. Evaluations rerun weekly for active models, triggered by CI.
 
-### Security & Supply Chain
+### Security & supply chain
 
 - Model downloads verified with SHA-256 or Sigstore signatures.
 - GGUF conversion done in sandboxed environment.
@@ -473,14 +473,14 @@ Results stored in model registry. Evaluations rerun weekly for active models, tr
 - Local models isolated from internet by default; no telemetry sent.
 - Cloud fallback requires explicit user opt-in (paid tier).
 
-### Integration with Dispatcher
+### Integration with dispatcher
 
 The Intent Dispatcher queries the model registry to route tasks:
 - `preferred_executor` field in tool definitions maps to model tiers.
 - Dispatcher checks registry for model availability and capability before routing.
 - If preferred local model is unavailable or below confidence threshold, dispatcher escalates to cloud (if authorized) or returns "task too complex for current plan" error.
 
-### Open Questions
+### Open questions
 
 - How often to re-benchmark models (weekly? per-update? continuous?).
 - Policy for user-installed third-party models (app store model?).
@@ -491,13 +491,13 @@ The Intent Dispatcher queries the model registry to route tasks:
 
 ## Section 8: Workflow Engine
 
-### LangGraph Integration
+### LangGraph integration
 
 - **Pattern**: Supervisor pattern maps to FLOWC01 state machine
 - **Transitions**: StateGraph edges for state transitions
 - **State Management**: Deterministic state transitions with checkpointing
 
-### Memory Management
+### Memory management
 
 #### LangMem
 
@@ -541,10 +541,10 @@ agent = create_react_agent(
 
 # Production: replace InMemoryStore with PostgresStore
 # from langgraph.store.postgres import PostgresStore
-# store = PostgresStore.from_conn_string("postgresql://user:pass@host/dbname")
+# store = PostgresStore.from_conn_string("postgresql://user:pass`@host`/dbname")
 ```
 
-### Tool Integration
+### Tool integration
 
 #### Trustcall
 
@@ -572,9 +572,9 @@ result = bound.invoke({
 - **Validation**: All tool calls schema-validated before execution
 - **Error Handling**: Graceful fallbacks for invalid tool calls
 
-### Multi-Agent Orchestration
+### Multi-agent orchestration
 
-#### Supervisor Pattern
+#### Supervisor pattern
 
 - **Architecture**: Central orchestrator agent delegates to specialized worker agents
 - **Communication**: Workers only communicate through supervisor (no direct worker-to-worker or worker-to-user communication)
@@ -627,7 +627,7 @@ graph = builder.compile()
 - **Root Span**: Distributed tracing via DataPrepper
 - **Coverage**: 100% of AI workflow executions traced
 
-### Cost Management
+### Cost management
 
 - **Metering**: All tool calls metered
 - **Budget Check**: Synchronous budget check (COST03 rule)
@@ -637,9 +637,9 @@ graph = builder.compile()
 
 ## Section 9: AI Analytics & Feature Flags
 
-### Analytics Events
+### Analytics events
 
-#### Canonical Event List
+#### Canonical event list
 
 - **agent_invoked**: Agent execution started
 - **workflow_started**: Workflow execution initiated
@@ -651,7 +651,7 @@ graph = builder.compile()
 - **mcp_tool_call**: MCP tool executed
 - **rate_limit_triggered**: Rate limit enforced
 
-#### Required Properties
+#### Required properties
 
 All events must include:
 - **orgId**: Organization identifier
@@ -659,14 +659,14 @@ All events must include:
 - **timestamp**: Event timestamp (ISO 8601)
 - **sessionId**: Session identifier
 
-#### Group Analytics
+#### Group analytics
 
 - **Enabled**: Group Analytics for organization-level insights
 - **Aggregation**: Automatic rollups by organization
 
-##### Implementation Patterns
+##### Implementation patterns
 
-**Group Types Configuration**
+**Group types configuration**
 
 PostHog Group Analytics enables tracking events at organizational, project, or team levels. Key concepts:
 
@@ -674,11 +674,11 @@ PostHog Group Analytics enables tracking events at organizational, project, or t
 - **Groups**: Individual entities within each type (e.g., "Acme Corp", "Tech Solutions Inc."). Unlimited groups per type.
 - **Group Keys**: Unique identifiers for each group (e.g., database ID, domain name).
 
-**Frontend Implementation (JavaScript Web SDK)**
+**Frontend implementation (JavaScript Web SDK)**
 
 ```javascript
 // Identify user and connect to group
-posthog.identify('user@example.com');
+posthog.identify('user`@example`.com');
 posthog.group('company', 'company_id_in_your_db');
 
 // All subsequent events in session automatically linked to group
@@ -695,7 +695,7 @@ posthog.group('company', 'company_id_in_your_db', {
 posthog.resetGroup();
 ```
 
-**Backend Implementation (Python SDK)**
+**Backend implementation (Python SDK)**
 
 ```python
 # Create/update group (sends $groupidentify event)
@@ -706,18 +706,18 @@ posthog.group_identify('company', 'company_id_in_your_db', {
 })
 
 # Associate events with group (must include groups parameter for every event)
-posthog.capture('user@example.com', 'user_signed_up', groups={
+posthog.capture('user`@example`.com', 'user_signed_up', groups={
   'company': 'company_id_in_your_db'
 })
 
 # Multiple group types per event (different types only)
-posthog.capture('user@example.com', 'feature_used', groups={
+posthog.capture('user`@example`.com', 'feature_used', groups={
   'company': 'company_id_in_your_db',
   'project': 'project_id_in_your_db'
 })
 ```
 
-**Backend Implementation (Go SDK)**
+**Backend implementation (Go SDK)**
 
 ```go
 // Create/update group
@@ -732,13 +732,13 @@ client.Enqueue(posthog.GroupIdentify{
 
 // Associate events with group
 client.Enqueue(posthog.Capture{
-  DistinctId: "user@example.com",
+  DistinctId: "user`@example`.com",
   Event: "user_signed_up",
   Groups: posthog.NewGroups().Set("company", "company_id_in_your_db"),
 })
 ```
 
-**Event Linking Rules**
+**Event linking rules**
 
 - Events must be identified (anonymous events won't link to groups unless `$process_person_profile` is configured)
 - JavaScript Web SDK: Call `posthog.group()` once, all session events link automatically (stateful)
@@ -746,7 +746,7 @@ client.Enqueue(posthog.Capture{
 - Cannot assign one event to multiple groups of the same type
 - Can assign one event to groups of different types
 
-**Group Properties**
+**Group properties**
 
 Every group can have properties (similar to person properties). At least one property required for group to appear in People tab.
 
@@ -769,9 +769,9 @@ posthog.capture('$groupidentify', {
 });
 ```
 
-##### Org-Scoped Event Aggregation
+##### Org-scoped event aggregation
 
-**Aggregation Patterns**
+**Aggregation patterns**
 
 PostHog enables unique organization-level aggregations across all insight types:
 
@@ -966,7 +966,7 @@ Based on research from FastGraphRAG benchmarks (CircleMind, 2024) and arXiv eval
 
 ## Section 12: Chunking Strategy
 
-### Dataset Size Thresholds
+### Dataset size thresholds
 
 The 500K threshold is a decision point for dataset size in **tokens**, not chunk count:
 

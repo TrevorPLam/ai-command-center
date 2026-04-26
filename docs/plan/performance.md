@@ -36,7 +36,7 @@ These are concrete numbers that must be respected in every build.
 
 - Search debounce: 300 ms
 - Hover prefetch delay: 200 ms
-- SSE heartbeat: 15–20 seconds
+- SSE heartbeat: 15-20 seconds
 - SSE reconnect: 1s, 2s, 4s, 8s, max 30s (max 3 retries)
 - Org switch cache clear + reconnect: <2 seconds
 - Undo window for deletes: 5 seconds

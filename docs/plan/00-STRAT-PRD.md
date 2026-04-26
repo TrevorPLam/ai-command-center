@@ -10,7 +10,7 @@ An AI‑integrated workspace where a conversational assistant works across your 
 
 ### J001 (P0): Cross‑App Conflict Detection & Resolution
 
-When my client emails to reschedule, I want my assistant to check my calendar and project deadlines, alert me to conflicts, and offer to fix them — all from one dashboard.
+When my client emails to reschedule, I want my assistant to check my calendar and project deadlines, alert me to conflicts, and offer to fix them -- all from one dashboard.
 
 ### J002 (P0): Unified Chat Assistant
 
@@ -40,9 +40,9 @@ I want all my sensitive data to be processed on my own device or within my contr
 
 | Tier | AI Capability | Marginal Cost | Pricing |
 |------|---------------|---------------|---------|
-| **Free** | Local models only (Gemma 4, Qwen3.5) | ~$0.00001/1K tokens | Free forever |
-| **Pro** | Cloud API unlocked (Sonnet 4.6) | $0.10-0.50/user/month | $20‑30/month |
-| **Enterprise** | Full cloud (Opus 4.7), fine‑tuning | $1‑5/user/month | Custom |
+| **Free** | Local models only (Gemma 4, Qwen3.5) | ~$0.00001/1K tokens | Free forever |
+| **Pro** | Cloud API unlocked (Sonnet 4.6) | $0.10-0.50/user/month | $20‑30/month |
+| **Enterprise** | Full cloud (Opus 4.7), fine‑tuning | $1‑5/user/month | Custom |
 
 ## User personas
 
@@ -129,7 +129,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | A004 | EU AI Act Aug 2026 deadline (Annex III) | Monitor Omnibus extension | High |
 | A005 | AI agents classified as high-risk | Verify Annex III scope | High |
 | A006 | Stripe AI SDK supports metering | Test integration | Low |
-| A007 | Shadow AI / NHI risk manageable | CSA 2026 survey: 54% orgs report 1–100 unsanctioned AI agents, 53% report scope violations | High |
+| A007 | Shadow AI / NHI risk manageable | CSA 2026 survey: 54% orgs report 1-100 unsanctioned AI agents, 53% report scope violations | High |
 
 ## Constraints
 

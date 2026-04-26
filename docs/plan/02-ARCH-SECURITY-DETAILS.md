@@ -1,41 +1,70 @@
-# Security Implementation Details
+# Security implementation details
 
 This document contains detailed security implementation specifications and configurations for the AI Command Center platform. For high-level security architecture, see [02-ARCH-OVERVIEW.md](02-ARCH-OVERVIEW.md).
 
 ---
 
-## Security Rules (S1 – S28)
+## Security rules (S1 - S28)
 
 All security rules are **HARD**. Violating any of them will block a deployment.
 
-- **S1**: Never use `dangerouslySetInnerHTML`; all user‑generated HTML passes through `SanitizedHTML` with the appropriate profile (STRICT, RICH, or EMAIL).
-- **S2**: Supabase storage access only via the `StorageService` wrapper; never call the Supabase client directly.
-- **S3**: Nylas API calls happen only from the FastAPI backend; frontend never talks to Nylas directly.
-- **S4**: Only supabase‑js is allowed in the browser; Prisma must never be imported in frontend code.
-- **S5**: Every Prisma schema change must be checked for RLS impact; RLS policies must be updated accordingly.
-- **S6**: Global Content‑Security‑Policy enforced in production (nonce‑based, `strict-dynamic`).
-- **S7**: `'unsafe-eval'` is allowed only for Monaco Editor and Babel, and only within their sandboxed iframes (scoped to their nonces).
-- **S8**: JWT is stored only in an httpOnly cookie; never put it in Zustand or `localStorage`.
-- **S9**: All API calls under `/v1/*` must go through the centralised `api.ts` client.
-- **S10**: DOMPurify ≥3.4.0 is mandatory; an automated CVE audit for DOMPurify runs in CI.
-- **S11**: CSP nonce must be cryptographically random per request; nonce strategy with `strict-dynamic` is required.
-- **S12**: LiveKit tokens are scoped to specific rooms and capabilities; RBAC is enforced on token generation.
-- **S13**: Role‑Based Access Control is applied to all resources; no ad‑hoc permission checks.
+- **S1**: Never use `dangerouslySetInnerHTML`; all user‑generated HTML passes
+  through `SanitizedHTML` with the appropriate profile (STRICT, RICH, or EMAIL).
+- **S2**: Supabase storage access only via the `StorageService` wrapper; never
+  call the Supabase client directly.
+- **S3**: Nylas API calls happen only from the FastAPI backend; frontend never
+  talks to Nylas directly.
+- **S4**: Only supabase‑js is allowed in the browser; Prisma must never be
+  imported in frontend code.
+- **S5**: Every Prisma schema change must be checked for RLS impact; RLS
+  policies must be updated accordingly.
+- **S6**: Global Content‑Security‑Policy enforced in production
+  (nonce‑based, `strict-dynamic`).
+- **S7**: `'unsafe-eval'` is allowed only for Monaco Editor and Babel, and only
+  within their sandboxed iframes (scoped to their nonces).
+- **S8**: JWT is stored only in an httpOnly cookie; never put it in Zustand or
+  `localStorage`.
+- **S9**: All API calls under `/v1/*` must go through the centralised
+  `api.ts` client.
+- **S10**: DOMPurify ≥3.4.0 is mandatory; an automated CVE audit for
+  DOMPurify runs in CI.
+- **S11**: CSP nonce must be cryptographically random per request; nonce
+  strategy with `strict-dynamic` is required.
+- **S12**: LiveKit tokens are scoped to specific rooms and capabilities; RBAC
+  is enforced on token generation.
+- **S13**: Role‑Based Access Control is applied to all resources; no ad‑hoc
+  permission checks.
 - **S14**: Rate limiting is enforced per user and per organization.
-- **S15**: Organization deletion cascades correctly; notify admins 7 days before permanent deletion.
-- **S16**: Agent‑driven UI may only use components from the trusted GenUI catalog; no arbitrary component rendering.
-- **S17**: Yjs collaboration is opt‑in per document type; separate documents for different collaboration scopes.
-- **S18**: AI cost hard cap is enforced at the LLM proxy level; frontend also has a cost budget notification.
-- **S19**: MCP tool registration requires admin approval; every invocation is logged.
-- **S20**: AI cost thresholds trigger alerts and rate limits (RATE_LIMITED error) to enforce budgets.
-- **S21**: OpenAPI 3.1 is the single source of truth; Orval generates TypeScript types from it; Schemathesis checks contract compliance in CI.
-- **S22**: (GRDL03) All pgvector‑retrieved chunks pass through the guardrails input layer before being injected into a prompt.
-- **S23**: (SECREC01) Failure of automated secret rotation is treated as a P1 incident; all rotations are logged as SOC2 evidence.
-- **S24**: (GRYPEREPLACE) Use Grype (not Trivy) for Docker image scanning; scanners must be isolated from CI credentials.
-- **S25**: (AUTHHOOK01) The Supabase `supabase_auth_admin` role must have SELECT grants on `user_roles`, `org_members`, and `role_permissions`; verified by pgTAP after each migration.
-- **S26**: (SENTRY01) Four Sentry projects; before sending any event, PII is stripped; Session Replay masks all text.
-- **S27**: (CLAMAVPROD) ClamAV v1.4.x runs as a sidecar in production; freshclam updates hourly; do not cache scan results.
-- **S28**: (DPPROFILES) Three DOMPurify profiles: STRICT (no SVG), RICH (allowed div/span), EMAIL (links and images); test matrix ensures XSS prevention.
+- **S15**: Organization deletion cascades correctly; notify admins 7 days
+  before permanent deletion.
+- **S16**: Agent‑driven UI may only use components from the trusted GenUI
+  catalog; no arbitrary component rendering.
+- **S17**: Yjs collaboration is opt‑in per document type; separate documents
+  for different collaboration scopes.
+- **S18**: AI cost hard cap is enforced at the LLM proxy level; frontend also
+  has a cost budget notification.
+- **S19**: MCP tool registration requires admin approval; every invocation
+  is logged.
+- **S20**: AI cost thresholds trigger alerts and rate limits (RATE_LIMITED
+  error) to enforce budgets.
+- **S21**: OpenAPI 3.1 is the single source of truth; Orval generates TypeScript
+  types from it; Schemathesis checks contract compliance in CI.
+- **S22**: (GRDL03) All pgvector‑retrieved chunks pass through the guardrails
+  input layer before being injected into a prompt.
+- **S23**: (SECREC01) Failure of automated secret rotation is treated as a P1
+  incident; all rotations are logged as SOC2 evidence.
+- **S24**: (GRYPEREPLACE) Use Grype (not Trivy) for Docker image scanning;
+  scanners must be isolated from CI credentials.
+- **S25**: (AUTHHOOK01) The Supabase `supabase_auth_admin` role must have SELECT
+  grants on `user_roles`, `org_members`, and `role_permissions`; verified
+  by pgTAP after each migration.
+- **S26**: (SENTRY01) Four Sentry projects; before sending any event, PII is
+  stripped; Session Replay masks all text.
+- **S27**: (CLAMAVPROD) ClamAV v1.4.x runs as a sidecar in production;
+  freshclam updates hourly; do not cache scan results.
+- **S28**: (DPPROFILES) Three DOMPurify profiles: STRICT (no SVG), RICH
+  (allowed div/span), EMAIL (links and images); test matrix ensures XSS
+  prevention.
 
 ---
 
@@ -44,7 +73,7 @@ All security rules are **HARD**. Violating any of them will block a deployment.
 The platform implements defense in depth with 12 security layers:
 
 | Layer | Control | Mechanism | Test Method | Owner/Evidence |
-| --- | --- | --- | --- | --- |
+| :--- | :--- | :--- | :--- | :--- |
 | L1 | Network isolation | Fly.io private network, Supabase peering | Port scanning | Platform: Network diagram |
 | L2 | Application security | CSP headers, nonce strategy, strict-dynamic, worker-src | CSP Report-Only monitoring | Security: CSP policy document |
 | L3 | API protection | FastAPI-Limiter, Upstash Redis, per-user/org limits | Load testing 1000 req/s | Platform: Rate limit logs |
@@ -167,7 +196,7 @@ Route all data into a secure, centralized repository with:
 
 - **No Checklist or Guidance**: There is no AICPA checklist or guidance on how to choose the right trust services categories
 - **Service Commitment-Based**: Selection should be predicated entirely on service commitments and system requirements
-- **Customer Requirements**: Inclusion beyond relevant categories doesn't make sense—there wouldn't be enough to speak to
+- **Customer Requirements**: Inclusion beyond relevant categories doesn't make sense--there wouldn't be enough to speak to
 - **Industry Alignment**: Consider what customers expect (e.g., SaaS vendors often include availability for uptime commitments, payment processors include processing integrity, healthcare vendors include confidentiality and privacy)
 
 **Mapping Completeness:**
@@ -244,9 +273,9 @@ jobs:
     outputs:
       image-digest: ${{ steps.build.outputs.digest }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout`@de0fac2e4500dabe0009e67214ff5f5447ce83dd` # v6.0.2
       - name: Build container image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action`@v6`
         with:
           tags: localbuild/testimage:latest
           push: false
@@ -265,12 +294,12 @@ jobs:
       security-events: write
       # No other permissions - scanner cannot access secrets or write to repo
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout`@de0fac2e4500dabe0009e67214ff5f5447ce83dd` # v6.0.2
       - name: Load image from cache
         run: |
           docker build . --file Dockerfile --tag localbuild/testimage:latest
       - name: Scan with Grype
-        uses: anchore/scan-action@v7
+        uses: anchore/scan-action`@v7`
         id: scan-grype
         with:
           image: "localbuild/testimage:latest"
@@ -278,7 +307,7 @@ jobs:
           severity-cutoff: high
           output-format: sarif
       - name: Upload Grype SARIF
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif`@v4`
         with:
           sarif_file: ${{ steps.scan-grype.outputs.sarif }}
 
@@ -290,7 +319,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout`@de0fac2e4500dabe0009e67214ff5f5447ce83dd` # v6.0.2
       - name: Load image from cache
         run: |
           docker build . --file Dockerfile --tag localbuild/testimage:latest
@@ -302,7 +331,7 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH,MEDIUM'
       - name: Upload Trivy SARIF
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif`@v4`
         with:
           sarif_file: 'trivy-results.sarif'
 ```

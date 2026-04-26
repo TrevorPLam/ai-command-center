@@ -1,17 +1,17 @@
-# Cross-Cutting Services
+# Cross-cutting services
 
 This document describes all cross-cutting service implementations and supporting infrastructure including design system, security, observability, rate limiting, sanitisation, and secrets management.
 
 ---
 
-## Section 1: Services
+## Services
 
 ### Motion Service
 
 #### CrossCuttingMotion
 - **Module**: XCT (Cross-Cutting)
 - **Type**: Service
-- **Patterns**: @MotionGuard
+- **Patterns**: `@MotionGuard`
 - **Rules**: P1, P2 (Performance rules)
 - **Dependencies**: ~/hooks/useShouldAnimate
 - **Purpose**: Ensures all animations use only transform and opacity properties
@@ -22,11 +22,11 @@ This document describes all cross-cutting service implementations and supporting
 #### CrossCuttingOptimistic
 - **Module**: XCT (Cross-Cutting)
 - **Type**: Service
-- **Patterns**: @OptimisticMutation
+- **Patterns**: `@OptimisticMutation`
 - **Rules**: g19 (Global rule 19)
 - **Dependencies**: useOptimistic, ~/hooks/useUndo
 - **Purpose**: Manages optimistic UI updates with rollback capability
-- **Features**: 
+- **Features**:
   - Pending state with opacity 0.5, italic styling, and pulse animation
   - Automatic rollback on failure
   - 5-second undo window for delete operations
@@ -36,7 +36,7 @@ This document describes all cross-cutting service implementations and supporting
 #### CrossCuttingRealtime
 - **Module**: XCT (Cross-Cutting)
 - **Type**: Service
-- **Patterns**: @SSEStream, @RealtimeLimits
+- **Patterns**: `@SSEStream`, `@RealtimeLimits`
 - **Rules**: g37, g43 (Global rules 37, 43)
 - **Dependencies**: Supabase Realtime, Server-Sent Events
 - **Purpose**: Manages real-time data streaming and channel monitoring
@@ -66,7 +66,7 @@ This document describes all cross-cutting service implementations and supporting
 #### CrossCuttingOffline
 - **Module**: XCT (Cross-Cutting)
 - **Type**: Service
-- **Patterns**: @OfflineFirst
+- **Patterns**: `@OfflineFirst`
 - **Rules**: B5 (Backend rule 5)
 - **Dependencies**: IndexedDB, ULID
 - **Purpose**: Manages offline-first data synchronization
@@ -81,7 +81,7 @@ This document describes all cross-cutting service implementations and supporting
 #### CrossCuttingAuthOrg
 - **Module**: XCT (Cross-Cutting)
 - **Type**: Service
-- **Patterns**: @Passkeys
+- **Patterns**: `@Passkeys`
 - **Rules**: S8 (Security rule 8)
 - **Dependencies**: Supabase Auth, JWT custom access token hook
 - **Purpose**: Handles authentication and organization switching
@@ -96,23 +96,23 @@ This document describes all cross-cutting service implementations and supporting
 #### SimpleWebAuthn Integration
 - **Module**: XCT (Cross-Cutting)
 - **Type**: Service
-- **Patterns**: @Passkeys
+- **Patterns**: `@Passkeys`
 - **Rules**: S8 (Security rule 8)
-- **Dependencies**: @simplewebauthn/server@^13.0.0, @simplewebauthn/browser, Supabase Auth
+- **Dependencies**: `@simplewebauthn`/server@^13.0.0, `@simplewebauthn`/browser, Supabase Auth
 - **Purpose**: Implements passkey-based authentication using SimpleWebAuthn library
 - **Implementation Guide**:
 
-**RP Identification**
+#### RP Identification
 ```typescript
 const rpName = 'AI Command Center';
 const rpID = 'aicommandcenter.dev'; // 'localhost' for local dev
 const origin = `https://${rpID}`;
 ```
 
-**Registration Flow**
+#### Registration flow
 1. Generate registration options (GET endpoint):
 ```typescript
-import { generateRegistrationOptions } from '@simplewebauthn/server';
+import { generateRegistrationOptions } from '`@simplewebauthn`/server';
 
 const user = getUserFromDB(loggedInUserId);
 const userPasskeys = getUserPasskeys(user);
@@ -138,7 +138,7 @@ return options;
 
 2. Verify registration response (POST endpoint):
 ```typescript
-import { verifyRegistrationResponse } from '@simplewebauthn/server';
+import { verifyRegistrationResponse } from '`@simplewebauthn`/server';
 
 const verification = await verifyRegistrationResponse({
   response: body,
@@ -154,10 +154,10 @@ if (verification.verified) {
 }
 ```
 
-**Authentication Flow**
+#### Authentication flow
 1. Generate authentication options (GET endpoint):
 ```typescript
-import { generateAuthenticationOptions } from '@simplewebauthn/server';
+import { generateAuthenticationOptions } from '`@simplewebauthn`/server';
 
 const user = getUserFromDB(username);
 const userPasskeys = getUserPasskeys(user);
@@ -176,7 +176,7 @@ return options;
 
 2. Verify authentication response (POST endpoint):
 ```typescript
-import { verifyAuthenticationResponse } from '@simplewebauthn/server';
+import { verifyAuthenticationResponse } from '`@simplewebauthn`/server';
 
 const passkey = getPasskeyFromDB(credentialID);
 const verification = await verifyAuthenticationResponse({
@@ -197,12 +197,12 @@ if (verification.verified) {
 }
 ```
 
-**authenticatorSelection Options**
+#### authenticatorSelection options
 - `residentKey`: 'discouraged' (no synced passkeys on Android), 'preferred' (synced passkeys, consumes security key slots), 'required' (same as preferred)
 - `userVerification`: 'discouraged' (no PIN prompt), 'preferred' (prompt when supported), 'required' (always prompt)
 - `authenticatorAttachment`: 'platform' (device-bound), 'cross-platform' (security keys)
 
-**Best Practices**
+#### Best practices
 - Store current options in session/temporary storage for verification
 - Update passkey counter after each authentication to prevent replay attacks
 - Use 'none' attestationType for smoother UX (no authenticator info collection)
@@ -214,20 +214,20 @@ if (verification.verified) {
 #### RPC Security Checklist
 - **Module**: XCT (Cross-Cutting)
 - **Type**: Security Pattern
-- **Patterns**: @RPCSecurity
+- **Patterns**: `@RPCSecurity`
 - **Rules**: S8 (Security rule 8)
 - **Dependencies**: Supabase Postgres, Row Level Security (RLS)
 - **Purpose**: Secures Remote Procedure Calls (RPCs) against unauthorized access and abuse
 - **Security Checklist**:
 
-**Input Validation**
+#### Input validation
 - Validate and sanitize all inputs using strict schemas (Zod)
 - Use parameterized queries for all database interactions
 - Never concatenate user input into SQL queries
 - Validate data types, lengths, and formats at function entry
 - Reject malformed requests immediately with 400 status
 
-**Authorization at Entry Point**
+#### Authorization at entry point
 - Verify caller identity using auth.uid() or JWT claims as first step
 - Check specific role permissions (not just authentication status)
 - For admin functions: Verify admin role in JWT claims
@@ -235,35 +235,35 @@ if (verification.verified) {
 - For password resets: Use cryptographically secure, single-use tokens
 - Deny requests immediately if authorization fails
 
-**Rate Limiting**
+#### Rate limiting
 - Implement global rate limits (e.g., 100 calls/hour per user)
 - Apply stricter limits for sensitive operations (payment processing, account deletion)
 - Use Upstash Redis for distributed rate limiting
 - Return 429 status with retry-after header on limit exceeded
 - Log rate limit violations for monitoring
 
-**Least Privilege Database Roles**
+#### Least privilege database roles
 - Configure RPCs to run with dedicated database roles
 - Grant minimum permissions necessary for task completion
 - Example: Read-only function should not have write access
 - Use SECURITY DEFINER with caution and audit
 - Separate roles for different function categories (read, write, admin)
 
-**Error Handling**
+#### Error handling
 - Return generic error messages to clients (no sensitive data exposure)
 - Log detailed error information server-side
 - Use structured error responses with error codes
 - Implement proper error boundaries
 - Avoid stack traces or internal details in responses
 
-**Audit Logging**
+#### Audit logging
 - Log all RPC invocations with timestamp, user, parameters
 - Log authorization failures for security monitoring
 - Log rate limit violations for abuse detection
 - Integrate with SIEM for centralized monitoring
 - Retain audit logs per compliance requirements (SOC2, HIPAA)
 
-**Testing Scenarios**
+#### Testing scenarios
 - Test with missing/invalid authentication tokens
 - Test with insufficient permissions for role-based functions
 - Test with SQL injection attempts in parameters
@@ -306,7 +306,7 @@ if (verification.verified) {
 #### NylasWebhookHandler
 - **Module**: NYLS (Nylas v3)
 - **Type**: Service
-- **Patterns**: @NylasV3
+- **Patterns**: `@NylasV3`
 - **Rules**: S3 (Security rule 3)
 - **Dependencies**: Nylas v3, queue system
 - **Purpose**: Processes incoming Nylas webhooks
@@ -321,7 +321,7 @@ if (verification.verified) {
 #### OTelGenAIInstrumenter
 - **Module**: OTEL (OpenTelemetry)
 - **Type**: Service
-- **Patterns**: @OTelGenAI
+- **Patterns**: `@OTelGenAI`
 - **Rules**: SLO_02 (SLO rule 2)
 - **Dependencies**: OpenTelemetry 1.40, DataPrepper
 - **Purpose**: Instruments AI interactions for observability
@@ -336,7 +336,7 @@ if (verification.verified) {
 #### OfflineSyncEngine
 - **Module**: CRDB (Offline-First)
 - **Type**: Service
-- **Patterns**: @OfflineFirst
+- **Patterns**: `@OfflineFirst`
 - **Rules**: B5 (Backend rule 5)
 - **Dependencies**: cr-sqlite vs outbox pattern
 - **Purpose**: Synchronizes data between client and server
@@ -351,7 +351,7 @@ if (verification.verified) {
 #### RealtimeChannelMonitor
 - **Module**: RLMT (Realtime Limits)
 - **Type**: Service
-- **Patterns**: @RealtimeLimits
+- **Patterns**: `@RealtimeLimits`
 - **Rules**: g37, g43 (Global rules 37, 43)
 - **Dependencies**: Supabase Realtime
 - **Purpose**: Monitors and enforces realtime channel limits
@@ -381,9 +381,9 @@ if (verification.verified) {
 #### RecurrenceEngineService
 - **Module**: RCLL (Recurrence Engine)
 - **Type**: Service
-- **Patterns**: @Recurring
+- **Patterns**: `@Recurring`
 - **Rules**: B-015 (Backend rule 15)
-- **Dependencies**: @martinhipp/rrule, Temporal adapter
+- **Dependencies**: `@martinhipp`/rrule, Temporal adapter
 - **Purpose**: Handles recurring event and task scheduling
 - **Features**:
   - DST-aware wall-clock time handling
@@ -396,7 +396,7 @@ if (verification.verified) {
 #### AIGuardrailsEngine
 - **Module**: GRDL (Guardrails)
 - **Type**: Service
-- **Patterns**: @AIGuardrails
+- **Patterns**: `@AIGuardrails`
 - **Rules**: EVAL_02 (Evaluation rule 2)
 - **Dependencies**: Guardrails-AI, DeepEval
 - **Purpose**: Enforces AI safety and compliance policies
@@ -411,7 +411,7 @@ if (verification.verified) {
 #### SSRFPreventionMiddleware
 - **Module**: SSRF (SSRF Prevention)
 - **Type**: Middleware
-- **Patterns**: @SSRFPrevention
+- **Patterns**: `@SSRFPrevention`
 - **Rules**: MCPG_02 (MCP Gateway rule 2)
 - **Dependencies**: ipaddress library, DNS resolver
 - **Purpose**: Prevents Server-Side Request Forgery attacks
@@ -426,8 +426,8 @@ if (verification.verified) {
 #### StripeTokenMeter
 - **Module**: STKB (Stripe Billing)
 - **Type**: Service
-- **Patterns**: @StripeBilling
-- **Dependencies**: @stripe/ai-sdk, @stripe/token-meter
+- **Patterns**: `@StripeBilling`
+- **Dependencies**: `@stripe`/ai-sdk, `@stripe`/token-meter
 - **Purpose**: Tracks and bills AI token usage through Stripe
 - **Features**:
   - LiteLLM cost log integration
@@ -440,7 +440,7 @@ if (verification.verified) {
 #### YjsLifecycleManager
 - **Module**: YJS (Yjs Lifecycle)
 - **Type**: Service
-- **Patterns**: @YjsLifecycle
+- **Patterns**: `@YjsLifecycle`
 - **Rules**: YSW_01, YSW_02 (Y-Sweet rules 1, 2)
 - **Dependencies**: Yjs, Y-Sweet
 - **Purpose**: Manages collaborative document lifecycle
@@ -732,8 +732,8 @@ The rate limiting system protects the API from abuse and ensures fair resource a
 
 ```typescript
 // Token Bucket Algorithm (burst tolerance)
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { Ratelimit } from "`@upstash`/ratelimit";
+import { Redis } from "`@upstash`/redis";
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -1255,7 +1255,7 @@ jobs:
       contents: read
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials`@v4`
         with:
           role-to-assume: arn:aws:iam::123456789012:role/github-actions-role
           aws-region: us-east-1
@@ -1372,17 +1372,17 @@ jobs:
         run: |
           # Generate new secret
           NEW_SECRET=$(openssl rand -base64 32)
-          
+
           # Update Doppler
           doppler secrets set API_KEY "$NEW_SECRET" \
             --project ai-command-center \
             --config production
-          
+
           # Trigger service reload
           curl -X POST ${{ secrets.RELOAD_WEBHOOK }} \
             -H 'Content-Type: application/json' \
             -d '{"action":"reload_secrets"}'
-          
+
           # Log rotation
           echo "$(date): Rotated API_KEY" >> rotation.log
         env:

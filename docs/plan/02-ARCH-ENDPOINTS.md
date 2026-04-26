@@ -1,28 +1,35 @@
-# API Endpoints
+# API endpoints
 
 This document describes all REST API endpoints exposed by the FastAPI backend.
 
-## Core Service Endpoints
+## Core service endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | /v1/livekit/token | Generate LiveKit token with scoped permissions, TTL 6 hours |
-| GET | /v1/collab/token | Y-Sweet collaboration token with organization verification |
-| GET | /v1/search | Unified search using pg_trgm, tsvector, and vector indexes |
+| POST | /v1/livekit/token | Generate LiveKit token with scoped permissions, TTL 6 |
+|      |      | hours |
+| GET | /v1/collab/token | Y-Sweet collaboration token with organization |
+|      |      | verification |
+| GET | /v1/search | Unified search using pg_trgm, tsvector, and vector |
+|      |      | indexes |
 | POST | /v1/email/send | Send email via Nylas through FastAPI proxy |
 | POST | /v1/mcp/execute | Execute MCP tool call with SSRF protection |
-| GET | /v1/user/export | GDPR-compliant user data export as SSE stream (JSON) |
+| GET | /v1/user/export | GDPR-compliant user data export as SSE stream |
+|      |      | (JSON) |
 
-## Workflow Endpoints
+## Workflow endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | /v1/workflow/execute | Execute workflow with topological sort and parallel step execution |
-| GET | /v1/workflow/status | Get workflow status (pending, running, waiting, completed) |
+| POST | /v1/workflow/execute | Execute workflow with topological sort and parallel |
+|      |      | step execution |
+| GET | /v1/workflow/status | Get workflow status (pending, running, waiting, |
+|      |      | completed) |
 | POST | /v1/workflow/cancel | Cancel running workflow |
-| POST | /v1/workflow/compensate | Admin trigger for workflow compensation (rollback) |
+| POST | /v1/workflow/compensate | Admin trigger for workflow compensation |
+|      |      | (rollback) |
 
-## Agent Management Endpoints
+## Agent management endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -35,55 +42,79 @@ This document describes all REST API endpoints exposed by the FastAPI backend.
 | GET | /v1/agent-card/{agentId} | A2A Agent Card discovery endpoint |
 | POST | /v1/collab/ai-peer | Internal endpoint for AI collaboration peer |
 
-## Organization & Data Endpoints
+## Organization & data endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
 | DELETE | /v1/organizations | Delete organization with cascade cleanup |
 | POST | /v1/import/entity | Import entity data with SSE progress stream |
-| GET | /v1/cost-forecast | Get per-organization cost forecast with projections |
-| POST | /v1/rerank | Rerank documents for RAG: accepts {query, docs}, returns reranked results |
+| GET | /v1/cost-forecast | Get per-organization cost forecast with |
+|      |      | projections |
+| POST | /v1/rerank | Rerank documents for RAG: accepts {query, docs}, returns |
+|      |      | reranked results |
 | GET | /v1/realtime/channels | List active realtime channels |
 
-## Specification & Cross-Cutting Endpoints
+## Specification & cross-cutting endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | /v1/spec/validate | Validate specification YAML frontmatter, sections, and tier |
-| POST | /v1/xct/auth/org-switch | Handle org switch: invalidate caches, reconnect realtime, redirect |
-| GET | /v1/flowc/workflow/{id}/states | Get workflow state machine and available transitions |
+| POST | /v1/spec/validate | Validate specification YAML frontmatter, sections, |
+|      |      | and tier |
+| POST | /v1/xct/auth/org-switch | Handle org switch: invalidate caches, reconnect |
+|      |      | realtime, redirect |
+| GET | /v1/flowc/workflow/{id}/states | Get workflow state machine and available |
+|      |      | transitions |
 | POST | /v1/apic/codegen | Orval code generation, produces TypeScript files |
-| GET | /v1/apic/drift-check | Schemathesis drift check: compare spec vs implementation |
-| POST | /v1/evnt/webhook/nylas | Nylas webhook handler with upsert-first, idempotency dedup, async queue |
-| POST | /v1/testc/security/run | Security test suite: pgTAP RLS, CSP, DOMPurify, SSRF, LiveKit tokens |
-| POST | /v1/testc/ai-eval/run | AI evaluation: accuracy, latency, token usage, tool precision, hallucination |
-| POST | /v1/opsr/incident | Create incident with P0-P3 severity, roles, SOC2 logging |
+| GET | /v1/apic/drift-check | Schemathesis drift check: compare spec vs |
+|      |      | implementation |
+| POST | /v1/evnt/webhook/nylas | Nylas webhook handler with upsert-first, idempotency |
+|      |      | dedup, async queue |
+| POST | /v1/testc/security/run | Security test suite: pgTAP RLS, CSP, DOMPurify, |
+|      |      | SSRF, LiveKit tokens |
+| POST | /v1/testc/ai-eval/run | AI evaluation: accuracy, latency, token usage, tool |
+|      |      | precision, hallucination |
+| POST | /v1/opsr/incident | Create incident with P0-P3 severity, roles, SOC2 |
+|      |      | logging |
 | POST | /v1/fflg/flag/{id}/kill | Kill switch: revert to 0% in under 5 minutes |
-| GET | /v1/cost/forecast | Get cost forecast: projected, confidence interval, trend, recommended action |
-| POST | /v1/migr/expand-contract | Execute expand-contract zero-downtime migration step |
-| GET | /v1/obs/slo/dashboard | SLO dashboard: TTFT, availability, error budget, burn rate |
-| GET | /v1/secm/control-matrix | Security Control Matrix: S1-S21 mapped to controls and evidence |
-| POST | /v1/secm/mcp/gateway | MCP security gateway: OAuth, schema allowlist, elicitation |
-| POST | /v1/pass/enroll | Passkey enrollment with Supabase Auth MFA, QR code, recovery codes |
+| GET | /v1/cost/forecast | Get cost forecast: projected, confidence interval, trend, |
+|      |      | recommended action |
+| POST | /v1/migr/expand-contract | Execute expand-contract zero-downtime migration |
+|      |      | step |
+| GET | /v1/obs/slo/dashboard | SLO dashboard: TTFT, availability, error budget, burn |
+|      |      | rate |
+| GET | /v1/secm/control-matrix | Security Control Matrix: S1-S21 mapped to controls |
+|      |      | and evidence |
+| POST | /v1/secm/mcp/gateway | MCP security gateway: OAuth, schema allowlist, |
+|      |      | elicitation |
+| POST | /v1/pass/enroll | Passkey enrollment with Supabase Auth MFA, QR code, |
+|      |      | recovery codes |
 
-## Guardrails & Security Endpoints
+## Guardrails & security endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | /v1/grdl/input/check | Guardrails input layer: PII detection, jailbreak detection, toxicity screening |
-| POST | /v1/grdl/output/check | Guardrails output layer: hallucination, safety, schema validation |
-| POST | /v1/grdl/runtime/enforce | Guardrails runtime: tool authorization and cost threshold enforcement |
-| POST | /v1/ssrf/validate | SSRF validation: allowlist check, DNS validation, IMDSv2 |
-| POST | /v1/priv/opt-out | Privacy opt-out: allow_training flag, data segregation, differential privacy |
+| POST | /v1/grdl/input/check | Guardrails input layer: PII detection, jailbreak |
+|      |      | detection, toxicity screening |
+| POST | /v1/grdl/output/check | Guardrails output layer: hallucination, safety, schema |
+|      |      | validation |
+| POST | /v1/grdl/runtime/enforce | Guardrails runtime: tool authorization and cost |
+|      |      | threshold enforcement |
+| POST | /v1/ssrf/validate | SSRF validation: allowlist check, DNS validation, |
+|      |      | IMDSv2 |
+| POST | /v1/priv/opt-out | Privacy opt-out: allow_training flag, data segregation, |
+|      |      | differential privacy |
 
-## Integration Endpoints
+## Integration endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
 | POST | /v1/stkb/meter | Stripe token billing meter recording |
-| POST | /v1/yjs/lifecycle/manage | Yjs lifecycle management: garbage collection, undo, snapshot |
-| POST | /v1/nyls/webhook/config | Nylas webhook configuration: upsert-first, async processing, sync policy |
-| POST | /v1/rcll/recurrence/expand | Recurrence expansion: RFC5545 compliant with DST handling and edit modes |
+| POST | /v1/yjs/lifecycle/manage | Yjs lifecycle management: garbage collection, undo, |
+|      |      | snapshot |
+| POST | /v1/nyls/webhook/config | Nylas webhook configuration: upsert-first, async |
+|      |      | processing, sync policy |
+| POST | /v1/rcll/recurrence/expand | Recurrence expansion: RFC5545 compliant with DST |
+|      |      | handling and edit modes |
 
 ---
 
@@ -97,7 +128,7 @@ info:
   version: 1.0.0
   contact:
     name: API Support
-    email: api@example.com
+    email: api`@example`.com
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -141,7 +172,7 @@ components:
           description: Additional error details
           additionalProperties: true
       required: [code, message]
-    
+
     ValidationError:
       allOf:
         - $ref: '#/components/schemas/Error'
@@ -157,7 +188,7 @@ components:
                   message:
                     type: string
               required: [field, message]
-    
+
     PaginationMeta:
       type: object
       properties:
@@ -175,7 +206,7 @@ components:
           minimum: 0
           description: Total items available
       required: [cursor, limit, total]
-    
+
     PaginatedResponse:
       type: object
       properties:
@@ -213,7 +244,7 @@ components:
           default: 360
           description: Token TTL in minutes
       required: [room_name, permissions]
-    
+
     LiveKitTokenResponse:
       type: object
       properties:
@@ -229,7 +260,7 @@ components:
           format: date-time
           description: Token expiration timestamp
       required: [token, url, expires_at]
-    
+
     CollabTokenResponse:
       type: object
       properties:
@@ -244,7 +275,7 @@ components:
           format: date-time
           description: Token expiration
       required: [token, document_id, expires_at]
-    
+
     SearchRequest:
       type: object
       properties:
@@ -270,7 +301,7 @@ components:
           nullable: true
           description: Pagination cursor
       required: [query]
-    
+
     SearchResult:
       type: object
       properties:
@@ -297,7 +328,7 @@ components:
           additionalProperties: true
           description: Type-specific metadata
       required: [id, type, title, snippet, score]
-    
+
     EmailSendRequest:
       type: object
       properties:
@@ -351,7 +382,7 @@ components:
           maxItems: 10
           description: File attachments
       required: [to, subject, body]
-    
+
     McpExecuteRequest:
       type: object
       properties:
@@ -371,7 +402,7 @@ components:
           default: 30
           description: Execution timeout
       required: [tool_name, parameters]
-    
+
     McpExecuteResponse:
       type: object
       properties:
@@ -413,7 +444,7 @@ components:
               default: 30
               description: Workflow timeout
       required: [workflow_id]
-    
+
     WorkflowStatusResponse:
       type: object
       properties:
@@ -510,7 +541,7 @@ components:
           type: string
           format: date-time
       required: [id, name, description, model, system_prompt, tools]
-    
+
     AgentDefinitionCreate:
       type: object
       properties:
@@ -534,7 +565,7 @@ components:
           type: object
           additionalProperties: true
       required: [name, description, model, system_prompt, tools]
-    
+
     AgentEvaluationResponse:
       type: object
       properties:
@@ -570,7 +601,7 @@ components:
           type: string
           format: date-time
       required: [agent_id, evaluation_id, metrics, passed, evaluated_at]
-    
+
     # Guardrails Schemas
     GuardrailsCheckRequest:
       type: object
@@ -589,7 +620,7 @@ components:
           additionalProperties: true
           description: Additional context for the check
       required: [content, check_type]
-    
+
     GuardrailsCheckResponse:
       type: object
       properties:

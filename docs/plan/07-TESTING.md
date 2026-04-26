@@ -1,10 +1,10 @@
-# AI Workspace Platform — Master Test & Quality Plan
+# AI Workspace Platform -- Master Test & Quality Plan
 
 Below is the complete, unabridged **Master Test & Quality Plan** for the AI-integrated workspace platform. It reorganises all your existing content into the structure we aligned on, fills the identified gaps, and presents everything in the formats most useful for your cross‑functional team.
 
-**Document version:** 1.0  
-**Last updated:** April 2026  
-**Owner:** QA (R1)  
+**Document version:** 1.0
+**Last updated:** April 2026
+**Owner:** QA (R1)
 **Handoff roles:** TL, PM, FSE, MOB
 
 ---
@@ -17,10 +17,10 @@ The AI‑integrated workspace platform provides a dashboard to monitor, interact
 ### 1.2 Quality Pillars
 All testing and quality assurance activities support four pillars:
 
-- **Correctness & Accuracy** – The system behaves as specified; AI outputs are factual and relevant.
-- **Reliability & Resilience** – The service is available, performant, and consistent, even under load or during offline operation.
-- **Security & Privacy** – User data is protected, guardrails prevent misuse, and we comply with SOC 2, the EU AI Act, and NIS2.
-- **Accessibility** – All user‑facing interfaces meet WCAG 2.2 AA, with zero critical violations.
+- **Correctness & Accuracy** - The system behaves as specified; AI outputs are factual and relevant.
+- **Reliability & Resilience** - The service is available, performant, and consistent, even under load or during offline operation.
+- **Security & Privacy** - User data is protected, guardrails prevent misuse, and we comply with SOC 2, the EU AI Act, and NIS2.
+- **Accessibility** - All user‑facing interfaces meet WCAG 2.2 AA, with zero critical violations.
 
 ### 1.3 Roles & Responsibilities (RACI Matrix)
 
@@ -29,11 +29,11 @@ All testing and quality assurance activities support four pillars:
 | Test plan & strategy | A | C | I | C | C |
 | Unit / component test design | R | A | I | I | I |
 | Integration / E2E test execution | A | C | I | C | C |
-| AI evaluation & quality gates | A | C | I | – | – |
+| AI evaluation & quality gates | A | C | I | - | - |
 | Security testing & guardrails | C | C | I | A | I |
-| Performance & load testing | A | C | – | – | – |
-| Offline sync testing | A | C | – | – | A |
-| Compliance evidence collection | C | C | I | A | – |
+| Performance & load testing | A | C | - | - | - |
+| Offline sync testing | A | C | - | - | A |
+| Compliance evidence collection | C | C | I | A | - |
 | Release decision | A | R | C | C | C |
 
 *R=Responsible, A=Accountable, C=Consulted, I=Informed*
@@ -58,8 +58,8 @@ Test cases follow the **QA_C / QA_E / QA_A** format (see Appendix A). Bug report
 ### 2.1 Scope
 All product modules and cross‑cutting concerns are in scope. The list below shows the modules, their primary quality risks, and the test depth assigned.
 
-**Core modules:** Foundation, Dashboard, Chat, Workflows, Projects  
-**Feature modules:** Calendar, Email, Contacts, Conference, Translation, News, Documents, Research, Media, Budget, Settings, Platform  
+**Core modules:** Foundation, Dashboard, Chat, Workflows, Projects
+**Feature modules:** Calendar, Email, Contacts, Conference, Translation, News, Documents, Research, Media, Budget, Settings, Platform
 **Cross‑cutting:** Offline sync (PowerSync), guardrails, AI cost tracking, MCP security, accessibility
 
 ### 2.2 Risk‑Based Testing Matrix
@@ -96,7 +96,7 @@ All product modules and cross‑cutting concerns are in scope. The list below sh
 | Unit | Vitest | Dev, QA | Individual functions, pure logic; fast, mocked dependencies |
 | Component | Vitest, MSW, axe‑core | QA, Dev | React components, state, accessibility |
 | Integration | Vitest, Supertest, pgTAP | QA | API endpoints, database RLS, cross‑module interactions |
-| E2E critical flows | Playwright, AI agents | QA | 10–15 user journeys in production‑like environment |
+| E2E critical flows | Playwright, AI agents | QA | 10-15 user journeys in production‑like environment |
 | AI evaluation | DeepEval + RAGAS, AgentAssay | QA + Data Science | Accuracy, hallucination, non‑determinism |
 | Security | Schemathesis, pgTAP, AgentProbe, manual | Security (FSE) + QA | API contract, RLS, adversarial testing |
 | Performance & load | k6, OpenTelemetry | QA / DevOps | Throughput, latency, cost tracking |
@@ -238,11 +238,11 @@ Override procedures: inconclusive results require manual review with audit trail
 
 | Metric | Pass Threshold | Warning | Block |
 |---|---|---|---|
-| Accuracy (vs baseline) | ≥ base − 2% | – | < base − 2% |
+| Accuracy (vs baseline) | ≥ base − 2% | - | < base − 2% |
 | Latency | ≤ base + 10% | > base + 10% | > base + 20% |
-| Token usage | ≤ base + 15% | > base + 15% | – |
-| Tool precision | ≥ 90% | – | < 85% |
-| Hallucination rate | ≤ 2% | – | > 2% |
+| Token usage | ≤ base + 15% | > base + 15% | - |
+| Tool precision | ≥ 90% | - | < 85% |
+| Hallucination rate | ≤ 2% | - | > 2% |
 
 All gates are evaluated per scenario, averaged over 3 runs, and enforced in CI. Manual review required for any block before deployment.
 
@@ -263,7 +263,7 @@ All gates are evaluated per scenario, averaged over 3 runs, and enforced in CI. 
 | Unit & Component | Vitest + MSW | All business logic, React components, accessibility |
 | API Contract | Schemathesis | Generated from FastAPI OpenAPI schema |
 | RLS isolation | pgTAP | Supabase table policies |
-| E2E (critical flows) | Playwright + MCP AI agents | 10–15 journeys across web |
+| E2E (critical flows) | Playwright + MCP AI agents | 10-15 journeys across web |
 | AI evaluation | DeepEval + RAGAS + AgentAssay | Accuracy, hallucination, non‑determinism |
 | Load | k6 | Performance under sustained and peak load |
 | Security scanning | AgentProbe, SecureMCP | Adversarial testing, MCP security posture |
@@ -489,7 +489,7 @@ pg_prove --dbname mydb --schema test --match 'test$' --runtests
 **Known Codegen Bugs (as of Dec 2025):**
 - **GitHub Issue #2933 (Orval 8.2.0):** Multiple Zod schema generation bugs when using `client: 'angular'`, `schemas.type: 'zod'`, and `mode: 'split'`
   - Bug 1: Broken constraint placement - generates `export const X = export const yMin = 0;` instead of proper ordering
-  - Bug 2: `@type` property name sanitized to `_type` - breaks JSON-LD/HAL responses (property names starting with @ are incorrectly sanitized)
+  - Bug 2: ``@type`` property name sanitized to `_type` - breaks JSON-LD/HAL responses (property names starting with @ are incorrectly sanitized)
   - Bug 3: Empty `strictObject({})` for generic Object types - infers to `Record<string, never>` which rejects all properties instead of allowing any
   - Bug 4: Near-identical schema names produce broken `.zod.ts files with dangling references (lines starting with `d.`)
   - Workaround: Post-processing scripts with regex replacements required in production
@@ -507,7 +507,7 @@ pg_prove --dbname mydb --schema test --match 'test$' --runtests
 
 **Ecosystem Shift (2026):**
 - **Sascha Becker blog (Jan 2026):** The ecosystem has moved away from hook generation to options-based generation
-  - `@hey-api/openapi-ts` is now the recommended frontrunner for OpenAPI-to-TypeScript generation
+  - ``@hey`-api/openapi-ts` is now the recommended frontrunner for OpenAPI-to-TypeScript generation
   - Orval still generates custom hooks by default (`useListPets()`, `useGetPetById()`), which is now considered outdated
   - Orval remains a solid choice if you need mock generation (MSW handlers)
   - Ackee (Jul 2024) chose Orval over Zodios due to Zodios's runtime library overhead and harder-to-debug conventions
@@ -520,7 +520,7 @@ pg_prove --dbname mydb --schema test --match 'test$' --runtests
 
 **Recommendations:**
 - Validate OpenAPI specs with external tools (IBM OpenAPI Validator, spectral) before Orval codegen
-- Consider `@hey-api/openapi-ts` for new projects if mock generation is not required
+- Consider ``@hey`-api/openapi-ts` for new projects if mock generation is not required
 - If using Orval with Zod schemas in split mode, implement post-processing workarounds for known bugs
 - Use Orval primarily for MSW mock generation where it remains strong
 
@@ -565,12 +565,12 @@ pg_prove --dbname mydb --schema test --match 'test$' --runtests
 - **Test integration:** Strong - supports server.use() pattern, RequestHandlerOptions, Vitest integration
 
 **Known Limitations:**
-- **GitHub Issue #2934:** Same `@type` → `_type` sanitization bug affects MSW mock generation (breaks JSON-LD/HAL)
+- **GitHub Issue #2934:** Same ``@type`` → `_type` sanitization bug affects MSW mock generation (breaks JSON-LD/HAL)
 - No built-in validation that generated mocks match OpenAPI spec (external validation required)
 
 **Recommendations:**
 - Use Orval for MSW handler generation - quality is high and integration is excellent
-- Implement post-processing to fix `@type` sanitization if using JSON-LD/HAL responses
+- Implement post-processing to fix ``@type`` sanitization if using JSON-LD/HAL responses
 - Validate generated mocks against OpenAPI spec using external tools if contract compliance is critical
 
 #### Schema Validation Effectiveness
@@ -709,7 +709,7 @@ pg_prove --dbname mydb --schema test --match 'test$' --runtests
 - **DevOps involvement:** 83% of developers report being involved in DevOps-related activities (CD Foundation 2024).
 - **Technology-performance correlation:** Strong correlation between number of DevOps technologies used and likelihood of being a top performer. CI/CD tools usage is associated with better deployment performance across all DORA metrics.
 - **Experience gap:** Less experienced developers adopt fewer DevOps practices and technologies, indicating need for targeted training and onboarding.
-- **Performance trend concern:** Proportion of low performers for deployment performance metrics is increasing—a worrying trend requiring attention.
+- **Performance trend concern:** Proportion of low performers for deployment performance metrics is increasing--a worrying trend requiring attention.
 - **Tool interoperability:** Deployment performance is worse when using multiple CI/CD tools of the same form, likely due to interoperability challenges.
 
 **Adoption Best Practices:**
@@ -950,7 +950,7 @@ jobs:
   update-cve-mapping:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout`@v4`
       - name: Query NVD API
         run: |
           curl -H "apiKey: ${{ secrets.NVD_API_KEY }}" \
@@ -968,7 +968,7 @@ jobs:
       - name: Commit Changes
         run: |
           git config user.name "CVE Bot"
-          git config user.email "cve-bot@example.com"
+          git config user.email "cve-bot`@example`.com"
           git add docs/plan/07-TESTING.md
           git commit -m "chore: update CVE mapping $(date +%Y-%m-%d)"
           git push
@@ -1017,7 +1017,7 @@ jobs:
 
 ### 7.1 OpenAI Responses API Migration (ADR_103)
 
-**Deadline:** 26 Aug 2026 (Assistants API shutdown)  
+**Deadline:** 26 Aug 2026 (Assistants API shutdown)
 **Target migration:** July 2026
 
 #### Scope
@@ -1164,7 +1164,7 @@ handoff: [TL, PM, FSE, MOB]
 ### B. Bug Report Template
 
 ```
-Title: [Component] – Concise summary
+Title: [Component] - Concise summary
 Severity: Blocker / Critical / Major / Minor
 Environment: [e.g., web Vite Spa, Chrome 130]
 Reproduction steps:

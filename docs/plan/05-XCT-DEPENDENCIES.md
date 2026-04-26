@@ -1,25 +1,29 @@
-# Cross-Component Dependencies
+# Cross-component dependencies
 
 This document details cross-component dependencies, core dependency patterns, critical shared dependencies, dependency optimization opportunities, circular dependency risks, and recent dependency updates for the AI Command Center platform.
 
 ---
 
-## Technology Version Pins
+## Technology version pins
 
 Exact versions or constraints that must be used in all environments.
 
 - **TypeScript**: 6.0 in production; 7.0 beta (tsgo) evaluated in CI
 
-### TypeScript 7.0 (tsgo) Beta Assessment (April 2026)
+### TypeScript 7.0 (tsgo) beta assessment (April 2026)
 
-**Status**: TypeScript 7.0 Beta released via `@typescript/native-preview@beta` package. Stable release targeted within 2 months from beta announcement (April 2026 → June 2026).
+**Status**: TypeScript 7.0 Beta released via ``@typescript`/native-preview`@beta`` package.
+Stable release targeted within 2 months from beta announcement (April 2026 → June 2026).
 
 **Beta Stability**:
 - tsgo executable has identical behavior to tsc from TypeScript 6.0, just faster
-- Editor support via TypeScript Native Preview extension for VS Code is described as "rock-solid" and "widely used by many teams for months"
-- TypeScript can run side-by-side with TypeScript 6.0 via `@typescript/typescript6` package with `tsc6` entry point
+- Editor support via TypeScript Native Preview extension for VS Code is described as
+  "rock-solid" and "widely used by many teams for months"
+- TypeScript can run side-by-side with TypeScript 6.0 via ``@typescript`/typescript6`
+  package with `tsc6` entry point
 - Stable programmatic API not available until TypeScript 7.1 or later
-- Preview focuses on type checking (--noEmit mode); full emit, watch mode, build mode, plugin API still in development (landing in 2026)
+- Preview focuses on type checking (--noEmit mode); full emit, watch mode, build mode,
+  plugin API still in development (landing in 2026)
 
 **Performance vs tsc 6.0**:
 - Benchmarks on microsoft/TypeScript repository (~400k lines, Apple M1 Pro):
@@ -35,12 +39,19 @@ Exact versions or constraints that must be used in all environments.
   - 500k+ lines (monorepo): ~10x speedup
 
 **Migration Complexity from tsc 6.0**:
-- **Installation**: `npm install -D @typescript/native-preview@beta`
+- **Installation**: `npm install -D `@typescript`/native-preview`@beta``
 - **Configuration**: No changes required - tsgo accepts same flags as tsc and reads tsconfig.json as-is
-- **Adoption Strategy**: Run both tsc and tsgo in CI pipeline during validation period (2-4 weeks). When tsgo produces identical results consistently, switch CI gate to tsgo
-- **Breaking Changes**: TypeScript 6.0 deprecations become hard removals in 7.0 (target, moduleResolution, baseUrl, esModuleInterop, outFile, module values, alwaysStrict, downlevelIteration, legacy module keyword, asserts keyword, /// <reference no-default-lib>)
-- **Behavioral Changes**: Type ordering in .d.ts output, inference changes from this-less optimization, silent moduleResolution default shift, "use strict" always emitted, esModuleInterop emit changes
-- **Escape Hatch**: `ignoreDeprecations` mechanism available to temporarily silence deprecation warnings during migration
+- **Adoption Strategy**: Run both tsc and tsgo in CI pipeline during validation period
+  (2-4 weeks). When tsgo produces identical results consistently, switch CI gate to tsgo
+- **Breaking Changes**: TypeScript 6.0 deprecations become hard removals in 7.0
+  (target, moduleResolution, baseUrl, esModuleInterop, outFile, module values,
+  alwaysStrict, downlevelIteration, legacy module keyword, asserts keyword,
+  /// <reference no-default-lib>)
+- **Behavioral Changes**: Type ordering in .d.ts output, inference changes from
+  this-less optimization, silent moduleResolution default shift,
+  "use strict" always emitted, esModuleInterop emit changes
+- **Escape Hatch**: `ignoreDeprecations` mechanism available to temporarily silence
+  deprecation warnings during migration
 
 - **React**: 19.2.5; React 20 evaluated Q2 2026
 - **Vite**: 8.0.0
@@ -62,28 +73,28 @@ Exact versions or constraints that must be used in all environments.
 - **LiveKit Server SDK**: ≥1.0.0
 - **markmap**: latest
 - **react‑resizable**: ^3.1.3
-- **@ai‑sdk/react**: ^2.0 (Vercel AI SDK v6)
-- **@tremor/react**: ^3.18
-- **@stripe/ai‑sdk**: latest
-- **@stripe/agent‑toolkit**: latest
-- **@powersync/web**: latest
+- **`@ai`‑sdk/react**: ^2.0 (Vercel AI SDK v6)
+- **`@tremor`/react**: ^3.18
+- **`@stripe`/ai‑sdk**: latest
+- **`@stripe`/agent‑toolkit**: latest
+- **`@powersync`/web**: latest
 - **litellm**: >=1.83.7 (cosign + Grype verified)
 - **orval**: >=8.2.0
-- **@anthropic/mcp‑inspector**: >=0.14.1 (dev only)
+- **`@anthropic`/mcp‑inspector**: >=0.14.1 (dev only)
 - **tsgo**: 7.0 beta
 - **temporal‑polyfill**: ^0.3.2 (~20KB)
 - **pgvectorscale**: 0.4.0 (DiskANN)
-- **@xyflow/react**: 12.10.2
+- **`@xyflow`/react**: 12.10.2
 - **OTel**: v1.40.0 + experimental GenAI
 - **prisma‑next**: GA June‑July 2026 (Postgres); Phase 3 evaluation
 - **rschedule**: latest
-- **@rschedule/temporal‑date‑adapter**: latest
+- **`@rschedule`/temporal‑date‑adapter**: latest
 - **SimpleWebAuthn**: latest
 - **deepeval**: latest
 
 ---
 
-## Component Dependency Matrix
+## Component dependency matrix
 
 #### Dashboard → Shell
 - AgentDetailDrawer → RightPanel + uiSlice
@@ -138,10 +149,10 @@ Exact versions or constraints that must be used in all environments.
 ### Dependency Optimization Opportunities
 
 #### High-Frequency Cross-Cutting Patterns
-1. **Motion/Animation**: 80%+ components use @M pattern
-2. **Optimistic UI**: 60%+ components use @O pattern  
-3. **Real-time Updates**: 40%+ components use @SS pattern
-4. **Virtualization**: 30%+ components use @V pattern
+1. **Motion/Animation**: 80%+ components use `@M` pattern
+2. **Optimistic UI**: 60%+ components use `@O` pattern
+3. **Real-time Updates**: 40%+ components use `@SS` pattern
+4. **Virtualization**: 30%+ components use `@V` pattern
 
 #### Token Optimization Strategies
 1. **Extract Common Patterns**: Create shared component specs for frequently used combinations
@@ -157,7 +168,7 @@ Exact versions or constraints that must be used in all environments.
 ### Recommended Refactoring
 
 #### Phase 1: Extract Shared Patterns
-- Create `SHARED-PATTERNS.md` for common @M, @O, @SS combinations
+- Create `SHARED-PATTERNS.md` for common `@M`, `@O`, `@SS` combinations
 - Define standard interfaces for frequent dependency patterns
 
 #### Phase 2: Service Layer Abstraction
@@ -191,23 +202,23 @@ This analysis reveals heavy interdependence, suggesting opportunities for:
 ## Dependency Updates (April 2026)
 
 - Replace `dndkit` with `dnd-kit (pinned, no migration)`; remove all PragmaticDnD references.
-- Add `@tremor/react` in Dashboard and Budget module dependencies.
+- Add ``@tremor`/react` in Dashboard and Budget module dependencies.
 - Replace `ElectricSQL`/`Replicache`/`cr-sqlite` with `PowerSync` in offline sync section.
-- Add `ai`, `@ai-sdk/react` in Chat and GenUI deps.
-- Add `@stripe/ai-sdk`, `@stripe/agent-toolkit` in Stripe integration.
-- Add `@js-temporal/polyfill` as conditional dep in Calendar/Recurrence stack (NOT `temporal-polyfill` or `es2026-shim` - these packages don't exist or are incorrect).
+- Add `ai`, ``@ai`-sdk/react` in Chat and GenUI deps.
+- Add ``@stripe`/ai-sdk`, ``@stripe`/agent-toolkit` in Stripe integration.
+- Add ``@js`-temporal/polyfill` as conditional dep in Calendar/Recurrence stack (NOT `temporal-polyfill` or `es2026-shim` - these packages don't exist or are incorrect).
 - Add `tsgo` (TypeScript 7.0 beta) to CI tooling dependencies, flagged experimental.
 
 ## TypeScript Compilers
 
 ### tsgo (TypeScript 7.0 Beta) vs tsc 6.0
 
-**Status**: TypeScript 7.0 Beta released via `@typescript/native-preview@beta` package. Stable release targeted within 2 months from beta announcement (April 2026 → June 2026).
+**Status**: TypeScript 7.0 Beta released via ``@typescript`/native-preview`@beta`` package. Stable release targeted within 2 months from beta announcement (April 2026 → June 2026).
 
 **Beta Stability Assessment**:
 - tsgo executable has identical behavior to tsc from TypeScript 6.0, just faster
 - Editor support via TypeScript Native Preview extension for VS Code is described as "rock-solid" and "widely used by many teams for months"
-- TypeScript can run side-by-side with TypeScript 6.0 via `@typescript/typescript6` package with `tsc6` entry point
+- TypeScript can run side-by-side with TypeScript 6.0 via ``@typescript`/typescript6` package with `tsc6` entry point
 - Stable programmatic API not available until TypeScript 7.1 or later
 - Preview focuses on type checking (--noEmit mode); full emit, watch mode, build mode, plugin API still in development (landing in 2026)
 
@@ -235,7 +246,7 @@ This analysis reveals heavy interdependence, suggesting opportunities for:
 
 **Installation**:
 ```bash
-npm install -D @typescript/native-preview@beta
+npm install -D `@typescript`/native-preview`@beta`
 ```
 
 **Configuration**: No changes required - tsgo accepts same flags as tsc and reads tsconfig.json as-is
@@ -248,13 +259,13 @@ jobs:
   typecheck-tsc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout`@v4`
       - run: npm ci
       - run: npx tsc --noEmit
   typecheck-tsgo:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout`@v4`
       - run: npm ci
       - run: npx tsgo --noEmit
 ```
@@ -282,14 +293,14 @@ jobs:
 
 **Escape Hatch**: `ignoreDeprecations` mechanism available to temporarily silence deprecation warnings during migration
 
-## Prisma Next (@prisma/next)
+## Prisma Next (`@prisma`/next)
 
 ### Current Status (April 26, 2026)
 
 **Prisma Next Roadmap**:
-- **Phase 1 — Enable external contributions (April 2026)**: In progress. Establishing stable APIs for extension authors. Public call for contributors in April 2026.
-- **Phase 2 — Early access (May 2026)**: Not started. Get Prisma Next into users' hands for real-world validation. Postgres + one additional SQL database (SQLite candidate) expected to be stable.
-- **Phase 3 — General availability (June–July 2026)**: Not started. Bring Prisma Next Postgres support to GA as production-ready product. Prisma Next will become Prisma 8 at GA.
+- **Phase 1 -- Enable external contributions (April 2026)**: In progress. Establishing stable APIs for extension authors. Public call for contributors in April 2026.
+- **Phase 2 -- Early access (May 2026)**: Not started. Get Prisma Next into users' hands for real-world validation. Postgres + one additional SQL database (SQLite candidate) expected to be stable.
+- **Phase 3 -- General availability (June-July 2026)**: Not started. Bring Prisma Next Postgres support to GA as production-ready product. Prisma Next will become Prisma 8 at GA.
 
 **Prisma 7 Status**: Prisma 7 remains the recommended version for production applications and will continue to receive updates and long-term support for 12 months after Prisma Next GA. Teams can continue upgrading to Prisma 7 with confidence.
 
@@ -427,7 +438,7 @@ jobs:
 - [ ] Go/no-go decision for Phase 3 adoption
 
 **Dependencies**:
-- Add `@prisma/next` horizon dep for Phase 3 evaluation (already noted in 05-XCT-DEPENDENCIES.md line 211)
+- Add ``@prisma`/next` horizon dep for Phase 3 evaluation (already noted in 05-XCT-DEPENDENCIES.md line 211)
 - Add `MCPSec` middleware to MCP security dependencies.
 - TASK INFORMATION INCORRECT: `es2026-shim` does not exist. Pattern matching (match/using) is Stage 1 proposal, NOT part of ES2026. No polyfill available.
 - Change OpenAI provider deps from Assistants/ChatCompletions to Responses API + Conversations.
@@ -584,25 +595,25 @@ bucket_definitions:
 
 ### Polyfill Strategy
 
-**Official Polyfill**: `@js-temporal/polyfill` (version 0.5.1, last published April 2025)
+**Official Polyfill**: ``@js`-temporal/polyfill` (version 0.5.1, last published April 2025)
 
 **Installation**:
 ```bash
-npm install @js-temporal/polyfill
+npm install `@js`-temporal/polyfill
 ```
 
 **Usage**:
 ```typescript
 // For production today (polyfill approach)
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from '`@js`-temporal/polyfill';
 
 // Or CommonJS:
-const { Temporal } = require('@js-temporal/polyfill');
+const { Temporal } = require('`@js`-temporal/polyfill');
 ```
 
 **Important Notes**:
 - `es2026-shim` does NOT exist - this is incorrect package name
-- `temporal-polyfill` is an alternative but @js-temporal/polyfill is the official polyfill
+- `temporal-polyfill` is an alternative but `@js`-temporal/polyfill is the official polyfill
 - Pattern matching (match/using) is Stage 1 proposal, NOT part of ES2026 - no polyfill available
 - Node.js native support without flag expected in Node.js 24 LTS updates later in 2026
 

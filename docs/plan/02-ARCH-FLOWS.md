@@ -7,12 +7,12 @@ This document describes the key user flows and system interactions in the AI Com
 The following table describes how data flows between system components at the infrastructure level:
 
 | Source | Destination | Protocol | Security Controls | Purpose |
-| --- | --- | --- | --- | --- |
+| :--- | :--- | :--- | :--- | :--- |
 | Browser | FastAPI | HTTPS | JWT+org_id | `/v1/*` API endpoints |
 | FastAPI | Supabase | TCP | Internal network, RLS enforced | Database queries (Prisma) |
 | FastAPI | LiteLLM | HTTPS | API key rot, cosign | LLM routing (Claude, GPT, Gemini) |
 | FastAPI | MCP Server | HTTP | MCPSec L2, OAuth tool auth | SSRF allowlist, nonce replay protection |
-| FastAPI | Stripe | HTTPS | API key 180d rotation | Billing (@stripe/ai-sdk) |
+| FastAPI | Stripe | HTTPS | API key 180d rotation | Billing (`@stripe`/ai-sdk) |
 | FastAPI | Nylas | HTTPS | OAuth2, grant.expired webhook | Email sync (upsert-first, 10s ack) |
 | FastAPI | LiveKit | WebSocket | Token TTL 6h, RBAC scoped | Voice pipeline (STT/LLM/TTS) |
 | Supabase | Browser | WebSocket | JWT auth, org-scoped channels | Realtime CDC updates |
@@ -22,7 +22,7 @@ The following table describes how data flows between system components at the in
 | FastAPI | PostHog | HTTPS | API key authentication | Product analytics, allow_training flag |
 | FastAPI | OTel Collector | HTTPS | OTLP protocol | GenAI traces, PII redaction |
 
-## Authentication Flow
+## Authentication flow
 
 When a user logs into the application, the following sequence occurs:
 
@@ -31,17 +31,17 @@ When a user logs into the application, the following sequence occurs:
 3. The JWT token contains embedded `org_id` and `user_role` claims for authorization.
 4. The `onAuthStateChange` listener triggers query invalidation and realtime reconnect, then redirects the user to the **Dashboard**.
 
-## Chat Flow
+## Chat flow
 
 The chat interaction follows this pattern:
 
-1. User types a message in **ChatInput**, which creates a **Message** entity and adds it to **MessageList** with optimistic mutation (`@O`) using a client-generated message ID.
+1. User types a message in **ChatInput**, which creates a **Message** entity and adds it to **MessageList** with optimistic mutation (``@O``) using a client-generated message ID.
 2. The frontend establishes an SSE connection via `useSSE` to the FastAPI backend at `/v1/chat`.
 3. The LLM processes the request and streams tokens back through the SSE connection.
 4. Tokens are rendered incrementally in **MessageBubble** components.
 5. When complete, the full message is cached with `staleTime: 0` and `gcTime: Infinity` to ensure freshness while preventing premature garbage collection.
 
-## Email Sending Flow
+## Email sending flow
 
 Sending an email involves multiple services:
 
@@ -52,7 +52,7 @@ Sending an email involves multiple services:
 5. The webhook is processed by an Edge Function, which upserts the email record.
 6. Realtime updates push the new email to the user's inbox via Supabase Realtime.
 
-## Cost Budget Enforcement Flow
+## Cost budget enforcement flow
 
 AI cost governance follows a multi-tier enforcement model:
 
@@ -65,7 +65,7 @@ AI cost governance follows a multi-tier enforcement model:
    - At 100%: Request blocked with HTTP 429 and **CostLimitBanner** displayed to user.
 4. Cost forecasts are available via `GET /v1/cost-forecast`, which uses TimescaleDB continuous aggregates to return projected costs, confidence intervals, trends, and recommended actions.
 
-## Nylas Webhook Processing Flow
+## Nylas webhook processing flow
 
 Email synchronization via Nylas webhooks:
 
@@ -80,7 +80,7 @@ Email synchronization via Nylas webhooks:
 
 For detailed operational procedures including webhook failure patterns and grant expiration handling, see [08-OPS-MANUAL.md](08-OPS-MANUAL.md#48-data-integrity).
 
-## MCP Policy Enforcement Flow
+## MCP policy enforcement flow
 
 Model Context Protocol tool execution follows zero-trust principles:
 
@@ -92,11 +92,11 @@ Model Context Protocol tool execution follows zero-trust principles:
 6. Approved operations execute in sandbox environment and are logged.
 7. Denied operations return error with policy reason and are logged to **mcp2_policy_evaluations**.
 
-## Specification Validation Flow
+## Specification validation flow
 
 Component specification enforcement in CI:
 
-1. Components flagged with pattern tags like `@OptimisticMutation`, `@SSEStream`, `@Recurring`, `@XCT`, `@Upload`, or `@KeyboardShortcuts` are checked for an associated specification or linked parent spec.
+1. Components flagged with pattern tags like ``@OptimisticMutation``, ``@SSEStream``, ``@Recurring``, ``@XCT``, ``@Upload``, or ``@KeyboardShortcuts`` are checked for an associated specification or linked parent spec.
 2. If missing, DoD1 is blocked and the PR author is notified.
 3. If present, the system validates YAML frontmatter and all 9 required sections.
 4. Tier is auto-assigned:
@@ -105,7 +105,7 @@ Component specification enforcement in CI:
    - Presentational components → Tier 3
 5. Results are stored in **spec_metadata** and the CI gate is triggered.
 
-## Optimistic UI Flow
+## Optimistic UI flow
 
 Optimistic updates provide immediate user feedback:
 

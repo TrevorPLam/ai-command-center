@@ -1,8 +1,8 @@
-# Decision register — normalized
+# Decision register
 
 This is the append‑only log of every decision made during planning and development. It tracks product, UX, copy, configuration, and process choices that don't warrant a full Architecture Decision Record (ADR) but must be recorded.
 
-**For everyone:** Before making a new decision, check this file — an active decision may already cover it. If you make a new decision, append a row.
+**For everyone:** Before making a new decision, check this file -- an active decision may already cover it. If you make a new decision, append a row.
 
 ## Decision table format
 
@@ -20,10 +20,11 @@ Every decision is a single row. All columns must be filled.
 | **Status** | `active`, `superseded`, `expired` |
 | **Expiry** | If temporary, when it expires. Otherwise `none`. |
 | **Linked Items** | Related ADR IDs, backlog items (BP-XXX), or spec filenames. |
-| **Session** | `session-YYYY-MM-DD-platform-topic.md` for traceability. |
+| Session | `session-YYYY-MM-DD-platform-topic.md` for traceability. |
 
-Rules
-- Append only. Never edit existing rows — supersede them with a new row.
+## Rules
+
+- Append only. Never edit existing rows -- supersede them with a new row.
 - Reversible decisions can be made quickly by an agent. Costly/irreversible ones need Trevor's explicit review.
 - The register is reviewed for staleness after every 5 planning sessions and at each Phase gate.
 
@@ -33,12 +34,12 @@ Rules
 |----|------|--------|----------|-----------|-------------|------------|--------|--------|--------------|---------|
 | DEC-2026-04-26-001 | 2026-04-26 | Process | All planning documents follow SPEC-TEMPLATE.md format (YAML frontmatter + 9 sections). | Standardization across sessions; rejected free-form markdown. | Costly | High | active | none | SPEC-TEMPLATE.md, ADR_054 | session-2026-04-26-claude-planning-framework |
 | DEC-2026-04-26-002 | 2026-04-26 | Process | `00-PLANNING-BACKLOG.md` is the single source of truth for unresolved decisions. No code execution until block prerequisites are resolved. | Prevents premature implementation. Rejected alternative: start coding immediately. | Yes | High | active | none | 00-PLANNING-BACKLOG.md | session-2026-04-26-claude-planning-framework |
-| DEC-2026-04-26-003 | 2026-04-26 | Process | This decision register uses append‑only: new decisions get new rows; old ones are marked `superseded`. | Preserves decision history for audit and context recovery. | Costly | High | active | none | — | session-2026-04-26-claude-planning-framework |
-| DEC-2026-04-26-004 | 2026-04-26 | Process | AI agents must read this register at session start and append any new decisions before session end. | Prevents decision loss across sessions. | Yes | High | active | none | — | session-2026-04-26-claude-planning-framework |
-| DEC-2026-04-26-005 | 2026-04-26 | Process | Reversible decisions are made by AI agents without waiting for Trevor’s approval. Costly or irreversible decisions require explicit Trevor review. | Prevents decision paralysis while protecting against costly mistakes. | Yes | Medium | active | Review after 10 sessions | — | session-2026-04-26-claude-planning-framework |
+| DEC-2026-04-26-003 | 2026-04-26 | Process | This decision register uses append‑only: new decisions get new rows; old ones are marked `superseded`. | Preserves decision history for audit and context recovery. | Costly | High | active | none | -- | session-2026-04-26-claude-planning-framework |
+| DEC-2026-04-26-004 | 2026-04-26 | Process | AI agents must read this register at session start and append any new decisions before session end. | Prevents decision loss across sessions. | Yes | High | active | none | -- | session-2026-04-26-claude-planning-framework |
+| DEC-2026-04-26-005 | 2026-04-26 | Process | Reversible decisions are made by AI agents without waiting for Trevor’s approval. Costly or irreversible decisions require explicit Trevor review. | Prevents decision paralysis while protecting against costly mistakes. | Yes | Medium | active | Review after 10 sessions | -- | session-2026-04-26-claude-planning-framework |
 | DEC-2026-04-26-006 | 2026-04-26 | UX | The conflict detection UX spec must cover all 8 states: no conflicts, conflict detected, awaiting action, resolving, resolved, failed, multiple conflicts, dismissed-without-action. | Core product magic depends on this feeling intelligent. | Costly | High | active | none | BP-006, 10-UX-CONFLICT-FLOW.md | session-2026-04-26-claude-planning-framework |
-| DEC-2026-04-26-007 | 2026-04-26 | Process | Session naming convention: `session-YYYY-MM-DD-platform-topic.md`. Store all session outputs in `sessions/` folder. | Traceability across parallel AI platforms. | Yes | High | active | none | — | session-2026-04-26-claude-planning-framework |
-| DEC-2026-04-26-008 | 2026-04-26 | Security | CSP nonce strategy will be implemented in Phase 0 Block 0F, not earlier. During Blocks 0A–0E, Report‑Only CSP is acceptable. | Security‑critical but early enforcement would slow initial UI development. Rejected alternative: enforce from day one. | Yes | High | active | Expires at start of Block 0F | BP-009, 05-XCT-CSP.md | session-2026-04-26-claude-planning-framework |
+| DEC-2026-04-26-007 | 2026-04-26 | Process | Session naming convention: `session-YYYY-MM-DD-platform-topic.md`. Store all session outputs in `sessions/` folder. | Traceability across parallel AI platforms. | Yes | High | active | none | -- | session-2026-04-26-claude-planning-framework |
+| DEC-2026-04-26-008 | 2026-04-26 | Security | CSP nonce strategy will be implemented in Phase 0 Block 0F, not earlier. During Blocks 0A-0E, Report‑Only CSP is acceptable. | Security‑critical but early enforcement would slow initial UI development. Rejected alternative: enforce from day one. | Yes | High | active | Expires at start of Block 0F | BP-009, 05-XCT-CSP.md | session-2026-04-26-claude-planning-framework |
 
 ---
 
