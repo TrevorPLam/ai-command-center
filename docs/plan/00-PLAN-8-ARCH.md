@@ -96,4 +96,10 @@ Redis|Multi-AZ with persistence|1min|0|Monthly
 Vault|Raft cluster with auto-unseal|5min|0|Quarterly
 Doppler|Geo-redundant storage|1min|0|Monthly
 
-EOF
+// Infrastructure additions (Apr 2026)
+PowerSync|Managed (SOC2/HIPAA)|YAML sync rules, per-org bucket|Phase 2
+Y-Sweet|Docker self-host (Fly.io private network only)|OFFLINE support provider; 50MB limit
+Grype|CI Docker scanner|Replaces Trivy, isolated from CI creds
+LangGraph|AI orchestration|Supervisor/Swarm; LangMem; OTel gen_ai traces
+FastGraphRAG|RAG augmentation|NLP entities, direct production; graph DB future
+Vanta|SOC2 automation|Evidence pipeline, TSC mapping

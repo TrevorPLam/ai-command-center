@@ -55,6 +55,24 @@ D|TSG=TypeScript 7.0 Go-native (tsgo)
 D|RESP=OpenAI Responses API (migrate by Aug26)
 D|grantexp=Nylas grant.expired webhook
 D|NOHAIKU=No Haiku in agentic contexts
+D|DRS=rschedule+@rschedule/temporal-date-adapter(replaces rrule.js FE)
+D|DFG=FastGraphRAG(NLP entity extraction,10% cost)
+D|DLG=LangGraph(Supervisor/Swarm/LangMem/Trustcall)
+D|DDE=DeepEval(Pytest-native AI eval)
+D|DSW=SimpleWebAuthn(MIT passkeys)
+D|DGR=Grype(replaces Trivy scanning)
+D|DPH=PostHog Group Analytics
+D|DVF=Vercel Flags SDK(OpenFeature adapter)
+D|DMB=Multi-burn-rate(1h+5m P0,6h P1,3d P2)
+D|DDP3=DOMPurify profile(STRICT|RICH|EMAIL)
+D|DCTXR=Contextual Retrieval(50K chunk threshold)
+D|DSEK=Secret rotation log table(SOC2 audit)
+D|DRGI=RAG index stats & performance logging
+D|DSCH=Schemathesis contract testing gate
+D|DPMC=MCP security gateway+SMCP L2
+D|DNHS=OWASP Non-Human Identity management
+D|DOCL=OKLCH token system+DSTOKEN hard rule enforcement
+D|DPSY=PowerSync YAML rules per org+offline-first sync
 
 #DICT
 G1|85/35|±2% G2|80/30|±5% G3|82/32|±2% G4|80/40|±2% G5|90/45|±2%
@@ -123,6 +141,47 @@ GRANT_EXPIRED_WEBHOOK|sec|H|handle grant.expired; re-auth <72h or data loss
 EDGE_NO_DB|arch|H|Vercel Edge Functions cannot connect DB; route webhooks via Serverless/FastAPI
 OPENAI_RESPONSES_MIGRATE|ai|H|migrate from Assistants/ChatCompletions to Responses API by Aug26
 GRDL_01|ai|H|3-layer: Input(PII/jailbreak/tox),Output(halluc/safety/schema),Runtime(tool auth/cost); all logged; map to ASI01-ASI10
+// Additional HARD rules (Apr 2026 PART 4)
+RRULEBAN|arch|H|rrule.js banned on FE; use rschedule+Temporal adapter
+CLAUDEMIGRATION|ai|H|New agents after May 1 use claude-sonnet-4-6 or opus-4-7 only. Legacy IDs clean by June 1
+TRIVYISOLATION|sec|H|Security scanners never have write access to CI credential store; pin scanners to SHA
+GRYPEREPLACE|sec|H|Replace Trivy with Grype for Docker scanning in all CI jobs
+AUTHHOOK|sec|H|supabase_auth_admin granted SELECT on userroles,orgmembers,rolepermissions; pgTAP verified
+TSERASABLE|arch|H|tsc --erasableSyntaxOnly --noEmit CI gate; ban TypeScript enum
+SENTRY01|sec|H|Four Sentry projects with beforeSend PII strip hook; maskAllText:true on Session Replay
+DSNOKEYUI|ui|H|No hardcoded hex/RGB colours; reference OKLCH CSS custom properties only
+MONACOLAZY|arch|H|Monaco never in initial bundle; React.lazy+Suspense+skeleton mandatory
+APIC003|arch|H|Schemathesis CI gate on main; schema validation gate on PR
+GRDL03|ai|H|All pgvector-retrieved chunks pass through GRDL input layer before context injection
+NUQSBATCH|ui|H|>3 URL params must use useQueryStates, not multiple useQueryState
+DNDOVERLAY|arch|H|All drag operations use DragOverlay; never drag original DOM node
+COST03|arch|H|Budget enforcement synchronous pre-call (not post-call)
+COMP03|comp|H|Every HARD security rule has corresponding Vanta test within 30 days
+TESTC04b|sec|H|Any new table without pgTAP test file blocks merge
+TESTC07|arch|H|MSW handlers generated from OAI3.1 spec via openapi-backend
+FLYPRIVATE|ops|H|Y-Sweet token endpoint unreachable from public internet; private networking only
+EVALCOST|ai|H|DeepEval LLM-as-judge calls routed through LiteLLM proxy
+SECREC01|ops|H|Automated secret rotation failure → P1 incident; logged as SOC2 evidence
+FFLG03|arch|H|Every flag must have explicit owner,defaultBehavior,reviewdate
+ZUSTANDCIRCULAR|arch|H|Slices cannot import other slice files; cross-slice access via get() only
+POWERSYNC01|data|H|PowerSync bucket YAML per orgId; sync rules scoped to JWT orgId claim
+CONTEXTUALRETRIEVAL|ai|H|Activate Contextual Retrieval only when corpus >50K chunks AND precision>15% AND cache hit>60%
+FASTGRAPHRAG|ai|H|Start FastGraphRAG (10% cost). LLM-based GraphRAG requires feature flag at 500K chunks
+MULTIBURN|obs|H|Multi-burn-rate SLO: 1h+5m P0 page,6h P1,3d P2; burn>14.4→EB100% incident
+OTEL02|obs|H|OTel GenAI conventions mandatory for all agents; OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai
+SANITIZEDHTML|ui|H|All user-generated HTML passes SanitizedHTML component with profile(STRICT|RICH|EMAIL)
+RESEND01|ops|H|Resend primary transactional email; email.complained→unsubscribed:true
+SECRETROTATE|ops|H|Every secret must have rotation schedule in secretrotationlog; dynamic DB credentials per deploy
+PQC2027|sec|H|Inventory long-lived keys+data for post-quantum readiness; hybrid classical+ML-KEM plan by 2027
+AIBOM04|comp|H|AIBOM (CycloneDX) per model in CI; include training data provenance and safety evaluations
+// S22-S28 explicit mapping (PART 11)
+S22|sec|H|GRDL03: RAG content validation (pgvector chunks through GRDL input layer)
+S23|sec|H|SECREC01: secret rotation failure→P1 incident; all rotations logged SOC2 evidence
+S24|sec|H|GRYPEREPLACE: Grype not Trivy; scanners isolated from CI credentials
+S25|sec|H|AUTHHOOK01: supabase_auth_admin SELECT grants verified by pgTAP after migration
+S26|sec|H|SENTRY01: PII strip beforeSend; maskAllText:true Session Replay; four projects
+S27|sec|H|CLAMAVPROD: v1.4.x sidecar; health check; freshclam hourly; no scan result caching
+S28|sec|H|DPPROFILES: three DOMPurify profiles; no svg in STRICT/RICH; XSS test matrix
 // HARD Security S1-S21 (canonical list; impl mechanisms in #KV SECURITY)
 S1|sec|H|no dangerouslySetInnerHTML
 S2|sec|H|SB Storage→StorageService
@@ -239,6 +298,21 @@ CRDB_02|arch|M|sync: outbox MVP; eval cr-sqlite/ElectricSQL/Replicache Phase2
 RLMT_02|obs|M|Realtime mem: alert@40MB/ch; max20 subs/user
 UPSC_02|sec|M|server-side only; version pin; CVE CI; size/type pre-scan
 RCLL_02|test|M|all 33 RFC5545; DST matrix(spring-fwd/fall-back/cross-tz/COUNT-span); exception O(1)
+// MED rules (PART 4 subset - integrate with existing MED section)
+OBSS04|obs|M|Multi-window burn rate:1h+5m P0 page;6h P1;3d P2
+OBSS05|obs|M|SemanticCacheHitRate target≥70% chat,≥90% RAG; alert on breach
+AUTHHOOK01|arch|M|Org switch triggers supabase.auth.refreshSession()+RT client clear
+NYLASREAUTH|ops|M|grant.expired P1 incident;72h expiry grace; immediate revocation
+RAGINDEXSTRAT|arch|M|<500K:HNSW m16 efc200;≥500K:DiskANN;hybrid:BM25+DiskANN RRF k60 cross-encoder
+COMPILERAUDIT|arch|M|Q2 2026 Compiler audit; bundle size delta ≤5%
+TEMPORALZDT|arch|M|Always use Temporal.ZonedDateTime not PlainDateTime for calendar events
+PINCATALOG|arch|M|Security-pinned deps HARD-pinned; weekly pnpm audit
+CTXRETRIEVAL|arch|M|Activate Contextual Retrieval when corpus >50K chunks/org tracked in ragindexstats
+GRAPHRAG|arch|M|FastGraphRAG first; LLM-based gated at 500K chunks feature flag
+FLYSCALE01|ops|M|WorkflowEngine scales 0→3 via fly-autoscaler on queue_depth >5
+EXPOPINSDK|arch|M|Decision May 15,2026:SDK55 if before July;SDK56 after July
+RESEND01-M|arch|M|Resend primary email; email.complained→unsubscribed:true
+LANGGRAPH01|arch|M|LangGraph Supervisor maps to FLOWC01 SM;LangMem for cross-session summarisation
 
 #VER
 // id|ver|notes
@@ -248,17 +322,26 @@ TailwindCSS|4.2.2  Prisma|7.8.0|pgbouncer=true
 dndkit|6.3.1|community standard; NO migration to PragmaticDnD
 Node|24.15.0LTS Krypton  Python|3.12  FastAPI|0.136.1
 rbc|^1.19.4React19  yjs|13.6.21  dompurify|≥3.4.0  nuqs|^2.5
-reacthelmet|latest  livekitagents|>=1.0.0,<2.0.0
+reacthelmet|latest  livekitagents|>=2.0.0 ONLY
 livekitserversdk|>=1.0.0  markmap|latest  reactresizable|^3.1.3
 QueryClient|staleTime5min,retry2,noRefocus,429→RL,useSSE
 // New entries
 ai|^6.0  @ai-sdk/react|^2.0  @tremor/react|^3.18
 @stripe/ai-sdk|latest  @stripe/agent-toolkit|latest
-@powersync/web|latest  litellm|>=1.83.7 (SHA verify)
+@powersync/web|latest  litellm|>=1.83.7 cosign+Grype not Trivy
 orval|>=8.2.0  @anthropic/mcp-inspector|>=0.14.1 (devDep)
-tsgo|7.0beta  temporal-polyfill|^0.3.0 (Safari gap)
+tsgo|7.0beta  temporal-polyfill|^0.3.2 ~20KB (Safari gap)
 pgvectorscale|0.4.0 (DiskANN)  @xyflow/react|12.10.2
 OTel|v1.40.0+experimental  prisma-next|GA June-July 2026 (Postgres)
+// Additional new entries (Apr 2026)
+rschedule|latest @rschedule/temporal-date-adapter
+SimpleWebAuthn|latest
+deepeval|latest
+ragas|>=0.2
+openapi-backend|latest
+pg_textsearch|latest
+basejump-supabase_test_helpers|latest
+pyclamd|latest
 
 // See 00-PLAN-2-ZV.md for Zustand slice configurations
 // See 00-PLAN-4-TBL.md for database table schemas
@@ -302,11 +385,16 @@ BR_Critical|2%/1h→page  BR_Warning|5%/6h→Slack
 Yjs_Limit|50MB; compaction@30MB; undo last5
 // Additional bundle budgets (Apr 2026)
 Chunk_tremor|15KB  Chunk_ai_sdk|10KB  Chunk_powersync|50KB
-Chunk_temporal_polyfill|8KB  Chunk_es2026_shim|5KB (match/using)  EdgeFn_MaxCPU|50ms
+Chunk_temporal_polyfill|20KB  Chunk_es2026_shim|5KB  EdgeFn_MaxCPU|50ms
+// Additional bundle budgets (Apr 2026 PART 10)
+Chunk_rschedule|15KB
+Chunk_simplewebauthn|12KB (lazy, auth routes only)
+Chunk_deepeval|0KB (CI/server-side)
+Chunk_posthog|19KB (shared, feature flagged)
 // Offline cache budget
 Offline_Storage|50MB IndexedDB per org
 Stripe_Markup|30%  Compliance_Refresh|quarterly  OTel_Version|1.39.0
-Upload_CA_Version|≥1.0.4  RBAC_Target|100% HARD rule→control  MCP_OAuth_Target|≥90%
+Upload_CA_Version|≥1.4.x freshclam hourly  RBAC_Target|100% HARD rule→control  MCP_OAuth_Target|≥90%
 
 #MIL+TSK
 // Milestones
@@ -359,6 +447,42 @@ pending|P117|Temporal polyfill integration + Safari gate
 pending|P118|pgvectorscale adoption threshold lowered to 500K vectors
 pending|P119|OWASP Agentic Top10 (ASI 2026) compliance mapping
 pending|P120|ES2026 match expression evaluation
+// Additional pending tasks P121-P155 (Apr 2026 PART 6 + Addendum)
+pending|P121|rschedule migration+DST test cases
+pending|P122|temporal-polyfill 0.3.2,bundle budget 20KB
+pending|P123|AUTHHOOK pgTAP assertion(supabase_auth_admin grants)
+pending|P124|SimpleWebAuthn passkeys; webauthn_challenges table
+pending|P125|LangGraph Supervisor FLOWC01; LangMem crossSessionSummaries
+pending|P126|pg_textsearch BM25; replace pgtrgm hybrid leg
+pending|P127|React Compiler audit,bundle delta≤5%
+pending|P128|LiveKit v2.0 only; VoicePipelineAgent v2 API
+pending|P129|Four Sentry projects, PII strip, Session Replay, PostHog connect
+pending|P130|Schemathesis CI PR+main jobs (@APIC002)
+pending|P131|DeepEval adoption, RAGAS alongside
+pending|P132|Vanta connect GH/Supabase/Vercel/Doppler/Fly; SOC2 Type I Q4
+pending|P133|PostHog event taxonomy+Group Analytics
+pending|P134|SLO multi-burn-rate(1h+5m,6h,3d); TTFT histogram
+pending|P135|Upstash dynamic rate limits per plan+ cacheBlock audit
+pending|P136|ClamAV v1.4.x sidecar; freshclam hourly; health check
+pending|P137|SanitizedHTML component+3 profiles; XSS test cases
+pending|P138|Zustand persistence versioning+migrate(); ESLint ZUSTANDCIRCULAR
+pending|P139|OpenFeature+PostHog provider using Vercel Flags SDK
+pending|P140|MSW openapi-backend codegen; 429 mock factory; SSE mock pattern
+pending|P141|PowerSync bucket YAML per orgId, document 3-user free tier
+pending|P142|Schemathesis ignore file for SSE+WS endpoints
+pending|P143|Grype replace Trivy in CI; pin to SHA; isolate CI creds
+pending|P144|Monaco spec: per-surface lang config; CSP sandbox; OKLCH theme
+pending|P145|GraphRAG tables graphentities, graphrelationships stubs; migration path ADR106
+pending|P146|Contextual Retrieval ragindexstats; 50K threshold; Phase1.5 eval Q1'27
+pending|P147|Turborepo CI inputs(exclude *.test.ts), AI eval no cache; base=main
+pending|P148|pnpm catalog tiers(default,react,python); security-pinned HARD; dependabot patch-only
+pending|P149|Fly.io topology: Machine sizes, autostop, private net, autoscaler rule
+pending|P150|Secret rotation: secretrotationlog table; Vault dynamic DB creds per deploy
+pending|P151|React Router v7: library mode, no @react-router/dev, useViewTransitionState
+pending|P152|nuqs canonical parsers; ESLint rule for >3 params→useQueryStates
+pending|P153|pgTAP: PII tables first+supaShield auto-gen; pnpm test:rls task
+pending|P154|Chat: canvas CSP per artifact; staleTime:Infinity AI gen; SSE ReadableStream consumer; VVirtualizeList
+pending|P155|CI pipeline: full job matrix(typecheck,tsgo,lint,test:*,drift,codegen,build)
 // Spec/XCT tasks (all pending unless noted)
 XCT_001|in-progress|motion spec: transform/opacity,reduced motion,stagger≤3
 XCT_002|optimistic-ui: React19 useOptimistic,pending styling,5s undo
@@ -460,5 +584,32 @@ ADR_102|Prisma Next evaluation (Phase 3, Postgres GA July 2026+)
 ADR_103|OpenAI Responses API migration path (deadline Aug 26, 2026)
 ADR_104|pgvectorscale threshold reduction (500K vectors)
 ADR_105|Tremor v3.18.x actively maintained; charting standard
+// New ADRs (Apr 2026 PART 7)
+ADR106|FastGraphRAG first; LLM-based gated at 500K chunk feature flag
+ADR107|SimpleWebAuthn for passkeys; webauthn_challenges RPC pattern
+ADR108|DeepEval as AI eval framework; RAGAS alongside for RAG
+ADR109|rschedule+@rschedule/temporal-date-adapter replaces rrule.js FE
+ADR110|OpenFeature with Vercel Flags SDK+PostHog provider
+ADR111|Grype replaces Trivy for Docker scanning; no scanners with CI cred write access
+ADR112|DOMPurify three profiles(STRICT/RICH/EMAIL) with SanitizedHTML component
+ADR113|LangGraph Supervisor for FLOWC01 SM; LangMem for cross-session FIFO; Trustcall extraction
+ADR114|Four Sentry projects; PII strip beforeSend; replaysOnErrorSampleRate:1.0
+ADR115|LiveKit Agents v2.0 only; semantic turn detection mandatory
+ADR116|pg_textsearch BM25 replaces pgtrgm in hybrid search
+ADR117|ClamAV v1.4.x sidecar; freshclam hourly; health check integration
+ADR118|Contextual Retrieval Phase 1.5 evaluation at 50K chunk threshold
+ADR119|Vanta as SOC2 automation platform; Type I target Q4 2026
+ADR120|Upstash dynamic rate limits for plan-tiers; semantic cache threshold 0.92
+ADR121|Multi-burn-rate SLO alerting:1h+5m P0,6h P1,3d P2
+ADR122|PowerSync confirmed primary offline sync; ElectricSQL documented as alternative
+ADR123|Playwright AI Agents(Planner/Generator/Healer) in CI; cost via LiteLLM proxy
+ADR124|Tailwind v4 OKLCH three-layer token system; HARD DSTOKEN rule
+ADR125|Four-layer cost governance: synchronous pre-call budget check
+ADR126|PostHog Group Analytics mandatory from day one for org-scoped events
+// Updates (PART 7)
+UPDATE ADR082|rschedule replaces rrule.js; Python dateutil unchanged; ZonedDateTime mandatory
+UPDATE ADR088|Resend promoted from fallback to primary transactional email provider
+UPDATE ADR019|LiveKit Agents v2.0 only; remove v1.0 reference
+UPDATE ADR036|Contextual Retrieval cost model updated; Sonnet 4.6; 50K chunk threshold
 
 EOF

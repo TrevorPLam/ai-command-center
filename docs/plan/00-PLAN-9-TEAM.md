@@ -95,4 +95,11 @@ Budget|VP Engineering|Finance|CTO|Monthly|CEO
 Hiring|Hiring Manager|Team|HR|As needed|CEO
 Pricing|Product Lead|Sales|CEO|Quarterly|Board
 
-EOF
+// Domain ownership map (Apr 2026)
+#DOMAIN_OWNERSHIP|domain|owner|backup|cross-cutting
+A: Platform & DX|Platform Eng|Senior SRE|DB infra,CI/CD,monorepo
+B: Data & Sync|Data Platform|Data Lead|AI vector/graph,frontend sync state
+C: AI Core & Agents|AI/ML Eng|AI Lead|Frontend GenUI streaming,business metering
+D: Frontend & UX|Product Eng|Frontend Lead|AI prompt/agent UI,business telemetry
+E: Security & GRC|Security/GRC|Security Lead|Identity,audit,compliance across all
+F: Business & Monetization|Product/GTM|Product Lead|Budget gates,feature flags

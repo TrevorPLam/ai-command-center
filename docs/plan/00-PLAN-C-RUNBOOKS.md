@@ -29,6 +29,7 @@ AI_Privacy_Opt_Out_Violation|opted-out org data in training→block,alert privac
 Offline_Tombstone_Missing|hard-delete without tombstone→ghost reappear on sync; fix: add deleted_at,backfill
 Upload_Scan_Fail|CA fails or CVE detected→quarantine,alert security,patch required
 Recurrence_DST_Fail|DST test fail→block deploy,fix TZID handling
+SECRET_ROTATION_FAILURE|Automated rotation failure → P1; log evidence; manual rotation within 1h
 
 // New runbooks (Apr 2026)
 Y_SWEET_MIGRATION|Y-Sweet self-host: deploy Docker container, migrate S3 bucket, switch clients to new endpoint; fallback: Vercel KV session storage temporary

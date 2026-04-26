@@ -70,3 +70,17 @@ crdb_tombstone_config|id$,org_id$,entity_type,deleted_at_col,retention_days,comp
 rlmt_channel_limits|id$,org_id$,platform(100),self(20),current,alert_at(15),alert_triggered|-
 upsc_scan_config|id$,org_id$,scanner(clamd),ver_pinned(1.0.4+),cve_mon,chunked,pre_scan_validation|-
 rcll_recurrence_rules|id$,org_id$,entity_type,rrule,rdate,exdate,tzid,edit_mode,exception_storage(keyed by start_utc O(1))|-
+// New tables (Apr 2026)
+graphentities|id$,org_id>,nm,type,desc,embedding,sourcecount,trustscore,cat|GraphRAG nodes
+graphrelationships|id$,org_id>,source_id>,target_id>,reltype,weight,community,cat|GraphRAG edges
+ragindexstats|org_id>,chunkcount,indextype,activatedctxretrieval,graphragactive,lastindexed,cat|Index monitoring
+webauthn_challenges|id$,user_id>,challenge,type,expires,created|TTL15min; passkeys RPC
+secretrotationlog|id$,secretname,rotatedat,method,success,evidence|SOC2 audit trail
+posthogeventtaxonomy|id$,eventname,requiredprops,owner,cat|Analytics governance
+flagevidence|id$,flag_id>,owner,defaultbehavior,reviewdate,cat|Feature flag compliance
+
+// Schema modifications
+connected_accounts|+ grantStatus (expired|revoked|active)
+notifications|+ unsubscribed bool / notificationPreferences JSONB
+grdlaudit_logs|+ reason (cacheBlock|redisBlock|quotaExceeded)
+upscscanconfig|UPDATE version_pin 1.0.4→1.4.x

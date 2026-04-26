@@ -152,3 +152,14 @@ PWRSYNC_ARCH|SQLite client; Postgres server; YAML sync rules; 3 users free tier;
 TAURI_CAP|Fine-grained capability per window; XSS containment; CI manifest validation
 // Tremor maintenance status
 TREMOR_STATUS|Actively maintained by Tremor Labs (Vercel-acquired); v3.18.x stable; v4 preview; ~27K GitHub stars; safe ADR
+// Additional KV (Apr 2026)
+RRULE_DST_BUG|rrule.js TZID-parameterized DTSTART RFC5545 non-compliant; DST shifts 1h. Replace: FE→rschedule+@rschedule/temporal-date-adapter; BE unchanged.
+REACT_COMPILER_STABLE|Includes existing useMemo/useCallback; skips some modules. Use eslint-plugin-react-compiler. Audit Q2'26.
+PASSKEYS_SUPABASE_GAP|Supabase Auth lacks native WebAuthn. Use SimpleWebAuthn+RPC; table webauthn_challenges.
+Nylas_Webhook_BestPractices|Async processing (ack<10s), idempotency via nylas_processed_events, DLQ after 3 retries, grant.expired handling (refresh attempt, 72h backfill window), daily cron for expiring grants. See runbook.
+Resend_Primary|Resend is now primary transactional email. Handle email.complained→unsubscribed:true. Svix inbound webhooks.
+LangGraph_Supervisor|Maps FLOWC01 SM; LangMem crossSessionSummaries; Trustcall for extraction.
+FastGraphRAG|NLP-based, 10% cost; production first. LLM-based GraphRAG via feature flag at 500K chunks.
+SanitizedHTML_Profiles|Three DOMPurify profiles: STRICT(no svg), RICH(allowed div/span), EMAIL(link+img). Component prop driven.
+PowerSync_Bucket|YAML rules per orgId (JWT claim); 3 users free tier; conflict resolution LWW.
+Temporal_ZD_Required|Always Temporal.ZonedDateTime for calendar events; never PlainDateTime.

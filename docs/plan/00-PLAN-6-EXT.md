@@ -11,12 +11,12 @@ version: 1.0
 # EXT - External Service Integrations
 
 // External Service Integrations (Updated Apr 2026)
-Nylas|OAuth2,FastAPI proxy,webhook→EdgeFn,upsert-first,10s timeout,async queue,Sync Policy,burst auto-scale; grant.expired webhook mandatory,re-auth<72h
-Resend|Fallback for transactional; React Email 5.0 templates; 3k/mo free tier; inbound webhooks via Svix (3-day retention)
+Nylas|OAuth2,FastAPI proxy,webhook→Serverless(no Edge DB),upsert-first,10s timeout,async queue,idempotency via nylas_processed_events,grant.expired webhook→re-auth<72h; daily cron for expiring grants; DLQ after 3 retries; LWW via uat
+Resend|Primary transactional email; React Email 5.0; 3k/mo free tier; inbound via Svix; email.complained→unsubscribed:true
 LiveKit|token /v1/livekit/token,TTL6h,conference agent,RBAC scoped,AgentSession
 AI_Providers|LLM proxy via LiteLLM>=1.83.7 (cosign),Vercel AI SDK v6 gateway fallback,Claude 4.6 default,no Haiku agentic; OpenAI Responses API migration by Aug26; Responses+Conversations; server-side compaction,hosted shell
 YSweet|Self-host (Jamsocket shutdown); GC enabled,undo trunc last5,snapshot,50MB limit; offlineSupport provider
-Storage|org buckets,StorageService,CA server-side(clamd>=1.5.2),chunked upload,S3 versioning
+Storage|org buckets,StorageService,CA server-side(clamd v1.4.x),freshclam hourly,health check in /health,no scan result caching by hash; pyclamd integration,chunked upload,S3 versioning
 Search|Phase1 pg_trgm,Phase2 pgvector HNSW+RRF(k=60)+cross-encoder rerank,Phase3 Typesense,RAG; pgvectorscale 0.4.0 DiskANN for >500K vectors
 DOMPurify|≥3.4.0,whitelist,FORBID script/style/iframe/object/embed,SVG_INLINE off; CVE-2025-15599,CVE-2026-0540,CVE-2026-41238,CVE-2026-41240,CVE-2025-25141 addressed
 Stripe|metered billing via @stripe/ai-sdk and @stripe/agent-toolkit,30% markup,ai_cost_log→meters,reconcile job; dual-track LiteLLM + Vercel Gateway metering
@@ -32,4 +32,5 @@ Prisma_Next|TypeScript-native ORM,Postgres GA June-July 2026; pgvector extension
 Edge_Functions|Vercel Edge no DB connections; use Serverless (300s) or Neon driver for DB tasks; Nylas webhooks→FastAPI or Vercel Serverless, not Edge
 TypeScript|6.0 prod (erasableSyntaxOnly, isolatedDeclarations strict); 7.0 beta (tsgo 10x)
 React|React20 GA March 2026, Compiler default; manual memoization deprecated; "use no memo" escape hatch
+Grype|Docker image vulnerability scanning (replaces Trivy); isolated from CI credential store; pin to SHA digest
 OWASP|OWASP MCP Top10; OWASP Agentic Top10 (ASI 2026); ASI01-ASI10 mapping required
