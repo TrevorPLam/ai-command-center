@@ -1,43 +1,73 @@
----
-steering: TO PARSE - READ INTRO
-file_name: 01-PLAN-ZUSTAND.md
-document_type: zustand_slices
-tier: infrastructure
-status: stable
-owner: Platform Engineering
-description: Zustand store slice configurations with persistence settings
-last_updated: 2026-04-25
-version: 1.0
-dependencies: [01-PLAN-LEXICON.md, 05-XCT-DEPENDENCIES.md]
-related_adrs: [ADR_003, ADR_034]
-related_rules: [ZUSTANDCIRCULAR, B1, B5, B6, B7]
-complexity: low
-risk_level: medium
----
+# Zustand Store Configuration
 
-# ZV - Zustand Slices
+This document defines all Zustand slices used across the application, including their persistence configuration and persisted fields.
 
-slice|persist
-authSlice|reset  uiSlice|cmdPaletteOpen  orgSlice|currentOrgId  dashboardSlice|agentFilter
-chatSlice|activeThreadId  workflowSlice|reset  projectSlice|currentView,filters
-calendarSlice|activeDate,sidebarCal  emailSlice|activeAccount,selectedFolder  contactsSlice|reset
-conferenceSlice|reset  translationSlice|languages  newsSlice|feedFilter,pausedFeeds
-documentsSlice|currentFolder  researchSlice|activeNotebook  mediaSlice|selectedAlbum
-budgetSlice|selectedAccount,dateRange  settingsSlice|localStorage  mcpSlice|version,rehydrate
-agentStore|version,rehydrate  promptStore|localStorage  canvasStore|reset
-memoryStore|max50FIFO  triageSlice|reset  recurrenceStore|reset
-notificationSlice|unreadCount  searchSlice|history max50,recentEntities max20
-analyticsSlice|dateRange,selectedMetrics  costSlice|reset,fetched
-specSlice|activeSpec,tierAssignments  xctSlice|motionPrefs,optimisticUndoWindow
-flowcSlice|workflowSMs  apicSlice|openApiVersion,codegenConfig  evntSlice|eventSchemas,ICs
-testcSlice|coverageTargets,gateThresholds  opsrSlice|incidentSeverity,roles
-fflgSlice|flagStages,killSwitch  migSlice|strategy,EBCsteps  obsSlice|SLOs,EBs,BRs
-secmSlice|controls,evidence  mcp2Slice|oauthConfig,schemaAllowlists
-passSlice|passkeyEnrollments,recoveryCodes  taurSlice|capabilities,depAudit
-mobnSlice|pushPermissions,deepLinkRoutes  grdlSlice|guardrailRules,auditLogs
-ssrfSlice|allowlistRules,dnsValidation  privSlice|trainingOptOuts,privacySettings
-stkbSlice|tokenMarkup,usageRecords  compSlice|evidence,controlMapping
-yjsSlice|gcEnabled,undoStackSize,snapshotVersions  nylsSlice|webhookQueue,SyncPolicy
-otelSlice|rootSpanProp,redactionRules  crdbSlice|tombstoneConfig,idStrategy
-rlmtSlice|channelLimits,memThresholds  upscSlice|scanConfig,cvePinning
-rcllSlice|recurrenceRules,dstConfig
+## Slice Configuration Table
+
+| Slice Name | Persistence | Persisted Fields | Notes |
+|------------|-------------|------------------|-------|
+| **authSlice** | reset | - | Cleared on logout |
+| **uiSlice** | persistent | cmdPaletteOpen | Command palette visibility state |
+| **orgSlice** | persistent | currentOrgId | Current organization selection |
+| **dashboardSlice** | persistent | agentFilter | Active agent filter setting |
+| **chatSlice** | persistent | activeThreadId | Currently selected chat thread |
+| **workflowSlice** | reset | - | Cleared on session end |
+| **projectSlice** | persistent | currentView, filters | Project view preferences |
+| **calendarSlice** | persistent | activeDate, sidebarCal | Calendar navigation state |
+| **emailSlice** | persistent | activeAccount, selectedFolder | Email client state |
+| **contactsSlice** | reset | - | Cleared on logout |
+| **conferenceSlice** | reset | - | Meeting state cleared after session |
+| **translationSlice** | persistent | languages | Preferred translation languages |
+| **newsSlice** | persistent | feedFilter, pausedFeeds | News feed preferences |
+| **documentsSlice** | persistent | currentFolder | Document browser location |
+| **researchSlice** | persistent | activeNotebook | Current research notebook |
+| **mediaSlice** | persistent | selectedAlbum | Media gallery selection |
+| **budgetSlice** | persistent | selectedAccount, dateRange | Budget view preferences |
+| **settingsSlice** | localStorage | all | User settings persisted to localStorage |
+| **mcpSlice** | persistent | version | Version for rehydration handling |
+| **agentStore** | persistent | version | Version for rehydration handling |
+| **promptStore** | localStorage | all | Prompt history in localStorage |
+| **canvasStore** | reset | - | Canvas state cleared on exit |
+| **memoryStore** | max 50 FIFO | working, episodic | FIFO eviction at 50 items |
+| **triageSlice** | reset | - | Triage state cleared after action |
+| **recurrenceStore** | reset | - | Recurrence form state |
+| **notificationSlice** | persistent | unreadCount | Notification badge count |
+| **searchSlice** | persistent | history (max 50), recentEntities (max 20) | Search history with limits |
+| **analyticsSlice** | persistent | dateRange, selectedMetrics | Analytics view preferences |
+| **costSlice** | persistent | reset, fetched | Cost tracking state |
+| **specSlice** | persistent | activeSpec, tierAssignments | Active specification tracking |
+| **xctSlice** | persistent | motionPrefs, optimisticUndoWindow | Cross-cutting service preferences |
+| **flowcSlice** | persistent | workflowSMs | Workflow state machines |
+| **apicSlice** | persistent | openApiVersion, codegenConfig | API client configuration |
+| **evntSlice** | persistent | eventSchemas, ICs | Event contract schemas |
+| **testcSlice** | persistent | coverageTargets, gateThresholds | Testing coverage thresholds |
+| **opsrSlice** | persistent | incidentSeverity, roles | Ops runbook configuration |
+| **fflgSlice** | persistent | flagStages, killSwitch | Feature flag states |
+| **migSlice** | persistent | strategy, EBCsteps | Migration strategy settings |
+| **obsSlice** | persistent | SLOs, EBs, BRs | Observability thresholds |
+| **secmSlice** | persistent | controls, evidence | Security matrix data |
+| **mcp2Slice** | persistent | oauthConfig, schemaAllowlists | MCP security configuration |
+| **passSlice** | persistent | passkeyEnrollments, recoveryCodes | Passkey authentication state |
+| **taurSlice** | persistent | capabilities, depAudit | Tauri desktop capabilities |
+| **mobnSlice** | persistent | pushPermissions, deepLinkRoutes | Mobile notification settings |
+| **grdlSlice** | persistent | guardrailRules, auditLogs | AI guardrails configuration |
+| **ssrfSlice** | persistent | allowlistRules, dnsValidation | SSRF prevention rules |
+| **privSlice** | persistent | trainingOptOuts, privacySettings | Privacy preference settings |
+| **stkbSlice** | persistent | tokenMarkup, usageRecords | Stripe billing configuration |
+| **compSlice** | persistent | evidence, controlMapping | Compliance tracking data |
+| **yjsSlice** | persistent | gcEnabled, undoStackSize, snapshotVersions | Yjs collaboration settings |
+| **nylsSlice** | persistent | webhookQueue, SyncPolicy | Nylas integration state |
+| **otelSlice** | persistent | rootSpanProp, redactionRules | OpenTelemetry configuration |
+| **crdbSlice** | persistent | tombstoneConfig, idStrategy | Offline-first data strategy |
+| **rlmtSlice** | persistent | channelLimits, memThresholds | Realtime limits configuration |
+| **upscSlice** | persistent | scanConfig, cvePinning | Upload security settings |
+| **rcllSlice** | persistent | recurrenceRules, dstConfig | Recurrence engine settings |
+
+## Persistence Types
+
+| Type | Description |
+|------|-------------|
+| **reset** | Slice is cleared on logout/session end |
+| **persistent** | Slice persists to configured storage (typically localStorage with version+migrate+partialize) |
+| **localStorage** | All slice data stored in localStorage |
+| **max 50 FIFO** | FIFO eviction when 50 item limit reached |

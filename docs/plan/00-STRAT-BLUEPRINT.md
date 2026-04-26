@@ -1,20 +1,3 @@
----
-steering: TO PARSE - READ INTRO
-file_name: 00-STRAT-BLUEPRINT.md
-document_type: blueprint_overview
-tier: strategic
-status: stable
-owner: Executive / Product
-description: AI-Agentic SaaS Stack Blueprint — now with clarified product identity, design axiom, MVP scope, and phasing
-last_updated: 2026-04-25
-version: 2.0
-dependencies: []
-related_adrs: [ADR_001, ADR_002, ADR_003, ADR_004, ADR_005, ADR_006, ADR_007, ADR_008, ADR_011, ADR_012, ADR_014, ADR_016, ADR_017, ADR_018, ADR_019, ADR_020, ADR_021, ADR_022, ADR_023, ADR_024, ADR_025, ADR_027, ADR_028, ADR_030, ADR_031, ADR_032, ADR_033, ADR_034, ADR_035, ADR_036, ADR_054, ADR_058, ADR_062, ADR_063, ADR_064, ADR_065, ADR_067, ADR_076, ADR_077, ADR_079, ADR_082, ADR_083, ADR_084, ADR_085, ADR_086, ADR_087, ADR_088, ADR_089, ADR_090, ADR_091, ADR_092, ADR_093, ADR_094, ADR_095, ADR_096, ADR_097, ADR_098, ADR_099, ADR_100]
-related_rules: []
-complexity: high
-risk_level: critical
----
-
 # The AI-Agentic SaaS Stack Blueprint (2026)
 
 ## Product Identity
@@ -45,8 +28,6 @@ All agentic intelligence runs on **local or self‑hosted models by default**. C
 
 This principle inverts the industry default, making data sovereignty a product feature. Free‑tier users experience the full AI assistant using only local models (near‑zero marginal cost). Paid tiers unlock cloud AI as a premium add‑on.
 
----
-
 ## Open Questions (to be resolved during build)
 
 - **Proactive behavior**: How often should agents check for conflicts? Tied to subscription tiers and per‑feature configuration. Will be defined later; planning docs must reference this as a configurable policy.
@@ -54,8 +35,6 @@ This principle inverts the industry default, making data sovereignty a product f
 - **Monetization model**: Free tier: local models only (Gemma 4, Qwen3.5); Pro tier: cloud API access (Sonnet 4.6); Team/Enterprise: Opus 4.7, fine‑tuning, private model hosting. Exact feature gates per tier TBD.
 - **Multi‑tenancy**: Data model supports org_id from day one, but cross‑user conflict detection is deferred and documented.
 - **Local model lifecycle**: How to version, update, and deprecate local models without breaking user workflows. Policy needed for end‑of‑life model migration.
-
----
 
 ## Phased Delivery Strategy
 See the authoritative phased plan in **01-PLAN-MILESTONES.md** for the complete six‑phase rollout.
@@ -79,7 +58,7 @@ A comprehensive review of each major technology component confirms the blueprint
 
 - **TypeScript 7.0 `tsgo`**: Microsoft ships native preview builds exposing `tsgo`, a Go-native compiler running alongside `tsc`. Benchmarks show 10x speed improvements, with projects reporting 9x faster typechecking.
 - **pgvectorscale with DiskANN**: Timescale's extension achieves 28x lower p95 latency and 16x higher throughput vs. Pinecone's storage-optimized index on 50M Cohere embeddings.
-- **MCPsec L2 IETF Draft**: Defines Agent Passports (ECDSA P-256), signed message envelopes, tool integrity signatures, nonce replay protection, and trust levels L0-L4.
+- **APS (Agent Passport System) IETF Draft**: Defines Agent Passports (Ed25519), 7-dimension constraint lattice, 3-signature chain, cascade revocation, Bayesian reputation, institutional governance, signed message envelopes, tool integrity signatures, nonce replay protection, trust levels L0-L4.
 - **LiveKit Agents v1.0.0**: Production-ready framework for building real-time, multimodal voice and video AI agents using WebRTC.
 - **Playwright AI Agents**: Three-agent architecture (Planner, Generator, Healer) for automated E2E test creation delivered in Playwright 1.56.0.
 - **Stripe Agent Toolkit**: `@stripe/agent-toolkit`, `@stripe/ai-sdk`, and `@stripe/token-meter` provide metered billing, middleware, and MCP-based Stripe access.
@@ -90,8 +69,8 @@ A comprehensive review of each major technology component confirms the blueprint
 - **A2A v1.0**: Google's protocol with Agent Cards, decentralized discovery, and cryptographic identity primitives.
 - **Tailwind CSS v4**: CSS-first configuration via `@theme` directive for design tokens.
 - **Zustand v5**: Lightweight state management with improved comparison mechanisms and `useShallow`.
-- **Claude Opus 4.7**: Scores 64.3% on SWE-bench Pro, leading GPT-5.4 (57.7%) and Gemini 3.1 Pro (54.2%).
-- **EU AI Act**: High-risk obligations enforceable December 2, 2027 (stand‑alone high‑risk) / August 2, 2028 (embedded high‑risk); Articles 9-15 mandate extensive documentation.
+- **Claude Opus 4.7**: Scores 87.6% on SWE-bench Verified, 94.2% on GPQA Diamond, 64.4% on Finance Agent. New xhigh effort level (coding default), task budgets in public beta, tokenizer multiplier 1.0–1.35×.
+- **EU AI Act**: Current statutory deadline August 2, 2026 for majority of rules. Proposed Digital Omnibus extension (pending Council approval as of April 2026) would delay high-risk obligations to December 2, 2027 (stand‑alone high‑risk) / August 2, 2028 (embedded high‑risk). Articles 9-15 mandate extensive documentation.
 - **OpenTelemetry `gen_ai`**: Semantic conventions for agentic systems (agents, tasks, teams, artifacts) with Datadog native support.
 - **MACH Alliance**: Microservices, API-first, Cloud-native, Headless principles; launched AI Exchange in April 2025.
 - **Decision Velocity**: Defined as speed × accuracy × effectiveness; emerging metric for AI ROI.
@@ -162,14 +141,14 @@ The following organization groups the original 18 pillars into **six cohesive do
 **Absorbs**: Original Pillars 1, 4, 17 (full), 10 (audio/vision AI), 15 (coordination), semantic trust layer
 
 **C.1 Multi-Provider AI Gateway**
-- Dynamic routing between **Claude Opus 4.7** (64.3% SWE-bench Pro), Claude Sonnet 4.6 (default), **Gemini 3.1 Pro** (multimodal fallback), **GPT-5.5** (restricted: 86% hallucination rate).
+- Dynamic routing between **Claude Opus 4.7** (SWE-bench Verified 87.6%, GPQA Diamond 94.2%, Finance Agent 64.4%), **Claude Sonnet 4.6** (default), **Gemini 3.1 Pro** (multimodal fallback), **GPT-5.5** (restricted from production agentic use due to 86% hallucination rate on Artificial Analysis AA-Omniscience benchmark; allowed for evaluation/testing only).
 - Routing based on task complexity, cost, and hallucination risk assessment.
+- Reasoning token budgeting with effort control APIs (none/low/medium/high/xhigh), hidden "thinking token" cost monitoring. xhigh effort level is coding default; task budgets in public beta.
+- Model distillation pipelines for 5-30x cost reduction on specialized tasks.
 
 **C.2 Model Cost Optimization & Tiering**
-- Token budgeting with Claude Opus 4.7 tokenizer (1.0-1.35× increase).
+- Token budgeting with Opus 4.7 tokenizer (1.0–1.35× increase depending on content type).
 - Model tiering: Opus 4.7 for complex tasks, Sonnet 4.6 as default, Gemini 3.1 Pro for multimodal fallback, GPT-5.5 restricted.
-- Reasoning token budgeting with effort control APIs (none/low/medium/high/xhigh), hidden "thinking token" cost monitoring.
-- Model distillation pipelines for 5-30x cost reduction on specialized tasks.
 
 **C.3 Edge AI & WebGPU**
 - Transformers.js and Wasm for local model execution (Phi-4, Gemma-2B) in privacy-sensitive contexts.
@@ -177,7 +156,8 @@ The following organization groups the original 18 pillars into **six cohesive do
 
 **C.4 Agent Protocols & Identity**
 - **MCP Standardization**: Secure Model Context Protocol with SSRF controls, tool allowlisting, schema validation, audit logging.
-- **MCPsec L2 Gateway**: IETF draft with Agent Passports (ECDSA P-256), signed message envelopes, tool integrity signatures, nonce replay protection, trust levels L0-L4.
+- **APS (Agent Passport System) Gateway**: IETF draft with Agent Passports (Ed25519), 7-dimension constraint lattice, 3-signature chain, cascade revocation, Bayesian reputation, institutional governance, signed message envelopes, tool integrity signatures, nonce replay protection, trust levels L0-L4.
+- **AgentROA**: Complementary IETF draft adapting RPKI Route Origin Authorization for agent identity verification, providing cryptographically verifiable agent origin assertions.
 - **A2A v1.0 Integration**: Google's Agent-to-Agent protocol with signed Agent Cards, cryptographic identity attestation, multi-tenant endpoints, protocol versioning, decentralized discovery.
 - Agent Studio: Definition versioning, trust catalog, RBAC controls, playground environment, evaluation gates.
 
@@ -228,27 +208,38 @@ The following organization groups the original 18 pillars into **six cohesive do
 **Absorbs**: Original Pillars 3, 11, audit trail components of 17
 
 **E.1 API & Supply-Chain Security**
-- MCPsec L2 Gateway (as defined in C.4).
+- APS Gateway (as defined in C.4).
 - Supply chain: LiteLLM ≥1.83.7 with cosign verification, Orval ≥8.2.0 (CVE-2026-25141 mitigation), DOMPurify ≥3.4.0 (CVE-2026-41238 XSS protection).
 - Full CSP with nonce strategy, `worker-src` for service workers, `strict-dynamic` scripts, Report-Only in pre-production.
+- **MCP Identity Crisis**: Human identity disappears at MCP boundary; agents authenticate with static API keys, breaking traceability to human authorizers. Implement OAuth On-Behalf-Of flows and identity propagation (Nik Kale, SC World 2026).
+- **MCP Default Configuration Risk**: >90% of organizations deploy MCP servers with insecure default configurations allowing all tools (including destructive ones). Enforce tool allowlisting, SSRF controls, and schema validation (Noma Security research).
+- **MCP Critical CVEs**: CVE-2025-6514 (mcp-remote command injection, CVSS 9.6, 437K+ downloads), CVE-2026-23744 (MCPJam Inspector RCE), CVE-2025-49596 (MCP Inspector RCE). 30 CVEs disclosed in 60 days (Jan-Feb 2026), 13 rated critical by Vulnerable MCP Project.
+- **CIS MCP Companion Guide**: CIS Controls v8.1 Companion Guide for MCP (released April 21, 2026) provides practical guidance on identity, access control, logging, and application security for MCP deployments.
 
 **E.2 Identity & Audit**
 - Unique agent IDs with audit trails, service account separation, action attribution.
 - Immutable WORM logs for all agent decisions, blockchain-style hash chaining, legal defensibility, forensic analysis.
-
-**E.3 Privacy & Regulatory Compliance**
-- **EU AI Act Alignment**: High-risk obligations enforceable December 2, 2027 (stand‑alone high‑risk) / August 2, 2028 (embedded high‑risk). Automated technical documentation generation, risk management logs, high-risk application compliance, conformity assessment. Articles 9-15 mandate extensive documentation and traceability.
+- **EU AI Act Alignment**: Current statutory deadline August 2, 2026 for majority of rules. Proposed Digital Omnibus extension (pending Council approval as of April 2026) would delay high-risk obligations to December 2, 2027 (stand‑alone high‑risk) / August 2, 2028 (embedded high‑risk). Automated technical documentation generation, risk management logs, high-risk application compliance, conformity assessment. Articles 9-15 mandate extensive documentation and traceability.
 - GDPR compliance with consent management, data minimization, right to deletion, privacy by design.
 
 **E.4 AI Ethics & Fairness**
 - Automated demographic bias detection, fairness metrics dashboard, bias mitigation strategies, regulatory reporting.
 - Red teaming for prompt injections, jailbreaks, and training-data leakage (aligned with CSA RiskRubric.ai framework).
+- **OWASP ASI01-ASI10 Complete CVE Mapping** (as of April 2026):
+  - **ASI01: Agent Goal Hijack** - CVE-2025-32711 (EchoLeak, Microsoft 365 Copilot, CVSS 9.3), CVE-2025-53773 (GitHub Copilot YOLO Mode, CVSS 7.8), CVE-2025-64660 (AGENTS.MD Hijacking in VS Code), CVE-2025-61590 (AGENTS.MD Hijacking in VS Code)
+  - **ASI02: Tool Misuse & Exploitation** - CVE-2025-8217 (Amazon Q Code Assistant, CVSS 7.8), CVE-2025-34291 (Langflow AI RCE)
+  - **ASI03: Identity & Privilege Abuse** - CVE-2025-32711 (EchoLeak, Microsoft 365 Copilot, CVSS 9.3); incidents: Copilot Studio Connected Agents, CoPhish Attack, Copilot Studio Public-by-Default Agents
+  - **ASI04: Agentic Supply Chain Compromise** - CVE-2025-6514 (MCP Remote RCE, CVSS 9.6); incidents: Postmark MCP supply chain attack, Shai-Hulud Worm (npm ecosystem)
+  - **ASI05: Unexpected Code Execution** - CVE-2025-53773 (GitHub Copilot YOLO Mode, CVSS 7.8), CVE-2025-54135 (CurXecute, Cursor MCP auto-start, CVSS 8.6), CVE-2025-54136 (MCPoison, Cursor, CVSS 7.2), CVE-2025-59944 (Cursor Case-Sensitivity Bypass), Claude Desktop RCE (CVSS 8.9), IDEsaster Research (24 CVEs across multiple AI IDEs)
+  - **ASI06: Memory & Context Poisoning** - No CVEs assigned (emerging risk category); incidents: Google Gemini Memory Attack, Gemini Calendar Invite Poisoning, Lakera AI Memory Injection Research, ASCII Smuggling in Gemini
+  - **ASI07: Insecure Inter-Agent Communication** - No CVEs assigned (emerging risk category); incidents: Agent Session Smuggling in A2A Protocol, ServiceNow Now Assist Inter-Agent Vulnerability
+  - **ASI08: Cascading Agent Failures** - No CVEs assigned (emerging risk category); incidents: Galileo AI Research (87% downstream poisoning in 4 hours), Manufacturing Procurement Cascade
+  - **ASI09: Human-Agent Trust Exploitation** - No CVEs assigned (emerging risk category); incidents: M365 Copilot Manipulation Research, AI Reward Hacking, Agent-Driven Phishing
+  - **ASI10: Rogue Agents** - No CVEs assigned (emerging risk category); incidents: Cost-Optimization Agent Gone Wrong, Procurement Agent Fraud, Ray Framework Breach (230,000 clusters compromised)
 
 ### Domain F: Business Strategy & Monetization
 **Ownership**: Product / GTM / Executive Team
 **Absorbs**: Original Pillars 8, 12, 13, 14 (workflow/composable), 16 (competitive)
-
-**F.1 Usage-Based Billing**
 - **Stripe Three-Package Architecture**: `@stripe/ai-sdk` (metering middleware), `@stripe/token-meter` (bypass), `@stripe/agent-toolkit` (agent actions via function calling).
 - AI cost markup configuration, tiered model access, license gates, feature flags.
 
@@ -301,7 +292,7 @@ Domain E (Security & Compliance) ←→ ALL DOMAINS (cross-cutting)
 - **B→C**: Vector store (pgvectorscale) and knowledge graph infrastructure consumed by AI Core for RAG, GraphRAG, and semantic layer.
 - **C→D**: Agent outputs (structured JSON) streamed to frontend components via real-time rendering. Agent Studio UI built on Domain D.
 - **C+D→F**: Token consumption, agent actions, and user interactions metered and fed into Stripe billing (F.1).
-- **E→All**: MCPsec/A2A identity verification, CSP headers, audit logging, EU AI Act documentation applied across all domains.
+- **E→All**: APS/A2A identity verification, CSP headers, audit logging, EU AI Act documentation applied across all domains.
 
 ---
 

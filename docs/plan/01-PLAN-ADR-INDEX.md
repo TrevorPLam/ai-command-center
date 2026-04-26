@@ -1,23 +1,3 @@
-# 01-PLAN-ADR-INDEX.md
-
-```
----
-steering: TO PARSE — READ INTRO
-file_name: 01-PLAN-ADR-INDEX.md
-document_type: adr_index
-tier: planning
-status: stable
-owner: Trevor (Solo Founder)
-description: Searchable index of all 126 Architecture Decision Records (ADRs) extracted from 01-PLAN-LEXICON.md ADR_KEY. Grouped by domain, each with a one-line summary, status, and cross-reference to the Decision Register.
-last_updated: 2026-04-26
-version: 1.0
-dependencies: [01-PLAN-LEXICON.md]
-related_adrs: [All listed below]
-related_rules: []
-complexity: low
-risk_level: low
----
-
 # ADR Index — Architecture Decision Records
 
 ## README
@@ -45,7 +25,7 @@ This index maps every ADR from `01-PLAN-LEXICON.md` #ADR_KEY to its domain and a
 | ADR_008 | Frontend | markmap for MindMapEditor | active | — |
 | ADR_011 | Security | FastAPI JWT bridge with custom access token hook | active | — |
 | ADR_012 | AI-Core | Embeddings computed only on the backend | active | — |
-| ADR_014 | Frontend | Pin react-big-calendar ^1.19.4 for React 19 compatibility | active | — |
+| ADR_014 | Frontend | Pin react-big-calendar ^1.19.4 for React 19 compatibility | updated (see research findings) | — |
 | ADR_016 | Frontend | react-helmet-async for meta tags | active | — |
 | ADR_017 | Security | Pin DOMPurify ≥3.4.0, transitive CI audit | active | — |
 | ADR_018 | Frontend | Lock dnd-kit as primary DnD library; no migration to PragmaticDnD | active | — |
@@ -119,7 +99,7 @@ This index maps every ADR from `01-PLAN-LEXICON.md` #ADR_KEY to its domain and a
 | ADR_123 | Platform | Playwright AI agents (Planner/Generator/Healer) in CI; costs via LiteLLM proxy | active | — |
 | ADR_124 | Frontend | Tailwind v4 OKLCH three‑layer token system; no hardcoded colours | active | — |
 | ADR_125 | Business | Four‑layer cost governance with synchronous pre‑call budget check | active | — |
-| ADR_126 | Business | PostHog Group Analytics mandatory from day one for org‑scoped events | active | — |
+| ADR_126 | Business | PostHog Group Analytics mandatory from day one for org‑scoped events. Aggregation patterns: Trends (Unique with group type), Funnels (Aggregating by group type), Feature Flags (Match by group type). Query examples in 06-AI-CORE.md Section 9. | active | — |
 ```
 
 ## Domain Groupings (For Quick Filtering)
@@ -147,17 +127,10 @@ ADR_054
 
 *Updated ADRs are listed under their primary domain; see the index for current status.*
 
----
-
 ## How to Use
 
 - **Before implementing a feature**, scan the relevant domain above. If an ADR exists, read its summary and decide if it applies. For the full context, open the ADR in `01-PLAN-LEXICON.md`.
 - **If you create a new decision** that supersedes an ADR, append a new row to this index with status `superseded` and link to the new ADR or Decision Register entry.
 - **ADR_054 and DEC-2026-04-26-001** are an example of an ADR that has been further refined in the Decision Register. The ADR describes the *standard*; the Decision Register entry describes the *process* for its application.
 
----
-
 *This index is a living companion to the Decision Register. Together, they form a complete map of every architectural and operational decision in the project.*
-```
-
----

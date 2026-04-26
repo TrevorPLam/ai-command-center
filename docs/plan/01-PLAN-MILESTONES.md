@@ -369,6 +369,4 @@
 
 **The structural advantage:** At 10,000 free users, a cloud‑dependent competitor burns $50K–$150K/month in AI inference. Your cost: ~$10/month in electricity. Free‑tier economics are defensible against any all‑cloud competitor.
 
----
-
 *This plan preserves every component from the six‑domain blueprint. Nothing is removed—only sequenced, split, or deferred across phases. Each phase gate is governed by customer or revenue triggers, not calendar dates.*
