@@ -45,6 +45,16 @@ D|VT=Vanta/Oneleet
 D|YS=Y-Sweet
 D|ODP=OpenDP
 D|RLS=Row Level Security via JWT claim
+// Additional domain shortcuts (Apr 2026)
+D|MCPS=MCPSecLayer (IETF draft, L0-L4)
+D|OWASP_MCP=OWASP MCP Top10
+D|OWASP_ASI=OWASP Agentic Top10 (ASI 2026)
+D|A2A_V1=A2Av1.0 stable (Linux Foundation)
+D|ESM=ES2026 (match, using, etc.)
+D|TSG=TypeScript 7.0 Go-native (tsgo)
+D|RESP=OpenAI Responses API (migrate by Aug26)
+D|grantexp=Nylas grant.expired webhook
+D|NOHAIKU=No Haiku in agentic contexts
 
 #DICT
 G1|85/35|±2% G2|80/30|±5% G3|82/32|±2% G4|80/40|±2% G5|90/45|±2%
@@ -99,6 +109,20 @@ CanvasAlternative|a11y|H|canvas/visual→text alternative
 AIMediaAltText|a11y|H|auto alt text,never empty
 InAppNotifications|ux|H|template+deeplink
 @COMPILER|state|H|React Compiler globally; no manual memo
+// Additional rules (Apr 2026)
+COMPILER_CARVEOUT|state|H|RHF components: "use no memo"; Zustand persist: conditional not Suspense; Zustand core: exempt
+NO_HAIKU_AGENTIC|ai|H|Haiku 4.5 excluded from agentic deployments with untrusted input
+LITELLM_PIN|sec|H|litellm>=1.83.7 with cosign/SHA verification
+ORVAL_PIN|sec|H|orval>=8.2.0, never run on untrusted specs
+MCP_INSPECTOR_DEVSEC|sec|H|pin >=0.14.1; firewall block dev access
+Y_SWEET_SELFHOST|ops|H|Jamsocket shutdown March 2026; Y-Sweet self-host mandatory
+NO_CRSQLITE|arch|H|cr-sqlite unmaintained; remove from offline eval
+NO_REPLICACHE|arch|H|Replicache in maintenance; replace with PowerSync or Zero
+MCP_SDK_AUDIT|sec|H|audit MCP SDKs for OX Security Apr15 2026 vuln; MCPSec L2 mandatory for prod
+GRANT_EXPIRED_WEBHOOK|sec|H|handle grant.expired; re-auth <72h or data loss
+EDGE_NO_DB|arch|H|Vercel Edge Functions cannot connect DB; route webhooks via Serverless/FastAPI
+OPENAI_RESPONSES_MIGRATE|ai|H|migrate from Assistants/ChatCompletions to Responses API by Aug26
+GRDL_01|ai|H|3-layer: Input(PII/jailbreak/tox),Output(halluc/safety/schema),Runtime(tool auth/cost); all logged; map to ASI01-ASI10
 // HARD Security S1-S21 (canonical list; impl mechanisms in #KV SECURITY)
 S1|sec|H|no dangerouslySetInnerHTML
 S2|sec|H|SB Storage→StorageService
@@ -218,12 +242,23 @@ RCLL_02|test|M|all 33 RFC5545; DST matrix(spring-fwd/fall-back/cross-tz/COUNT-sp
 
 #VER
 // id|ver|notes
-TS|5.8prod,^6.0canary  React|19.2.5|no RSC  Vite|8.0.0  Zustand|5.0.12
-TanStackQuery|5.99.2  Motion|12.38.0  TailwindCSS|4.2.2  Prisma|7.5.0|pgbouncer=true
-dndkit|6.3.1|no<1.0  Node|22.12LTS  Python|3.12  FastAPI|0.136.1
-rbc|^1.19.4React19  yjs|13.6.21  dompurify|≥3.4  nuqs|^2.5  reacthelmet|latest
-livekitagents|≥1.0.0Python  livekitserversdk|≥1.0.0  markmap|latest  reactresizable|^4.7
+TS|6.0prod  React|19.2.5→20.0 eval Q2  Vite|8.0.0  Zustand|5.0.12
+TanStackQuery|5.100.1  Motion|12.38.0|import from motion/react
+TailwindCSS|4.2.2  Prisma|7.8.0|pgbouncer=true
+dndkit|6.3.1|community standard; NO migration to PragmaticDnD
+Node|24.15.0LTS Krypton  Python|3.12  FastAPI|0.136.1
+rbc|^1.19.4React19  yjs|13.6.21  dompurify|≥3.4.0  nuqs|^2.5
+reacthelmet|latest  livekitagents|>=1.0.0,<2.0.0
+livekitserversdk|>=1.0.0  markmap|latest  reactresizable|^3.1.3
 QueryClient|staleTime5min,retry2,noRefocus,429→RL,useSSE
+// New entries
+ai|^6.0  @ai-sdk/react|^2.0  @tremor/react|^3.18
+@stripe/ai-sdk|latest  @stripe/agent-toolkit|latest
+@powersync/web|latest  litellm|>=1.83.7 (SHA verify)
+orval|>=8.2.0  @anthropic/mcp-inspector|>=0.14.1 (devDep)
+tsgo|7.0beta  temporal-polyfill|^0.3.0 (Safari gap)
+pgvectorscale|0.4.0 (DiskANN)  @xyflow/react|12.10.2
+OTel|v1.40.0+experimental  prisma-next|GA June-July 2026 (Postgres)
 
 // See 00-PLAN-2-ZV.md for Zustand slice configurations
 // See 00-PLAN-4-TBL.md for database table schemas
@@ -265,6 +300,11 @@ SLO_TTFT|≤2s p95  SLO_Avail|99.9%  SLO_RAG|≤500ms p95  SLO_LCP|≤800ms p75
 EB_50pct|notify  EB_80pct|feature freeze  EB_100pct|incident
 BR_Critical|2%/1h→page  BR_Warning|5%/6h→Slack
 Yjs_Limit|50MB; compaction@30MB; undo last5
+// Additional bundle budgets (Apr 2026)
+Chunk_tremor|15KB  Chunk_ai_sdk|10KB  Chunk_powersync|50KB
+Chunk_temporal_polyfill|8KB  Chunk_es2026_shim|5KB (match/using)  EdgeFn_MaxCPU|50ms
+// Offline cache budget
+Offline_Storage|50MB IndexedDB per org
 Stripe_Markup|30%  Compliance_Refresh|quarterly  OTel_Version|1.39.0
 Upload_CA_Version|≥1.0.4  RBAC_Target|100% HARD rule→control  MCP_OAuth_Target|≥90%
 
@@ -296,6 +336,29 @@ pending|P101|Bulk create projects from template
 pending|B015|Recurring Calendar shared engine
 pending|A030|WeekDay keyboard reschedule
 pending|E050|Snooze modal recurring rules
+// Additional pending tasks (Apr 2026)
+pending|P099|dnd-kit core lock verification (no migration)
+pending|P100|LiteLLM upgrade to >=1.83.7 + cosign
+pending|P101|Orval upgrade to >=8.2.0
+pending|P102|Y-Sweet self-host migration runbook
+pending|P103|PowerSync offline sync architecture (Phase 2 primary)
+pending|P104|Claude 4.6 model migration before June 15, 2026
+pending|P105|AI Gateway model fallback using Vercel AI SDK v6
+pending|P106|Tremor charting integration Budget/Dashboard
+pending|P107|Resend email fallback integration
+pending|P108|Tauri capability audit CI
+pending|P109|Desktop app update channel spec
+pending|P110|MCP SDK security audit (OX Apr15 disclosure); implement MCPSec L2
+pending|P111|Nylas grant.expired webhook + proactive re-auth flow
+pending|P112|Verify Edge Function DB usage → reroute to Serverless/FastAPI
+pending|P113|TypeScript 6.0 production upgrade (config audit)
+pending|P114|TypeScript 7.0 (tsgo) CI evaluation & ESLint impact
+pending|P115|OpenAI Responses API migration (deadline Aug26)
+pending|P116|React 20 Compiler-default compatibility (RHF/Zustand carveouts)
+pending|P117|Temporal polyfill integration + Safari gate
+pending|P118|pgvectorscale adoption threshold lowered to 500K vectors
+pending|P119|OWASP Agentic Top10 (ASI 2026) compliance mapping
+pending|P120|ES2026 match expression evaluation
 // Spec/XCT tasks (all pending unless noted)
 XCT_001|in-progress|motion spec: transform/opacity,reduced motion,stagger≤3
 XCT_002|optimistic-ui: React19 useOptimistic,pending styling,5s undo
@@ -326,9 +389,9 @@ RLMT_001|RT chan/mem monitoring: 100/20 limit,40MB alert
 RCLL_001|recurrence: @martinhipp/rrule+DST+3 edit modes+DST test matrix
 
 #PRIORITY
-P0|Spec template enforcement(no async comp without spec)|MCP OAuth(vs 8.5% ecosystem)|PB RLS 100%|SSRF allowlist|AI guardrails 3-layer|Agent Card Registry|Hybrid Search RRF|Saga Compensation|DP enforcement
-P1|NY upsert-first impl|Yjs GC+undo trunc|OTel root span prop|Flag kill switch<5min|Cost 15/5/0% alerts|AI Peer Yjs|Reranking Service|React Compiler|Contextual Retrieval
-P2|Passkey enrollment|Tauri Capabilities audit|Mobile push dev build|ST token billing|Compliance-as-code|Recurrence DST test matrix|DnD migration eval|pgvectorscale SBQ
+P0|Orval upgrade to >=8.2.0|LiteLLM cosign verification|Y-Sweet self-host|MCP SDK audit (MCPSec L2)|MCP Inspector firewall|Nylas grant.expired webhook|Edge Function DB reroute
+P1|React Compiler carveout enforcement|PowerSync offline eval|Claude 4.6 migration|AI Gateway fallback|Passkey enrollment (P1 now)|pgvectorscale threshold 500K|TypeScript 6.0 upgrade|React 20 Compiler eval|OpenAI Responses migration audit|OWASP ASI 2026 mapping|Temporal polyfill|ES2026 match eval
+P2|A2A acceleration|GraphRAG spec|Contextual Retrieval cost model|Temporal recurrence eval|Resend integration|TypeScript 7.0 CI eval|Prisma Next horizon
 
 #ADR_KEY
 // Unique architectural decisions (rule-restatements omitted; see #RULES)
@@ -373,5 +436,29 @@ ADR_076|Yjs Lifecycle(GC on,undo last5,snapshot VH,50MB limit)
 ADR_077|NY v3 Webhook(upsert-first,10s timeout,async queue,Sync Policy,burst)
 ADR_079|Offline-First Tombstone(deleted_at nullable int ms,ULID,IC,outbox replay)
 ADR_082|Recurrence DST(@martinhipp/rrule FE,rrule Python BE,TZID,3 modes,DST test matrix)
+// Additional ADRs (Apr 2026)
+ADR_083|Y-Sweet self-host mandatory (Jamsocket shutdown)
+ADR_084|PowerSync as primary offline sync (vs Zero, cr-sqlite unmaintained)
+ADR_085|dnd-kit remains primary DnD library; NO migration to PragmaticDnD
+ADR_086|Vercel AI SDK v6 for streaming, tool calling, AI Gateway
+ADR_087|Tremor charts for Tailwind-native dashboards (active, Vercel-acquired)
+ADR_088|Resend as transactional email fallback
+ADR_089|No Haiku in agentic deployments
+ADR_090|MCP Inspector dev network isolation (CVE-2025-49596)
+ADR_091|LiteLLM cosign verification post supply chain attack
+ADR_092|Orval >=8.2.0 (CVE-2026-24132, CVE-2026-23947, CVE-2026-25141)
+ADR_093|Claude 4.6 model IDs (hard migrate by June 15, 2026)
+ADR_094|React Compiler carveout: RHF "use no memo"; Zustand persist no Suspense; Zustand core exempt
+ADR_095|Temporal API polyfill mandatory until Safari native
+ADR_096|MCPSec L2 mandatory for all MCP servers (IETF draft + OWASP MCP Top10)
+ADR_097|React 20 adoption timeline (Q2 eval, Q3 migration)
+ADR_098|TypeScript 7.0 Go-native readiness (tsgo CI, tooling impact)
+ADR_099|Vercel Serverless (not Edge) for DB-dependent webhooks
+ADR_100|Nylas grant.expired proactive re-auth (<72h)
+ADR_101|OWASP Agentic Top 10 (ASI 2026) compliance mapping for guardrails
+ADR_102|Prisma Next evaluation (Phase 3, Postgres GA July 2026+)
+ADR_103|OpenAI Responses API migration path (deadline Aug 26, 2026)
+ADR_104|pgvectorscale threshold reduction (500K vectors)
+ADR_105|Tremor v3.18.x actively maintained; charting standard
 
 EOF

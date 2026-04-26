@@ -78,3 +78,77 @@ QueryClient|staleTime5min,retry2,noRefocus,429→RL,useSSE
 IncidentComm|Better Stack,PagerDuty; auto status page on health fail; on-call escalation
 FeedbackLoop|thumbs on AI→eval_datasets; automated sampling
 Billing|ST webhook(verified HMAC); idempotency processed_stripe_events; handle invoice.paid,subscription.updated; ST Portal; MeteredAI via ai_cost_log; LicenseGate 402+CTA
+
+// Additional Knowledge (Apr 2026)
+// Y-SWEET SELF-HOST
+Y_SWEET_SELFHOST|Jamsocket shut March 2026; Y-Sweet must be self-hosted (Docker); offlineSupport provider; S3 persistence; monitor fork activity
+// OFFLINE STRATEGY
+OFFLINE_SYNC|MVP: tombstone+ULID+IC outbox; Phase 2: PowerSync bidirectional (SQLite/Postgres), SOC2/HIPAA, sync rules YAML; cr-sqlite unmaintained, Replicache maintenance mode
+// DND STATUS
+DND_STATUS|dnd-kit is community standard (18.9M/mo); PragmaticDnD is Atlassian-internal (~180K/wk); NO migration between them
+// REACT COMPILER CAVEATS
+COMPILER_CAVEATS|RHF: "use no memo" directive required; Zustand persist: conditional rendering not Suspense; Zustand core: compatible
+// AI GATEWAY
+AI_GATEWAY|Vercel AI SDK v6: provider routing, fallback chains, tool calling, structured output, streaming; wraps LiteLLM proxy; separate cost tracking
+// MODEL TIERING
+MODEL_TIERING|Default: claude-sonnet-4-6-20250324; Complex: claude-opus-4-6-20250324; Never agentic: claude-haiku-4-5 (no injection guard); Migrate before June 15, 2026
+// LITELLM SECURITY
+LITELLM_SEC|Supply chain attack March 24,2026 (v1.82.7-1.82.8), TeamPCP; pin >=1.83.7 with cosign SHA verification; CVE-2026-35029 (RCE), CVE-2026-35030 (auth bypass)
+// ORVAL SECURITY
+ORVAL_SEC|CVE-2026-24132,CVE-2026-23947,CVE-2026-25141 (JSFuck bypass) CVSS9.8; upgrade >=8.2.0; never run on untrusted OAS; reject patterns []()!+;
+// MCP INSPECTOR SEC
+MCP_INSPECTOR_SEC|CVE-2025-49596 CVSS9.4; pin devDep >=0.14.1; firewall dev network access
+// MCP SECURITY CRISIS
+MCP_SEC_CRISIS|April15,2026 OX Security disclosure: 7K exposed servers, 150M+ downloads, 10 CVEs; MCPSec L2 mandatory for prod
+// MCPSec
+MCPSEC|IETF draft: Agent Passports (ECDSA P-256), per-message signing, tool definition integrity, nonce+timestamp replay protection, trust levels L0-L4; backward-compatible envelope; median latency 8.3ms; reduces attack success 52.8%→12.4%
+// OPENAI RESPONSES
+OPENAI_RESPONSES|Assistants API + Chat Completions deprecated Aug26,2026; Responses API: server-side context compaction, hosted shell containers (Python/Node/Ruby with storage), reusable Skills, agentic execution loop; Vercel AI SDK v6 gateway support
+// Nylas grant.expired
+NYLAS_GRANT_EXP|When grant expires, all webhooks stop. Re-auth <72h → backfill; >72h → permanent data loss. Handle grant.expired webhook immediately.
+// VERCEL EDGE
+VERCEL_EDGE_NO_DB|Edge Functions run V8 isolates, no Node.js runtime, no direct TCP DB connections. Use Neon serverless driver (HTTP), Vercel Serverless (300s), or FastAPI proxy.
+// REACT 20
+REACT20|GA March 2026. Compiler built-in default, no opt-in. useMemo/useCallback/React.memo deprecated. "use no memo" still needed for RHF, Zustand persist. Concurrent Rendering 2.0
+// TYPESCRIPT CASCADE
+TYPESCRIPT_67|TS6.0 (March 23,2026): final JS release; erasableSyntaxOnly, isolatedDeclarations, strict defaults. TS7.0 Beta (April 2026): Go-native (tsgo) ~10x faster; CI-ready now.
+// PRISMA NEXT
+PRISMA_NEXT|TypeScript-native ORM, Postgres GA June-July 2026, schema in TS, pgvector extension, 12-month Prisma7 LTS; Phase 3 evaluation.
+// OWASP AGENTIC
+OWASP_ASI2026|Agentic Top10: ASI01 Goal Hijack, ASI02 Tool Misuse, ASI03 Identity Abuse, etc. Map to GRDL layers, SECM controls.
+// PGVECTORSCALE
+PGVECTORSCALE|0.4.0 DiskANN; 50M vectors: 471 QPS, 28ms p95, 11.4x Qdrant, 28x Pinecone latency, 75% cheaper. Threshold reduced to 500K vectors.
+// ES2026
+ES2026_MATCH|match expression (declarative pattern matching), using keyword (resource cleanup), Promise.try, Error.isError, Math.sumPrecise, Uint8Array base64/hex, Iterator helpers.
+// TEMPORAL
+TEMPORAL_SAFARI|Stage4 ES2026 (March 2026), Chrome144+, Firefox139+, Safari not yet. Polyfill mandatory (temporal-polyfill). Conditional import. Bundle impact 8KB.
+// A2A V1
+A2A_V1|Google Agent-to-Agent v1.0, Linux Foundation, 150+ organizations production. Stable .proto, three-layer architecture.
+// DOMPURIFY CVES
+DOMPURIFY_CVES|>=3.4.0 mitigates: CVE-2025-15599, CVE-2026-0540, CVE-2026-41238, CVE-2026-41240, CVE-2025-25141
+// PRISMA SAVEPOINTS
+PRISMA_SAVEPOINT|v7.8.0+ nested transaction savepoints; Saga rollback via savepoint release
+// REACT ROUTER V7
+RRV7|Imports from react-router (merged); nuqs adapter v7; library mode; no react-router-dom
+// REACT FLOW V12
+RF12|@xyflow/react import; node.measured replaces node.width/height for layout (dagre/elk)
+// EXPO SDK55
+EXPO55|New Architecture mandatory; expo-av removed; notifications config plugin required; Reanimated v4 incompatible with NativeWind→pin v3
+// TAURI V2
+TAURI_V2|v2.7.0 stable; capability audit CI; delta updates roadmap only; mobile for internal tools
+// TEMPORAL API
+TEMPORAL_API|ES2026; @rrulenet/recurrence candidate; Phase 2 evaluation
+// CLAUDE 4.6
+CLAUDE46|claude-sonnet-4-6-20250324 default; claude-opus-4-6-20250324 complex; claude-haiku-4-5 retired Apr 19 2026; no agentic Haiku
+// Supabase Edge Functions
+SB_EF|Deno runtime; npm: prefix; pre-bundled; cold start ~100ms; use for webhooks+async
+// OTel GenAI details
+OTEL_GENAI|v1.40.0 experimental (Feb 2026); gen_ai.* namespace; use OTEL_SEMCONV_STABILITY_OPT_IN; track gen_ai.conversation.id
+// Resend inbound
+RESEND_INBOUND|Svix delivery; 3-day log retention; React Email 5.0; inbound parse available
+// PowerSync architecture
+PWRSYNC_ARCH|SQLite client; Postgres server; YAML sync rules; 3 users free tier; SOC2/HIPAA confirmed
+// Tauri capability security
+TAURI_CAP|Fine-grained capability per window; XSS containment; CI manifest validation
+// Tremor maintenance status
+TREMOR_STATUS|Actively maintained by Tremor Labs (Vercel-acquired); v3.18.x stable; v4 preview; ~27K GitHub stars; safe ADR

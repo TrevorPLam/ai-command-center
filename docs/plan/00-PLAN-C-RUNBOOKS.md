@@ -30,6 +30,23 @@ Offline_Tombstone_Missing|hard-delete without tombstone→ghost reappear on sync
 Upload_Scan_Fail|CA fails or CVE detected→quarantine,alert security,patch required
 Recurrence_DST_Fail|DST test fail→block deploy,fix TZID handling
 
+// New runbooks (Apr 2026)
+Y_SWEET_MIGRATION|Y-Sweet self-host: deploy Docker container, migrate S3 bucket, switch clients to new endpoint; fallback: Vercel KV session storage temporary
+LITELLM_UPGRADE|Upgrade litellm to >=1.83.7; verify with cosign; run CVE scan; rotate keys if prior version used
+ORVAL_UPGRADE|Upgrade orval to >=8.2.0; regenerate types; reject OAS patterns []()!+; ensure no untrusted specs in pipeline
+MCP_INSPECTOR_ISOLATION|Disable network binding for MCP Inspector in dev; block inbound tcp:3000 from non-localhost; monitor CVE-2025-49596
+CLAUDE46_MIGRATE|Update all model IDs to 4.6 suffixed; verify completion and token limits (1M context); remove Sonnet/Opus 4 references before June 15, 2026
+DND_KIT_AUDIT|Verify dnd-kit pin (6.3.1); audit all drag operations; NO migration to PragmaticDnD
+Y_SWEET_OFFLINE|Configure offlineSupport provider; sync on reconnect; test client-side Yjs doc merge
+MCP_AUDIT|Continuous monitor MCP SDK advisories from OX, OWASP, Anthropic; enforce MCPSec L2; block non-L2 servers from production
+NYLAS_GRANT_EXPIRED|On grant.expired webhook, disable sync, notify user, provide re-auth URL; backfill triggered if re-authed <72h; else warn data loss
+OPENAI_MIGRATION|Before Aug26: scan all AI calls; replace Assistants API with Responses API; verify Vercel AI SDK v6 responses support; run eval gate
+TYPE7_CI|Test tsgo in CI; verify ESLint plugins & codemods compatibility; fallback to tsc 6.0 if issues
+REACT20_MIGRATE|Q2: create React20 branch, validate RHF/Zustand carveouts, performance and Compiler compatibility; Q3: roll out gradually
+TAURI_CAP_CI|Validate capabilities/*.json against window manifests in CI; block deploy on capability drift
+EXPO55_MIGRATION|Audit libs via expo-doctor; migrate /app→/src/app; test Hermes v1 OTA; pin Reanimated v3
+TEMPORAL_POLYFILL|Feature detection: native Temporal if available else temporal-polyfill; test on Safari
+
 ## Incident Response Playbooks
 
 ### AI Failure

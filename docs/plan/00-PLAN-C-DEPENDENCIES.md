@@ -122,3 +122,17 @@ This analysis reveals heavy interdependence, suggesting opportunities for:
 2. Service-oriented architecture
 3. Event-driven communication patterns
 4. Dependency injection containers
+
+## Dependency Updates (April 2026)
+
+- Replace `dndkit` with `dnd-kit (pinned, no migration)`; remove all PragmaticDnD references.
+- Add `@tremor/react` in Dashboard and Budget module dependencies.
+- Replace `ElectricSQL`/`Replicache`/`cr-sqlite` with `PowerSync` in offline sync section.
+- Add `ai`, `@ai-sdk/react` in Chat and GenUI deps.
+- Add `@stripe/ai-sdk`, `@stripe/agent-toolkit` in Stripe integration.
+- Add `temporal-polyfill` as conditional dep in Calendar/Recurrence stack.
+- Add `tsgo` (TypeScript 7.0 beta) to CI tooling dependencies, flagged experimental.
+- Add `@prisma/next` horizon dep for Phase 3 evaluation.
+- Add `MCPSec` middleware to MCP security dependencies.
+- Add `es2026-shim` for match/using polyfills in build chain.
+- Change OpenAI provider deps from Assistants/ChatCompletions to Responses API + Conversations.

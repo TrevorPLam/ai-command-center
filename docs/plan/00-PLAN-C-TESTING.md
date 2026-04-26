@@ -266,3 +266,16 @@ Settings|92|78|82|✓  Platform|95|80|85|✓
 - Coverage reports
 - Quality metrics dashboards
 - Troubleshooting guides
+
+// New test gates (Apr 2026)
+ORVAL_INTEGRITY|Verify generated TS client matches expected hash; fail PR on mismatch; reject []()!+ patterns in OAS
+LITELLM_PROVENANCE|CI step: cosign verify litellm Docker image; block if not signed
+MCP_INSPECTOR_SEC|Dev env test: ensure MCP Inspector not exposed on 0.0.0.0; integration test for CVE-2025-49596 blocked
+CLAUDE46_MODEL|Test all prompts using new model IDs; validate output parity with old model (max 5% divergence)
+POWER_SYNC|Integration test: offline creation → online sync → conflict resolution; test tombstone/outbox replay
+MCP_SEC_POSTURE|CI step: verify MCPSec L2 compliance for all MCP server configs; fail if any production server not L2
+GRANT_EXPIRED_SIM|Simulate grant expiration; ensure webhook fires, re-auth flow triggers, sync resumes
+OPENAI_RESPONSES_PARITY|Test all existing AI flows with Responses API; no regression in accuracy/latency/tokens
+TYPESCRIPT67|CI upgrade to TS 6.0 config, then optionally tsgo 7.0; enforce erasableSyntaxOnly; break on config drift
+REACT20_COMPILER|Component tests with React20 Compiler enabled; verify "use no memo" directives still effective; no performance regression
+TEMPORAL_SAFARI|E2E test on Safari: ensure Temporal polyfill activates correctly; wall-clock handling consistent
