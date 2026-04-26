@@ -1,49 +1,55 @@
-# The AI-Agentic SaaS Stack Blueprint (2026)
+# The AI-agentic SaaS stack blueprint (2026)
 
-## Product Identity
+## Product identity
 
 The product is an **AI‑integrated SaaS productivity platform**. It provides:
+
 - A **dashboard** to monitor, interact with, and control AI agents.
 - A **feature‑rich chat** page (like ChatGPT / Claude) where the user converses with agents.
 - A **suite of productivity applications** (Calendar, Projects, Email, etc.) where both the user and AI agents can create, read, update, and delete data.
 
-### Core Innovation
+### Core innovation
+
 **Cross‑application, context‑aware AI assistance.** An agent that notices conflicts across apps (e.g., an email rescheduling request conflicting with a project deadline) and proactively brings it to the user's attention with actionable options. This depth of integrated awareness does not exist at scale in current products.
 
-### Design Axiom: LLM‑First, Rule‑Optimized
+### Design axiom: LLM‑first, rule‑optimized
+
 The experience is **LLM‑driven** at the orchestration layer: an AI agent decides what to do and which tools to call.
+
 However, the **tools themselves are largely deterministic code**.
 
 - An LLM orchestrator interprets user intent and selects actions.
+
 - Complex reasoning is routed to powerful models; simple, repetitive tasks are routed to lightweight models or pure code.
+
 - The system minimizes actual LLM utilization by giving the AI highly efficient, pre‑built tools, rather than having the model generate logic.
 
 This gives the user an intelligent, conversational assistant while keeping costs low, reliability high, and audit trails clear. It also naturally accommodates a future where AI models get cheaper or even run locally.
 
-### Design Axiom: Local‑Default, Cloud‑Fallback
+### Design axiom: local‑default, cloud‑fallback
+
 All agentic intelligence runs on **local or self‑hosted models by default**. Cloud APIs (Claude, Gemini, etc.) are invoked only when:
+
 - The user's subscription tier authorizes it,
 - The task demonstrably exceeds local model capabilities (verified by a verifier cascade), or
 - The user explicitly requests a cloud model.
 
 This principle inverts the industry default, making data sovereignty a product feature. Free‑tier users experience the full AI assistant using only local models (near‑zero marginal cost). Paid tiers unlock cloud AI as a premium add‑on.
 
-## Open Questions (to be resolved during build)
+## Open questions
 
-- **Proactive behavior**: How often should agents check for conflicts? Tied to subscription tiers and per‑feature configuration. Will be defined later; planning docs must reference this as a configurable policy.
-- **"Appearance of AI" UX**: UI patterns that make deterministic actions feel agentic (natural‑language summaries, thinking indicators, agent avatars). Open for design exploration.
-- **Monetization model**: Free tier: local models only (Gemma 4, Qwen3.5); Pro tier: cloud API access (Sonnet 4.6); Team/Enterprise: Opus 4.7, fine‑tuning, private model hosting. Exact feature gates per tier TBD.
-- **Multi‑tenancy**: Data model supports org_id from day one, but cross‑user conflict detection is deferred and documented.
-- **Local model lifecycle**: How to version, update, and deprecate local models without breaking user workflows. Policy needed for end‑of‑life model migration.
+Questions to be resolved during the build process are tracked in **[04-OPEN-QUESTIONS.md](04-OPEN-QUESTIONS.md)**. Planning documents should reference these as configurable policies to be defined later.
 
-## Phased Delivery Strategy
-See the authoritative phased plan in **01-PLAN-MILESTONES.md** for the complete six‑phase rollout.
+## Phased delivery strategy
+
+See the authoritative phased plan in **[01-PLAN-MILESTONES.md](01-PLAN-MILESTONES.md)** for the complete six‑phase rollout.
 
 ---
 
-## Intent Dispatcher (New Architectural Component)
+## Intent dispatcher (new architectural component)
 
 A **pure‑code decision layer** in Domain C (AI Core) that routes every potential AI call:
+
 1. **Deterministic tools** that can be called directly by the orchestrator without an LLM for that specific sub‑step (e.g., check a database for conflicts).
 2. **Lightweight models** for simple NLP tasks (email parsing, keyword extraction).
 3. **Powerful models** for complex reasoning, conversational chat, and multi‑step planning.
@@ -52,228 +58,86 @@ The orchestrator itself (an LLM) uses this dispatcher to execute tools efficient
 
 ---
 
-## Research Validation Matrix: Core Technical Claims
+## Research validation matrix
 
-A comprehensive review of each major technology component confirms the blueprint rests on a solid, real-world foundation. Key findings include:
-
-- **TypeScript 7.0 `tsgo`**: Microsoft ships native preview builds exposing `tsgo`, a Go-native compiler running alongside `tsc`. Benchmarks show 10x speed improvements, with projects reporting 9x faster typechecking.
-- **pgvectorscale with DiskANN**: Timescale's extension achieves 28x lower p95 latency and 16x higher throughput vs. Pinecone's storage-optimized index on 50M Cohere embeddings.
-- **APS (Agent Passport System) IETF Draft**: Defines Agent Passports (Ed25519), 7-dimension constraint lattice, 3-signature chain, cascade revocation, Bayesian reputation, institutional governance, signed message envelopes, tool integrity signatures, nonce replay protection, trust levels L0-L4.
-- **LiveKit Agents v1.0.0**: Production-ready framework for building real-time, multimodal voice and video AI agents using WebRTC.
-- **Playwright AI Agents**: Three-agent architecture (Planner, Generator, Healer) for automated E2E test creation delivered in Playwright 1.56.0.
-- **Stripe Agent Toolkit**: `@stripe/agent-toolkit`, `@stripe/ai-sdk`, and `@stripe/token-meter` provide metered billing, middleware, and MCP-based Stripe access.
-- **Orval CVE-2026-25141**: Critical CVSS 9.3 code injection via unsanitized `x-enum-descriptions`; fixed in 8.2.0.
-- **DOMPurify XSS**: Versions 3.0.1-3.3.3 vulnerable to prototype pollution bypass (CVE-2026-41238).
-- **React 20 Compiler / Vite 8 / Rolldown**: Vite 8 ships with Rust-based Rolldown as default bundler; React Compiler support via `@rolldown/plugin-babel`.
-- **Turborepo 2.x**: `pipeline` renamed to `tasks`; task graph-based scheduling with topological ordering.
-- **A2A v1.0**: Google's protocol with Agent Cards, decentralized discovery, and cryptographic identity primitives.
-- **Tailwind CSS v4**: CSS-first configuration via `@theme` directive for design tokens.
-- **Zustand v5**: Lightweight state management with improved comparison mechanisms and `useShallow`.
-- **Claude Opus 4.7**: Scores 87.6% on SWE-bench Verified, 94.2% on GPQA Diamond, 64.4% on Finance Agent. New xhigh effort level (coding default), task budgets in public beta, tokenizer multiplier 1.0–1.35×.
-- **EU AI Act**: Current statutory deadline August 2, 2026 for majority of rules. Proposed Digital Omnibus extension (pending Council approval as of April 2026) would delay high-risk obligations to December 2, 2027 (stand‑alone high‑risk) / August 2, 2028 (embedded high‑risk). Articles 9-15 mandate extensive documentation.
-- **OpenTelemetry `gen_ai`**: Semantic conventions for agentic systems (agents, tasks, teams, artifacts) with Datadog native support.
-- **MACH Alliance**: Microservices, API-first, Cloud-native, Headless principles; launched AI Exchange in April 2025.
-- **Decision Velocity**: Defined as speed × accuracy × effectiveness; emerging metric for AI ROI.
-- **Semantic Layer**: MATRIX ontology for multi-agent shared memory; knowledge graph integration for cross-agent communication.
-- **TanStack DB 0.6**: SQLite-backed persistence, offline support, hierarchical data projection, query-driven sync with PowerSync and ElectricSQL.
+A comprehensive review of each major technology component confirms the blueprint rests on a solid, real-world foundation. For detailed validation evidence and security CVE references, see **[03-TECH-VALIDATION.md](03-TECH-VALIDATION.md)**.
 
 ---
 
-## Critical Analysis of Original Organization
+## Critical analysis of original organization
 
-The original 18-pillar linear structure (Pillars 0–17) suffers from **four structural weaknesses**:
-
-1. **Fragmented AI Reliability**: AI Reliability Engineering (Pillar 17) was appended at the end, completely detached from AI Infrastructure (1), Agent Architecture (4), and Observability (7) that it logically extends.
-2. **Security & Compliance Split**: Pillar 3 (Security) and Pillar 11 (Compliance & Governance) overlap heavily (audit, identity, EU AI Act). Separating them forces cross-referencing.
-3. **Duplicated Cost/Monitoring Concerns**: Cost tracking appears in Pillar 7 (Observability), Pillar 8 (Billing), Pillar 1 (Model Cost Optimization), and Pillar 17 (Economic Controls). Token budgeting is scattered across four pillars.
-4. **Catch-All "Advanced Features"**: Pillar 10 mixes audio, vision, real-time communication, and canvas collaboration—each properly belongs within UX or Agent Architecture domains.
+The original 18-pillar linear structure (Pillars 0–17) suffered from structural weaknesses that led to the six-domain reorganization. For detailed analysis of the original structure and the rationale for reorganization, see **[docs/archive/ORGANIZATION-ANALYSIS.md](../archive/ORGANIZATION-ANALYSIS.md)**.
 
 ---
 
-## Restructured Blueprint: Six-Domain Framework
+## Restructured blueprint: six-domain framework
 
 The following organization groups the original 18 pillars into **six cohesive domains**, each representing a real-world team boundary. Domains are organized from infrastructure to product, with security as a cross-cutting wrapper. Each domain is self-contained, minimizing inter-domain dependencies and eliminating all redundancy.
 
-### Domain A: Platform Foundation & Developer Experience
-**Ownership**: Platform Engineering / Developer Infrastructure Team
+### Domain A: platform foundation & developer experience
+
+**Ownership**: platform engineering / developer infrastructure team
 **Absorbs**: Original Pillars 0, 5, 7 (ops), 9 (infra), 6 (mobile tooling)
 
-**A.1 Modern Tech Stack & Monorepo**
-- React 19.2.5 with React Compiler (separate beta package), Vite 8 with Rolldown (10-30x build speed improvement), Tailwind CSS v4 with `@theme` tokens, TypeScript 7.0 `tsgo` (10x typecheck improvement), Zustand v5 for state management.
-- Turborepo 2.x tasks-based pipelines with topological ordering, proper dependency management, clear separation between frontend, backend, shared types, and infrastructure packages.
+**Purpose**: Establish the foundational technology stack, monorepo structure, CI/CD pipelines, infrastructure deployment, and observability systems that all other domains depend upon.
 
-**A.2 CI/CD, Testing & Quality Gates**
-- Playwright AI test agents (Planner → Generator → Healer pipeline).
-- Schemathesis API validation, pgtap RLS testing, automated security gates.
-- `.cursorrules` / `.windsurfrules` for strict architectural patterns, automated code quality gates, comprehensive testing requirements.
+→ Implementation: [02-ARCH-OVERVIEW.md § Domain A](02-ARCH-OVERVIEW.md)
 
-**A.3 Infrastructure & Deployment**
-- Fly.io Machines v2, Python 3.12, auto-scaling 1-10 VMs, zero-downtime rolling deployments, region co-location with databases.
-- Doppler for environment variables, Vault for long-lived secrets, 90-day JWT rotation, 180-day Stripe keys.
-- TimescaleDB v2.13+ for time-series, PgBouncer connection pooling, backup/DR.
-- Vercel Edge Functions with Neon serverless driver, CDN optimization.
+### Domain B: data, sync & knowledge
 
-**A.4 Observability & Operations**
-- Sentry error tracking with session replays, PostHog event analytics.
-- **OpenTelemetry v1.40.0 with `gen_ai` namespace**: Standardized semantic conventions for agentic system observability (agents, tasks, teams, artifacts, memory). Datadog and Azure native support confirmed.
-- DataPrepper for PII redaction, Loki aggregation with structured labels, 90-day retention for SOC2.
-- Core Web Vitals monitoring (INP ≤200ms), bundle analysis, lazy loading, virtualization.
-
-### Domain B: Data, Sync & Knowledge
-**Ownership**: Data Platform / Data Engineering Team
+**Ownership**: data platform / data engineering team
 **Absorbs**: Original Pillar 2, semantic layer parts of 4/14, knowledge graph components
 
-**B.1 Offline-First Sync**
-- **PowerSync + TanStack DB 0.6**: Bidirectional SQLite↔Postgres sync with query-driven data loading. PowerSync collections default to offline-first with SQLite local storage. TanStack DB 0.6 adds persistence, hierarchical data projection, and reactive side effects.
-- Automatic conflict resolution and queue management for offline changes.
+**Purpose**: Provide offline-first data synchronization, real-time data streaming, vector storage for semantic search, and knowledge graph infrastructure that enables AI agents to reason across application boundaries.
 
-**B.2 Real-Time & Time-Series**
-- CDC with millisecond updates, TimescaleDB continuous aggregates with `materialized_only=false` for real-time enforcement.
+→ Implementation: [02-ARCH-OVERVIEW.md § Domain B](02-ARCH-OVERVIEW.md)
 
-**B.3 Vector & Graph Intelligence**
-- **pgvectorscale 0.4.0 with StreamingDiskANN index**: 28x lower p95 latency, 16x higher throughput vs. Pinecone on 50M embeddings, 75% lower cost when self-hosted.
-- HNSW `ef_construction=64` baseline, 500K vector threshold.
-- **GraphRAG & Multimodal**: Knowledge graph entity mapping, late chunking for unified semantic processing, cross-silo relationship discovery.
-- **Semantic Layer**: Ontology and knowledge graph integration for shared vocabulary across agents. Enables cross-agent communication beyond MCP/A2A syntax. Metric governance and domain reasoning for agent coordination.
+### Domain C: AI core & agent architecture
 
-### Domain C: AI Core & Agent Architecture
-**Ownership**: AI Platform / ML Engineering Team
+**Ownership**: AI platform / ML engineering team
 **Absorbs**: Original Pillars 1, 4, 17 (full), 10 (audio/vision AI), 15 (coordination), semantic trust layer
 
-**C.1 Multi-Provider AI Gateway**
-- Dynamic routing between **Claude Opus 4.7** (SWE-bench Verified 87.6%, GPQA Diamond 94.2%, Finance Agent 64.4%), **Claude Sonnet 4.6** (default), **Gemini 3.1 Pro** (multimodal fallback), **GPT-5.5** (restricted from production agentic use due to 86% hallucination rate on Artificial Analysis AA-Omniscience benchmark; allowed for evaluation/testing only).
-- Routing based on task complexity, cost, and hallucination risk assessment.
-- Reasoning token budgeting with effort control APIs (none/low/medium/high/xhigh), hidden "thinking token" cost monitoring. xhigh effort level is coding default; task budgets in public beta.
-- Model distillation pipelines for 5-30x cost reduction on specialized tasks.
+**Purpose**: Provide multi-provider AI routing, agent protocols and identity verification, multi-agent orchestration, reliability engineering, and local model infrastructure that enables safe, cost-effective, and privacy-preserving AI assistance.
 
-**C.2 Model Cost Optimization & Tiering**
-- Token budgeting with Opus 4.7 tokenizer (1.0–1.35× increase depending on content type).
-- Model tiering: Opus 4.7 for complex tasks, Sonnet 4.6 as default, Gemini 3.1 Pro for multimodal fallback, GPT-5.5 restricted.
+→ Implementation: [02-ARCH-OVERVIEW.md § Domain C](02-ARCH-OVERVIEW.md)
 
-**C.3 Edge AI & WebGPU**
-- Transformers.js and Wasm for local model execution (Phi-4, Gemma-2B) in privacy-sensitive contexts.
-- Prefix caching for 80% TTFT reduction.
+### Domain D: frontend, UX & multimodal interfaces
 
-**C.4 Agent Protocols & Identity**
-- **MCP Standardization**: Secure Model Context Protocol with SSRF controls, tool allowlisting, schema validation, audit logging.
-- **APS (Agent Passport System) Gateway**: IETF draft with Agent Passports (Ed25519), 7-dimension constraint lattice, 3-signature chain, cascade revocation, Bayesian reputation, institutional governance, signed message envelopes, tool integrity signatures, nonce replay protection, trust levels L0-L4.
-- **AgentROA**: Complementary IETF draft adapting RPKI Route Origin Authorization for agent identity verification, providing cryptographically verifiable agent origin assertions.
-- **A2A v1.0 Integration**: Google's Agent-to-Agent protocol with signed Agent Cards, cryptographic identity attestation, multi-tenant endpoints, protocol versioning, decentralized discovery.
-- Agent Studio: Definition versioning, trust catalog, RBAC controls, playground environment, evaluation gates.
-
-**C.5 Multi-Agent Orchestration**
-- LangChain 0.3.x LCEL with LangGraph state machines, hierarchical manager-worker patterns.
-- Joint reasoning for hallucination reduction.
-- **Multi-Agent Coordination Complexity**: Centralized vs. decentralized patterns, learning and decision-making optimization.
-
-**C.6 AI Reliability Engineering**
-- **Output Validation & Guardrails**: Structured output enforcement with JSON Schema and constrained decoding, hallucination detection using LLM-as-a-judge patterns, automated reasoning checks, provenance validation, client-side validation fallbacks.
-- **Human-in-the-Loop Architecture**: Confidence-score-based approval workflows with configurable thresholds, interrupt handling for long-running tasks, non-blocking review queues, HITL UI components integrated into Agent Studio.
-- **Production Resilience & Circuit Breakers**: Circuit breaker patterns for failing agents, automatic provider failover with health checks, agent versioning with blue-green/canary deployments, automated rollback triggers.
-- **Safe Deployment Patterns**: Feature flagging at model and prompt levels, A/B testing frameworks, prompt versioning with instant rollback, shadow mode execution.
-- **Semantic Layer & Cross-Agent Trust**: Ontology-driven shared vocabulary, trust layer with continuous attestation and non-human identity management (extending A2A Agent Cards with Merkle-based lineage).
-
-**C.7 Local Model Infrastructure**
-- **Serving Stack**: Ollama (primary) / llama.cpp (backend). Docker Compose for reproducible environments.
-- **Model Registry**: Inventory of supported local models, their capabilities, quantization formats, and hardware requirements.
-- **Quantization Policy**: Default GGUF Q4_K_M; migration path to ternary (FairyFuse) when backend matures.
-- **Hardware Abstraction**: CPU‑only tier (AVX2, 16GB+), GPU‑accelerated tier (optional), Apple Silicon tier (M2+).
-- **Fine‑Tuning Pipeline**: Phase 2+ via Unsloth (GPU) or LoFT CLI (CPU‑only for small models).
-- **Distributed Inference**: Phase 3+ via Prima.cpp or Mesh LLM for 30‑70B models on commodity clusters.
-*(Detailed specification in `06-AI-LOCAL-INFRA.md`)*
-
-### Domain D: Frontend, UX & Multimodal Interfaces
-**Ownership**: Product Engineering / Frontend Team
+**Ownership**: product engineering / frontend team
 **Absorbs**: Original Pillars 6, 10 (full UX-related), mobile, voice
-- Real-time JSON to React component rendering, interactive charts and forms.
-- Optimistic updates with TanStack Query v5.
-- React Compiler integration: `babel-plugin-react-compiler` beta, `use no memo` carveouts, `useFormState` over `useWatch` for RHF compatibility.
 
-**D.2 Real-Time Collaboration**
-- Yjs 13.6.21 with LiveKit, canvas-first design patterns.
-- Thought-trace visibility for agent operations.
-- Infinite canvas design, real-time co-editing, version control integration, conflict resolution algorithms.
+**Purpose**: Build responsive, accessible web and mobile interfaces with real-time collaboration, multimodal input/output capabilities, and seamless agent interaction that provides a premium user experience.
 
-**D.3 Multimodal & Voice**
-- Multi-speaker TTS with voice profiles, vision-native workflows with screenshot-to-action, multimodal RAG processing.
-- **LiveKit Agents v1.0.0**: Production-ready real-time voice and video AI agents using WebRTC. Handles STT→LLM→TTS pipeline streaming, turn detection, interruption handling, multi-agent handoffs.
+→ Implementation: [02-ARCH-OVERVIEW.md § Domain D](02-ARCH-OVERVIEW.md)
 
-**D.4 Mobile & Accessibility**
-- Expo SDK 55 with New Architecture, React Native 0.83, `expo-notifications` config plugins, NativeWind v4.
-- Motion v12 with OKLCH animation, reduced motion support, WCAG 2.2 AA compliance, keyboard navigation.
+### Domain E: security, compliance & governance
 
-### Domain E: Security, Compliance & Governance
-**Ownership**: Security / GRC Team
+**Ownership**: security / GRC team
 **NOTE**: This domain is CROSS-CUTTING, applicable to all other domains.
 **Absorbs**: Original Pillars 3, 11, audit trail components of 17
 
-**E.1 API & Supply-Chain Security**
-- APS Gateway (as defined in C.4).
-- Supply chain: LiteLLM ≥1.83.7 with cosign verification, Orval ≥8.2.0 (CVE-2026-25141 mitigation), DOMPurify ≥3.4.0 (CVE-2026-41238 XSS protection).
-- Full CSP with nonce strategy, `worker-src` for service workers, `strict-dynamic` scripts, Report-Only in pre-production.
-- **MCP Identity Crisis**: Human identity disappears at MCP boundary; agents authenticate with static API keys, breaking traceability to human authorizers. Implement OAuth On-Behalf-Of flows and identity propagation (Nik Kale, SC World 2026).
-- **MCP Default Configuration Risk**: >90% of organizations deploy MCP servers with insecure default configurations allowing all tools (including destructive ones). Enforce tool allowlisting, SSRF controls, and schema validation (Noma Security research).
-- **MCP Critical CVEs**: CVE-2025-6514 (mcp-remote command injection, CVSS 9.6, 437K+ downloads), CVE-2026-23744 (MCPJam Inspector RCE), CVE-2025-49596 (MCP Inspector RCE). 30 CVEs disclosed in 60 days (Jan-Feb 2026), 13 rated critical by Vulnerable MCP Project.
-- **CIS MCP Companion Guide**: CIS Controls v8.1 Companion Guide for MCP (released April 21, 2026) provides practical guidance on identity, access control, logging, and application security for MCP deployments.
+**Purpose**: Establish security controls, compliance frameworks (EU AI Act, GDPR), audit trails, and AI ethics governance that protect the platform, users, and agents across all domains.
 
-**E.2 Identity & Audit**
-- Unique agent IDs with audit trails, service account separation, action attribution.
-- Immutable WORM logs for all agent decisions, blockchain-style hash chaining, legal defensibility, forensic analysis.
-- **EU AI Act Alignment**: Current statutory deadline August 2, 2026 for majority of rules. Proposed Digital Omnibus extension (pending Council approval as of April 2026) would delay high-risk obligations to December 2, 2027 (stand‑alone high‑risk) / August 2, 2028 (embedded high‑risk). Automated technical documentation generation, risk management logs, high-risk application compliance, conformity assessment. Articles 9-15 mandate extensive documentation and traceability.
-- GDPR compliance with consent management, data minimization, right to deletion, privacy by design.
+→ Implementation: [02-ARCH-OVERVIEW.md § Domain E](02-ARCH-OVERVIEW.md) · CVEs: [03-TECH-VALIDATION.md](03-TECH-VALIDATION.md)
 
-**E.4 AI Ethics & Fairness**
-- Automated demographic bias detection, fairness metrics dashboard, bias mitigation strategies, regulatory reporting.
-- Red teaming for prompt injections, jailbreaks, and training-data leakage (aligned with CSA RiskRubric.ai framework).
-- **OWASP ASI01-ASI10 Complete CVE Mapping** (as of April 2026):
-  - **ASI01: Agent Goal Hijack** - CVE-2025-32711 (EchoLeak, Microsoft 365 Copilot, CVSS 9.3), CVE-2025-53773 (GitHub Copilot YOLO Mode, CVSS 7.8), CVE-2025-64660 (AGENTS.MD Hijacking in VS Code), CVE-2025-61590 (AGENTS.MD Hijacking in VS Code)
-  - **ASI02: Tool Misuse & Exploitation** - CVE-2025-8217 (Amazon Q Code Assistant, CVSS 7.8), CVE-2025-34291 (Langflow AI RCE)
-  - **ASI03: Identity & Privilege Abuse** - CVE-2025-32711 (EchoLeak, Microsoft 365 Copilot, CVSS 9.3); incidents: Copilot Studio Connected Agents, CoPhish Attack, Copilot Studio Public-by-Default Agents
-  - **ASI04: Agentic Supply Chain Compromise** - CVE-2025-6514 (MCP Remote RCE, CVSS 9.6); incidents: Postmark MCP supply chain attack, Shai-Hulud Worm (npm ecosystem)
-  - **ASI05: Unexpected Code Execution** - CVE-2025-53773 (GitHub Copilot YOLO Mode, CVSS 7.8), CVE-2025-54135 (CurXecute, Cursor MCP auto-start, CVSS 8.6), CVE-2025-54136 (MCPoison, Cursor, CVSS 7.2), CVE-2025-59944 (Cursor Case-Sensitivity Bypass), Claude Desktop RCE (CVSS 8.9), IDEsaster Research (24 CVEs across multiple AI IDEs)
-  - **ASI06: Memory & Context Poisoning** - No CVEs assigned (emerging risk category); incidents: Google Gemini Memory Attack, Gemini Calendar Invite Poisoning, Lakera AI Memory Injection Research, ASCII Smuggling in Gemini
-  - **ASI07: Insecure Inter-Agent Communication** - No CVEs assigned (emerging risk category); incidents: Agent Session Smuggling in A2A Protocol, ServiceNow Now Assist Inter-Agent Vulnerability
-  - **ASI08: Cascading Agent Failures** - No CVEs assigned (emerging risk category); incidents: Galileo AI Research (87% downstream poisoning in 4 hours), Manufacturing Procurement Cascade
-  - **ASI09: Human-Agent Trust Exploitation** - No CVEs assigned (emerging risk category); incidents: M365 Copilot Manipulation Research, AI Reward Hacking, Agent-Driven Phishing
-  - **ASI10: Rogue Agents** - No CVEs assigned (emerging risk category); incidents: Cost-Optimization Agent Gone Wrong, Procurement Agent Fraud, Ray Framework Breach (230,000 clusters compromised)
+### Domain F: business strategy & monetization
 
-### Domain F: Business Strategy & Monetization
-**Ownership**: Product / GTM / Executive Team
+**Ownership**: product / GTM / executive team
 **Absorbs**: Original Pillars 8, 12, 13, 14 (workflow/composable), 16 (competitive)
-- **Stripe Three-Package Architecture**: `@stripe/ai-sdk` (metering middleware), `@stripe/token-meter` (bypass), `@stripe/agent-toolkit` (agent actions via function calling).
-- AI cost markup configuration, tiered model access, license gates, feature flags.
 
-**F.2 Revenue Optimization**
-- Unit economics tracking, churn prediction, expansion revenue identification.
-- Real-time token cost monitoring, budget enforcement alerts, per-user action economics.
+**Purpose**: Define monetization strategy, revenue optimization, product positioning, market models, and ecosystem integration that drives sustainable growth and customer value.
 
-**F.3 Product & Vertical Strategy**
-- Deep workflow AI for specific industries (Clinical Trial Compliance, Financial Auditing, Legal Research), domain-specific fine-tuning.
-- **Data Flywheel**: Human-in-the-loop feedback collection, LoRA adapter training, continuous model improvement.
+→ Implementation: [02-ARCH-OVERVIEW.md § Domain F](02-ARCH-OVERVIEW.md)
 
-**F.4 Market Models & Build-vs-Buy**
-- **Agentic Enterprise Licensing**: All-you-can-eat agentic AI agreements (AELA model), consumption vs. flat fee tensions.
-- **Forward-Deployed Engineering**: In-house engineers as necessity for business/industry knowledge.
-- **Decision Velocity Architecture**: Decision automation as core metric (speed × accuracy × effectiveness), collapsing decision trees for 5-10x improvements.
+### Horizon scanning
 
-**F.5 Workflow Integration & Ecosystem**
-- Cross-team workflow unification (40-60 SaaS tool integration), event-driven architecture with two-way API syncs.
-- **Composable Architecture (MACH Alliance)**: Microservices, API-first, Cloud-native, Headless principles. MACH AI Exchange launched April 2025.
-- Data-as-a-Service: Monetizable clean, structured, versioned data.
-- Third-party integrations, API marketplace, developer community building.
-
-### Horizon Scanning (Appendix)
-**Retains**: Original Pillar 16, plus speculative items
-- Temporal API evaluation (ES2027), ES2026 `match` expression monitoring.
-- WebGPU advancement tracking, quantum computing preparation.
-- Internal R&D pipeline, academic partnerships, patent strategy.
-- Continuous competitor monitoring, strategic pivot planning.
+Emerging technologies, standards, and market trends that may impact the platform are tracked in **[05-HORIZON-SCANNING.md](05-HORIZON-SCANNING.md)**. This includes Temporal API, WebGPU, quantum computing, internal R&D, patent strategy, and competitive monitoring.
 
 ---
 
-## Inter-Domain Dependency Map
+## Inter-domain dependency map
 
-```
+```text
 Domain A (Platform Foundation)
   ↓
 Domain B (Data & Sync)
@@ -288,6 +152,7 @@ Domain E (Security & Compliance) ←→ ALL DOMAINS (cross-cutting)
 ```
 
 **Key Integration Points**:
+
 - **A→B**: Database infrastructure (TimescaleDB, PgBouncer, Neon) provisioned by Platform, consumed by Data.
 - **B→C**: Vector store (pgvectorscale) and knowledge graph infrastructure consumed by AI Core for RAG, GraphRAG, and semantic layer.
 - **C→D**: Agent outputs (structured JSON) streamed to frontend components via real-time rendering. Agent Studio UI built on Domain D.
@@ -296,7 +161,7 @@ Domain E (Security & Compliance) ←→ ALL DOMAINS (cross-cutting)
 
 ---
 
-## Domain Ownership & Responsibility Matrix
+## Domain ownership & responsibility matrix
 
 | Domain | Primary Owner | Key Stakeholders | SLA Focus |
 |--------|--------------|------------------|-----------|
@@ -309,12 +174,6 @@ Domain E (Security & Compliance) ←→ ALL DOMAINS (cross-cutting)
 
 ---
 
-## AI Iteration Guidelines
+## AI-assisted development guidelines
 
-For effective AI-assisted development of this blueprint, adhere to the following:
-
-1. **Domain Boundary Enforcement**: When modifying a component within one domain, only reference interfaces exposed by other domains (e.g., "use `ModelGateway.route()` from C.1, do not inline routing logic into D.1").
-2. **Version Pinning**: All packages in this blueprint are pinned to specific versions. AI agents must verify compatibility against these versions before proposing changes.
-3. **Dependency Validation**: Before adding new technology, verify it does not duplicate capability already present in another domain. Example: if adding a new monitoring tool, confirm it does not overlap with A.4 (OpenTelemetry `gen_ai` traces) or C.6 (circuit breaker metrics).
-4. **Cross-Cutting Checks**: Any change must be evaluated against Domain E (Security & Compliance). Example: a new model added to C.1 requires EU AI Act documentation update (E.3) and bias assessment (E.4).
-5. **Semantic Versioning for Prompts & Agents**: All prompt versions, agent definitions, and model configurations must use semantic versioning with changelog entries, integrated into C.4 (Agent Studio).
+For effective AI-assisted development of this blueprint, including domain boundary enforcement, version pinning, dependency validation, security checks, and semantic versioning, see **[docs/development/AI-WORKFLOW.md](../development/AI-WORKFLOW.md)**.

@@ -4,6 +4,52 @@ This document describes the complete AI architecture including intent dispatcher
 
 ---
 
+## AI & Model Rules
+
+These control which models are used, how they are secured, and how their performance is evaluated.
+
+### Model Selection & Routing
+- (HARD) Default orchestrator: Gemma 4 E2B (local, native tool calling). Fallback: Qwen3.5 4B. Cloud models are premium only.
+- (HARD) Free‑tier users are restricted to local models only; AI must never make cloud API calls for them.
+- (HARD) Claude Sonnet 4.6 is the default cloud model when authorised; Opus 4.7 for complex tasks.
+- (HARD) Haiku 4.5 must never be used in agentic contexts (poor injection guard).
+- (HARD) All new agents created after May 1, 2026 must use `claude-sonnet-4-6` or `opus-4-7` model IDs; legacy IDs cleaned by June 1, 2026.
+- (HARD) OpenAI Assistants and ChatCompletions APIs must be migrated to the Responses API by August 26, 2026.
+
+### Guardrails (3‑layer, all HARD)
+- **Input**: PII detection, jailbreak detection, toxicity screening.
+- **Output**: Hallucination detection, safety validation, schema enforcement.
+- **Runtime**: Tool authorization and cost threshold checks.
+- All guardrail decisions are logged to `audit_logs`.
+
+### Cost & Budgets (all HARD)
+- Synchronous pre‑call budget check enforced at the LiteLLM proxy; if budget exceeded, return 429 and a cost limit banner.
+- Multi‑level budgets: org, team, user, model.
+- Alert thresholds: at 15% remaining notify admin; at 5% notify admin + engineering; at 0% hard stop.
+- `ai_cost_log` is a TimescaleDB hypertable; x‑litellm‑tags carry org_id, user_id, feature.
+
+### Evaluation (HARD in CI)
+- DeepEval for AI evaluation; RAGAS alongside for RAG.
+- CI gates:
+  - Tool‑calling precision ≥90% (block if <85%)
+  - Hallucination rate ≤2%
+  - Accuracy ≥ base‑2%
+  - Latency ≤ base+10% (warn), >20% block
+  - Token usage ≤ base+15% (warn)
+- All evaluator LLM‑as‑judge calls go through the LiteLLM proxy for cost tracking.
+
+### Caching & Context
+- (HARD) Prompt caching enabled; static content cached first.
+- (HARD) Chat cache hit rate target >70%, RAG cache hit rate >90%.
+- (HARD) Contextual Retrieval activated only when corpus >50K chunks, precision improvement >15%, and cache hit rate >60%.
+
+### Local Model Lifecycle
+- All local models must be registered in the Model Trust Registry before use in agentic workflows.
+- Model quantisation: default GGUF Q4_K_M (<4.5 GB RAM); evaluated weekly for tool‑calling pass rate.
+- The Verifier cascade (Phi‑4‑mini‑reasoning) checks reasoning, schema validity, and budget before an action is committed (Phase 1).
+
+---
+
 ## Section 1: AI Architecture
 
 ### Intent Dispatcher
@@ -941,4 +987,23 @@ Does your dataset contain >500K tokens?
 - Common chunk sizes: 128-512 tokens for RAG applications
 - Larger chunks (512-1024 tokens) for detail-oriented queries
 - Smaller chunks (128-256 tokens) for multi-hop reasoning
+
+---
+
+## Pre-Computed Quality Presets
+
+These are named presets for LLM calls, specifying temperature (`temp`), `top_p`, and acceptable variance.
+
+| Preset | Temperature / Top P | Variance |
+|--------|---------------------|----------|
+| G1 | 0.85 / 0.35 | ±2% |
+| G2 | 0.80 / 0.30 | ±5% |
+| G3 | 0.82 / 0.32 | ±2% |
+| G4 | 0.80 / 0.40 | ±2% |
+| G5 | 0.90 / 0.45 | ±2% |
+| G6 | 0.85 / 0.45 | ±2% |
+| G7 | 0.95 / 0.40 | ±2% |
+| G8 | 0.90 / 0.40 | ±2% |
+
+Use these directly when configuring model parameters in agent definitions.
 - Overlap of 10-20% recommended to maintain context continuity

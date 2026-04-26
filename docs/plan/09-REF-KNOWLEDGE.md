@@ -1,4 +1,3 @@
-
 # KV - Knowledge Base
 
 // BACKEND
@@ -161,7 +160,9 @@ DENO_RUNTIME|Deno 2.0 full npm compatibility with npm: specifier; CommonJS suppo
 // OTel GenAI details
 OTEL_GENAI|v1.40.0 released Feb 2026 (commit 7fe5373); Status: Experimental/Development as of March 2026; gen_ai.* namespace; use OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental for opt-in; default emits v1.36.0 or prior; track gen_ai.conversation.id (string, conversation/session/thread correlation); NO production readiness timeline - transition plan will be updated before marking stable (no date provided); not production-ready for stable adoption
 // Resend inbound
-RESEND_INBOUND|Svix delivery; 3-day log retention; React Email 5.0; inbound parse available
+RESEND_INBOUND|Svix delivery; TASK INFORMATION INCORRECT: 3-day log retention insufficient - HIPAA requires 6 years, SOC 2 requires policies (no specific duration), industry standards: HIPAA 6 years, SOX 7 years, NERC 6 months logs/3 years audit records, ISO 27001 12 months, PCI DSS 12 months; React Email 5.0; inbound parse available
+// Svix integration patterns
+SVIX_INTEGRATION|Acknowledge-first pattern: verify signature, validate structure, write to queue, return 200 immediately; Queue selection: Redis (moderate volume, simple/fast), RabbitMQ/SQS (delivery guarantees, dead-letter queues), Kafka (high volume/durability, replay capabilities); Key requirements: durability and at-least-once delivery; Keep queue close to webhook endpoint to minimize latency; Short timeouts protect providers from cascading failures
 // PowerSync architecture
 PWRSYNC_ARCH|SQLite client; Postgres server; YAML sync rules (legacy), Sync Streams (Beta recommended); 50 concurrent connections free tier; SOC2 Type 2 audited, HIPAA compliant (Pro/Team/Enterprise)
 // Tauri capability security

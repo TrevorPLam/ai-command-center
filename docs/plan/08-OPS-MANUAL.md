@@ -4,6 +4,21 @@ This document describes the operational procedures including disaster recovery, 
 
 ---
 
+## Observability & SLOs
+
+- (HARD) OpenTelemetry v1.40 with GenAI attributes mandatory for all AI interactions; `OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai`.
+- (HARD) PII redacted at the collector level before traces are exported.
+- **Service Level Objectives**:
+  - TTFT (time to first token) ≤ 2 seconds at p95
+  - Availability 99.9%
+  - RAG response time ≤ 500 ms at p95
+  - LCP ≤ 800 ms at p75
+  - INP ≤ 200 ms
+- (HARD) Multi‑burn‑rate alerting: P1 incidents fire if burn rate > 2% in 1 hour + 5 minutes; P2 fires at 6‑hour window; P3 at 3‑day window.
+- (HARD) Error budget actions: at 50% consumed – notify; at 80% – feature freeze; at 100% – declare incident.
+
+---
+
 ## Section 1: Disaster Recovery / Business Continuity Planning
 
 ### Quick Reference: Recovery Objectives
@@ -483,6 +498,68 @@ Tests fail if any of the following occur:
 
 **Escalation**: P2 if data loss >24h
 
+#### Nylas Webhook Failure Patterns
+
+Nylas uses a two-tier failure state model for webhook endpoints:
+
+**Failing State (15-minute window)**
+- Triggered when Nylas receives 95% non-200 responses or non-responses over 15 minutes
+- While in failing state, Nylas continues delivering webhook notifications for 72 hours with exponential backoff
+- Email notification sent when endpoint transitions to failing state
+- Add `@nylas.com` to email allowlist to prevent notifications from going to spam
+
+**Failed State (72-hour window)**
+- Triggered when 95% non-200 responses or non-responses persist over 72 hours
+- Webhook endpoint marked as failed and stops receiving notifications
+- Email notification sent when endpoint transitions to failed state
+- Manual reactivation required via Nylas Dashboard or Webhooks API
+- Nylas does NOT send notifications for events that occurred while endpoint was failed
+- Events missed during failed state are lost unless manually retrieved via API polling
+
+**Industry Comparison**
+- Nylas's 95% threshold is more conservative than typical circuit breaker patterns (50% failure rate)
+- This design choice reduces false positives from transient failures
+- Hookdeck guide suggests 50% failure rate over 1-minute window or 5 of 10 requests failed for circuit breakers
+
+**Monitoring Actions**:
+1. Monitor webhook failure rate alerts
+2. If failure rate exceeds 5% over 5 minutes, investigate immediately
+3. Check webhook endpoint health and response times
+4. Verify HMAC-SHA256 signature validation is working
+5. Review Nylas Dashboard for webhook status
+6. If approaching 95% threshold over 15-minute window, prepare for failing state
+7. If approaching 72-hour failed state, prepare for manual reactivation
+
+#### Nylas Grant Expiration Handling (Detailed)
+
+**Best Practices**
+- Subscribe to `grant.*` notifications (recommended approach) to monitor status changes
+- When `grant.expired` notification received, prompt user to re-authenticate immediately
+- Alternative methods: Poll Get all grants endpoint and check `grant_status`, or monitor Nylas Dashboard
+- Nylas cannot access user data when grant is expired
+
+**Re-authentication Flow**
+- When user re-authenticates successfully, Nylas checks when grant was last valid
+- If grant was out of service < 72 hours: Nylas sends backfill notifications for changes during outage
+- If grant was out of service > 72 hours: Nylas does NOT send backfill notifications
+- For > 72 hour outages: Query Nylas APIs for objects that changed between `grant.expired` and `grant.updated` timestamps
+
+**Critical Limitation**
+- Message tracking events (message.opened, message.link_clicked, thread.replied) cannot be backfilled if grant was out of service > 72 hours
+- These events are permanently lost and must be accepted as data gap
+- Support cannot replay webhooks - manual API retrieval is the only recovery mechanism
+
+**Operational Actions**:
+1. Monitor `grant.expired` webhook notifications
+2. Track grants approaching expiration (daily cron job recommended)
+3. Prompt users to re-authenticate before grant expires
+4. When grant expires, disable sync and notify user immediately
+5. Provide clear re-authentication URL and instructions
+6. After re-authentication, check if grant was out of service <72 hours
+7. If <72 hours: Monitor for backfill notifications from Nylas
+8. If >72 hours: Warn user of potential data loss and manual retrieval options
+9. Document all grant expiration events for audit trail
+
 ### 4.9 Calendar & Recurrence
 
 #### DST Test Failure
@@ -678,7 +755,61 @@ Tests fail if any of the following occur:
 
 ---
 
-## Section 6: NIS2 Compliance
+## Section 6: Performance Monitoring
+
+### Supabase Performance Characteristics
+
+| Service | Metric | Value | Source |
+|---------|--------|-------|--------|
+| Edge Functions | Cold Start Latency (median) | 400ms | GitHub #29301 (Oct 2024) |
+| Edge Functions | Hot Start Latency (median) | 125ms | GitHub #29301 (Oct 2024) |
+| Edge Functions | Regional Variation | ±100ms from median | Supabase maintainer |
+| Edge Functions | Bundle Format | ESZip | Supabase Architecture docs |
+| Realtime | Channel Ceiling per Connection | 100 channels | Supabase Realtime Concepts |
+| Realtime | Concurrent Peak Connections (Free) | 200 | Supabase community |
+| Realtime | Concurrent Peak Connections (Pro) | 500 included, $10/1,000 additional | Supabase Pricing docs |
+| Realtime | Message Pricing | $2.50 per 1M messages | Supabase Pricing docs |
+| Realtime | Heartbeat Interval (default) | 25 seconds | Supabase Heartbeat docs |
+| Realtime | Cluster Capacity | Millions concurrent | Supabase Limits docs |
+
+---
+
+## Section 7: Deployment Strategy
+
+### Zero-Downtime Rolling Deployments
+
+**Kubernetes Rolling Update Pattern:**
+
+- Creates new ReplicaSet gradually while scaling down old one
+- Key parameters control speed and safety:
+  - `maxUnavailable`: Maximum pods unavailable during update
+  - `maxSurge`: Maximum extra pods created above desired count
+- Example: 4 replicas, maxUnavailable=1, maxSurge=1 ensures 75% availability
+
+**Health Check Requirements:**
+
+- Readiness probes: Pod ready to accept traffic
+- Liveness probes: Pod healthy and running
+- Graceful shutdown: Lifecycle hooks for cleanup
+- Pre-start health checks: Before traffic routing
+
+**Rollback Procedures:**
+
+- Automatic rollback on health check failure
+- Manual rollback via `kubectl rollout undo`
+- Pausing rollouts for verification
+- Monitoring deployment progress via metrics
+
+**Reliability Validation:**
+
+- Zero downtime achievable with proper configuration
+- Health checks critical for preventing failed deployments
+- Rolling updates provide gradual, controlled rollout
+- Max surge provides buffer for capacity during transition
+
+---
+
+## Section 7: NIS2 Compliance
 
 ### Overview
 

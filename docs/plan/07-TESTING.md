@@ -1,8 +1,6 @@
-Below is the complete, unabridged **Master Test & Quality Plan** for the AI-integrated workspace platform. It reorganises all your existing content into the structure we aligned on, fills the identified gaps, and presents everything in the formats most useful for your cross‑functional team.
-
----
-
 # AI Workspace Platform — Master Test & Quality Plan
+
+Below is the complete, unabridged **Master Test & Quality Plan** for the AI-integrated workspace platform. It reorganises all your existing content into the structure we aligned on, fills the identified gaps, and presents everything in the formats most useful for your cross‑functional team.
 
 **Document version:** 1.0  
 **Last updated:** April 2026  

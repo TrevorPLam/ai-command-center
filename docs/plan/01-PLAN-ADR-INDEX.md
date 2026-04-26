@@ -1,4 +1,4 @@
-# ADR Index — Architecture Decision Records
+# ADR index — architecture decision records
 
 ## README
 
@@ -10,8 +10,7 @@ This index maps every ADR from `01-PLAN-LEXICON.md` #ADR_KEY to its domain and a
 
 **Domains:** Platform, Data, AI-Core, Frontend, Security, Business. Assignments are based on the ADR's primary scope.
 
-
-## ADR Index (Sorted by ID)
+## ADR index (sorted by ID)
 
 | ADR ID | Domain | Summary | Status | Related Decision Register ID |
 |--------|--------|---------|--------|------------------------------|
@@ -100,7 +99,6 @@ This index maps every ADR from `01-PLAN-LEXICON.md` #ADR_KEY to its domain and a
 | ADR_124 | Frontend | Tailwind v4 OKLCH three‑layer token system; no hardcoded colours | active | — |
 | ADR_125 | Business | Four‑layer cost governance with synchronous pre‑call budget check | active | — |
 | ADR_126 | Business | PostHog Group Analytics mandatory from day one for org‑scoped events. Aggregation patterns: Trends (Unique with group type), Funnels (Aggregating by group type), Feature Flags (Match by group type). Query examples in 06-AI-CORE.md Section 9. | active | — |
-```
 
 ## Domain Groupings (For Quick Filtering)
 

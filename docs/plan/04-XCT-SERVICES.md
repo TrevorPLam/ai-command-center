@@ -286,6 +286,21 @@ if (verification.verified) {
   - MSW (Mock Service Worker) handlers
   - CI drift detection and blocking
 
+### Resend Email Integration
+
+#### ResendEmailIntegration
+- **Module**: EMAIL (Email Service)
+- **Type**: Service
+- **Patterns**: None
+- **Dependencies**: Resend API, Webhook Ingester
+- **Purpose**: Manages transactional email delivery with webhook reliability
+- **Features**:
+  - Automatic retries with exponential backoff (immediately, 5s, 5min, 30min, 2hr, 5hr, 10hr, 10hr)
+  - Idempotency via svix-id header to prevent duplicate processing
+  - Manual replays available via dashboard for failed deliveries
+  - Event granularity: distinct events per recipient (improved Jan 22, 2026)
+  - Status monitoring via public status page (resend-status.com) with incident history
+
 ### Nylas Webhook Handler
 
 #### NylasWebhookHandler

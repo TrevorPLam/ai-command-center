@@ -1,11 +1,10 @@
-# Granular Phased Delivery Plan: AI-Integrated SaaS Platform
+# Granular phased delivery plan: AI-integrated SaaS platform
 
 **Refreshed: April 26, 2026**  
 **Principle:** Nothing is removed from the blueprint. Everything is sequenced, deferred, or split.  
 **Core Design Axioms:** LLM-First, Rule-Optimized · Local-Default, Cloud-Fallback
 
-
-## Decision Matrix: How Features Are Sequenced
+## Decision matrix: how features are sequenced
 
 | Driver | Weight | Impact |
 |---|---|---|
@@ -16,8 +15,7 @@
 | Compliance deadline | Moderate | EU AI Act high-risk postponed to Dec 2027/Aug 2028; SOC2 not needed until enterprise sales |
 | Solo feasibility | Governing | Any feature requiring >3 days review or >2 new tables splits across phases |
 
-
-## Phase 0: Foundation & Core Magic (Solo → First Demo)
+## Phase 0: foundation & core magic (solo → first demo)
 
 **Duration target:** 12–16 weeks  
 **Monthly infra cost:** ~$30–50 (Supabase Free/Pro $25 + Fly.io Hobby $5 + Resend Free)  
@@ -103,7 +101,6 @@
 
 **Phase 0 Exit Gate:** One external user signs up, connects Google Calendar, creates tasks, and sees the agent detect a scheduling conflict — all without direct intervention.
 
-
 ## Phase 1: Public Launch & Proactive Intelligence (Solo → First Paying Customers)
 
 **Trigger:** Phase 0 demo succeeds with ≥3 external testers  
@@ -165,7 +162,6 @@
 | 50–200 | $165–$660/mo | Require Pro plan ($20/mo) to cover costs |
 | >200 | >$660/mo | Add Nylas fee passthrough or explore direct API integration |
 
-
 ## Phase 2: Suite Expansion & First Hire (Solo → Team)
 
 **Trigger:** ≥20 paying customers, or can no longer review all AI PRs within 2 business days  
@@ -215,7 +211,6 @@
 
 **Phase 2 Exit Gate:** ≥200 paying customers, NRR >90%, one new app per quarter, second cross‑app scenario demonstrated (e.g., "attach this document to the client contact").
 
-
 ## Phase 3: Monetization Maturity & Compliance Readiness
 
 **Trigger:** ≥200 paying customers or first enterprise inquiry about SOC2  
@@ -256,7 +251,6 @@
 
 **Phase 3 Exit Gate:** SOC2 Type I obtained. First 10 enterprise accounts (≥50 seats each).
 
-
 ## Phase 4: Enterprise Scale & Real‑Time (Team: 3–5)
 
 **Trigger:** SOC2 Type I complete + first enterprise contract signed  
@@ -286,7 +280,6 @@
 
 **Phase 4 Exit Gate:** 500+ paying organizations, 10 with >50 seats. First seven‑figure ARR year.
 
-
 ## Phase 5: Advanced AI & Ecosystem (Team: 5–10)
 
 **Trigger:** 500+ orgs, stable revenue, dedicated AI team
@@ -303,7 +296,6 @@
 
 **Phase 5 Exit Gate:** Platform becomes ecosystem. Third‑party developer community active. Annual ARR in tens of millions.
 
-
 ## Phase 6: Maturity & Moonshots (Team: 15–30)
 
 **Trigger:** Strong market position, R&D budget available
@@ -317,7 +309,6 @@
 | P605 | API marketplace: developer community, revenue share, certification | Data‑as‑a‑Service monetization |
 | P606 | Custom model training: proprietary models from open‑source bases; full from‑scratch training when resources permit | Mistral Forge or equivalent enterprise platform |
 
-
 ## Cost Projection Summary
 
 | Phase | Monthly Infra (target) | Key Cost Drivers |
@@ -329,7 +320,6 @@
 | 4 | $5,000–12,000 | PowerSync ($51+/mo), LiveKit, SOC2 Type II annual, team salaries |
 | 5 | $5,000–20,000 | Multi‑region, marketplace infra, Tauri signing |
 | 6 | $10,000–50,000+ | Full enterprise suite, dedicated AI compute, custom model training |
-
 
 ## Key Blockers & Risk Registry
 
@@ -345,7 +335,6 @@
 | Google Gemini free tier restrictions (March 2026) | Pro models limited to paid tiers | Free tier uses Flash models only. Local models absorb free‑tier load; Gemini Flash as fallback | Phase 0 |
 | Local model staleness | Tool‑calling accuracy drift | Weekly automated re‑benchmarking; verifier monitors orchestrator quality; registry tracks last‑verified dates | Phase 2+ |
 
-
 ## Local Model Fleet: Phase‑by‑Phase Deployment
 
 | Phase | Models Active | Roles | Hardware |
@@ -356,7 +345,6 @@
 | 3 | + Fine‑tuned domain LoRA adapters | Per‑org personalized agent behavior | Dedicated server or GPU workstation |
 | 4–5 | + Distributed 30–70B via Prima.cpp | Complex multi‑step enterprise workflows | Home cluster or multi‑GPU pool |
 | 6 | + Custom proprietary models from scratch | Full vertical integration | Dedicated AI compute infrastructure |
-
 
 ## Monetization: Local‑Default, Cloud‑Premium
 

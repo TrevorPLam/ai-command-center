@@ -1,4 +1,3 @@
-
 # API Endpoints
 
 This document describes all REST API endpoints exposed by the FastAPI backend.
@@ -45,6 +44,7 @@ This document describes all REST API endpoints exposed by the FastAPI backend.
 | GET | /v1/cost-forecast | Get per-organization cost forecast with projections |
 | POST | /v1/rerank | Rerank documents for RAG: accepts {query, docs}, returns reranked results |
 | GET | /v1/realtime/channels | List active realtime channels |
+
 ## Specification & Cross-Cutting Endpoints
 
 | Method | Path | Description |

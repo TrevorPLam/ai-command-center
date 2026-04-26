@@ -1,16 +1,89 @@
-
 # Cross-Component Dependencies
 
-## Core Dependency Patterns
+This document details cross-component dependencies, core dependency patterns, critical shared dependencies, dependency optimization opportunities, circular dependency risks, and recent dependency updates for the AI Command Center platform.
 
-### Shell (F) Dependencies
-- **AppShell**: Foundation for all pages, providers layout structure
-- **Sidebar**: Navigation hub, consumed by all page components
-- **CommandPalette**: Global search/commands, used across modules
-- **RightPanel**: Container for detail views (AgentDetailDrawer, TaskDetailDrawer, etc.)
-- **StatusBar**: Global status display
+---
 
-### Cross-Module Dependencies
+## Technology Version Pins
+
+Exact versions or constraints that must be used in all environments.
+
+- **TypeScript**: 6.0 in production; 7.0 beta (tsgo) evaluated in CI
+
+### TypeScript 7.0 (tsgo) Beta Assessment (April 2026)
+
+**Status**: TypeScript 7.0 Beta released via `@typescript/native-preview@beta` package. Stable release targeted within 2 months from beta announcement (April 2026 → June 2026).
+
+**Beta Stability**:
+- tsgo executable has identical behavior to tsc from TypeScript 6.0, just faster
+- Editor support via TypeScript Native Preview extension for VS Code is described as "rock-solid" and "widely used by many teams for months"
+- TypeScript can run side-by-side with TypeScript 6.0 via `@typescript/typescript6` package with `tsc6` entry point
+- Stable programmatic API not available until TypeScript 7.1 or later
+- Preview focuses on type checking (--noEmit mode); full emit, watch mode, build mode, plugin API still in development (landing in 2026)
+
+**Performance vs tsc 6.0**:
+- Benchmarks on microsoft/TypeScript repository (~400k lines, Apple M1 Pro):
+  - Total time: 10.8x faster (tsc 0.284s → tsgo 0.026s)
+  - Type checking: 30x faster (tsc 0.103s → tsgo 0.003s)
+  - Parse: 8.9x faster (tsc 0.071s → tsgo 0.008s)
+  - Bind: 6.4x faster (tsc 0.058s → tsgo 0.009s)
+  - Peak memory: 2.9x less (tsc 68MB → tsgo 23MB)
+- Scaling by project size:
+  - < 10k lines: 4x speedup
+  - 10k-100k lines: 6x speedup
+  - 100k-500k lines: 8.8x speedup
+  - 500k+ lines (monorepo): ~10x speedup
+
+**Migration Complexity from tsc 6.0**:
+- **Installation**: `npm install -D @typescript/native-preview@beta`
+- **Configuration**: No changes required - tsgo accepts same flags as tsc and reads tsconfig.json as-is
+- **Adoption Strategy**: Run both tsc and tsgo in CI pipeline during validation period (2-4 weeks). When tsgo produces identical results consistently, switch CI gate to tsgo
+- **Breaking Changes**: TypeScript 6.0 deprecations become hard removals in 7.0 (target, moduleResolution, baseUrl, esModuleInterop, outFile, module values, alwaysStrict, downlevelIteration, legacy module keyword, asserts keyword, /// <reference no-default-lib>)
+- **Behavioral Changes**: Type ordering in .d.ts output, inference changes from this-less optimization, silent moduleResolution default shift, "use strict" always emitted, esModuleInterop emit changes
+- **Escape Hatch**: `ignoreDeprecations` mechanism available to temporarily silence deprecation warnings during migration
+
+- **React**: 19.2.5; React 20 evaluated Q2 2026
+- **Vite**: 8.0.0
+- **Zustand**: 5.0.12
+- **TanStack Query**: 5.100.1
+- **Motion (Framer)**: 12.38.0 (import from `motion/react`)
+- **Tailwind CSS**: 4.2.2
+- **Prisma**: 7.8.0 (pgbouncer=true)
+- **dnd‑kit**: 6.3.1 (community standard; no migration)
+- **Node**: 24.15.0 LTS Krypton
+- **Python**: 3.12
+- **FastAPI**: 0.136.1
+- **react‑big‑calendar**: ^1.19.4 (React 19 compatible)
+- **Yjs**: 13.6.21
+- **DOMPurify**: ≥3.4.0
+- **nuqs**: ^2.5
+- **react‑helmet‑async**: latest
+- **LiveKit Agents**: ≥2.0.0 ONLY
+- **LiveKit Server SDK**: ≥1.0.0
+- **markmap**: latest
+- **react‑resizable**: ^3.1.3
+- **@ai‑sdk/react**: ^2.0 (Vercel AI SDK v6)
+- **@tremor/react**: ^3.18
+- **@stripe/ai‑sdk**: latest
+- **@stripe/agent‑toolkit**: latest
+- **@powersync/web**: latest
+- **litellm**: >=1.83.7 (cosign + Grype verified)
+- **orval**: >=8.2.0
+- **@anthropic/mcp‑inspector**: >=0.14.1 (dev only)
+- **tsgo**: 7.0 beta
+- **temporal‑polyfill**: ^0.3.2 (~20KB)
+- **pgvectorscale**: 0.4.0 (DiskANN)
+- **@xyflow/react**: 12.10.2
+- **OTel**: v1.40.0 + experimental GenAI
+- **prisma‑next**: GA June‑July 2026 (Postgres); Phase 3 evaluation
+- **rschedule**: latest
+- **@rschedule/temporal‑date‑adapter**: latest
+- **SimpleWebAuthn**: latest
+- **deepeval**: latest
+
+---
+
+## Component Dependency Matrix
 
 #### Dashboard → Shell
 - AgentDetailDrawer → RightPanel + uiSlice

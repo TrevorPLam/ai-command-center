@@ -1,12 +1,10 @@
-# Decision Register — Normalized
+# Decision register — normalized
 
 This is the append‑only log of every decision made during planning and development. It tracks product, UX, copy, configuration, and process choices that don't warrant a full Architecture Decision Record (ADR) but must be recorded.
 
 **For everyone:** Before making a new decision, check this file — an active decision may already cover it. If you make a new decision, append a row.
 
----
-
-## Decision Table Format
+## Decision table format
 
 Every decision is a single row. All columns must be filled.
 
@@ -24,18 +22,16 @@ Every decision is a single row. All columns must be filled.
 | **Linked Items** | Related ADR IDs, backlog items (BP-XXX), or spec filenames. |
 | **Session** | `session-YYYY-MM-DD-platform-topic.md` for traceability. |
 
-Rules:
+Rules
 - Append only. Never edit existing rows — supersede them with a new row.
-- Reversible decisions can be made quickly by an agent. Costly/irreversible ones need Trevor’s explicit review.
+- Reversible decisions can be made quickly by an agent. Costly/irreversible ones need Trevor's explicit review.
 - The register is reviewed for staleness after every 5 planning sessions and at each Phase gate.
 
----
-
-## Active Decisions
+## Active decisions
 
 | ID | Date | Domain | Decision | Rationale | Reversible? | Confidence | Status | Expiry | Linked Items | Session |
 |----|------|--------|----------|-----------|-------------|------------|--------|--------|--------------|---------|
-| DEC-2026-04-26-001 | 2026-04-26 | Process | All planning documents follow SPEC-TEMPLATE.md format (YAML frontmatter + 9 sections). | Standardization across sessions; rejected free‑form markdown. | Costly | High | active | none | SPEC-TEMPLATE.md, ADR_054 | session-2026-04-26-claude-planning-framework |
+| DEC-2026-04-26-001 | 2026-04-26 | Process | All planning documents follow SPEC-TEMPLATE.md format (YAML frontmatter + 9 sections). | Standardization across sessions; rejected free-form markdown. | Costly | High | active | none | SPEC-TEMPLATE.md, ADR_054 | session-2026-04-26-claude-planning-framework |
 | DEC-2026-04-26-002 | 2026-04-26 | Process | `00-PLANNING-BACKLOG.md` is the single source of truth for unresolved decisions. No code execution until block prerequisites are resolved. | Prevents premature implementation. Rejected alternative: start coding immediately. | Yes | High | active | none | 00-PLANNING-BACKLOG.md | session-2026-04-26-claude-planning-framework |
 | DEC-2026-04-26-003 | 2026-04-26 | Process | This decision register uses append‑only: new decisions get new rows; old ones are marked `superseded`. | Preserves decision history for audit and context recovery. | Costly | High | active | none | — | session-2026-04-26-claude-planning-framework |
 | DEC-2026-04-26-004 | 2026-04-26 | Process | AI agents must read this register at session start and append any new decisions before session end. | Prevents decision loss across sessions. | Yes | High | active | none | — | session-2026-04-26-claude-planning-framework |
@@ -46,7 +42,7 @@ Rules:
 
 ---
 
-## Superseded Decisions
+## Superseded decisions
 
 | ID | Date | Domain | Decision | Rationale | Superseded By | Superseded Date | Session |
 |----|------|--------|----------|-----------|---------------|-----------------|---------|
@@ -54,7 +50,7 @@ Rules:
 
 ---
 
-## Expired Decisions
+## Expired decisions
 
 | ID | Date | Domain | Decision | Rationale | Expired | Session |
 |----|------|--------|----------|-----------|---------|---------|
@@ -79,7 +75,7 @@ Rules:
 
 ---
 
-## Appendix: Decision Register vs. Full ADR
+## Appendix: decision register vs. full ADR
 
 Use this flowchart to decide where to record a decision:
 

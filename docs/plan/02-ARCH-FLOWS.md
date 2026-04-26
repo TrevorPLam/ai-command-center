@@ -1,7 +1,26 @@
-
 # Critical User Flows
 
 This document describes the key user flows and system interactions in the AI Command Center platform.
+
+## System-Level Data Flows
+
+The following table describes how data flows between system components at the infrastructure level:
+
+| Source | Destination | Protocol | Security Controls | Purpose |
+| --- | --- | --- | --- | --- |
+| Browser | FastAPI | HTTPS | JWT+org_id | `/v1/*` API endpoints |
+| FastAPI | Supabase | TCP | Internal network, RLS enforced | Database queries (Prisma) |
+| FastAPI | LiteLLM | HTTPS | API key rot, cosign | LLM routing (Claude, GPT, Gemini) |
+| FastAPI | MCP Server | HTTP | MCPSec L2, OAuth tool auth | SSRF allowlist, nonce replay protection |
+| FastAPI | Stripe | HTTPS | API key 180d rotation | Billing (@stripe/ai-sdk) |
+| FastAPI | Nylas | HTTPS | OAuth2, grant.expired webhook | Email sync (upsert-first, 10s ack) |
+| FastAPI | LiveKit | WebSocket | Token TTL 6h, RBAC scoped | Voice pipeline (STT/LLM/TTS) |
+| Supabase | Browser | WebSocket | JWT auth, org-scoped channels | Realtime CDC updates |
+| FastAPI | TimescaleDB | TCP | Internal network | AI cost logging hypertable |
+| FastAPI | Upstash | Redis | TLS encrypted | Rate limiting, semantic cache |
+| FastAPI | Sentry | HTTPS | DSN via env var | Error tracking, session replays |
+| FastAPI | PostHog | HTTPS | API key authentication | Product analytics, allow_training flag |
+| FastAPI | OTel Collector | HTTPS | OTLP protocol | GenAI traces, PII redaction |
 
 ## Authentication Flow
 
@@ -59,71 +78,7 @@ Email synchronization via Nylas webhooks:
 7. Monitoring alerts trigger if failure rate exceeds 5% over 5 minutes.
 8. Nylas automatically disables the webhook URL after 95% failure rate over 72 hours.
 
-### Nylas Webhook Failure Patterns
-
-Nylas uses a two-tier failure state model for webhook endpoints:
-
-#### Failing State (15-minute window)
-
-- Triggered when Nylas receives 95% non-200 responses or non-responses over 15 minutes
-
-- While in failing state, Nylas continues delivering webhook notifications for 72 hours with exponential backoff
-
-- Email notification sent when endpoint transitions to failing state
-
-- Add `@nylas.com` to email allowlist to prevent notifications from going to spam
-
-#### Failed State (72-hour window)
-
-- Triggered when 95% non-200 responses or non-responses persist over 72 hours
-
-- Webhook endpoint marked as failed and stops receiving notifications
-
-- Email notification sent when endpoint transitions to failed state
-
-- Manual reactivation required via Nylas Dashboard or Webhooks API
-
-- Nylas does NOT send notifications for events that occurred while endpoint was failed
-
-- Events missed during failed state are lost unless manually retrieved via API polling
-
-#### Industry Comparison
-
-- Nylas's 95% threshold is more conservative than typical circuit breaker patterns (50% failure rate)
-
-- This design choice reduces false positives from transient failures
-
-- Hookdeck guide suggests 50% failure rate over 1-minute window or 5 of 10 requests failed for circuit breakers
-
-### Grant Expiration Handling
-
-#### Best Practices
-
-- Subscribe to `grant.*` notifications (recommended approach) to monitor status changes
-
-- When `grant.expired` notification received, prompt user to re-authenticate immediately
-
-- Alternative methods: Poll Get all grants endpoint and check `grant_status`, or monitor Nylas Dashboard
-
-- Nylas cannot access user data when grant is expired
-
-#### Re-authentication Flow
-
-- When user re-authenticates successfully, Nylas checks when grant was last valid
-
-- If grant was out of service < 72 hours: Nylas sends backfill notifications for changes during outage
-
-- If grant was out of service > 72 hours: Nylas does NOT send backfill notifications
-
-- For > 72 hour outages: Query Nylas APIs for objects that changed between `grant.expired` and `grant.updated` timestamps
-
-#### Critical Limitation
-
-- Message tracking events (message.opened, message.link_clicked, thread.replied) cannot be backfilled if grant was out of service > 72 hours
-
-- These events are permanently lost and must be accepted as data gap
-
-- Support cannot replay webhooks - manual API retrieval is the only recovery mechanism
+For detailed operational procedures including webhook failure patterns and grant expiration handling, see [08-OPS-MANUAL.md](08-OPS-MANUAL.md#48-data-integrity).
 
 ## MCP Policy Enforcement Flow
 

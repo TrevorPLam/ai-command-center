@@ -1,11 +1,12 @@
+# Product requirements document
 
-# Product Requirements Document
+> **Product identity & design axioms**: See [00-STRAT-BLUEPRINT.md](00-STRAT-BLUEPRINT.md) for the core product definition, innovation thesis, and design axioms (LLM-first, local-default).
 
-## Product Vision
+## Product vision
 
 An AI‑integrated workspace where a conversational assistant works across your calendar, projects, and email to spot problems, suggest actions, and execute them on your behalf. All core intelligence runs locally by default, keeping user data private and marginal costs near zero.
 
-## Key Jobs to Be Done
+## Key jobs to be done
 
 ### J001 (P0): Cross‑App Conflict Detection & Resolution
 
@@ -27,7 +28,7 @@ I want to connect my existing calendars and email so the assistant immediately h
 
 I want all my sensitive data to be processed on my own device or within my control, without being sent to third‑party cloud AI providers.
 
-## Success Metrics
+## Success metrics
 
 | Metric | Target |
 |--------|--------|
@@ -35,7 +36,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | Conflict flow conversion | > 60% become paid subscribers |
 | Tool call hallucination rate | < 1% |
 
-## Monetization Model
+## Monetization model
 
 | Tier | AI Capability | Marginal Cost | Pricing |
 |------|---------------|---------------|---------|
@@ -43,7 +44,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | **Pro** | Cloud API unlocked (Sonnet 4.6) | $0.10-0.50/user/month | $20‑30/month |
 | **Enterprise** | Full cloud (Opus 4.7), fine‑tuning | $1‑5/user/month | Custom |
 
-## User Personas
+## User personas
 
 | ID | Role | Goals | Pain Points |
 |----|------|-------|-------------|
@@ -53,7 +54,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | P4 | Platform Owner | Ensure uptime, manage secrets | Manual rotation, slow incident response |
 | P5 | UX Designer | Design agent UIs, prototype | No UI patterns, unclear motion specs |
 
-## Jobs-to-Be-Done Backlog
+## Jobs-to-be-done backlog
 
 | ID | Priority | Epic | Acceptance Criteria |
 |----|----------|------|---------------------|
@@ -69,7 +70,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | J010 | P2 | Feature Flags | Progressive rollout, <5min kill switch, OpenFeature |
 | J011 | P2 | SOC2 Evidence | Automated evidence collection, quarterly PIA |
 
-## Success Metrics (Detailed)
+## Success metrics (detailed)
 
 | ID | Metric | Target | Frequency |
 |----|--------|--------|-----------|
@@ -84,7 +85,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | S009 | Secret Rotation | 100% | Quarterly |
 | S010 | Eval Gate Pass | ≥base‑2% | Per PR |
 
-## RICE Prioritization
+## RICE prioritization
 
 | ID | Feature | Reach | Impact | Confidence | Effort | Score | Priority |
 |----|---------|-------|--------|------------|--------|-------|----------|
@@ -98,7 +99,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | R008 | EU AI Act Compliance | 100 | 10 | 0.9 | 5 | 180 | P0 |
 | R009 | SOC2 Pipeline | 50 | 8 | 0.7 | 6 | 47 | P2 |
 
-## MoSCoW Prioritization
+## MoSCoW prioritization
 
 **MUST:** AI Cost Tracking, Agent Studio, MCP Security, EU AI Act Compliance, Guardrails, Auth/Org Switch, RLS
 
@@ -108,7 +109,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 
 **WON'T:** Blockchain Audit, Quantum Prep, Custom LLM Training, On‑prem Deployment
 
-## Business Outcomes
+## Business outcomes
 
 | ID | Outcome | Measurement | Timeline |
 |----|---------|-------------|----------|
@@ -118,7 +119,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | O004 | Enhance security | ≥90% MCP OAuth adoption | Q2 2026 |
 | O005 | Streamline compliance | SOC2 pipeline automated | Q3 2026 |
 
-## Assumptions & Risks
+## Assumptions & risks
 
 | ID | Assumption | Validation | Risk |
 |----|------------|------------|------|
@@ -150,7 +151,7 @@ I want all my sensitive data to be processed on my own device or within my contr
 | D004 | Guardrails Engine | LiteLLM proxy |
 | D005 | A2A Integration | Signed Agent Cards spec |
 
-## Delivery Phases
+## Delivery phases
 
 | Phase | Deliverables | Timeline |
 |-------|--------------|----------|
