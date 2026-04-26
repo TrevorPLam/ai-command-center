@@ -8,45 +8,52 @@ This document describes the complete AI architecture including intent dispatcher
 
 These control which models are used, how they are secured, and how their performance is evaluated.
 
-### Model selection & routing
-- (HARD) Default orchestrator: Gemma 4 E2B (local, native tool calling). Fallback: Qwen3.5 4B. Cloud models are premium only.
-- (HARD) Free‑tier users are restricted to local models only; AI must never make cloud API calls for them.
-- (HARD) Claude Sonnet 4.6 is the default cloud model when authorised; Opus 4.7 for complex tasks.
-- (HARD) Haiku 4.5 must never be used in agentic contexts (poor injection guard).
-- (HARD) All new agents created after May 1, 2026 must use `claude-sonnet-4-6` or `opus-4-7` model IDs; legacy IDs cleaned by June 1, 2026.
-- (HARD) OpenAI Assistants and ChatCompletions APIs must be migrated to the Responses API by August 26, 2026.
+For the complete rule definitions, see [00-RULES.yaml](00-RULES.yaml).
 
-### Guardrails (3‑layer, all HARD)
-- **Input**: PII detection, jailbreak detection, toxicity screening.
-- **Output**: Hallucination detection, safety validation, schema enforcement.
-- **Runtime**: Tool authorization and cost threshold checks.
-- All guardrail decisions are logged to `audit_logs`.
+### Model selection & routing
+
+- #AI-01: Default orchestrator: Gemma 4 E2B (local, native tool calling). Fallback: Qwen3.5 4B. Cloud models are premium only
+- #AI-02: Free-tier users are restricted to local models only; AI must never make cloud API calls for them
+- #AI-03: Claude Sonnet 4.6 is the default cloud model when authorised; Opus 4.7 for complex tasks
+- #AI-04: Haiku 4.5 must never be used in agentic contexts (poor injection guard)
+- #AI-05: All new agents created after May 1, 2026 must use claude-sonnet-4-6 or opus-4-7 model IDs; legacy IDs cleaned by June 1, 2026
+- #AI-06: OpenAI Assistants and ChatCompletions APIs must be migrated to the Responses API by August 26, 2026
+
+### Guardrails (3-layer, all HARD)
+
+- #AI-07: Input guardrails: PII detection, jailbreak detection, toxicity screening
+- #AI-08: Output guardrails: Hallucination detection, safety validation, schema enforcement
+- #AI-09: Runtime guardrails: Tool authorization and cost threshold checks
+- #AI-10: All guardrail decisions are logged to audit_logs
 
 ### Cost & Budgets (all HARD)
-- Synchronous pre‑call budget check enforced at the LiteLLM proxy; if budget exceeded, return 429 and a cost limit banner.
-- Multi‑level budgets: org, team, user, model.
-- Alert thresholds: at 15% remaining notify admin; at 5% notify admin + engineering; at 0% hard stop.
-- `ai_cost_log` is a TimescaleDB hypertable; x‑litellm‑tags carry org_id, user_id, feature.
+
+- #AI-11: Synchronous pre-call budget check enforced at the LiteLLM proxy; if budget exceeded, return 429 and a cost limit banner
+- #AI-12: Multi-level budgets: org, team, user, model
+- #AI-13: Alert thresholds: at 15% remaining notify admin; at 5% notify admin + engineering; at 0% hard stop
+- #AI-14: ai_cost_log is a TimescaleDB hypertable; x-litellm-tags carry org_id, user_id, feature
 
 ### Evaluation (HARD in CI)
-- DeepEval for AI evaluation; RAGAS alongside for RAG.
-- CI gates:
-  - Tool‑calling precision ≥90% (block if <85%)
-  - Hallucination rate ≤2%
-  - Accuracy ≥ base‑2%
-  - Latency ≤ base+10% (warn), >20% block
-  - Token usage ≤ base+15% (warn)
-- All evaluator LLM‑as‑judge calls go through the LiteLLM proxy for cost tracking.
+
+- #AI-15: DeepEval for AI evaluation; RAGAS alongside for RAG
+- #AI-16: Tool-calling precision >=90% (block if <85%)
+- #AI-17: Hallucination rate <=2%
+- #AI-18: Accuracy >= base-2%
+- #AI-19: Latency <= base+10% (warn), >20% block
+- #AI-20: Token usage <= base+15% (warn)
+- #AI-21: All evaluator LLM-as-judge calls go through the LiteLLM proxy for cost tracking
 
 ### Caching & Context
-- (HARD) Prompt caching enabled; static content cached first.
-- (HARD) Chat cache hit rate target >70%, RAG cache hit rate >90%.
-- (HARD) Contextual Retrieval activated only when corpus >50K chunks, precision improvement >15%, and cache hit rate >60%.
+
+- #AI-22: Prompt caching enabled; static content cached first
+- #AI-23: Chat cache hit rate target >70%, RAG cache hit rate >90%
+- #AI-24: Contextual Retrieval activated only when corpus >50K chunks, precision improvement >15%, and cache hit rate >60%
 
 ### Local model lifecycle
-- All local models must be registered in the Model Trust Registry before use in agentic workflows.
-- Model quantisation: default GGUF Q4_K_M (<4.5 GB RAM); evaluated weekly for tool‑calling pass rate.
-- The Verifier cascade (Phi‑4‑mini‑reasoning) checks reasoning, schema validity, and budget before an action is committed (Phase 1).
+
+- #AI-25: All local models must be registered in the Model Trust Registry before use in agentic workflows
+- #AI-26: Model quantisation: default GGUF Q4_K_M (<4.5 GB RAM); evaluated weekly for tool-calling pass rate
+- #AI-27: The Verifier cascade (Phi-4-mini-reasoning) checks reasoning, schema validity, and budget before an action is committed (Phase 1)
 
 ---
 

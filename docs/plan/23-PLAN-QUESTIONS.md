@@ -1,5 +1,9 @@
 # Open questions
 
+**ARCHIVED:** This file is archived. All open questions have been migrated to the **Unified Decision Log** at `01-PLAN-DECISIONS.md` as Type: question entries. Please refer to that file for the complete and up-to-date record.
+
+---
+
 This document tracks questions that need to be resolved during the build process. Planning documents should reference these as configurable policies to be defined later.
 
 ---

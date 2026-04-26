@@ -438,7 +438,7 @@ jobs:
 - [ ] Go/no-go decision for Phase 3 adoption
 
 **Dependencies**:
-- Add ``@prisma`/next` horizon dep for Phase 3 evaluation (already noted in 05-XCT-DEPENDENCIES.md line 211)
+- Add ``@prisma`/next` horizon dep for Phase 3 evaluation (already noted in 51-XCT-DEPENDENCIES.md line 211)
 - Add `MCPSec` middleware to MCP security dependencies.
 - TASK INFORMATION INCORRECT: `es2026-shim` does not exist. Pattern matching (match/using) is Stage 1 proposal, NOT part of ES2026. No polyfill available.
 - Change OpenAI provider deps from Assistants/ChatCompletions to Responses API + Conversations.

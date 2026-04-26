@@ -1,6 +1,6 @@
 # Service deployment details
 
-This document contains detailed deployment configurations and implementation specifications for external services integrated into the AI Command Center platform. For high-level architecture, see [02-ARCH-OVERVIEW.md](02-ARCH-OVERVIEW.md).
+This document contains detailed deployment configurations and implementation specifications for external services integrated into the AI Command Center platform. For high-level architecture, see [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md).
 
 ---
 
@@ -14,61 +14,15 @@ Y-Sweet provides an official Docker image for deployment: `ghcr.io/jamsocket/y-s
 
 **Dockerfile Example:**
 
-```dockerfile
-FROM ghcr.io/jamsocket/y-sweet:latest
-
-# Set environment variables for S3 configuration
-ENV Y_SWEET_STORE=s3://my-bucket/path
-ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-ENV AWS_REGION=us-east-1
-
-# Configure body size limit (optional, added in v0.9.0)
-ENV Y_SWEET_MAX_BODY_SIZE=104857600  # 100MB in bytes
-
-# Expose the default Y-Sweet port
-EXPOSE 8080
-
-# Run the Y-Sweet server
-CMD ["y-sweet", "serve"]
-```
+See [deployment-examples/Dockerfile](deployment-examples/Dockerfile)
 
 **fly.toml Configuration:**
 
-```toml
-app = "y-sweet-app"
-
-[build]
-  dockerfile = "Dockerfile"
-
-[env]
-  Y_SWEET_STORE = "s3://my-bucket/path"
-  AWS_REGION = "us-east-1"
-  Y_SWEET_MAX_BODY_SIZE = "104857600"
-
-[http_service]
-  internal_port = 8080
-  force_https = true
-
-[[vm]]
-  cpu_kind = "shared"
-  cpus = 1
-  memory_mb = 1024
-```
+See [deployment-examples/fly.toml](deployment-examples/fly.toml)
 
 **Deployment Commands:**
 
-```bash
-# Initialize Fly.io app
-fly launch
-
-# Set secrets for AWS credentials
-flyctl secrets set AWS_ACCESS_KEY_ID=your_key
-flyctl secrets set AWS_SECRET_ACCESS_KEY=your_secret
-
-# Deploy
-fly deploy
-```
+See [deployment-examples/deploy-commands.sh](deployment-examples/deploy-commands.sh)
 
 **S3 Storage Configuration:**
 
@@ -79,13 +33,7 @@ fly deploy
 
 **Local Development:**
 
-```bash
-# Run with local filesystem storage
-npx y-sweet`@latest` serve /path/to/data
-
-# Run with S3 storage
-npx y-sweet`@latest` serve s3://my-bucket/path
-```
+See [deployment-examples/local-dev.sh](deployment-examples/local-dev.sh)
 
 ### Y-Sweet Limits
 
@@ -189,16 +137,7 @@ npx y-sweet`@latest` serve s3://my-bucket/path
 
 livekit.yaml -- distributed deployment configuration
 
-```yaml
-redis:
-  address: redis-cluster:6379
-  username: livekit
-  password: ${REDIS_PASSWORD}
-  db: 0
-  keys:
-    API_KEY: ${LIVEKIT_API_SECRET}
-    room: enabled
-```
+See [deployment-examples/livekit-redis.yaml](deployment-examples/livekit-redis.yaml)
 
 **Geographic Distribution and Edge Routing:**
 
@@ -279,6 +218,6 @@ redis:
 
 ## Related Documentation
 
-- [02-ARCH-OVERVIEW.md](02-ARCH-OVERVIEW.md) - High-level architecture overview
-- [ADR_083](01-PLAN-ADR-INDEX.md#adr_083) - Y-Sweet self-hosting decision
-- [ADR_115](01-PLAN-ADR-INDEX.md#adr_115) - LiveKit Agents v2.0 decision
+- [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md) - High-level architecture overview
+- [ADR_083](22-PLAN-ADR-INDEX.md#adr_083) - Y-Sweet self-hosting decision
+- [ADR_115](22-PLAN-ADR-INDEX.md#adr_115) - LiveKit Agents v2.0 decision

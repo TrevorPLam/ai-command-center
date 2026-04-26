@@ -6,8 +6,8 @@ notes.
 
 ## Dashboard components
 
-Components for the main dashboard interface including agent fleet management, activity feeds, and
-attention queues.
+Components for the main dashboard interface including agent fleet management,
+activity feeds, and attention queues.
 
 | Component | Module | Type | Pattern Tags | Rules | Dependencies | Notes |
 |-----------|--------|------|--------------|-------|--------------|-------|
@@ -16,49 +16,50 @@ attention queues.
 | AgentCard | Dashboard | Card | `@OptimisticMutation`, `@StaggerChildren` | Motion v12 tokens | - | role=button for accessibility |
 | ActivityFeed | Dashboard | Feed | `@VirtualizeList` | - | - | role=log, aria-live=polite |
 | ActivityEntry | Dashboard | Entry | `@MotionGuard`, `@StaggerChildren` | - | - | Individual feed item |
-| AttentionQueue | Dashboard | Queue | `@PopLayout`, `@OptimisticMutation`,<br>`@VirtualizeChildren`, `@AnimatePresence`, `@Stagger` | - | - | Injected into RightPanel |
+| AttentionQueue | Dashboard | Queue | `@PopLayout`, `@OptimisticMutation`, `@VirtualizeChildren`, `@AnimatePresence`, `@Stagger` | - | - | Injected into RightPanel |
 | DecisionPacket | Dashboard | Packet | `@OptimisticMutation`, `@OpacityFade` | - | useMotionValue | skipInitialAnimation |
-| AgentDetailDrawer | Dashboard | Drawer | `@MotionGuard`, `@AnimatePresence`, `@StaggerChildren` | Focus restoration in Zustand, FocusTrap,<br>Zustand persist version+migrate+partialize | stores/uiSlice | layoutScroll container |
+| AgentDetailDrawer | Dashboard | Drawer | `@MotionGuard`, `@AnimatePresence`, `@StaggerChildren` | Focus restoration in Zustand, FocusTrap, Zustand persist version+migrate+partialize | stores/uiSlice | layoutScroll container |
 
 ## Chat components
 
-Core chat interface components including message rendering, input handling, collaboration, and AI agent integration.
+Core chat interface components including message rendering, input handling,
+collaboration, and AI agent integration.
 
 ### Core chat components
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
-| ChatPage | Chat | Page | `@InfiniteScroll`, `@AnimatePresence` | None | ~/pages/ChatPage | Lazy loaded with hover prefetch<br>for performance |
-| ThinkingTracePanel | Chat | Panel | `@AnimatePresence`, `@Spring` | None | None | Collapsible dual-pane layout<br>for AI reasoning traces |
+| ChatPage | Chat | Page | `@InfiniteScroll`, `@AnimatePresence` | None | ~/pages/ChatPage | Lazy loaded with hover prefetch for performance |
+| ThinkingTracePanel | Chat | Panel | `@AnimatePresence`, `@Spring` | None | None | Collapsible dual-pane layout for AI reasoning traces |
 | GenUIRenderer | Chat | Renderer | `@GenUI` | None | None | Renders agent-driven UI components safely |
-| ThreadList | Chat | List | `@OpacityFade`, `@InfiniteScroll` | P2 (Performance rule 2) | None | Uses useTransition for<br>smooth filtering |
+| ThreadList | Chat | List | `@OpacityFade`, `@InfiniteScroll` | P2 (Performance rule 2) | None | Uses useTransition for smooth filtering |
 | ThreadListItem | Chat | Item | None | None | None | 200ms hover prefetch for thread content |
-| MessageList | Chat | List | `@VirtualizeList`, `@SSEStream` | None | None | role="log" with aria-live<br>for screen readers |
+| MessageList | Chat | List | `@VirtualizeList`, `@SSEStream` | None | None | role="log" with aria-live for screen readers |
 | MessageBubble | Chat | Bubble | `@Spring`/AG, `@MotionGuard` | None | None | Client-side message ID for optimistic updates |
-| TypingIndicator | Chat | Indicator | `@MotionGuard`, `@AnimatePresence` | None | None | Skips reduced motion for<br>subtle animations |
+| TypingIndicator | Chat | Indicator | `@MotionGuard`, `@AnimatePresence` | None | None | Skips reduced motion for subtle animations |
 
 ### Input and interaction components
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
 | ChatInput | Chat | Input | `@MotionGuard`, `@KeyboardShortcuts` | g4 (Global rule 4) | Real-time audio (rta) | Cmd+Enter for sending messages |
-| SlashMenu | Chat | Menu | `@MotionGuard`, `@KeyboardShortcuts`,<br>`@DebounceAutoSave` | FT (Feature rule) | ~/data/slashCommands | Built-in commands plus<br>MCP tool integration |
-| ToolCallDisclosure | Chat | Disclosure | `@MotionGuard`, `@AnimatePresence` | None | None | Reverse-measure viewport<br>for performance |
+| SlashMenu | Chat | Menu | `@MotionGuard`, `@KeyboardShortcuts`, `@DebounceAutoSave` | FT (Feature rule) | ~/data/slashCommands | Built-in commands plus MCP tool integration |
+| ToolCallDisclosure | Chat | Disclosure | `@MotionGuard`, `@AnimatePresence` | None | None | Reverse-measure viewport for performance |
 | CheckpointBanner | Chat | Banner | `@OptimisticMutation`, `@AnimatePresence` | None | None | aria-live="assertive" for important notifications |
 
 ### Collaboration and canvas components
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
-| CollabCanvas | Chat | Canvas | `@SandboxIframe`, `@OptimisticMutation`,<br>`@SSEStream` | None | mco, yjs, yml, ymp,<br>~/stores/canvasStore | Y-Sweet token integration,<br>layoutId for shared animations |
-| ArtifactSandbox | Chat | Sandbox | `@SandboxIframe`, `@AnimatePresence` | g4+dp (Global rule 4 + DOMPurify) | None | BlobURL CSP handling<br>with automatic revocation |
+| CollabCanvas | Chat | Canvas | `@SandboxIframe`, `@OptimisticMutation`, `@SSEStream` | None | mco, yjs, yml, ymp, ~/stores/canvasStore | Y-Sweet token integration, layoutId for shared animations |
+| ArtifactSandbox | Chat | Sandbox | `@SandboxIframe`, `@AnimatePresence` | g4+dp (Global rule 4 + DOMPurify) | None | BlobURL CSP handling with automatic revocation |
 
 ### Knowledge and memory components
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
 | KnowledgeBase | Chat | Panel | `@VirtualizeList` | None | FastAPI /v1/embed | Context injection for RAG operations |
-| MemoryManager | Chat | Manager | `@TieredMemory` | B9 (Backend rule 9) | ~/stores/memoryStore | Episodic and semantic memory<br>with FIFO eviction |
+| MemoryManager | Chat | Manager | `@TieredMemory` | B9 (Backend rule 9) | ~/stores/memoryStore | Episodic and semantic memory with FIFO eviction |
 
 ### Configuration and agent components
 
@@ -66,10 +67,10 @@ Core chat interface components including message rendering, input handling, coll
 |-----------|--------|------|----------|-------|--------------|-------|
 | MCPSettings | Chat | Settings | None | B10 (Backend rule 10) | ~/stores/mcpStore | MCP server configuration management |
 | AgentStudio | Chat | Studio | `@OptimisticMutation` | B10 (Backend rule 10) | ~/stores/agentStore | Browse and clone agent configurations |
-| A2AFlowEditor | Chat | Editor | `@A2AFlow`, `@AnimatePresence` | B11 (Backend rule 11) | DAG + React Flow | Keyboard accessibility<br>support |
+| A2AFlowEditor | Chat | Editor | `@A2AFlow`, `@AnimatePresence` | B11 (Backend rule 11) | DAG + React Flow | Keyboard accessibility support |
 | PromptLibrary | Chat | Library | `@InfiniteScroll`, `@OptimisticMutation` | None | ~/stores/promptStore | Version history for prompt management |
 | A2ATranscriptViewer | Chat | Viewer | `@A2AFlow` | None | None | View inter-agent message transcripts |
-| AgentPlayground | Chat | Playground | `@PLAY`, `@AnimatePresence` | None | None | Live trace viewing in<br>sandboxed environment |
+| AgentPlayground | Chat | Playground | `@PLAY`, `@AnimatePresence` | None | None | Live trace viewing in sandboxed environment |
 
 ## Projects components
 
@@ -80,7 +81,7 @@ Project management, task tracking, kanban boards, timeline views, and triage wor
 | ProjectsPage | Projects | Page | `@MotionGuard`, `@AnimatePresence` | B1 + P2 | projectSlice, ProjectsPage | ViewSwitcher with layoutId |
 | ViewSwitcher | Projects | Switcher | `@MotionGuard`, `@DebounceAutoSave` | g9 | projectSlice | Active state via Zustand |
 | FilterBar | Projects | Bar | P2 | - | projectSlice | Clear button, useTransition |
-| ProjectListView | Projects | List | `@VirtualizeList`, `@InlineEdit`,<br>`@HoverPrefetch` | B1 | - | 10-column layout |
+| ProjectListView | Projects | List | `@VirtualizeList`, `@InlineEdit`, `@HoverPrefetch` | B1 | - | 10-column layout |
 | ProjectKanbanView | Projects | Kanban | `@OptimisticMutation`, `@StaggerChildren` | dnd + B3 | projectSlice | pointerWithin detection |
 | ProjectTimelineView | Projects | Timeline | - | g4 + LCP | svg | Zoom: Day/Week/Month/Quarter |
 | MyWeekView | Projects | View | `@OptimisticMutation` | dnd + B3 | projectSlice | Colleague week view |
@@ -90,17 +91,17 @@ Project management, task tracking, kanban boards, timeline views, and triage wor
 | TriageIntegrationHub | Projects | Hub | - | - | useTriage | Type icons |
 | ProjectDetailPage | Projects | Page | `@InlineEdit`, `@OptimisticMutation`, `@MotionGuard`, `@AnimatePresence` | FocusTrap | projectSlice | Tab nav URL (g27) |
 | TaskList | Projects | List | `@VirtualizeList`, `@InlineEdit`, `@OptimisticMutation` | dnd + B3 | - | Subtask count display |
-| TaskDetailDrawer | Projects | Drawer | `@MotionGuard`, `@InlineEdit`,<br>`@OptimisticMutation`, `@DebounceAutoSave`,<br>`@AnimatePresence` | B1 + FocusTrap | projectSlice | Tabs lazy, `@mention`,<br>debounce 500ms |
+| TaskDetailDrawer | Projects | Drawer | `@MotionGuard`, `@InlineEdit`, `@OptimisticMutation`, `@DebounceAutoSave`, `@AnimatePresence` | B1 + FocusTrap | projectSlice | Tabs lazy, @mention, debounce 500ms |
 | TaskChecklist | Projects | Checklist | `@OptimisticMutation`, `@StaggerChildren` | dnd + B3 | - | Live percentage in tab |
 | TaskComments | Projects | Comments | `@OptimisticMutation` | DOMPurify + react-textarea-autosize | - | Internal/external comments |
 | QuickPeekOverlay | Projects | Overlay | `@MotionGuard`, `@DebounceAutoSave` | FocusTrap aria-modal | projectSlice | Cached data |
 | ProjectTemplateLibrary | Projects | Library | - | - | - | Save as template |
-| RecurringWorkDialog | Projects | Dialog | `@Recurring` | zod | shared/recurrence | Preview next 5<br>occurrences |
+| RecurringWorkDialog | Projects | Dialog | `@Recurring` | zod | shared/recurrence | Preview next 5 occurrences |
 | ClientTaskConfig | Projects | Config | `@InlineEdit` | - | - | Badge display |
 | AutomationRulesPanel | Projects | Panel | `@OptimisticMutation` | - | projectSlice | Triggered = strikethrough |
-| TimeBudgetPanel | Projects | Panel | `@OptimisticMutation` | - | projectSlice | Green <75%, amber <100%,<br>red |
+| TimeBudgetPanel | Projects | Panel | `@OptimisticMutation` | - | projectSlice | Green <75%, amber <100%, red |
 | PracticeIntelligence | Projects | Dashboard | - | - | - | Agent log |
-| GlobalSearchDialog | Projects | Dialog | `@KeyboardShortcuts` | FocusTrap | - | type:, before:, after:<br>filters |
+| GlobalSearchDialog | Projects | Dialog | `@KeyboardShortcuts` | FocusTrap | - | type:, before:, after: filters |
 
 ## Calendar components
 
@@ -110,26 +111,26 @@ Event management, scheduling, and recurring event support.
 |-----------|--------|------|----------|-------|--------------|-------|
 | CalendarPage | Calendar | Page | `@MotionGuard`, `@TimezoneAware`, `@AnimatePresence` | g10 | calendarSlice | Sheet on mobile |
 | MonthView | Calendar | View | `@MotionGuard`, `@TimezoneAware` | g10 | react-big-calendar | ARIA grid, keyboard navigation |
-| WeekDayView | Calendar | View | `@OptimisticMutation`, `@AnimatePresence` | dnd + B3 | react-big-calendar | Ctrl+Shift+Arrow<br>navigation |
+| WeekDayView | Calendar | View | `@OptimisticMutation`, `@AnimatePresence` | dnd + B3 | react-big-calendar | Ctrl+Shift+Arrow navigation |
 | ResourceWeekView | Calendar | View | `@MotionGuard` | - | react-big-calendar | - |
 | AgendaView | Calendar | View | `@VirtualizeList` | - | react-big-calendar | role=list for accessibility |
-| EventComposer | Calendar | Composer | `@MotionGuard`, `@Recurring`,<br>`@OptimisticMutation`, `@DebounceAutoSave` | - | - | Optimistic create |
+| EventComposer | Calendar | Composer | `@MotionGuard`, `@Recurring`, `@OptimisticMutation`, `@DebounceAutoSave` | - | - | Optimistic create |
 | EventDetailDrawer | Calendar | Drawer | `@OptimisticMutation`, `@DebounceAutoSave` | - | - | Optimistic delete with undo |
 | RecurringEditModal | Calendar | Modal | `@Recurring`, `@OptimisticMutation` | - | shared/recurrence | Exception storage |
-| TimezoneSelector | Calendar | Selector | `@TimezoneAware` | - | - | Working hours<br>configuration |
+| TimezoneSelector | Calendar | Selector | `@TimezoneAware` | - | - | Working hours configuration |
 | ReminderToast | Calendar | Toast | `@MotionGuard`, `@AnimatePresence` | - | - | Browser notifications |
 | ImportExportDialog | Calendar | Dialog | - | - | - | ICS format, partial import |
-| BulkActionBar | Calendar | Bar | `@OptimisticMutation` | - | - | Shift-click range<br>selection |
+| BulkActionBar | Calendar | Bar | `@OptimisticMutation` | - | - | Shift-click range selection |
 
 **React 19 compatibility assessment (April 26, 2026):**
 
 | Library | React 19 Support | Maintenance Status | Last Release | Recommendation |
 |---------|------------------|-------------------|--------------|----------------|
-| react-big-calendar | Partial - JSX transform warning<br>(Issue #2785) | Slow - No commits since June 2025 | v1.19.4 (Jun 16, 2025) | Use with caution, monitor<br>for updates |
-| react-calendar | Full support (v6.0.0+) | Active | v6.0.1+ | Alternative for date<br>selection only |
-| `@fullcalendar`/react | Full support | Active (commercial backing) | v6.1.20 (Dec 23, 2025) | Best alternative for<br>event calendars |
-| react-day-picker | Incompatible with React 19 | Active (but compatibility issues) | Latest | Not recommended until<br>React 19 support |
-| Shadcn/UI calendar | Incompatible (depends on<br>react-day-picker) | Active | Latest | Not recommended until<br>react-day-picker fix |
+| react-big-calendar | Partial - JSX transform warning (Issue #2785) | Slow - No commits since June 2025 | v1.19.4 (Jun 16, 2025) | Use with caution, monitor for updates |
+| react-calendar | Full support (v6.0.0+) | Active | v6.0.1+ | Alternative for date selection only |
+| `@fullcalendar`/react | Full support | Active (commercial backing) | v6.1.20 (Dec 23, 2025) | Best alternative for event calendars |
+| react-day-picker | Incompatible with React 19 | Active (but compatibility issues) | Latest | Not recommended until React 19 support |
+| Shadcn/UI calendar | Incompatible (depends on react-day-picker) | Active | Latest | Not recommended until react-day-picker fix |
 
 **Known React 19 issues with react-big-calendar:**
 
@@ -160,12 +161,12 @@ Financial tracking, transaction management, and forecasting capabilities.
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
-| BudgetPage | Budget | Page | `@MotionGuard`, `@TimezoneAware`,<br>`@AnimatePresence` | g10 | budgetSlice | URL sync via nuqs |
+| BudgetPage | Budget | Page | `@MotionGuard`, `@TimezoneAware`, `@AnimatePresence` | g10 | budgetSlice | URL sync via nuqs |
 | BudgetDashboard | Budget | Dashboard | `@VirtualizeList` | LCP | - | Chart and table views |
-| TransactionList | Budget | List | `@VirtualizeList`, `@InfiniteScroll` | - | - | Past, scheduled, and<br>planned transactions |
+| TransactionList | Budget | List | `@VirtualizeList`, `@InfiniteScroll` | - | - | Past, scheduled, and planned transactions |
 | TransactionCalendarView | Budget | Calendar | `@OptimisticMutation`, `@AnimatePresence` | dnd + B3 | react-big-calendar | Future editable events |
 | GoalCard | Budget | Card | `@OptimisticMutation` | - | - | Feasibility indicators |
-| RecurringCalendar | Budget | Calendar | `@Recurring`, `@OptimisticMutation`,<br>`@AnimatePresence` | - | shared/recurrence | Shared recurrence engine |
+| RecurringCalendar | Budget | Calendar | `@Recurring`, `@OptimisticMutation`, `@AnimatePresence` | - | shared/recurrence | Shared recurrence engine |
 | CashFlowForecast | Budget | Forecast | - | LCP | - | LCP-optimized loading |
 
 ## Email components
@@ -174,18 +175,18 @@ Unified inbox management, email composition, and account synchronization via Nyl
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
-| EmailPage | Email | Page | `@MotionGuard`, `@AnimatePresence` | - | emailSlice,<br>react-resizable-panels | Resizable panels |
+| EmailPage | Email | Page | `@MotionGuard`, `@AnimatePresence` | - | emailSlice, react-resizable-panels | Resizable panels |
 | UnifiedInbox | Email | List | `@VirtualizeList` | - | - | Account color coding |
 | EmailListItem | Email | Item | `@OptimisticMutation` | - | - | Bulk selection support |
 | ThreadView | Email | View | `@MotionGuard` | DOMPurify + g15 | - | Expand/collapse older messages |
-| ComposeWindow | Email | Window | `@MotionGuard`, `@DebounceAutoSave` | FocusTrap | react-textarea-autosize,<br>DOMPurify | Scheduled send, undo |
-| AccountSidebar | Email | Sidebar | `@KeyboardShortcuts` | dnd + B3 | - | Drag-to-folder<br>functionality |
+| ComposeWindow | Email | Window | `@MotionGuard`, `@DebounceAutoSave` | FocusTrap | react-textarea-autosize, DOMPurify | Scheduled send, undo |
+| AccountSidebar | Email | Sidebar | `@KeyboardShortcuts` | dnd + B3 | - | Drag-to-folder functionality |
 | SnoozeModal | Email | Modal | `@Recurring` | - | - | Snoozed folder management |
 | AttachmentViewer | Email | Viewer | - | DOMPurify | - | Size limit validation |
 | EmailRules | Email | Rules | - | - | - | Import/export rules |
 | TemplatesSignatures | Email | Templates | `@OptimisticMutation` | - | - | Canned responses |
 | VacationResponder | Email | Responder | - | - | - | Once-per-sender limit |
-| AgentEmailComposer | Email | Composer | - | - | - | POST /v1/email/send<br>endpoint |
+| AgentEmailComposer | Email | Composer | - | - | - | POST /v1/email/send endpoint |
 
 ## Contacts components
 
@@ -195,11 +196,11 @@ Contact management, relationship mapping, and communication history.
 |-----------|--------|------|----------|-------|--------------|-------|
 | ContactsPage | Contacts | Page | `@MotionGuard`, `@AnimatePresence` | - | contactsSlice | Quick add functionality |
 | ContactDetail | Contacts | Detail | `@InlineEdit`, `@OptimisticMutation` | - | - | Privacy badges |
-| ContactField | Contacts | Field | `@InlineEdit` | - | - | Field-level privacy<br>controls |
-| QuickAddModal | Contacts | Modal | `@MotionGuard`, `@DebounceAutoSave` | - | - | Auto-enrichment on<br>create |
+| ContactField | Contacts | Field | `@InlineEdit` | - | - | Field-level privacy controls |
+| QuickAddModal | Contacts | Modal | `@MotionGuard`, `@DebounceAutoSave` | - | - | Auto-enrichment on create |
 | ContactAutocomplete | Contacts | Autocomplete | `@KeyboardShortcuts` | - | - | Recent contacts first |
 | EnrichmentPanel | Contacts | Panel | `@OpacityFade` | - | - | Bulk enrichment |
-| RelationshipGraph | Contacts | Graph | `@MotionGuard`, `@AnimatePresence` | - | - | Zoom, pan, WCAG alt<br>text |
+| RelationshipGraph | Contacts | Graph | `@MotionGuard`, `@AnimatePresence` | - | - | Zoom, pan, WCAG alt text |
 | RelationshipGraphTableView | Contacts | Table | - | - | - | WCAG B11 compliance |
 | CommunicationTimeline | Contacts | Timeline | `@VirtualizeList` | - | - | Quick actions per entry |
 | TagManager | Contacts | Manager | - | - | - | Auto-tagging support |
@@ -212,7 +213,7 @@ Document management, file uploads, previews, and real-time collaborative editing
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
-| DocumentsPage | Documents | Page | `@LazyMotion`, `@AnimatePresence` | - | documentsSlice | Grid/list/gallery<br>views |
+| DocumentsPage | Documents | Page | `@LazyMotion`, `@AnimatePresence` | - | documentsSlice | Grid/list/gallery views |
 | DocumentCard | Documents | Card | `@OptimisticMutation`, `@DebounceAutoSave` | - | - | Progressive loading |
 | DocumentGrid | Documents | Grid | `@VirtualizeList` | - | - | Drag-and-drop upload |
 | UploadManager | Documents | Manager | `@Upload` | - | - | Size validation |
@@ -228,10 +229,10 @@ Media gallery management, AI image generation, and storage analytics.
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
-| MediaPage | Media | Page | `@LazyMotion`, `@AnimatePresence` | - | mediaSlice | Grid/list/timeline<br>views |
-| MediaCard | Media | Card | `@OptimisticMutation`, `@DebounceAutoSave` | - | - | Progressive loading,<br>alt text |
+| MediaPage | Media | Page | `@LazyMotion`, `@AnimatePresence` | - | mediaSlice | Grid/list/timeline views |
+| MediaCard | Media | Card | `@OptimisticMutation`, `@DebounceAutoSave` | - | - | Progressive loading, alt text |
 | MediaGrid | Media | Grid | `@VirtualizeList` | - | - | Infinite scroll |
-| GenerationPanel | Media | Panel | `@OpacityFade`, `@SSEStream`,<br>`@AnimatePresence` | - | - | Cancel/retry controls |
+| GenerationPanel | Media | Panel | `@OpacityFade`, `@SSEStream`, `@AnimatePresence` | - | - | Cancel/retry controls |
 | MediaDetailDrawer | Media | Drawer | `@MotionGuard`, `@DebounceAutoSave` | - | - | Image editor |
 | StorageAnalytics | Media | Analytics | - | - | - | Quota warnings |
 
@@ -243,7 +244,7 @@ News aggregation, feed management, article reading, and audio playback.
 |-----------|--------|------|----------|-------|--------------|-------|
 | NewsPage | News | Page | `@LazyMotion`, `@AnimatePresence` | - | newsSlice | Pause/dedup feeds |
 | NewsFeed | News | Feed | `@VirtualizeList`, `@InfiniteScroll` | - | - | Filter tabs |
-| NewsCard | News | Card | `@OptimisticMutation`, `@HoverPrefetch` | - | - | Expand/collapse,<br>WebShare |
+| NewsCard | News | Card | `@OptimisticMutation`, `@HoverPrefetch` | - | - | Expand/collapse, WebShare |
 | SentimentDot | News | Dot | `@MotionGuard`, `@DebounceAutoSave` | - | - | WCAG 1.4.1 compliant |
 | ArticleReaderPanel | News | Panel | `@MotionGuard`, `@AnimatePresence` | - | - | Progress bar |
 | AudioPlayer | News | Player | `@MotionGuard`, `@AnimatePresence` | - | - | Voice selector |
@@ -257,13 +258,13 @@ Platform-level components providing foundational services including authenticati
 | EnvValidation | Platform | Util | - | - | lib/env.ts | No mount if invalid |
 | ErrorBoundary | Platform | Boundary | - | - | lib/errorBoundary.ts | logClientEvent |
 | AnalyticsPage | Platform | Page | `@LazyMotion`, `@AnimatePresence` | - | AnalyticsPage | Agent analytics |
-| AuditLogPage | Platform | Page | `@LazyMotion`, `@VirtualizeList`,<br>`@AnimatePresence` | - | - | Audit trail viewing |
+| AuditLogPage | Platform | Page | `@LazyMotion`, `@VirtualizeList`, `@AnimatePresence` | - | - | Audit trail viewing |
 | PrivacyBanner | Platform | Banner | - | - | - | Privacy notice |
 | LoginPage | Platform | Page | `@LazyMotion`, `@AnimatePresence` | - | - | Authentication |
 | SignupPage | Platform | Page | `@LazyMotion`, `@AnimatePresence` | - | - | User registration |
 | OAuthCallbackPage | Platform | Page | `@LazyMotion`, `@AnimatePresence` | - | - | OAuth callback |
-| AgentStudioPage | Platform | Page | `@LazyMotion`, `@AnimatePresence` | - | - | Agent library,<br>playground |
-| AgentAnalyticsPage | Platform | Page | `@LazyMotion`, `@AnimatePresence` | - | - | Per-agent metrics,<br>cost |
+| AgentStudioPage | Platform | Page | `@LazyMotion`, `@AnimatePresence` | - | - | Agent library, playground |
+| AgentAnalyticsPage | Platform | Page | `@LazyMotion`, `@AnimatePresence` | - | - | Per-agent metrics, cost |
 | AgentPlaygroundPage | Platform | Page | `@LazyMotion`, `@PLAY`, `@AnimatePresence` | - | - | Sandbox testing |
 
 ## Conference components
@@ -272,13 +273,13 @@ Video conferencing, voice AI, and real-time collaboration via LiveKit.
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
-| ConferencePage | Conference | Page | `@LazyMotion`, `@AnimatePresence` | - | livekit-client,<br>livekit-react | LiveKit Provider wrapper |
-| RoundtableGrid | Conference | Grid | `@MotionGuard`, `@AnimatePresence` | - | - | 4-16 participant<br>layout |
-| ParticipantTile | Conference | Tile | `@MotionGuard` | - | - | Quality indicator<br>overlay |
+| ConferencePage | Conference | Page | `@LazyMotion`, `@AnimatePresence` | - | livekit-client, livekit-react | LiveKit Provider wrapper |
+| RoundtableGrid | Conference | Grid | `@MotionGuard`, `@AnimatePresence` | - | - | 4-16 participant layout |
+| ParticipantTile | Conference | Tile | `@MotionGuard` | - | - | Quality indicator overlay |
 | RecordingControls | Conference | Controls | `@MotionGuard`, `@AnimatePresence` | - | - | Pulsing red indicator |
 | EngagementTools | Conference | Tools | - | - | - | LiveKit DataChannels |
 | ScenarioTemplates | Conference | Templates | - | - | - | Role assignment |
-| BreakoutRooms | Conference | Rooms | `@WorkflowExecution` | - | - | Auto-return to main<br>room |
+| BreakoutRooms | Conference | Rooms | `@WorkflowExecution` | - | - | Auto-return to main room |
 
 ## LiveKit components
 
@@ -286,13 +287,13 @@ Voice AI pipeline components including STT, LLM, TTS integration, and real-time 
 
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
-| VoicePipeline | LiveKit | Pipeline | `@Streaming`, `@InterruptHandling` | - | livekit-agents,<br>STT/LLM/TTS providers | Sequential pipeline with<br>VAD→STT→LLM→TTS→Audio |
-| STTProcessor | LiveKit | Processor | `@Streaming` | - | Deepgram Nova,<br>OpenAI Whisper | Emits partial transcripts<br><100ms |
-| LLMOrchestrator | LiveKit | Orchestrator | `@Streaming`, `@TokenGeneration` | - | Claude, GPT, Gemini | 300-800ms first token,<br>streaming output |
+| VoicePipeline | LiveKit | Pipeline | `@Streaming`, `@InterruptHandling` | - | livekit-agents, STT/LLM/TTS providers | Sequential pipeline with VAD→STT→LLM→TTS→Audio |
+| STTProcessor | LiveKit | Processor | `@Streaming` | - | Deepgram Nova, OpenAI Whisper | Emits partial transcripts <100ms |
+| LLMOrchestrator | LiveKit | Orchestrator | `@Streaming`, `@TokenGeneration` | - | Claude, GPT, Gemini | 300-800ms first token, streaming output |
 | TTSSynthesizer | LiveKit | Synthesizer | `@Streaming` | - | Modern TTS providers | 100-200ms first audio chunk |
-| BargeInHandler | LiveKit | Handler | `@InterruptDetection` | - | VAD integration | Cancels TTS on user<br>speech, flushes audio |
-| ChatContextManager | LiveKit | Manager | `@StateManagement` | - | - | Accumulates turns, passes<br>on handoffs |
-| AgentWorkerPool | LiveKit | Pool | `@HorizontalScaling` | - | - | Stateful per-session workers,<br>load-based scheduling |
+| BargeInHandler | LiveKit | Handler | `@InterruptDetection` | - | VAD integration | Cancels TTS on user speech, flushes audio |
+| ChatContextManager | LiveKit | Manager | `@StateManagement` | - | - | Accumulates turns, passes on handoffs |
+| AgentWorkerPool | LiveKit | Pool | `@HorizontalScaling` | - | - | Stateful per-session workers, load-based scheduling |
 
 **STT/LLM/TTS Integration Patterns:**
 
@@ -310,7 +311,7 @@ Mind mapping, flashcard learning, study guides, and research report generation.
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
 | ResearchPage | Research | Page | `@LazyMotion`, `@AnimatePresence` | - | researchSlice | Multi-format support |
-| MindMapEditor | Research | Editor | `@MotionGuard`, `@AnimatePresence` | - | markmap, yjs | Collaborative, WCAG alt<br>text |
+| MindMapEditor | Research | Editor | `@MotionGuard`, `@AnimatePresence` | - | markmap, yjs | Collaborative, WCAG alt text |
 | FlashcardDeck | Research | Deck | `@MotionGuard`, `@StaggerChildren` | - | - | FSRS spaced repetition |
 | LearningGuide | Research | Guide | `@SSEStream` | - | - | Streaming content |
 | AudioOverview | Research | Overview | `@MotionGuard`, `@AnimatePresence` | - | - | Waveform visualization |
@@ -323,12 +324,12 @@ User preferences, appearance settings, notifications, API keys, memory managemen
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
 | SettingsPage | Settings | Page | `@MotionGuard`, `@AnimatePresence` | - | settingsSlice | Keyboard navigation |
-| GeneralSettings | Settings | Form | `@InlineEdit` | - | react-hook-form, react-helmet,<br>zod | - |
+| GeneralSettings | Settings | Form | `@InlineEdit` | - | react-hook-form, react-helmet, zod | - |
 | AppearanceSettings | Settings | Form | `@MotionGuard` | - | - | Live preview |
 | NotificationSettings | Settings | Form | - | - | - | Zod refinement |
 | ApiKeysSettings | Settings | Form | - | - | - | Security controls |
 | MemorySettings | Settings | Form | `@TieredMemory` | - | - | Memory management |
-| IntegrationsSettings | Settings | Form | `@OptimisticMutation` | - | - | Third-party<br>integrations |
+| IntegrationsSettings | Settings | Form | `@OptimisticMutation` | - | - | Third-party integrations |
 | ExportImportPage | Settings | Page | `@Upload` | - | - | GDPR notice |
 | DangerZone | Settings | Zone | - | - | - | Typed confirmation |
 | StorageQuotaIndicator | Settings | Indicator | - | - | useStorageQuota | Quota display |
@@ -341,11 +342,11 @@ Application shell components that form the structural foundation of the UI.
 
 | Component | Module | Type | Pattern Tags | Rules | Dependencies | Notes |
 |-----------|--------|------|--------------|-------|--------------|-------|
-| AppShell | Foundation | Layout | `@MotionGuard`, `@AnimatePresence` | Focus restoration, VoiceShell + CommandPalette Zustand, useRef + useCallback intervals | lib/*, providers/* | SkipLink, AnimatePresence for<br>page transitions |
-| Sidebar | Foundation | Navigation | `@MotionGuard`, `@AnimatePresence`,<br>`@StaggerChildren` | Noise-overlay glass, keyboard shortcuts in kbd tags, WCAG 2.2 AA, Zustand persist version+migrate+partialize | stores/orgSlice | layoutId for active pill<br>animation |
+| AppShell | Foundation | Layout | `@MotionGuard`, `@AnimatePresence` | Focus restoration, VoiceShell + CommandPalette Zustand, useRef + useCallback intervals | lib/*, providers/* | SkipLink, AnimatePresence for page transitions |
+| Sidebar | Foundation | Navigation | `@MotionGuard`, `@AnimatePresence`, `@StaggerChildren` | Noise-overlay glass, keyboard shortcuts in kbd tags, WCAG 2.2 AA, Zustand persist version+migrate+partialize | stores/orgSlice | layoutId for active pill animation |
 | OrgSwitcher | Foundation | Control | - | - | stores/orgSlice | refreshSession on switch |
 | StatusBar | Foundation | Info | `@MotionGuard` | useRef + useCallback intervals | - | Fixed bottom position |
-| RightPanel | Foundation | Panel | `@MotionGuard`, `@OpacityFade` | Focus restoration stored in Zustand, FocusTrap | stores/uiSlice | close returns focus to<br>trigger |
+| RightPanel | Foundation | Panel | `@MotionGuard`, `@OpacityFade` | Focus restoration stored in Zustand, FocusTrap | stores/uiSlice | close returns focus to trigger |
 | CommandPalette | Foundation | Overlay | `@MotionGuard`, `@StaggerChildren` | Focus restoration, keyboard shortcuts in kbd tags, VoiceShell + CommandPalette Zustand, FocusTrap | useIntentHandler + cmdk | Portal rendered, role=combobox |
 | VoiceShell | Foundation | Input | `@MotionGuard`, `@StaggerChildren` | keyboard shortcuts, WCAG 2.2 AA, VoiceShell + CommandPalette Zustand, Web Speech fallback, FocusTrap | useWebSpeech | Ctrl+Space shortcut |
 | Toaster | Foundation | Feedback | - | - | sonner + g29 | sonner max 3 toasts |
@@ -360,10 +361,10 @@ Real-time translation, speaker management, and streaming translation services.
 | Component | Module | Type | Patterns | Rules | Dependencies | Notes |
 |-----------|--------|------|----------|-------|--------------|-------|
 | TranslationPage | Translation | Page | `@LazyMotion`, `@AnimatePresence` | - | translationSlice | Mobile Sheet view |
-| SpeakerManager | Translation | Manager | `@MotionGuard`, `@OptimisticMutation`,<br>`@DebounceAutoSave` | - | - | Staggered speaker list |
+| SpeakerManager | Translation | Manager | `@MotionGuard`, `@OptimisticMutation`, `@DebounceAutoSave` | - | - | Staggered speaker list |
 | SplitScreenView | Translation | View | `@Static` | - | - | Language badges |
 | TranslationSegment | Translation | Segment | `@MotionGuard`, `@StaggerChildren` | - | - | Streaming translation |
-| SessionControls | Translation | Controls | `@OptimisticMutation`, `@AnimatePresence` | - | - | Optimistic status<br>updates |
+| SessionControls | Translation | Controls | `@OptimisticMutation`, `@AnimatePresence` | - | - | Optimistic status updates |
 | StreamingHook | Translation | Hook | `@SSEStream`, `@AnimatePresence` | - | useStreaming | Retry 3 times |
 
 ## Workflow components
@@ -375,7 +376,7 @@ Visual workflow design, execution monitoring, and approval management.
 | WorkflowCanvas | Workflow | Canvas | `@A2AFlow`, `@MotionGuard`, `@AnimatePresence` | FocusTrap + B3 | react-flow, workflowSlice | Snap-to-grid layout |
 | NodePalette | Workflow | Palette | - | B3 | react-flow | Grouped node categories |
 | ExecutionViewer | Workflow | Viewer | `@MotionGuard`, `@AnimatePresence` | - | useMotionValue, workflowSlice | Blue pulse animation |
-| ExecutionLog | Workflow | Log | `@VirtualizeList` | - | - | Filterable execution<br>history |
+| ExecutionLog | Workflow | Log | `@VirtualizeList` | - | - | Filterable execution history |
 | ApprovalPanel | Workflow | Panel | `@OptimisticMutation` | - | workflowSlice | Escalation workflows |
 | ManualInputDialog | Workflow | Dialog | `@MotionGuard`, `@DebounceAutoSave` | FocusTrap + zod | - | Zod schema validation |
 | TemplateLibrary | Workflow | Library | - | - | - | Parameter substitution |

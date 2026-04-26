@@ -1,0 +1,687 @@
+# Unified Rules Register
+# Single source of truth for all (HARD) and (MED) rules across the project
+# Namespace: FE- (Frontend), BE- (Backend), SEC- (Security), AI- (AI Core), GOV- (Governance)
+
+rules:
+  # Backend Rules (BE-)
+  - id: BE-01
+    domain: backend
+    severity: hard
+    description: All AI calls must go through the LiteLLM proxy
+    check: lint-rule or manual review
+
+  - id: BE-02
+    domain: backend
+    severity: hard
+    description: Prisma client never runs in the browser
+    check: lint-rule or manual review
+
+  - id: BE-03
+    domain: backend
+    severity: hard
+    description: Nylas API access is only from FastAPI
+    check: lint-rule or manual review
+
+  - id: BE-04
+    domain: backend
+    severity: hard
+    description: Vercel Edge Functions cannot connect to a database directly; use Vercel Serverless (300s) with Neon serverless driver, or route through FastAPI
+    check: lint-rule or manual review
+
+  - id: BE-05
+    domain: backend
+    severity: hard
+    description: /v1/* endpoints follow OpenAPI 3.1 contract; Schemathesis blocks merge on drift
+    check: Schemathesis CI gate
+
+  - id: BE-06
+    domain: backend
+    severity: hard
+    description: PostgreSQL Row-Level Security (RLS) is enabled on all tables that contain tenant data
+    check: pgTAP test suite
+
+  - id: BE-07
+    domain: backend
+    severity: medium
+    description: Supabase Realtime channels are limited to 100 total connections and 20 per user; memory alert at 40 MB per channel
+    check: monitoring alert
+
+  - id: BE-08
+    domain: backend
+    severity: hard
+    description: Offline-first pattern: soft deletes via deleted_at column (nullable millisecond timestamp); all primary keys are ULIDs
+    check: schema validation
+
+  - id: BE-09
+    domain: backend
+    severity: hard
+    description: Every asynchronous operation is idempotent: key = actor_id + monotonic counter
+    check: schema validation
+
+  - id: BE-10
+    domain: backend
+    severity: hard
+    description: PowerSync is the primary offline sync mechanism (Phase 2); bucket YAML rules per orgId
+    check: manual review
+
+  - id: BE-11
+    domain: backend
+    severity: hard
+    description: Supabase Realtime payload caps: Broadcast max 256 KB - 3 MB, Postgres Changes max 1 MB
+    check: monitoring alert
+
+  - id: BE-12
+    domain: backend
+    severity: hard
+    description: Orval >=8.2.0; generate TypeScript types from OpenAPI; never run on untrusted specs
+    check: CI version check
+
+  - id: BE-13
+    domain: backend
+    severity: hard
+    description: LiteLLM >=1.83.7 with cosign verification
+    check: CI version check
+
+  - id: BE-14
+    domain: backend
+    severity: hard
+    description: Grype (not Trivy) for Docker scanning; scanners isolated from CI credential store
+    check: CI workflow validation
+
+  - id: BE-15
+    domain: backend
+    severity: hard
+    description: TypeScript tsc --erasableSyntaxOnly --noEmit gate in CI; ban TypeScript enums
+    check: TypeScript CI gate
+
+  - id: BE-16
+    domain: backend
+    severity: hard
+    description: MSW handlers are generated from the OpenAPI spec via openapi-backend for testing
+    check: test generation validation
+
+  - id: BE-17
+    domain: backend
+    severity: hard
+    description: Every table that stores user data must have an org_id column and an active RLS policy
+    check: pgTAP test suite
+
+  - id: BE-18
+    domain: backend
+    severity: hard
+    description: All tables must have a created_at timestamp column
+    check: schema validation
+
+  # Frontend Rules (FE-)
+  - id: FE-01
+    domain: frontend
+    severity: hard
+    description: Vite SPA only; no Next.js (ADR_001)
+    check: lint-rule or manual review
+
+  - id: FE-02
+    domain: frontend
+    severity: hard
+    description: Zustand v5 for global state (ADR_003)
+    check: package.json version check
+
+  - id: FE-03
+    domain: frontend
+    severity: hard
+    description: react-big-calendar pinned to ^1.19.4 for React 19 compatibility
+    check: package.json version check
+
+  - id: FE-04
+    domain: frontend
+    severity: hard
+    description: dnd-kit is the primary DnD library; no migration to PragmaticDnD (ADR_085)
+    check: lint-rule or manual review
+
+  - id: FE-05
+    domain: frontend
+    severity: hard
+    description: react-helmet-async for document head
+    check: package.json dependency check
+
+  - id: FE-06
+    domain: frontend
+    severity: hard
+    description: Use Temporal.ZonedDateTime for all calendar events (never PlainDateTime); rschedule + @rschedule/temporal-date-adapter replaces rrule.js on the frontend (ADR_109)
+    check: lint-rule or manual review
+
+  - id: FE-07
+    domain: frontend
+    severity: hard
+    description: Tremor v3.18.x for charting (ADR_105)
+    check: package.json version check
+
+  - id: FE-08
+    domain: frontend
+    severity: hard
+    description: OKLCH-based design tokens; no hardcoded colours
+    check: lint-rule or manual review
+
+  - id: FE-09
+    domain: frontend
+    severity: hard
+    description: Toast: 60, Command Palette: 50, Modal: 40, Drawer: 30, Sheet: 20 (Z-index)
+    check: lint-rule or manual review
+
+  - id: FE-10
+    domain: frontend
+    severity: hard
+    description: Always use useShallow when selecting objects from a Zustand store to avoid unnecessary re-renders
+    check: lint-rule or manual review
+
+  - id: FE-11
+    domain: frontend
+    severity: hard
+    description: Never use useState for global UI state; it belongs in Zustand slices
+    check: lint-rule or manual review
+
+  - id: FE-12
+    domain: frontend
+    severity: hard
+    description: Slices cannot import each other; cross-slice access must use get() (ZUSTANDCIRCULAR rule)
+    check: lint-rule or manual review
+
+  - id: FE-13
+    domain: frontend
+    severity: hard
+    description: React Compiler enabled globally; no manual useMemo/useCallback/React.memo
+    check: lint-rule or manual review
+
+  - id: FE-14
+    domain: frontend
+    severity: hard
+    description: Exception: React Hook Form components need the "use no memo" directive
+    check: lint-rule or manual review
+
+  - id: FE-15
+    domain: frontend
+    severity: medium
+    description: Zustand persist wrappers must use conditional rendering, not Suspense
+    check: lint-rule or manual review
+
+  - id: FE-16
+    domain: frontend
+    severity: hard
+    description: Empty states always render an EmptyState component with a call-to-action; never show a blank screen
+    check: lint-rule or manual review
+
+  - id: FE-17
+    domain: frontend
+    severity: hard
+    description: Loading states: skeleton/shimmer if load time <2 seconds; spinner if >2 seconds
+    check: lint-rule or manual review
+
+  - id: FE-18
+    domain: frontend
+    severity: hard
+    description: Error states: display a retry button and human-readable message
+    check: lint-rule or manual review
+
+  - id: FE-19
+    domain: frontend
+    severity: hard
+    description: Offline state: show a connectivity indicator; queue actions for later
+    check: lint-rule or manual review
+
+  - id: FE-20
+    domain: frontend
+    severity: hard
+    description: Optimistic mutations: pending = opacity 0.5 + italic + pulse; 5-second undo for delete operations
+    check: lint-rule or manual review
+
+  - id: FE-21
+    domain: frontend
+    severity: hard
+    description: Stagger no more than 3 children in any animation
+    check: lint-rule or manual review
+
+  - id: FE-22
+    domain: frontend
+    severity: hard
+    description: Only transform and opacity may be animated. No layout property animations
+    check: lint-rule or manual review
+
+  - id: FE-23
+    domain: frontend
+    severity: hard
+    description: Respect prefers-reduced-motion; if active, all animations become instant
+    check: lint-rule or manual review
+
+  - id: FE-24
+    domain: frontend
+    severity: hard
+    description: Avoid animations longer than 5 seconds (WCAG 2.2.2)
+    check: lint-rule or manual review
+
+  - id: FE-25
+    domain: frontend
+    severity: medium
+    description: Filter updates should be wrapped in useTransition to keep the UI responsive
+    check: lint-rule or manual review
+
+  - id: FE-26
+    domain: frontend
+    severity: hard
+    description: All drag-and-drop uses a centralised dnd-kit facade (never import directly from the library elsewhere)
+    check: lint-rule or manual review
+
+  - id: FE-27
+    domain: frontend
+    severity: hard
+    description: DragOverlay must be used to render a copy of the dragged element, never drag the original DOM node
+    check: lint-rule or manual review
+
+  - id: FE-28
+    domain: frontend
+    severity: hard
+    description: Keyboard alternatives must be provided for all drag operations (WCAG 2.5.7)
+    check: accessibility audit
+
+  - id: FE-29
+    domain: frontend
+    severity: hard
+    description: Monaco Editor is sandboxed in a separate iframe with its own CSP
+    check: security audit
+
+  - id: FE-30
+    domain: frontend
+    severity: hard
+    description: Monaco is lazy-loaded (React.lazy + Suspense + skeleton), never in the initial bundle
+    check: bundle size analysis
+
+  - id: FE-31
+    domain: frontend
+    severity: hard
+    description: localStorage usage limited to <=3 MB; implement an eviction priority
+    check: lint-rule or manual review
+
+  - id: FE-32
+    domain: frontend
+    severity: hard
+    description: Zustand persist must include version, migrate, and partialize functions
+    check: lint-rule or manual review
+
+  - id: FE-33
+    domain: frontend
+    severity: hard
+    description: More than 3 URL search params must use useQueryStates (not multiple useQueryState calls)
+    check: lint-rule or manual review
+
+  - id: FE-34
+    domain: frontend
+    severity: hard
+    description: No hardcoded hex/RGB colours; reference OKLCH CSS custom properties only
+    check: lint-rule or manual review
+
+  - id: FE-35
+    domain: frontend
+    severity: hard
+    description: WCAG 2.2 AA everywhere, including keyboard navigation, screen reader announcements, and focus order
+    check: accessibility audit
+
+  - id: FE-36
+    domain: frontend
+    severity: hard
+    description: Canvas-only or purely visual components must have an alternative text representation
+    check: accessibility audit
+
+  - id: FE-37
+    domain: frontend
+    severity: medium
+    description: Use react-helmet-async for per-route meta tags
+    check: lint-rule or manual review
+
+  # AI Core Rules (AI-)
+  - id: AI-01
+    domain: ai
+    severity: hard
+    description: Default orchestrator: Gemma 4 E2B (local, native tool calling). Fallback: Qwen3.5 4B. Cloud models are premium only
+    check: configuration validation
+
+  - id: AI-02
+    domain: ai
+    severity: hard
+    description: Free-tier users are restricted to local models only; AI must never make cloud API calls for them
+    check: runtime validation
+
+  - id: AI-03
+    domain: ai
+    severity: hard
+    description: Claude Sonnet 4.6 is the default cloud model when authorised; Opus 4.7 for complex tasks
+    check: configuration validation
+
+  - id: AI-04
+    domain: ai
+    severity: hard
+    description: Haiku 4.5 must never be used in agentic contexts (poor injection guard)
+    check: lint-rule or manual review
+
+  - id: AI-05
+    domain: ai
+    severity: hard
+    description: All new agents created after May 1, 2026 must use claude-sonnet-4-6 or opus-4-7 model IDs; legacy IDs cleaned by June 1, 2026
+    check: migration validation
+
+  - id: AI-06
+    domain: ai
+    severity: hard
+    description: OpenAI Assistants and ChatCompletions APIs must be migrated to the Responses API by August 26, 2026
+    check: migration validation
+
+  - id: AI-07
+    domain: ai
+    severity: hard
+    description: Input guardrails: PII detection, jailbreak detection, toxicity screening
+    check: DeepEval test suite
+
+  - id: AI-08
+    domain: ai
+    severity: hard
+    description: Output guardrails: Hallucination detection, safety validation, schema enforcement
+    check: DeepEval test suite
+
+  - id: AI-09
+    domain: ai
+    severity: hard
+    description: Runtime guardrails: Tool authorization and cost threshold checks
+    check: DeepEval test suite
+
+  - id: AI-10
+    domain: ai
+    severity: hard
+    description: All guardrail decisions are logged to audit_logs
+    check: audit log validation
+
+  - id: AI-11
+    domain: ai
+    severity: hard
+    description: Synchronous pre-call budget check enforced at the LiteLLM proxy; if budget exceeded, return 429 and a cost limit banner
+    check: runtime validation
+
+  - id: AI-12
+    domain: ai
+    severity: hard
+    description: Multi-level budgets: org, team, user, model
+    check: configuration validation
+
+  - id: AI-13
+    domain: ai
+    severity: hard
+    description: Alert thresholds: at 15% remaining notify admin; at 5% notify admin + engineering; at 0% hard stop
+    check: monitoring alert
+
+  - id: AI-14
+    domain: ai
+    severity: hard
+    description: ai_cost_log is a TimescaleDB hypertable; x-litellm-tags carry org_id, user_id, feature
+    check: schema validation
+
+  - id: AI-15
+    domain: ai
+    severity: hard
+    description: DeepEval for AI evaluation; RAGAS alongside for RAG
+    check: CI gate configuration
+
+  - id: AI-16
+    domain: ai
+    severity: hard
+    description: Tool-calling precision >=90% (block if <85%)
+    check: DeepEval CI gate
+
+  - id: AI-17
+    domain: ai
+    severity: hard
+    description: Hallucination rate <=2%
+    check: DeepEval CI gate
+
+  - id: AI-18
+    domain: ai
+    severity: hard
+    description: Accuracy >= base-2%
+    check: DeepEval CI gate
+
+  - id: AI-19
+    domain: ai
+    severity: hard
+    description: Latency <= base+10% (warn), >20% block
+    check: DeepEval CI gate
+
+  - id: AI-20
+    domain: ai
+    severity: hard
+    description: Token usage <= base+15% (warn)
+    check: DeepEval CI gate
+
+  - id: AI-21
+    domain: ai
+    severity: hard
+    description: All evaluator LLM-as-judge calls go through the LiteLLM proxy for cost tracking
+    check: runtime validation
+
+  - id: AI-22
+    domain: ai
+    severity: hard
+    description: Prompt caching enabled; static content cached first
+    check: configuration validation
+
+  - id: AI-23
+    domain: ai
+    severity: hard
+    description: Chat cache hit rate target >70%, RAG cache hit rate >90%
+    check: monitoring alert
+
+  - id: AI-24
+    domain: ai
+    severity: hard
+    description: Contextual Retrieval activated only when corpus >50K chunks, precision improvement >15%, and cache hit rate >60%
+    check: configuration validation
+
+  - id: AI-25
+    domain: ai
+    severity: hard
+    description: All local models must be registered in the Model Trust Registry before use in agentic workflows
+    check: registry validation
+
+  - id: AI-26
+    domain: ai
+    severity: hard
+    description: Model quantisation: default GGUF Q4_K_M (<4.5 GB RAM); evaluated weekly for tool-calling pass rate
+    check: monitoring alert
+
+  - id: AI-27
+    domain: ai
+    severity: hard
+    description: The Verifier cascade (Phi-4-mini-reasoning) checks reasoning, schema validity, and budget before an action is committed (Phase 1)
+    check: runtime validation
+
+  # Security Rules (SEC-)
+  - id: SEC-01
+    domain: security
+    severity: hard
+    description: Use SanitizedHTML for all user-generated HTML (STRICT, RICH, EMAIL profiles)
+    check: lint-rule or manual review
+
+  - id: SEC-02
+    domain: security
+    severity: hard
+    description: Supabase storage access only via StorageService wrapper
+    check: lint-rule or manual review
+
+  - id: SEC-03
+    domain: security
+    severity: hard
+    description: Nylas API calls only from FastAPI backend
+    check: lint-rule or manual review
+
+  - id: SEC-04
+    domain: security
+    severity: hard
+    description: Only supabase-js allowed in browser; Prisma never in frontend
+    check: lint-rule or manual review
+
+  - id: SEC-05
+    domain: security
+    severity: hard
+    description: Prisma schema changes must update RLS policies
+    check: schema validation
+
+  - id: SEC-06
+    domain: security
+    severity: hard
+    description: Global CSP enforced in production (nonce-based, strict-dynamic)
+    check: CSP monitoring
+
+  - id: SEC-07
+    domain: security
+    severity: hard
+    description: unsafe-eval only for Monaco/Babel in sandboxed iframes
+    check: security audit
+
+  - id: SEC-08
+    domain: security
+    severity: hard
+    description: JWT stored only in httpOnly cookie, never in Zustand/localStorage
+    check: security audit
+
+  - id: SEC-09
+    domain: security
+    severity: hard
+    description: All /v1/* API calls through centralized api.ts client
+    check: lint-rule or manual review
+
+  - id: SEC-10
+    domain: security
+    severity: hard
+    description: DOMPurify >=3.4.0 mandatory; automated CVE audit in CI
+    check: CI version check
+
+  - id: SEC-11
+    domain: security
+    severity: hard
+    description: CSP nonce cryptographically random per request; strict-dynamic
+    check: security audit
+
+  - id: SEC-12
+    domain: security
+    severity: hard
+    description: LiveKit tokens scoped to rooms and capabilities; RBAC enforced
+    check: security audit
+
+  - id: SEC-13
+    domain: security
+    severity: hard
+    description: RBAC applied to all resources; no ad-hoc permission checks
+    check: security audit
+
+  - id: SEC-14
+    domain: security
+    severity: hard
+    description: Rate limiting enforced per user and organization
+    check: monitoring alert
+
+  - id: SEC-15
+    domain: security
+    severity: hard
+    description: Organization deletion cascades; notify admins 7 days before
+    check: workflow validation
+
+  - id: SEC-16
+    domain: security
+    severity: hard
+    description: Agent-driven UI only uses trusted GenUI catalog components
+    check: security audit
+
+  - id: SEC-17
+    domain: security
+    severity: hard
+    description: Yjs collaboration opt-in per document type
+    check: configuration validation
+
+  - id: SEC-18
+    domain: security
+    severity: hard
+    description: AI cost hard cap enforced at LLM proxy level
+    check: runtime validation
+
+  - id: SEC-19
+    domain: security
+    severity: hard
+    description: MCP tool registration requires admin approval; all logged
+    check: workflow validation
+
+  - id: SEC-20
+    domain: security
+    severity: hard
+    description: AI cost thresholds trigger alerts and rate limits
+    check: monitoring alert
+
+  - id: SEC-21
+    domain: security
+    severity: hard
+    description: OpenAPI 3.1 single source of truth; Orval generates types
+    check: CI gate configuration
+
+  - id: SEC-22
+    domain: security
+    severity: hard
+    description: pgvector-retrieved chunks pass guardrails input layer
+    check: runtime validation
+
+  - id: SEC-23
+    domain: security
+    severity: hard
+    description: Secret rotation failure treated as P1 incident; SOC2 evidence
+    check: incident response validation
+
+  - id: SEC-24
+    domain: security
+    severity: hard
+    description: Use Grype (not Trivy) for Docker scanning; credential isolation
+    check: CI workflow validation
+
+  - id: SEC-25
+    domain: security
+    severity: hard
+    description: Supabase auth_admin role requires SELECT grants on user tables
+    check: database permission validation
+
+  - id: SEC-26
+    domain: security
+    severity: hard
+    description: Sentry projects strip PII; Session Replay masks text
+    check: security audit
+
+  - id: SEC-27
+    domain: security
+    severity: hard
+    description: ClamAV v1.4.x sidecar in production; freshclam hourly
+    check: CI version check
+
+  - id: SEC-28
+    domain: security
+    severity: hard
+    description: Three DOMPurify profiles; test matrix ensures XSS prevention
+    check: test suite validation
+
+  # Collaboration Rules (COLL-)
+  - id: COLL-01
+    domain: collaboration
+    severity: hard
+    description: Y-Sweet self-hosted (Jamsocket shutdown); Docker deployment, 50 MB document limit, GC enabled, undo truncated to last 5 snapshots
+    check: configuration validation
+
+  - id: COLL-02
+    domain: collaboration
+    severity: hard
+    description: LiveKit Agents v2.0 only; semantic turn detection mandatory
+    check: version check
+
+  - id: COLL-03
+    domain: collaboration
+    severity: medium
+    description: Yjs collaboration is opt-in per document; disconnect cleanup ensures channel unsubscription
+    check: configuration validation

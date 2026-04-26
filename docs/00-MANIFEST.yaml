@@ -1,0 +1,357 @@
+# Documentation Manifest
+# Tiered loading protocol for AI agents to minimize token usage
+#
+# Load tiers:
+# - always: Session Starter set loaded at session start (target <3K tokens)
+# - on-demand: Loaded when task-specific context is needed
+# - never: Reference material, loaded only when explicitly requested
+#
+# File types:
+# - governance: Decision logs, rules, process documents
+# - architecture: System design, database, security, deployment
+# - plan: Strategy, milestones, ADRs, questions
+# - spec: Component specs, API contracts, test plans
+# - reference: Knowledge base, external references
+
+version: "1.0"
+last_updated: "2026-04-26"
+
+files:
+  # === GOVERNANCE ===
+  - path: "plan/00-RULES.md"
+    type: governance
+    summary: Human-readable rules document generated from 00-RULES.yaml
+    load: on-demand
+    tags: [rules, governance]
+    dependencies: ["plan/00-RULES.yaml"]
+
+  - path: "plan/00-RULES.yaml"
+    type: governance
+    summary: Unified rules register with all (HARD), (MED) rules across domains
+    load: always
+    tags: [rules, governance, yaml]
+    dependencies: []
+
+  - path: "plan/01-PLAN-DECISIONS.md"
+    type: governance
+    summary: Append-only decision register with active/superseded/expired decisions
+    load: always
+    tags: [decisions, process]
+    dependencies: []
+
+  - path: "plan/01-PLAN-ZUSTAND.md"
+    type: governance
+    summary: Zustand state management architecture and patterns
+    load: on-demand
+    tags: [state, frontend]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/100-FRONTEND-RULES.md"
+    type: governance
+    summary: Frontend-specific rules extending architecture rules
+    load: on-demand
+    tags: [frontend, rules]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  # === PLAN ===
+  - path: "plan/10-STRAT-PRD.md"
+    type: plan
+    summary: Product Requirements Document with vision, jobs, metrics, monetization
+    load: always
+    tags: [product, strategy]
+    dependencies: ["plan/11-STRAT-BLUEPRINT.md"]
+
+  - path: "plan/11-STRAT-BLUEPRINT.md"
+    type: plan
+    summary: Product blueprint with design axioms, six-domain framework
+    load: always
+    tags: [product, strategy, architecture]
+    dependencies: []
+
+  - path: "plan/12-STRAT-HORIZON.md"
+    type: plan
+    summary: Strategic horizon scanning and future technology considerations
+    load: on-demand
+    tags: [strategy, future]
+    dependencies: ["plan/11-STRAT-BLUEPRINT.md"]
+
+  - path: "plan/20-PLAN-INTRO.md"
+    type: plan
+    summary: Planning introduction and methodology
+    load: on-demand
+    tags: [process, planning]
+    dependencies: []
+
+  - path: "plan/21-PLAN-MILESTONES.md"
+    type: plan
+    summary: Project milestones aligned with PRD JTBDs and RICE priorities
+    load: on-demand
+    tags: [planning, milestones]
+    dependencies: ["plan/10-STRAT-PRD.md"]
+
+  - path: "plan/22-PLAN-ADR-INDEX.md"
+    type: plan
+    summary: Architecture Decision Record index with active/superseded ADRs
+    load: on-demand
+    tags: [adr, architecture]
+    dependencies: ["plan/01-PLAN-DECISIONS.md"]
+
+  - path: "plan/23-PLAN-QUESTIONS.md"
+    type: plan
+    summary: Open questions and unresolved decisions
+    load: on-demand
+    tags: [questions, planning]
+    dependencies: ["plan/01-PLAN-DECISIONS.md"]
+
+  # === ARCHITECTURE ===
+  - path: "plan/30-ARCH-OVERVIEW.md"
+    type: architecture
+    summary: High-level C4 architecture with system context, containers, deployment
+    load: always
+    tags: [architecture, c4, overview]
+    dependencies: []
+
+  - path: "plan/31-ARCH-DATABASE.md"
+    type: architecture
+    summary: Database architecture, schema patterns, and data rules
+    load: on-demand
+    tags: [database, architecture]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/32-arch-database-schema.sql"
+    type: architecture
+    summary: Complete database schema with tables, indexes, and constraints
+    load: on-demand
+    tags: [database, schema, sql]
+    dependencies: ["plan/31-ARCH-DATABASE.md"]
+
+  - path: "plan/33-ARCH-ENDPOINTS.md"
+    type: architecture
+    summary: API overview with domain groups and versioning strategy
+    load: on-demand
+    tags: [api, endpoints]
+    dependencies: ["plan/34-arch-endpoints-schema.yaml"]
+
+  - path: "plan/34-arch-endpoints-schema.yaml"
+    type: architecture
+    summary: OpenAPI 3.1 specification for all API endpoints
+    load: on-demand
+    tags: [api, openapi, schema]
+    dependencies: []
+
+  - path: "plan/35-ARCH-SECURITY.md"
+    type: architecture
+    summary: Security architecture with 12 defense layers and controls matrix
+    load: on-demand
+    tags: [security, architecture]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/36-ARCH-TECH-VALIDATION.md"
+    type: architecture
+    summary: Technology validation and risk assessment
+    load: on-demand
+    tags: [technology, validation]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/37-ARCH-FLOWS.md"
+    type: architecture
+    summary: System-level data flows between components
+    load: on-demand
+    tags: [architecture, flows]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/38-ARCH-DEPLOYMENT.md"
+    type: architecture
+    summary: Detailed deployment configurations for Y-Sweet, LiveKit, Redis
+    load: on-demand
+    tags: [deployment, infrastructure]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  # === SPEC ===
+  - path: "plan/40-COMP-REGISTRY.md"
+    type: spec
+    summary: Component registry with all modules, types, and pattern tags
+    load: on-demand
+    tags: [components, registry]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/50-XCT-SERVICES.md"
+    type: spec
+    summary: Cross-cutting services across architectural layers
+    load: on-demand
+    tags: [services, cross-cutting]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/51-XCT-DEPENDENCIES.md"
+    type: spec
+    summary: Dependency catalog with version pins and rationale
+    load: on-demand
+    tags: [dependencies, versions]
+    dependencies: ["plan/versions.yaml"]
+
+  - path: "plan/versions.yaml"
+    type: spec
+    summary: Technology version pins extracted from dependencies and other docs
+    load: on-demand
+    tags: [versions, dependencies, yaml]
+    dependencies: []
+
+  - path: "plan/60-AI-CORE.md"
+    type: spec
+    summary: AI core architecture with model registry and guardrails
+    load: on-demand
+    tags: [ai, models, guardrails]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/70-TESTING.md"
+    type: spec
+    summary: Testing strategy, benchmarks, and schedule
+    load: on-demand
+    tags: [testing, quality]
+    dependencies: []
+
+  # === OPERATIONS ===
+  - path: "plan/80-OPS-MANUAL.md"
+    type: spec
+    summary: Operations manual with runbooks and incident response
+    load: on-demand
+    tags: [operations, runbooks]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  - path: "plan/80-OPS-PERFORMANCE.md"
+    type: spec
+    summary: Performance benchmarks and optimization guidelines
+    load: on-demand
+    tags: [performance, optimization]
+    dependencies: ["plan/30-ARCH-OVERVIEW.md"]
+
+  # === REFERENCE ===
+  - path: "plan/90-REF-KNOWLEDGE.md"
+    type: reference
+    summary: Knowledge base with external references and errata
+    load: never
+    tags: [reference, knowledge]
+    dependencies: []
+
+  # === TASK MANAGEMENT ===
+  - path: "1/TASKS.md"
+    type: governance
+    summary: Documentation optimization task checklist with parent tasks and subtasks
+    load: always
+    tags: [tasks, governance, planning]
+    dependencies: []
+
+  - path: "1/MD.md"
+    type: governance
+    summary: Markdown formatting guidelines and token optimization practices
+    load: always
+    tags: [markdown, guidelines, governance]
+    dependencies: []
+
+  # === PLANNING DOCS ===
+  - path: "planning-docs/00-implementation-checklist.md"
+    type: plan
+    summary: Implementation checklist for project setup and validation
+    load: on-demand
+    tags: [planning, checklist]
+    dependencies: []
+
+  - path: "planning-docs/01-strategic-initiation.md"
+    type: plan
+    summary: Strategic initiation and project kickoff documentation
+    load: on-demand
+    tags: [planning, strategy]
+    dependencies: []
+
+  - path: "planning-docs/02-requirements-functional.md"
+    type: plan
+    summary: Functional requirements and feature specifications
+    load: on-demand
+    tags: [planning, requirements]
+    dependencies: []
+
+  - path: "planning-docs/03-technical-design-architecture.md"
+    type: plan
+    summary: Technical design and architecture documentation
+    load: on-demand
+    tags: [planning, architecture]
+    dependencies: []
+
+  - path: "planning-docs/04-project-management-process.md"
+    type: plan
+    summary: Project management processes and workflows
+    load: on-demand
+    tags: [planning, process]
+    dependencies: []
+
+  - path: "planning-docs/05-agile-iteration-planning.md"
+    type: plan
+    summary: Agile iteration planning and sprint management
+    load: on-demand
+    tags: [planning, agile]
+    dependencies: []
+
+  - path: "planning-docs/06-communication-collaboration.md"
+    type: plan
+    summary: Communication and collaboration guidelines
+    load: on-demand
+    tags: [planning, communication]
+    dependencies: []
+
+  - path: "planning-docs/07-risk-compliance.md"
+    type: plan
+    summary: Risk assessment and compliance documentation
+    load: on-demand
+    tags: [planning, risk, compliance]
+    dependencies: []
+
+  - path: "planning-docs/08-platform-engineering-operations.md"
+    type: plan
+    summary: Platform engineering and operations documentation
+    load: on-demand
+    tags: [planning, operations]
+    dependencies: []
+
+  - path: "planning-docs/09-estimation-forecasting.md"
+    type: plan
+    summary: Estimation and forecasting methodologies
+    load: on-demand
+    tags: [planning, estimation]
+    dependencies: []
+
+# === Tiered Loading Protocol ===
+
+# Session Starter (always load):
+# Target: <3K tokens total
+# - plan/00-RULES.yaml (governance - rules)
+# - plan/01-PLAN-DECISIONS.md (governance - decisions)
+# - plan/10-STRAT-PRD.md (plan - product vision)
+# - plan/11-STRAT-BLUEPRINT.md (plan - architecture framework)
+# - plan/30-ARCH-OVERVIEW.md (architecture - C4 overview)
+# - 1/TASKS.md (governance - task checklist)
+# - 1/MD.md (governance - markdown guidelines)
+#
+# These provide the essential context: what rules apply, what decisions are active,
+# what we're building, the product vision, high-level architecture, current tasks,
+# and markdown formatting standards.
+
+# Task-Specific (on-demand):
+# Load when working on specific domains:
+# - Frontend work: plan/100-FRONTEND-RULES.md, plan/01-PLAN-ZUSTAND.md
+# - Database work: plan/31-ARCH-DATABASE.md, plan/32-arch-database-schema.sql
+# - API work: plan/33-ARCH-ENDPOINTS.md, plan/34-arch-endpoints-schema.yaml
+# - Security work: plan/35-ARCH-SECURITY.md
+# - AI work: plan/60-AI-CORE.md
+# - Testing work: plan/70-TESTING.md
+# - Operations work: plan/80-OPS-MANUAL.md, plan/80-OPS-PERFORMANCE.md
+# - Planning work: plan/21-PLAN-MILESTONES.md, plan/22-PLAN-ADR-INDEX.md, plan/23-PLAN-QUESTIONS.md
+# - Dependencies: plan/51-XCT-DEPENDENCIES.md, plan/versions.yaml
+# - Components: plan/40-COMP-REGISTRY.md
+# - Services: plan/50-XCT-SERVICES.md
+# - Planning docs: planning-docs/*.md
+
+# Deep Reference (never):
+# Load only when explicitly requested:
+# - plan/90-REF-KNOWLEDGE.md (external references, CVE details, etc.)
+# - plan/12-STRAT-HORIZON.md (future scanning)
+# - plan/36-ARCH-TECH-VALIDATION.md (deep tech validation)

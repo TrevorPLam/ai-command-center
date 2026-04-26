@@ -16,6 +16,48 @@ CREATE EXTENSION IF NOT EXISTS pgvector;
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 
 -- ============================================================================
+-- Foundation Tables
+-- ============================================================================
+
+-- Users Table
+CREATE TABLE users (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    email TEXT NOT NULL UNIQUE,
+    full_name TEXT,
+    avatar_url TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP WITH TIME ZONE,
+
+    CONSTRAINT chk_users_email CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
+);
+
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_created_at ON users(created_at DESC);
+
+-- Albums Table
+CREATE TABLE albums (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP WITH TIME ZONE,
+
+    CONSTRAINT fk_albums_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
+);
+
+ALTER TABLE albums ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY albums_org_policy ON albums
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_albums_org_id ON albums(org_id);
+CREATE INDEX idx_albums_category ON albums(category);
+
+-- ============================================================================
 -- Core Application Tables
 -- ============================================================================
 
@@ -522,9 +564,13 @@ CREATE TABLE workflow_executions (
     category TEXT NOT NULL DEFAULT 'general',
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP WITH TIME ZONE,
+    actor_id TEXT NOT NULL,
+    idempotency_key TEXT NOT NULL,
 
     CONSTRAINT fk_workflow_executions_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
-    CONSTRAINT chk_workflow_executions_status CHECK (status IN ('pending', 'running', 'completed', 'failed', 'cancelled'))
+    CONSTRAINT fk_workflow_executions_actor FOREIGN KEY (actor_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT chk_workflow_executions_status CHECK (status IN ('pending', 'running', 'completed', 'failed', 'cancelled')),
+    CONSTRAINT uq_workflow_executions_idempotency UNIQUE (actor_id, idempotency_key)
 );
 
 ALTER TABLE workflow_executions ENABLE ROW LEVEL SECURITY;
@@ -538,6 +584,7 @@ CREATE INDEX idx_workflow_executions_workflow_id ON workflow_executions(workflow
 CREATE INDEX idx_workflow_executions_step_id ON workflow_executions(step_id);
 CREATE INDEX idx_workflow_executions_status ON workflow_executions(status);
 CREATE INDEX idx_workflow_executions_started_at ON workflow_executions(started_at DESC);
+CREATE INDEX idx_workflow_executions_actor_id ON workflow_executions(actor_id);
 
 -- Audit Logs Table
 CREATE TABLE audit_logs (
@@ -1217,6 +1264,725 @@ CREATE TRIGGER update_posthog_event_taxonomy_updated_at BEFORE UPDATE ON posthog
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_feature_flag_evidence_updated_at BEFORE UPDATE ON feature_flag_evidence
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_albums_updated_at BEFORE UPDATE ON albums
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================================
+-- Monitoring & Cross-Cutting Service Tables
+-- ============================================================================
+
+-- Specification Metadata Table
+CREATE TABLE specification_metadata (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    component_name TEXT NOT NULL UNIQUE,
+    tier INTEGER NOT NULL CHECK (tier IN (1, 2, 3)),
+    status TEXT NOT NULL DEFAULT 'draft',
+    frontmatter JSONB NOT NULL DEFAULT '{}',
+    sections_required TEXT[] NOT NULL DEFAULT '{}',
+    authors TEXT[] NOT NULL DEFAULT '{}',
+    dependencies TEXT[] NOT NULL DEFAULT '{}',
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_specification_metadata_status CHECK (status IN ('draft', 'review', 'approved', 'deprecated'))
+);
+
+CREATE INDEX idx_specification_metadata_component_name ON specification_metadata(component_name);
+CREATE INDEX idx_specification_metadata_tier ON specification_metadata(tier);
+CREATE INDEX idx_specification_metadata_status ON specification_metadata(status);
+CREATE INDEX idx_specification_metadata_updated_at ON specification_metadata(updated_at DESC);
+
+-- Realtime Channel Monitoring Table
+CREATE TABLE realtime_channel_monitoring (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    channel_name TEXT NOT NULL,
+    subscriber_count INTEGER DEFAULT 0,
+    memory_mb DECIMAL(10,2) DEFAULT 0.0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    last_activity TIMESTAMP WITH TIME ZONE,
+    category TEXT NOT NULL DEFAULT 'general',
+
+    CONSTRAINT fk_realtime_monitoring_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
+);
+
+ALTER TABLE realtime_channel_monitoring ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY realtime_channel_monitoring_org_policy ON realtime_channel_monitoring
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_realtime_channel_monitoring_org_id ON realtime_channel_monitoring(org_id);
+CREATE INDEX idx_realtime_channel_monitoring_channel_name ON realtime_channel_monitoring(channel_name);
+CREATE INDEX idx_realtime_channel_monitoring_last_activity ON realtime_channel_monitoring(last_activity DESC);
+
+-- Offline Operations Queue Table
+CREATE TABLE offline_operations_queue (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    actor_id TEXT NOT NULL,
+    entity_id TEXT NOT NULL,
+    operation TEXT NOT NULL,
+    entity_type TEXT NOT NULL,
+    idempotency_key TEXT NOT NULL,
+    tombstone BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_offline_queue_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT fk_offline_queue_actor FOREIGN KEY (actor_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT uq_offline_queue_idempotency UNIQUE (actor_id, idempotency_key)
+);
+
+ALTER TABLE offline_operations_queue ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY offline_operations_queue_org_policy ON offline_operations_queue
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_offline_operations_queue_org_id ON offline_operations_queue(org_id);
+CREATE INDEX idx_offline_operations_queue_actor_id ON offline_operations_queue(actor_id);
+CREATE INDEX idx_offline_operations_queue_entity_id ON offline_operations_queue(entity_id);
+CREATE INDEX idx_offline_operations_queue_operation ON offline_operations_queue(operation);
+CREATE INDEX idx_offline_operations_queue_created_at ON offline_operations_queue(created_at DESC);
+
+-- Workflow State Audit Table
+CREATE TABLE workflow_state_audit (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    workflow_id TEXT NOT NULL,
+    step_id TEXT NOT NULL,
+    state TEXT NOT NULL,
+    transition_reason TEXT,
+    guard_evaluated BOOLEAN DEFAULT FALSE,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_workflow_state_audit_workflow FOREIGN KEY (workflow_id) REFERENCES workflow_executions(id) ON DELETE CASCADE,
+    CONSTRAINT fk_workflow_state_audit_step FOREIGN KEY (step_id) REFERENCES workflow_executions(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_workflow_state_audit_workflow_id ON workflow_state_audit(workflow_id);
+CREATE INDEX idx_workflow_state_audit_step_id ON workflow_state_audit(step_id);
+CREATE INDEX idx_workflow_state_audit_state ON workflow_state_audit(state);
+CREATE INDEX idx_workflow_state_audit_timestamp ON workflow_state_audit(timestamp DESC);
+
+-- Webhook Deduplication Table
+CREATE TABLE webhook_deduplication (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    provider_event_id TEXT NOT NULL,
+    processed_status TEXT NOT NULL DEFAULT 'pending',
+    deduplication_key TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_webhook_deduplication_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_webhook_deduplication_status CHECK (processed_status IN ('pending', 'processed', 'failed'))
+);
+
+ALTER TABLE webhook_deduplication ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY webhook_deduplication_org_policy ON webhook_deduplication
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_webhook_deduplication_org_id ON webhook_deduplication(org_id);
+CREATE INDEX idx_webhook_deduplication_provider ON webhook_deduplication(provider);
+CREATE INDEX idx_webhook_deduplication_processed_status ON webhook_deduplication(processed_status);
+CREATE INDEX idx_webhook_deduplication_created_at ON webhook_deduplication(created_at DESC);
+
+-- Test Coverage Targets Table
+CREATE TABLE test_coverage_targets (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    module TEXT NOT NULL UNIQUE,
+    unit_target DECIMAL(3,2) NOT NULL DEFAULT 0.80,
+    component_target DECIMAL(3,2) NOT NULL DEFAULT 0.85,
+    integration_target DECIMAL(3,2) NOT NULL DEFAULT 0.70,
+    e2e_flows_target INTEGER NOT NULL DEFAULT 10,
+    a11y_critical_target INTEGER NOT NULL DEFAULT 0,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_test_coverage_targets CHECK (
+        unit_target >= 0.0 AND unit_target <= 1.0 AND
+        component_target >= 0.0 AND component_target <= 1.0 AND
+        integration_target >= 0.0 AND integration_target <= 1.0
+    )
+);
+
+CREATE INDEX idx_test_coverage_targets_module ON test_coverage_targets(module);
+
+-- Incident Management Table
+CREATE TABLE incident_management (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    severity TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    status TEXT NOT NULL DEFAULT 'open',
+    roles TEXT[] NOT NULL DEFAULT '{}',
+    slo_impact BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    resolved_at TIMESTAMP WITH TIME ZONE,
+
+    CONSTRAINT fk_incident_management_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_incident_management_severity CHECK (severity IN ('P0', 'P1', 'P2', 'P3')),
+    CONSTRAINT chk_incident_management_status CHECK (status IN ('open', 'investigating', 'mitigated', 'resolved', 'closed'))
+);
+
+ALTER TABLE incident_management ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY incident_management_org_policy ON incident_management
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_incident_management_org_id ON incident_management(org_id);
+CREATE INDEX idx_incident_management_severity ON incident_management(severity);
+CREATE INDEX idx_incident_management_status ON incident_management(status);
+CREATE INDEX idx_incident_management_created_at ON incident_management(created_at DESC);
+
+-- Feature Flag Registry Table
+CREATE TABLE feature_flag_registry (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    flag_name TEXT NOT NULL,
+    description TEXT,
+    owner TEXT NOT NULL,
+    default_behavior TEXT NOT NULL DEFAULT 'disabled',
+    targeting_rules JSONB NOT NULL DEFAULT '{}',
+    current_stage TEXT NOT NULL DEFAULT 'development',
+    cohort_hash TEXT,
+    review_date DATE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_feature_flag_registry_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_feature_flag_registry_stage CHECK (current_stage IN ('development', 'testing', 'staging', 'production', 'deprecated'))
+);
+
+ALTER TABLE feature_flag_registry ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY feature_flag_registry_org_policy ON feature_flag_registry
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_feature_flag_registry_org_id ON feature_flag_registry(org_id);
+CREATE INDEX idx_feature_flag_registry_flag_name ON feature_flag_registry(flag_name);
+CREATE INDEX idx_feature_flag_registry_current_stage ON feature_flag_registry(current_stage);
+CREATE INDEX idx_feature_flag_registry_review_date ON feature_flag_registry(review_date DESC);
+
+-- Cost Budgets Table
+CREATE TABLE cost_budgets (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    scope_id TEXT NOT NULL,
+    level TEXT NOT NULL,
+    monthly_limit DECIMAL(12,2) NOT NULL,
+    current_usage DECIMAL(12,2) DEFAULT 0.0,
+    alert_15_percent BOOLEAN DEFAULT FALSE,
+    alert_5_percent BOOLEAN DEFAULT FALSE,
+    alert_0_percent BOOLEAN DEFAULT FALSE,
+    hard_cap BOOLEAN DEFAULT FALSE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_cost_budgets_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_cost_budgets_level CHECK (level IN ('org', 'team', 'user', 'model'))
+);
+
+ALTER TABLE cost_budgets ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY cost_budgets_org_policy ON cost_budgets
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_cost_budgets_org_id ON cost_budgets(org_id);
+CREATE INDEX idx_cost_budgets_scope_id ON cost_budgets(scope_id);
+CREATE INDEX idx_cost_budgets_level ON cost_budgets(level);
+
+-- SLO Definitions Table
+CREATE TABLE slo_definitions (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    service_id TEXT NOT NULL,
+    metric TEXT NOT NULL,
+    target DECIMAL(5,4) NOT NULL,
+    window TEXT NOT NULL,
+    current_value DECIMAL(5,4),
+    error_budget_remaining DECIMAL(5,4),
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_slo_definitions_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_slo_definitions_target CHECK (target >= 0.0 AND target <= 1.0)
+);
+
+ALTER TABLE slo_definitions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY slo_definitions_org_policy ON slo_definitions
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_slo_definitions_org_id ON slo_definitions(org_id);
+CREATE INDEX idx_slo_definitions_service_id ON slo_definitions(service_id);
+CREATE INDEX idx_slo_definitions_metric ON slo_definitions(metric);
+
+-- Security Control Mappings Table
+CREATE TABLE security_control_mappings (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    rule_id TEXT NOT NULL CHECK (rule_id ~ '^S[0-9]+$'),
+    control_description TEXT NOT NULL,
+    mechanism TEXT NOT NULL,
+    test_method TEXT NOT NULL,
+    owner TEXT NOT NULL,
+    evidence TEXT,
+    last_verified DATE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_security_control_mappings_rule_id ON security_control_mappings(rule_id);
+CREATE INDEX idx_security_control_mappings_owner ON security_control_mappings(owner);
+CREATE INDEX idx_security_control_mappings_last_verified ON security_control_mappings(last_verified DESC);
+
+-- ============================================================================
+-- Security & Compliance Tables
+-- ============================================================================
+
+-- MCP Tool Authorizations Table
+CREATE TABLE mcp_tool_authorizations (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    tool_name TEXT NOT NULL,
+    auth_method TEXT NOT NULL DEFAULT 'oauth',
+    scope TEXT NOT NULL DEFAULT '{}',
+    allowlist_schema JSONB NOT NULL DEFAULT '{}',
+    elicitation_required BOOLEAN DEFAULT FALSE,
+    approved_by TEXT,
+    approved_at TIMESTAMP WITH TIME ZONE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_mcp_tool_authorizations_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_mcp_tool_authorizations_auth_method CHECK (auth_method IN ('oauth', 'api_key', 'none'))
+);
+
+ALTER TABLE mcp_tool_authorizations ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY mcp_tool_authorizations_org_policy ON mcp_tool_authorizations
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_mcp_tool_authorizations_org_id ON mcp_tool_authorizations(org_id);
+CREATE INDEX idx_mcp_tool_authorizations_tool_name ON mcp_tool_authorizations(tool_name);
+
+-- Passkeys Table
+CREATE TABLE passkeys (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    credential_id TEXT NOT NULL UNIQUE,
+    authenticator_type TEXT NOT NULL,
+    recovery_codes TEXT[],
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    last_used TIMESTAMP WITH TIME ZONE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_passkeys_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT fk_passkeys_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT chk_passkeys_authenticator_type CHECK (authenticator_type IN ('platform', 'cross-platform', 'security-key'))
+);
+
+ALTER TABLE passkeys ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY passkeys_org_policy ON passkeys
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_passkeys_org_id ON passkeys(org_id);
+CREATE INDEX idx_passkeys_user_id ON passkeys(user_id);
+CREATE INDEX idx_passkeys_credential_id ON passkeys(credential_id);
+
+-- Guardrails Audit Logs Table
+CREATE TABLE guardrails_audit_logs (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    layer TEXT NOT NULL,
+    decision TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_guardrails_audit_logs_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_guardrails_audit_logs_layer CHECK (layer IN ('input', 'output', 'runtime')),
+    CONSTRAINT chk_guardrails_audit_logs_decision CHECK (decision IN ('allow', 'block', 'warn'))
+);
+
+ALTER TABLE guardrails_audit_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY guardrails_audit_logs_org_policy ON guardrails_audit_logs
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_guardrails_audit_logs_org_id ON guardrails_audit_logs(org_id);
+CREATE INDEX idx_guardrails_audit_logs_layer ON guardrails_audit_logs(layer);
+CREATE INDEX idx_guardrails_audit_logs_decision ON guardrails_audit_logs(decision);
+CREATE INDEX idx_guardrails_audit_logs_timestamp ON guardrails_audit_logs(timestamp DESC);
+
+-- SSRF Allowlists Table
+CREATE TABLE ssrf_allowlists (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    allowed_domain TEXT NOT NULL,
+    allowed_ip_range TEXT,
+    validation_method TEXT NOT NULL DEFAULT 'exact',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_ssrf_allowlists_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_ssrf_allowlists_validation_method CHECK (validation_method IN ('exact', 'regex', 'cidr'))
+);
+
+ALTER TABLE ssrf_allowlists ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY ssrf_allowlists_org_policy ON ssrf_allowlists
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_ssrf_allowlists_org_id ON ssrf_allowlists(org_id);
+CREATE INDEX idx_ssrf_allowlists_allowed_domain ON ssrf_allowlists(allowed_domain);
+
+-- Privacy Training Opt-outs Table
+CREATE TABLE privacy_training_optouts (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    allow_training BOOLEAN DEFAULT TRUE,
+    opted_out BOOLEAN DEFAULT FALSE,
+    reason TEXT,
+    segregation_applied BOOLEAN DEFAULT FALSE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_privacy_training_optouts_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT fk_privacy_training_optouts_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT uq_privacy_training_optouts_user UNIQUE(org_id, user_id)
+);
+
+ALTER TABLE privacy_training_optouts ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY privacy_training_optouts_org_policy ON privacy_training_optouts
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_privacy_training_optouts_org_id ON privacy_training_optouts(org_id);
+CREATE INDEX idx_privacy_training_optouts_user_id ON privacy_training_optouts(user_id);
+
+-- Stripe Usage Records Table
+CREATE TABLE stripe_usage_records (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    stripe_meter_id TEXT NOT NULL,
+    token_count BIGINT NOT NULL DEFAULT 0,
+    cost_usd DECIMAL(10,6) NOT NULL DEFAULT 0.000000,
+    recorded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    stripe_status TEXT NOT NULL DEFAULT 'pending',
+
+    CONSTRAINT fk_stripe_usage_records_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_stripe_usage_records CHECK (token_count >= 0 AND cost_usd >= 0),
+    CONSTRAINT chk_stripe_usage_records_status CHECK (stripe_status IN ('pending', 'confirmed', 'failed'))
+);
+
+ALTER TABLE stripe_usage_records ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY stripe_usage_records_org_policy ON stripe_usage_records
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_stripe_usage_records_org_id ON stripe_usage_records(org_id);
+CREATE INDEX idx_stripe_usage_records_stripe_meter_id ON stripe_usage_records(stripe_meter_id);
+CREATE INDEX idx_stripe_usage_records_recorded_at ON stripe_usage_records(recorded_at DESC);
+
+-- Yjs Document Lifecycle Table
+CREATE TABLE yjs_document_lifecycle (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    document_namespace TEXT NOT NULL,
+    gc_enabled BOOLEAN DEFAULT TRUE,
+    undo_stack_limit INTEGER DEFAULT 5,
+    snapshot_version INTEGER DEFAULT 0,
+    size_mb DECIMAL(10,2) DEFAULT 0.0,
+    compaction_triggered BOOLEAN DEFAULT FALSE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_yjs_document_lifecycle_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT fk_yjs_document_lifecycle_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT chk_yjs_document_lifecycle_undo_stack_limit CHECK (undo_stack_limit >= 0 AND undo_stack_limit <= 5)
+);
+
+ALTER TABLE yjs_document_lifecycle ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY yjs_document_lifecycle_org_policy ON yjs_document_lifecycle
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_yjs_document_lifecycle_org_id ON yjs_document_lifecycle(org_id);
+CREATE INDEX idx_yjs_document_lifecycle_document_namespace ON yjs_document_lifecycle(document_namespace);
+
+-- Nylas Webhook Configuration Table
+CREATE TABLE nylas_webhook_configuration (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    trigger_type TEXT NOT NULL,
+    upsert_first BOOLEAN DEFAULT FALSE,
+    async_queue BOOLEAN DEFAULT TRUE,
+    timeout INTEGER DEFAULT 10,
+    sync_policy TEXT NOT NULL DEFAULT 'incremental',
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_nylas_webhook_configuration_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_nylas_webhook_configuration_timeout CHECK (timeout > 0),
+    CONSTRAINT chk_nylas_webhook_configuration_sync_policy CHECK (sync_policy IN ('incremental', 'full'))
+);
+
+ALTER TABLE nylas_webhook_configuration ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY nylas_webhook_configuration_org_policy ON nylas_webhook_configuration
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_nylas_webhook_configuration_org_id ON nylas_webhook_configuration(org_id);
+CREATE INDEX idx_nylas_webhook_configuration_trigger_type ON nylas_webhook_configuration(trigger_type);
+
+-- OpenTelemetry Span Definitions Table
+CREATE TABLE opentelemetry_span_definitions (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    span_name TEXT NOT NULL,
+    required_attributes JSONB NOT NULL DEFAULT '{}',
+    redaction_rules JSONB NOT NULL DEFAULT '{}',
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_opentelemetry_span_definitions_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
+);
+
+ALTER TABLE opentelemetry_span_definitions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY opentelemetry_span_definitions_org_policy ON opentelemetry_span_definitions
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_opentelemetry_span_definitions_org_id ON opentelemetry_span_definitions(org_id);
+CREATE INDEX idx_opentelemetry_span_definitions_span_name ON opentelemetry_span_definitions(span_name);
+
+-- Offline Tombstone Configuration Table
+CREATE TABLE offline_tombstone_configuration (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    entity_type TEXT NOT NULL,
+    deleted_at_column TEXT NOT NULL DEFAULT 'deleted_at',
+    retention_days INTEGER NOT NULL DEFAULT 90,
+    compaction_schedule TEXT NOT NULL DEFAULT '0 2 * * 0',
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_offline_tombstone_configuration_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_offline_tombstone_configuration_retention CHECK (retention_days > 0)
+);
+
+ALTER TABLE offline_tombstone_configuration ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY offline_tombstone_configuration_org_policy ON offline_tombstone_configuration
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_offline_tombstone_configuration_org_id ON offline_tombstone_configuration(org_id);
+CREATE INDEX idx_offline_tombstone_configuration_entity_type ON offline_tombstone_configuration(entity_type);
+
+-- Realtime Limits Configuration Table
+CREATE TABLE realtime_limits_configuration (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    platform_limit INTEGER NOT NULL DEFAULT 100,
+    self_service_limit INTEGER NOT NULL DEFAULT 20,
+    current_usage INTEGER DEFAULT 0,
+    alert_threshold INTEGER DEFAULT 15,
+    alert_triggered BOOLEAN DEFAULT FALSE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_realtime_limits_configuration_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_realtime_limits_configuration_limits CHECK (
+        platform_limit > 0 AND
+        self_service_limit > 0 AND
+        self_service_limit <= platform_limit AND
+        alert_threshold >= 0 AND
+        alert_threshold <= self_service_limit
+    )
+);
+
+ALTER TABLE realtime_limits_configuration ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY realtime_limits_configuration_org_policy ON realtime_limits_configuration
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_realtime_limits_configuration_org_id ON realtime_limits_configuration(org_id);
+
+-- Upload Security Configuration Table
+CREATE TABLE upload_security_configuration (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    scanner TEXT NOT NULL DEFAULT 'clamd',
+    version_pinned TEXT NOT NULL DEFAULT '1.4.x',
+    cve_monitoring BOOLEAN DEFAULT TRUE,
+    chunked_scanning BOOLEAN DEFAULT TRUE,
+    pre_scan_validation BOOLEAN DEFAULT TRUE,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_upload_security_configuration_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_upload_security_configuration_scanner CHECK (scanner IN ('clamd', 'none'))
+);
+
+ALTER TABLE upload_security_configuration ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY upload_security_configuration_org_policy ON upload_security_configuration
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_upload_security_configuration_org_id ON upload_security_configuration(org_id);
+
+-- Recurrence Rule Configuration Table
+CREATE TABLE recurrence_rule_configuration (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    entity_type TEXT NOT NULL,
+    rrule TEXT NOT NULL,
+    rdate TEXT[],
+    exdate TEXT[],
+    timezone_id TEXT NOT NULL DEFAULT 'UTC',
+    edit_mode TEXT NOT NULL DEFAULT 'this_and_future',
+    exception_storage JSONB NOT NULL DEFAULT '{}',
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_recurrence_rule_configuration_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT chk_recurrence_rule_configuration_entity_type CHECK (entity_type IN ('event', 'task', 'reminder')),
+    CONSTRAINT chk_recurrence_rule_configuration_edit_mode CHECK (edit_mode IN ('this', 'this_and_future', 'all'))
+);
+
+ALTER TABLE recurrence_rule_configuration ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY recurrence_rule_configuration_org_policy ON recurrence_rule_configuration
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_recurrence_rule_configuration_org_id ON recurrence_rule_configuration(org_id);
+CREATE INDEX idx_recurrence_rule_configuration_entity_type ON recurrence_rule_configuration(entity_type);
+
+-- ============================================================================
+-- Collaboration Tables
+-- ============================================================================
+
+-- Collab Documents Table
+CREATE TABLE collab_documents (
+    id TEXT PRIMARY KEY DEFAULT gen_random_ulid(),
+    org_id TEXT NOT NULL,
+    entity_id TEXT NOT NULL,
+    ysweet_document_id TEXT NOT NULL UNIQUE,
+    entity_type TEXT NOT NULL,
+    permissions JSONB NOT NULL DEFAULT '{}',
+    creator_id TEXT NOT NULL,
+    category TEXT NOT NULL DEFAULT 'general',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_collab_documents_org FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+    CONSTRAINT fk_collab_documents_creator FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT chk_collab_documents_entity_type CHECK (entity_type IN ('project', 'task', 'document', 'notebook'))
+);
+
+ALTER TABLE collab_documents ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY collab_documents_org_policy ON collab_documents
+    FOR ALL TO authenticated_users
+    USING (org_id = auth.jwt()->>'org_id');
+
+CREATE INDEX idx_collab_documents_org_id ON collab_documents(org_id);
+CREATE INDEX idx_collab_documents_entity_id ON collab_documents(entity_id);
+CREATE INDEX idx_collab_documents_ysweet_document_id ON collab_documents(ysweet_document_id);
+CREATE INDEX idx_collab_documents_entity_type ON collab_documents(entity_type);
+
+-- ============================================================================
+-- Additional Updated At Triggers for New Tables
+-- ============================================================================
+
+CREATE TRIGGER update_specification_metadata_updated_at BEFORE UPDATE ON specification_metadata
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_realtime_channel_monitoring_updated_at BEFORE UPDATE ON realtime_channel_monitoring
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_test_coverage_targets_updated_at BEFORE UPDATE ON test_coverage_targets
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_incident_management_updated_at BEFORE UPDATE ON incident_management
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_feature_flag_registry_updated_at BEFORE UPDATE ON feature_flag_registry
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_cost_budgets_updated_at BEFORE UPDATE ON cost_budgets
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_slo_definitions_updated_at BEFORE UPDATE ON slo_definitions
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_security_control_mappings_updated_at BEFORE UPDATE ON security_control_mappings
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_mcp_tool_authorizations_updated_at BEFORE UPDATE ON mcp_tool_authorizations
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_passkeys_updated_at BEFORE UPDATE ON passkeys
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_ssrf_allowlists_updated_at BEFORE UPDATE ON ssrf_allowlists
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_privacy_training_optouts_updated_at BEFORE UPDATE ON privacy_training_optouts
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_yjs_document_lifecycle_updated_at BEFORE UPDATE ON yjs_document_lifecycle
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_nylas_webhook_configuration_updated_at BEFORE UPDATE ON nylas_webhook_configuration
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_opentelemetry_span_definitions_updated_at BEFORE UPDATE ON opentelemetry_span_definitions
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_offline_tombstone_configuration_updated_at BEFORE UPDATE ON offline_tombstone_configuration
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_realtime_limits_configuration_updated_at BEFORE UPDATE ON realtime_limits_configuration
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_upload_security_configuration_updated_at BEFORE UPDATE ON upload_security_configuration
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_recurrence_rule_configuration_updated_at BEFORE UPDATE ON recurrence_rule_configuration
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_collab_documents_updated_at BEFORE UPDATE ON collab_documents
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================================================

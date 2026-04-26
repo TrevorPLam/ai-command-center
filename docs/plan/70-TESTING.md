@@ -845,7 +845,7 @@ Full OWASP Top 10 for LLM (2025) and MCP Top 10 mapping is maintained in the sec
 | ASI10 | Rogue Agents | 0 | None assigned | N/A | No CVEs (emerging) |
 
 **Validation Findings:**
-- TASK INFORMATION PARTIALLY INCORRECT in 00-STRAT-BLUEPRINT.md
+- TASK INFORMATION PARTIALLY INCORRECT in 11-STRAT-BLUEPRINT.md
 - **Error 1:** ASI03 incorrectly lists CVE-2025-32711 (EchoLeak) - this CVE belongs to ASI01, not ASI03
 - **Error 2:** ASI05 incorrectly lists CVE-2025-53773 (GitHub Copilot YOLO Mode) - this CVE belongs to ASI01, not ASI05
 - **Corrected:** ASI03 has no assigned CVEs (only incidents: Copilot Studio Connected Agents, CoPhish Attack, Copilot Studio Public-by-Default)
@@ -931,7 +931,7 @@ Full OWASP Top 10 for LLM (2025) and MCP Top 10 mapping is maintained in the sec
          │   - JIRA ticket creation for CVE requiring action
          │
          └─→ Update documentation
-             - Commit CVE mapping updates to 07-TESTING.md
+             - Commit CVE mapping updates to 70-TESTING.md
              - Update ASI Coverage matrix with new controls
              - Version control with Git commit messages
 ```
@@ -964,12 +964,12 @@ jobs:
         run: python scripts/correlate_asi.py cves.json kev.json
       - name: Update Documentation
         run: |
-          python scripts/update_cve_mapping.py docs/plan/07-TESTING.md
+          python scripts/update_cve_mapping.py docs/plan/70-TESTING.md
       - name: Commit Changes
         run: |
           git config user.name "CVE Bot"
           git config user.email "cve-bot`@example`.com"
-          git add docs/plan/07-TESTING.md
+          git add docs/plan/70-TESTING.md
           git commit -m "chore: update CVE mapping $(date +%Y-%m-%d)"
           git push
 ```

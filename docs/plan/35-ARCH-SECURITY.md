@@ -1,6 +1,6 @@
 # Security implementation details
 
-This document contains detailed security implementation specifications and configurations for the AI Command Center platform. For high-level security architecture, see [02-ARCH-OVERVIEW.md](02-ARCH-OVERVIEW.md).
+This document contains detailed security implementation specifications and configurations for the AI Command Center platform. For high-level security architecture, see [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md).
 
 ---
 
@@ -8,63 +8,36 @@ This document contains detailed security implementation specifications and confi
 
 All security rules are **HARD**. Violating any of them will block a deployment.
 
-- **S1**: Never use `dangerouslySetInnerHTML`; all user‑generated HTML passes
-  through `SanitizedHTML` with the appropriate profile (STRICT, RICH, or EMAIL).
-- **S2**: Supabase storage access only via the `StorageService` wrapper; never
-  call the Supabase client directly.
-- **S3**: Nylas API calls happen only from the FastAPI backend; frontend never
-  talks to Nylas directly.
-- **S4**: Only supabase‑js is allowed in the browser; Prisma must never be
-  imported in frontend code.
-- **S5**: Every Prisma schema change must be checked for RLS impact; RLS
-  policies must be updated accordingly.
-- **S6**: Global Content‑Security‑Policy enforced in production
-  (nonce‑based, `strict-dynamic`).
-- **S7**: `'unsafe-eval'` is allowed only for Monaco Editor and Babel, and only
-  within their sandboxed iframes (scoped to their nonces).
-- **S8**: JWT is stored only in an httpOnly cookie; never put it in Zustand or
-  `localStorage`.
-- **S9**: All API calls under `/v1/*` must go through the centralised
-  `api.ts` client.
-- **S10**: DOMPurify ≥3.4.0 is mandatory; an automated CVE audit for
-  DOMPurify runs in CI.
-- **S11**: CSP nonce must be cryptographically random per request; nonce
-  strategy with `strict-dynamic` is required.
-- **S12**: LiveKit tokens are scoped to specific rooms and capabilities; RBAC
-  is enforced on token generation.
-- **S13**: Role‑Based Access Control is applied to all resources; no ad‑hoc
-  permission checks.
-- **S14**: Rate limiting is enforced per user and per organization.
-- **S15**: Organization deletion cascades correctly; notify admins 7 days
-  before permanent deletion.
-- **S16**: Agent‑driven UI may only use components from the trusted GenUI
-  catalog; no arbitrary component rendering.
-- **S17**: Yjs collaboration is opt‑in per document type; separate documents
-  for different collaboration scopes.
-- **S18**: AI cost hard cap is enforced at the LLM proxy level; frontend also
-  has a cost budget notification.
-- **S19**: MCP tool registration requires admin approval; every invocation
-  is logged.
-- **S20**: AI cost thresholds trigger alerts and rate limits (RATE_LIMITED
-  error) to enforce budgets.
-- **S21**: OpenAPI 3.1 is the single source of truth; Orval generates TypeScript
-  types from it; Schemathesis checks contract compliance in CI.
-- **S22**: (GRDL03) All pgvector‑retrieved chunks pass through the guardrails
-  input layer before being injected into a prompt.
-- **S23**: (SECREC01) Failure of automated secret rotation is treated as a P1
-  incident; all rotations are logged as SOC2 evidence.
-- **S24**: (GRYPEREPLACE) Use Grype (not Trivy) for Docker image scanning;
-  scanners must be isolated from CI credentials.
-- **S25**: (AUTHHOOK01) The Supabase `supabase_auth_admin` role must have SELECT
-  grants on `user_roles`, `org_members`, and `role_permissions`; verified
-  by pgTAP after each migration.
-- **S26**: (SENTRY01) Four Sentry projects; before sending any event, PII is
-  stripped; Session Replay masks all text.
-- **S27**: (CLAMAVPROD) ClamAV v1.4.x runs as a sidecar in production;
-  freshclam updates hourly; do not cache scan results.
-- **S28**: (DPPROFILES) Three DOMPurify profiles: STRICT (no SVG), RICH
-  (allowed div/span), EMAIL (links and images); test matrix ensures XSS
-  prevention.
+For the complete rule definitions, see [00-RULES.yaml](00-RULES.yaml).
+
+- #SEC-01: Use SanitizedHTML for all user-generated HTML (STRICT, RICH, EMAIL profiles)
+- #SEC-02: Supabase storage access only via StorageService wrapper
+- #SEC-03: Nylas API calls only from FastAPI backend
+- #SEC-04: Only supabase-js allowed in browser; Prisma never in frontend
+- #SEC-05: Prisma schema changes must update RLS policies
+- #SEC-06: Global CSP enforced in production (nonce-based, strict-dynamic)
+- #SEC-07: unsafe-eval only for Monaco/Babel in sandboxed iframes
+- #SEC-08: JWT stored only in httpOnly cookie, never in Zustand/localStorage
+- #SEC-09: All /v1/* API calls through centralized api.ts client
+- #SEC-10: DOMPurify >=3.4.0 mandatory; automated CVE audit in CI
+- #SEC-11: CSP nonce cryptographically random per request; strict-dynamic
+- #SEC-12: LiveKit tokens scoped to rooms and capabilities; RBAC enforced
+- #SEC-13: RBAC applied to all resources; no ad-hoc permission checks
+- #SEC-14: Rate limiting enforced per user and organization
+- #SEC-15: Organization deletion cascades; notify admins 7 days before
+- #SEC-16: Agent-driven UI only uses trusted GenUI catalog components
+- #SEC-17: Yjs collaboration opt-in per document type
+- #SEC-18: AI cost hard cap enforced at LLM proxy level
+- #SEC-19: MCP tool registration requires admin approval; all logged
+- #SEC-20: AI cost thresholds trigger alerts and rate limits
+- #SEC-21: OpenAPI 3.1 single source of truth; Orval generates types
+- #SEC-22: pgvector-retrieved chunks pass guardrails input layer
+- #SEC-23: Secret rotation failure treated as P1 incident; SOC2 evidence
+- #SEC-24: Use Grype (not Trivy) for Docker scanning; credential isolation
+- #SEC-25: Supabase auth_admin role requires SELECT grants on user tables
+- #SEC-26: Sentry projects strip PII; Session Replay masks text
+- #SEC-27: ClamAV v1.4.x sidecar in production; freshclam hourly
+- #SEC-28: Three DOMPurify profiles; test matrix ensures XSS prevention
 
 ---
 
@@ -256,98 +229,21 @@ Based on the Trivy GitHub Actions supply chain compromise (March 19, 2026), wher
 
 **Dual-Scanner CI Integration Pattern:**
 
-```yaml
-name: Container Security Scan
-on:
-  push:
-    branches: [main]
-  pull_request:
+The complete GitHub Actions workflow is maintained in a separate file for better maintainability and token efficiency.
 
-permissions:
-  contents: read
-  security-events: write
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    outputs:
-      image-digest: ${{ steps.build.outputs.digest }}
-    steps:
-      - uses: actions/checkout`@de0fac2e4500dabe0009e67214ff5f5447ce83dd` # v6.0.2
-      - name: Build container image
-        uses: docker/build-push-action`@v6`
-        with:
-          tags: localbuild/testimage:latest
-          push: false
-          load: true
-          outputs: type=digest,destination=/tmp/digest
-      - name: Export image digest
-        run: |
-          echo "digest=$(cat /tmp/digest)" >> $GITHUB_OUTPUT
-
-  # Scanner job with NO credentials - isolated from CI secrets
-  scan-grype:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      # No other permissions - scanner cannot access secrets or write to repo
-    steps:
-      - uses: actions/checkout`@de0fac2e4500dabe0009e67214ff5f5447ce83dd` # v6.0.2
-      - name: Load image from cache
-        run: |
-          docker build . --file Dockerfile --tag localbuild/testimage:latest
-      - name: Scan with Grype
-        uses: anchore/scan-action`@v7`
-        id: scan-grype
-        with:
-          image: "localbuild/testimage:latest"
-          fail-build: false
-          severity-cutoff: high
-          output-format: sarif
-      - name: Upload Grype SARIF
-        uses: github/codeql-action/upload-sarif`@v4`
-        with:
-          sarif_file: ${{ steps.scan-grype.outputs.sarif }}
-
-  # Secondary scanner (optional) - also isolated
-  scan-trivy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout`@de0fac2e4500dabe0009e67214ff5f5447ce83dd` # v6.0.2
-      - name: Load image from cache
-        run: |
-          docker build . --file Dockerfile --tag localbuild/testimage:latest
-      - name: Scan with Trivy
-        uses: aquasecurity/trivy-action@0.24.0 # Pin to specific SHA after verification
-        with:
-          image-ref: 'localbuild/testimage:latest'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH,MEDIUM'
-      - name: Upload Trivy SARIF
-        uses: github/codeql-action/upload-sarif`@v4`
-        with:
-          sarif_file: 'trivy-results.sarif'
-```
-
-**Key Implementation Details:**
-
-- **Artifact passing**: Build job outputs image digest, scanner jobs rebuild image from source (no registry credentials needed)
-- **Permission isolation**: Scanner jobs have only `contents: read` and `security-events: write` - no access to repository secrets
-- **No credential inheritance**: Scanner jobs run in separate job context with no access to parent job credentials
-- **SARIF integration**: Both scanners upload to GitHub Security tab for unified vulnerability view
-- **Optional secondary scanner**: Trivy runs only if IaC/secrets/license scanning is needed (per ADR_111 recommendation)
+- **Workflow file**: [.github/workflows/security-scan.example.yml](../../.github/workflows/security-scan.example.yml)
+- **Purpose**: Dual-scanner pattern with credential isolation per Trivy supply chain compromise lessons
+- **Key features**:
+  - Build job outputs image digest, scanner jobs rebuild from source (no registry credentials)
+  - Permission isolation: Scanner jobs have only `contents: read` and `security-events: write`
+  - No credential inheritance: Separate job context with no access to parent credentials
+  - SARIF integration: Both scanners upload to GitHub Security tab
+  - Optional secondary scanner: Trivy runs only if IaC/secrets/license scanning needed
 
 ---
 
 ## Related Documentation
 
-- [02-ARCH-OVERVIEW.md](02-ARCH-OVERVIEW.md) - High-level security architecture
-- [ADR_111](01-PLAN-ADR-INDEX.md#adr_111) - Grype replaces Trivy for Docker scanning
-- [ADR_119](01-PLAN-ADR-INDEX.md#adr_119) - Vanta as SOC2 automation platform
+- [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md) - High-level security architecture
+- [ADR_111](22-PLAN-ADR-INDEX.md#adr_111) - Grype replaces Trivy for Docker scanning
+- [ADR_119](22-PLAN-ADR-INDEX.md#adr_119) - Vanta as SOC2 automation platform

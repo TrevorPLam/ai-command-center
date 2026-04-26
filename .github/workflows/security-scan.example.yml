@@ -1,0 +1,77 @@
+name: Container Security Scan
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Build container image
+        uses: docker/build-push-action@v6
+        with:
+          tags: localbuild/testimage:latest
+          push: false
+          load: true
+          outputs: type=digest,destination=/tmp/digest
+      - name: Export image digest
+        run: |
+          echo "digest=$(cat /tmp/digest)" >> $GITHUB_OUTPUT
+
+  # Scanner job with NO credentials - isolated from CI secrets
+  scan-grype:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      # No other permissions - scanner cannot access secrets or write to repo
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Load image from cache
+        run: |
+          docker build . --file Dockerfile --tag localbuild/testimage:latest
+      - name: Scan with Grype
+        uses: anchore/scan-action@v7
+        id: scan-grype
+        with:
+          image: "localbuild/testimage:latest"
+          fail-build: false
+          severity-cutoff: high
+          output-format: sarif
+      - name: Upload Grype SARIF
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ steps.scan-grype.outputs.sarif }}
+
+  # Secondary scanner (optional) - also isolated
+  scan-trivy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Load image from cache
+        run: |
+          docker build . --file Dockerfile --tag localbuild/testimage:latest
+      - name: Scan with Trivy
+        uses: aquasecurity/trivy-action@0.24.0 # Pin to specific SHA after verification
+        with:
+          image-ref: 'localbuild/testimage:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+      - name: Upload Trivy SARIF
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results.sarif'

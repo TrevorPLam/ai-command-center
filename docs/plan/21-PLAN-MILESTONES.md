@@ -1,32 +1,25 @@
-# Granular phased delivery plan: AI-integrated SaaS platform
+# AI-Integrated SaaS Platform: Phased Delivery
 
-**Refreshed: April 26, 2026**  
-**Principle:** Nothing is removed from the blueprint. Everything is sequenced, deferred, or split.  
-**Core Design Axioms:** LLM-First, Rule-Optimized · Local-Default, Cloud-Fallback
+**Refreshed:** April 26, 2026  
+**Principle:** Nothing removed from blueprint. Everything sequenced, deferred, or split.  
+**Core Design:** LLM-First, Rule-Optimized · Local-Default, Cloud-Fallback
 
-## Decision matrix: how features are sequenced
+## Sequencing Matrix
 
 | Driver | Weight | Impact |
 |---|---|---|
-| User magic moment | Critical | Conflict-detection narrative powers |
-| | | every early phase |
+| User magic moment | Critical | Conflict-detection narrative powers early phases |
 | Revenue unlock | High | Stripe billing, external integrations |
-| Cost sensitivity | High | Nylas ($500–$1,200+/mo) deferred; |
-| | | Google Calendar API (free) pulled forward; |
-| | | local models absorb free-tier load |
-| Technical risk | High | LLM tool-calling reliability validated |
-| | | in Block 0B before any UI |
-| Compliance deadline | Moderate | EU AI Act high-risk postponed to |
-| | | Dec 2027/Aug 2028; SOC2 not needed |
-| | | until enterprise sales |
-| Solo feasibility | Governing | Any feature requiring >3 days review |
-| | | or >2 new tables splits across phases |
+| Cost sensitivity | High | Nylas deferred; Google Calendar pulled forward; local models absorb free tier |
+| Technical risk | High | LLM tool-calling validated in Block 0B before UI |
+| Compliance deadline | Moderate | EU AI Act postponed to 2027/2028; SOC2 not needed until enterprise |
+| Solo feasibility | Governing | Any feature requiring >3 days review or >2 new tables splits across phases |
 
-## Phase 0: foundation & core magic (solo → first demo)
+## Phase 0: Foundation & Core Magic (Solo → First Demo)
 
-**Duration target:** 12–16 weeks  
-**Monthly infra cost:** ~$30–50 (Supabase Free/Pro $25 + Fly.io Hobby $5 + Resend Free)  
-**Local model cost:** ~$0 (electricity only, local inference)
+**Duration:** 12–16 weeks  
+**Monthly cost:** ~$30–50 (Supabase Pro $25 + Fly.io Hobby $5 + Resend Free)  
+**Local model cost:** ~$0 (electricity only)
 
 ### Block 0A: Platform Skeleton (Weeks 1–3)
 
@@ -50,7 +43,7 @@
 | F011 | Intent Dispatcher v1: routes tool calls via `preferred_executor` field | code → Haiku 4.5 → Sonnet 4.6 → Opus 4.7 cascade |
 | F012 | Local‑first routing: free‑tier all local; cloud API gated behind paid subscription | Near‑zero marginal cost for free users |
 
-**Decision point @ Week 5:** If local tool‑calling reliability <90% on Gemma 4 E2B, evaluate Qwen3.5 4B or Llama4‑7B as fallback orchestrator before proceeding.
+**Decision point @ Week 5:** If local tool‑calling reliability <90% on Gemma 4 E2B, evaluate Qwen3.5 4B or Llama4‑7B as fallback.
 
 ### Block 0C: Chat + Agent Tool Calling (Weeks 5–8)
 
@@ -316,9 +309,9 @@
 | P605 | API marketplace: developer community, revenue share, certification | Data‑as‑a‑Service monetization |
 | P606 | Custom model training: proprietary models from open‑source bases; full from‑scratch training when resources permit | Mistral Forge or equivalent enterprise platform |
 
-## Cost Projection Summary
+## Cost Projections
 
-| Phase | Monthly Infra (target) | Key Cost Drivers |
+| Phase | Monthly Cost | Key Drivers |
 |---|---|---|
 | 0 | $30–50 | Supabase Pro $25, Fly.io Hobby $5, Resend Free, Google Calendar Free, **local models: $0** |
 | 1 | $200–500 | Nylas ($165+), Sentry Team $26, Fly.io Scale $29–59, Claude API for Pro users |
@@ -328,7 +321,7 @@
 | 5 | $5,000–20,000 | Multi‑region, marketplace infra, Tauri signing |
 | 6 | $10,000–50,000+ | Full enterprise suite, dedicated AI compute, custom model training |
 
-## Key Blockers & Risk Registry
+## Key Blockers & Risks
 
 | Blocker | Impact | Mitigation | Phase |
 |---|---|---|---|
@@ -342,7 +335,7 @@
 | Google Gemini free tier restrictions (March 2026) | Pro models limited to paid tiers | Free tier uses Flash models only. Local models absorb free‑tier load; Gemini Flash as fallback | Phase 0 |
 | Local model staleness | Tool‑calling accuracy drift | Weekly automated re‑benchmarking; verifier monitors orchestrator quality; registry tracks last‑verified dates | Phase 2+ |
 
-## Local Model Fleet: Phase‑by‑Phase Deployment
+## Local Model Fleet Deployment
 
 | Phase | Models Active | Roles | Hardware |
 |---|---|---|---|
@@ -362,6 +355,6 @@
 | **Team** | Local default + Opus 4.7 cloud ($5/$25 per 1M tok) + fine‑tuning | $1–5 | $50–100/user/mo |
 | **Enterprise** | Dedicated models, private hosting, SSO, compliance | Custom | Custom |
 
-**The structural advantage:** At 10,000 free users, a cloud‑dependent competitor burns $50K–$150K/month in AI inference. Your cost: ~$10/month in electricity. Free‑tier economics are defensible against any all‑cloud competitor.
+**Structural advantage:** At 10,000 free users, a cloud‑dependent competitor burns $50K–$150K/month in AI inference. Your cost: ~$10/month in electricity. Free‑tier economics are defensible against any all‑cloud competitor.
 
 *This plan preserves every component from the six‑domain blueprint. Nothing is removed—only sequenced, split, or deferred across phases. Each phase gate is governed by customer or revenue triggers, not calendar dates.*

@@ -78,7 +78,7 @@ Email synchronization via Nylas webhooks:
 7. Monitoring alerts trigger if failure rate exceeds 5% over 5 minutes.
 8. Nylas automatically disables the webhook URL after 95% failure rate over 72 hours.
 
-For detailed operational procedures including webhook failure patterns and grant expiration handling, see [08-OPS-MANUAL.md](08-OPS-MANUAL.md#48-data-integrity).
+For detailed operational procedures including webhook failure patterns and grant expiration handling, see [80-OPS-MANUAL.md](80-OPS-MANUAL.md#48-data-integrity).
 
 ## MCP policy enforcement flow
 

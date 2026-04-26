@@ -2,7 +2,7 @@
 
 These are concrete numbers that must be respected in every build.
 
-> **Canonical source**: SLA targets and infrastructure thresholds are defined in [02-ARCH-OVERVIEW.md](02-ARCH-OVERVIEW.md). This file specifies the concrete budgets derived from those targets.
+> **Canonical source**: SLA targets and infrastructure thresholds are defined in [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md). This file specifies the concrete budgets derived from those targets.
 
 ---
 
