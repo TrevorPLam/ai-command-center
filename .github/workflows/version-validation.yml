@@ -1,0 +1,37 @@
+name: Version Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'docs/plan/versions.yaml'
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'docs/plan/versions.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Validate versions match
+        run: |
+          # Script to validate package.json versions against versions.yaml
+          node scripts/validate-versions.js
+
+      - name: Report mismatch
+        if: failure()
+        run: |
+          echo "::error::package.json versions do not match versions.yaml"
+          echo "::error::Please update either package.json or docs/plan/versions.yaml to ensure consistency"

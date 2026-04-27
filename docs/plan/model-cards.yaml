@@ -1,0 +1,114 @@
+# Model Cards Configuration
+# Per-agent model information including capabilities, limitations, and safety metrics
+
+models:
+  gemma-4-e2b:
+    model_id: "gemma-4-e2b"
+    parameter_count: 2000000000
+    intended_use: "Default orchestrator for light hardware"
+    limitations:
+      - "Not suitable for complex multi-step reasoning"
+      - "Limited context window compared to larger models"
+    bias_metrics:
+      - "Evaluated on standard bias benchmarks"
+    safety_eval: "Passed standard safety evaluations"
+    training_data_provenance: "Google Gemma training data"
+    sha256: "TBD"
+    review_date: "2026-04-26"
+    owner: "AI/ML Engineering"
+    status: "active"
+
+  gemma-4-e4b:
+    model_id: "gemma-4-e4b"
+    parameter_count: 4500000000
+    intended_use: "Default orchestrator for systems with ≥16GB RAM"
+    limitations:
+      - "Requires more memory than E2B variant"
+    bias_metrics:
+      - "Evaluated on standard bias benchmarks"
+    safety_eval: "Passed standard safety evaluations"
+    training_data_provenance: "Google Gemma training data"
+    sha256: "TBD"
+    review_date: "2026-04-26"
+    owner: "AI/ML Engineering"
+    status: "active"
+
+  qwen3.5-4b:
+    model_id: "qwen3.5-4b"
+    parameter_count: 3400000000
+    intended_use: "Tool executor with high tool-calling accuracy"
+    limitations:
+      - "May struggle with very complex reasoning tasks"
+    bias_metrics:
+      - "Evaluated on standard bias benchmarks"
+    safety_eval: "Passed standard safety evaluations"
+    training_data_provenance: "Alibaba Qwen training data"
+    sha256: "TBD"
+    review_date: "2026-04-26"
+    owner: "AI/ML Engineering"
+    status: "active"
+    verified_tool_call_pass_rate: 0.975
+
+  phi-4-mini-reasoning:
+    model_id: "phi-4-mini-reasoning"
+    parameter_count: 3800000000
+    intended_use: "Verifier for pre-action validation (Phase 1)"
+    limitations:
+      - "Prompt-based tool calling (not native)"
+      - "Optimized for reasoning, not general chat"
+    bias_metrics:
+      - "Evaluated on standard bias benchmarks"
+    safety_eval: "Passed standard safety evaluations"
+    training_data_provenance: "Microsoft Phi training data"
+    sha256: "TBD"
+    review_date: "2026-04-26"
+    owner: "AI/ML Engineering"
+    status: "active"
+
+  llama4-7b:
+    model_id: "llama4-7b"
+    parameter_count: 7000000000
+    intended_use: "High-throughput chat (optional)"
+    limitations:
+      - "Prompt-based tool calling (not native)"
+      - "Higher memory requirements"
+    bias_metrics:
+      - "Evaluated on standard bias benchmarks"
+    safety_eval: "Passed standard safety evaluations"
+    training_data_provenance: "Meta Llama training data"
+    sha256: "TBD"
+    review_date: "2026-04-26"
+    owner: "AI/ML Engineering"
+    status: "active"
+
+  claude-sonnet-4-6:
+    model_id: "claude-sonnet-4-6"
+    parameter_count: "TBD"
+    intended_use: "Default cloud model for paid tier"
+    limitations:
+      - "Cloud API costs apply"
+      - "Requires internet connectivity"
+    bias_metrics:
+      - "Evaluated on Anthropic bias benchmarks"
+    safety_eval: "Passed Anthropic safety evaluations"
+    training_data_provenance: "Anthropic training data"
+    sha256: "N/A (cloud model)"
+    review_date: "2026-04-26"
+    owner: "AI/ML Engineering"
+    status: "active"
+
+  claude-opus-4-7:
+    model_id: "claude-opus-4-7"
+    parameter_count: "TBD"
+    intended_use: "Premium tier for complex multi-step reasoning"
+    limitations:
+      - "Highest cloud API costs"
+      - "Requires internet connectivity"
+    bias_metrics:
+      - "Evaluated on Anthropic bias benchmarks"
+    safety_eval: "Passed Anthropic safety evaluations"
+    training_data_provenance: "Anthropic training data"
+    sha256: "N/A (cloud model)"
+    review_date: "2026-04-26"
+    owner: "AI/ML Engineering"
+    status: "active"

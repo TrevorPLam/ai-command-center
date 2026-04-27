@@ -1,0 +1,133 @@
+# Pattern Tags Registry
+# Single source of truth for all pattern tag definitions
+# See 20-PLAN-INTRO.md for usage context
+
+animation_tags:
+  - tag: MotionGuard
+    description: Animate transform/opacity only; respects reduced-motion
+  - tag: AnimatePresence
+    description: Page-level enter/exit transitions
+  - tag: Spring
+    description: Spring animation (tension≥300, damping≥30)
+  - tag: StaggerChildren
+    description: Staggered child animations (max 3 children)
+  - tag: OpacityFade
+    description: Opacity fade ≤150ms
+  - tag: Static
+    description: No animation
+  - tag: PopLayout
+    description: Pop-in layout animation
+  - tag: LazyMotion
+    description: Lazy loading of motion features for code splitting
+
+data_tags:
+  - tag: VirtualizeList
+    description: Virtualized rendering for large lists
+  - tag: InfiniteScroll
+    description: Infinite scroll / load-more pattern
+  - tag: OptimisticMutation
+    description: Immediate UI update with revert on failure; pending state styling
+  - tag: InlineEdit
+    description: Inline editing triggered by click, with debounced auto-save
+  - tag: DebounceAutoSave
+    description: 300ms debounce, auto-save on edits
+  - tag: HoverPrefetch
+    description: Hover triggers data prefetch (200ms debounce)
+  - tag: SSEStream
+    description: Server-Sent Events for real-time data streaming
+  - tag: ChatCache
+    description: AI responses cached indefinitely (staleTime:Infinity)
+
+specialized_tags:
+  - tag: GenUI
+    description: Agent-driven UI component rendering
+  - tag: SandboxIframe
+    description: Sandboxed iframe for external content
+  - tag: Recurring
+    description: Recurring event logic (rschedule + Temporal adapter)
+  - tag: TimezoneAware
+    description: All times displayed in user's timezone
+  - tag: TieredMemory
+    description: Memory management with retention tiers (working, episodic, semantic)
+  - tag: WorkflowExecution
+    description: Workflow execution display and state machine
+  - tag: A2AFlow
+    description: Agent-to-agent communication flow
+  - tag: KeyboardShortcuts
+    description: Keyboard shortcuts for accessibility and power users
+  - tag: Upload
+    description: File upload logic
+  - tag: MCPSecurity
+    description: MCP security enforcement
+  - tag: TriageColor
+    description: Color-coded triage indicators
+  - tag: PLAY
+    description: Playground/sandbox environment
+
+livekit_tags:
+  - tag: Streaming
+    description: Streaming interfaces for real-time data
+  - tag: InterruptHandling
+    description: Interrupt detection and handling for voice pipelines
+  - tag: TokenGeneration
+    description: LLM token generation streaming
+  - tag: InterruptDetection
+    description: Voice activity detection for barge-in
+  - tag: StateManagement
+    description: Session state accumulation and handoff
+  - tag: HorizontalScaling
+    description: Worker pool scaling based on load
+
+spec_tags:
+  - tag: SpecTemplate
+    description: SPEC-TEMPLATE.md format
+  - tag: ComponentTiering
+    description: Tier 1 (standalone), Tier 2 (grouped), Tier 3 (design system)
+  - tag: CrossCuttingSpec
+    description: Cross-cutting service spec
+  - tag: FlowContract
+    description: User-facing flow contract
+  - tag: APIContract
+    description: OpenAPI 3.1 contract
+  - tag: EventContract
+    description: Event + webhook contract
+  - tag: TestContract
+    description: Testing contract + coverage
+  - tag: OpsRunbook
+    description: Operational runbook
+  - tag: FeatureFlag
+    description: Feature flags + rollout
+  - tag: CostControl
+    description: Cost tracking + budgeting
+  - tag: MigrationStrategy
+    description: DB migration (expand-contract)
+  - tag: Observability
+    description: Observability instrumentation
+  - tag: SecurityMatrix
+    description: Security control mapping
+  - tag: MCPSecurity
+    description: MCP security enforcement
+  - tag: Passkeys
+    description: WebAuthn integration
+  - tag: TauriDesktop
+    description: Tauri desktop capabilities
+  - tag: MobileNotif
+    description: Mobile push notifications
+  - tag: AIGuardrails
+    description: AI input/output/runtime guards
+  - tag: SSRFPrevention
+    description: SSRF protection
+  - tag: PrivacyAI
+    description: AI privacy controls
+  - tag: StripeBilling
+    description: Stripe billing
+  - tag: ComplianceCode
+    description: Compliance automation
+  - tag: YjsLifecycle
+    description: Yjs collaboration lifecycle
+  - tag: NylasV3
+    description: Nylas v3 webhooks
+  - tag: OTelGenAI
+    description: OpenTelemetry GenAI
+  - tag: OfflineFirst
+    description: Offline-first patterns

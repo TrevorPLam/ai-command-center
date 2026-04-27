@@ -1,4 +1,10 @@
-# Cross-component dependencies
+---
+title: "Cross-component Dependencies"
+owner: "Architecture"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 This document details cross-component dependencies, core dependency patterns, critical shared dependencies, dependency optimization opportunities, circular dependency risks, and recent dependency updates for the AI Command Center platform.
 
@@ -6,9 +12,7 @@ This document details cross-component dependencies, core dependency patterns, cr
 
 ## Technology version pins
 
-Exact versions or constraints that must be used in all environments.
-
-- **TypeScript**: 6.0 in production; 7.0 beta (tsgo) evaluated in CI
+Exact versions or constraints are defined in [versions.yaml](./versions.yaml) (source of truth).
 
 ### TypeScript 7.0 (tsgo) beta assessment (April 2026)
 
@@ -52,45 +56,6 @@ Stable release targeted within 2 months from beta announcement (April 2026 → J
   "use strict" always emitted, esModuleInterop emit changes
 - **Escape Hatch**: `ignoreDeprecations` mechanism available to temporarily silence
   deprecation warnings during migration
-
-- **React**: 19.2.5; React 20 evaluated Q2 2026
-- **Vite**: 8.0.0
-- **Zustand**: 5.0.12
-- **TanStack Query**: 5.100.1
-- **Motion (Framer)**: 12.38.0 (import from `motion/react`)
-- **Tailwind CSS**: 4.2.2
-- **Prisma**: 7.8.0 (pgbouncer=true)
-- **dnd‑kit**: 6.3.1 (community standard; no migration)
-- **Node**: 24.15.0 LTS Krypton
-- **Python**: 3.12
-- **FastAPI**: 0.136.1
-- **react‑big‑calendar**: ^1.19.4 (React 19 compatible)
-- **Yjs**: 13.6.21
-- **DOMPurify**: ≥3.4.0
-- **nuqs**: ^2.5
-- **react‑helmet‑async**: latest
-- **LiveKit Agents**: ≥2.0.0 ONLY
-- **LiveKit Server SDK**: ≥1.0.0
-- **markmap**: latest
-- **react‑resizable**: ^3.1.3
-- **`@ai`‑sdk/react**: ^2.0 (Vercel AI SDK v6)
-- **`@tremor`/react**: ^3.18
-- **`@stripe`/ai‑sdk**: latest
-- **`@stripe`/agent‑toolkit**: latest
-- **`@powersync`/web**: latest
-- **litellm**: >=1.83.7 (cosign + Grype verified)
-- **orval**: >=8.2.0
-- **`@anthropic`/mcp‑inspector**: >=0.14.1 (dev only)
-- **tsgo**: 7.0 beta
-- **temporal‑polyfill**: ^0.3.2 (~20KB)
-- **pgvectorscale**: 0.4.0 (DiskANN)
-- **`@xyflow`/react**: 12.10.2
-- **OTel**: v1.40.0 + experimental GenAI
-- **prisma‑next**: GA June‑July 2026 (Postgres); Phase 3 evaluation
-- **rschedule**: latest
-- **`@rschedule`/temporal‑date‑adapter**: latest
-- **SimpleWebAuthn**: latest
-- **deepeval**: latest
 
 ---
 

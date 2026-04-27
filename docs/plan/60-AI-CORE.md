@@ -1,4 +1,10 @@
-# AI Core
+---
+title: "AI Core"
+owner: "AI/ML Engineering"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 This document describes the complete AI architecture including intent dispatcher, local-first gateway, verifier cascade, memory architecture, evaluation pipeline, safety guardrails, cost attribution, prompt caching, observability, local model infrastructure, workflow engine, analytics, and model cards.
 
@@ -15,7 +21,7 @@ For the complete rule definitions, see [00-RULES.yaml](00-RULES.yaml).
 - #AI-01: Default orchestrator: Gemma 4 E2B (local, native tool calling). Fallback: Qwen3.5 4B. Cloud models are premium only
 - #AI-02: Free-tier users are restricted to local models only; AI must never make cloud API calls for them
 - #AI-03: Claude Sonnet 4.6 is the default cloud model when authorised; Opus 4.7 for complex tasks
-- #AI-04: Haiku 4.5 must never be used in agentic contexts (poor injection guard)
+- #AI-04: Haiku 4.5 must never be used under any circumstances
 - #AI-05: All new agents created after May 1, 2026 must use claude-sonnet-4-6 or opus-4-7 model IDs; legacy IDs cleaned by June 1, 2026
 - #AI-06: OpenAI Assistants and ChatCompletions APIs must be migrated to the Responses API by August 26, 2026
 
@@ -64,7 +70,7 @@ For the complete rule definitions, see [00-RULES.yaml](00-RULES.yaml).
 The **Intent Dispatcher** is a pure-code middleware that sits between the AI orchestrator and the tool execution layer. Its job is to route every potential action to the **cheapest, fastest, most reliable executor** that can handle it.
 
 - **Layer 1: Deterministic Code.** Database queries, rule engines, schema validators. Called directly by the orchestrator via a tool definition. No LLM involved in execution.
-- **Layer 2: Lightweight Models (Haiku 4.5 or local).** Simple NLP tasks: extract structured data from an email, classify intent, summarize a short thread.
+- **Layer 2: Lightweight Models (Qwen 3.5 4B or local).** Simple NLP tasks: extract structured data from an email, classify intent, summarize a short thread.
 - **Layer 3: Powerful Models (Sonnet 4.6 / Opus 4.7).** Complex reasoning, multi-step planning, open-ended conversation.
 
 The orchestrator itself (an LLM) uses this dispatcher to execute tools efficiently.
@@ -125,22 +131,11 @@ All models must be registered before they can participate in agentic workflows. 
 
 ## Section 2: Memory Architecture
 
-### Working memory (Zustand)
-- Short-term context storage
-- Session-specific state
-- Fast access, limited capacity
-
-### Episodic memory (PostgreSQL + pgvector)
-- Message history with embeddings
-- FIFO50 eviction policy
-- Ebbinghaus decay algorithm
-- Conversation context retrieval
-
-### Semantic memory (pgvector + Facts)
-- Long-term knowledge storage
-- Fact promotion system
-- Vector similarity search
-- Cross-session persistence
+| Type | Storage | Eviction | Purpose |
+|------|---------|----------|---------|
+| Working memory | Zustand | Session end | Short-term context, session state |
+| Episodic memory | PostgreSQL + pgvector | FIFO50 | Message history with embeddings, conversation context |
+| Semantic memory | pgvector + Facts | None | Long-term knowledge, fact promotion, cross-session persistence |
 
 ---
 
@@ -153,34 +148,11 @@ All models must be registered before they can participate in agentic workflows. 
 
 ### Evaluation data (Golden dataset curation)
 
-Golden datasets are curated collections of high-quality data (often question-answer pairs) that serve as benchmarks for model performance evaluation. They contain human-validated "ground truth" labels against which LLM outputs are measured.
-
-**Curation Process (6-step methodology):**
-1. **Identify the main goal**: Define specific objectives (fine-tuning, evaluation, etc.) to ensure dataset alignment
-2. **Collect data**: Identify relevant data sources (public datasets, proprietary data, web scraping). Collect diverse, representative data covering multiple scenarios, perspectives, and edge cases
-3. **Prepare dataset**: Clean data to remove noise, inconsistencies, and errors. Normalize to uniform format (JSON/CSV)
-4. **Leverage human expertise**: Develop clear annotation guidelines. Involve domain experts with diverse backgrounds for accurate annotation
-5. **Validate data**: Implement quality control (cross-validation, external experts, statistical methods). Conduct audits and apply fairness metrics
-6. **Maintain and refine**: Regularly revise and update as a living document. Ensure dataset stays relevant as models evolve
-
-**Key Benefits:**
-- Accuracy and precision: Reliable reference point for assessing LLM responses
-- Ground truth labeling: Human-validated standards revealing discrepancies
-- Domain-specific evaluation: Tailored to specific domains (healthcare, finance) for nuanced evaluation
-- Cost-effective: More efficient than extensive human evaluation of every output
-- Quality control: Direct impact on LLM effectiveness through clean, accurate data
-- Benchmarking: Establish evaluation metrics and identify improvement areas
-
 **Dataset Size Guidelines:**
-- **Modest use cases**: 10-20 examples sufficient for initial evaluation
-- **Complex applications**: 100-200 diverse examples required for comprehensive evaluation
-- **Factors influencing size**: Task complexity, desired accuracy, data quality (high-quality data reduces required size)
-- **Diminishing returns**: Research shows selection strategies regress to random when selecting more than 30-40 examples
-
-**Challenges:**
-- Cost and upkeep: Expensive for complex domains, requires ongoing maintenance
-- Dataset quality: Evaluation quality hinges on dataset quality; careful curation crucial
-- Data diversity: Essential for covering wide range of scenarios, but resource-intensive to achieve
+- Modest use cases: 10-20 examples
+- Complex applications: 100-200 diverse examples
+- High-quality data reduces required size
+- Selection strategies regress to random beyond 30-40 examples
 
 ### Performance thresholds
 - **Accuracy**: ≥base-2% (blocking)
@@ -391,19 +363,17 @@ Inconclusive verdicts map to manual review rather than automatic blocking:
 
 ### Model registry
 
-Every local model is tracked with the following metadata:
-
 | Field | Description |
 |-------|-------------|
-| `model_id` | Unique identifier (e.g., `gemma-4-e2b`) |
-| `parameter_count` | Active parameters (e.g., 2B) |
-| `quantization_format` | `GGUF Q4_K_M`, `GGUF Q8_0`, `ternary` (future) |
-| `memory_requirement` | RAM needed for inference (e.g., 3.4 GB) |
-| `tool_calling_tier` | `native` (special tokens), `prompt` (needs prompt engineering), `unreliable` |
-| `verified_tool_call_pass_rate` | From automated test suite |
-| `latency_profile` | TTFT, TPS on target hardware tiers |
-| `evaluation_date` | Last benchmark run |
-| `status` | `active`, `deprecated`, `sunset` |
+| model_id | Unique identifier (e.g., `gemma-4-e2b`) |
+| parameter_count | Active parameters (e.g., 2B) |
+| quantization_format | GGUF Q4_K_M, GGUF Q8_0, ternary (future) |
+| memory_requirement | RAM needed for inference (e.g., 3.4 GB) |
+| tool_calling_tier | native (special tokens), prompt (needs prompt engineering), unreliable |
+| verified_tool_call_pass_rate | From automated test suite |
+| latency_profile | TTFT, TPS on target hardware tiers |
+| evaluation_date | Last benchmark run |
+| status | active, deprecated, sunset |
 
 **Initial Phase 0 models:**
 
@@ -417,9 +387,12 @@ Every local model is tracked with the following metadata:
 
 ### Quantization policy
 
-- **Default format**: GGUF Q4_K_M (memory <4.5GB, human reading speed on CPU).
-- **Migration path**: When llama.cpp integrates ternary support (FairyFuse), models will be re-quantized and re-registered. The registry tracks quantization format per model version.
-- **Non-uniform quantization**: QIGen (Apache-2.0) available if per-layer sensitivity optimization is needed for specific models.
+| Format | Memory | Status | Use Case |
+|--------|--------|--------|----------|
+| GGUF Q4_K_M | <4.5GB | Default | Human reading speed on CPU |
+| GGUF Q8_0 | Higher | Available | Higher accuracy |
+| Ternary (FairyFuse) | TBD | Future | Per-layer sensitivity optimization |
+| QIGen | Variable | Optional | Non-uniform quantization for specific models |
 
 ### Hardware tiers
 
@@ -995,22 +968,6 @@ Does your dataset contain >500K tokens?
 - Larger chunks (512-1024 tokens) for detail-oriented queries
 - Smaller chunks (128-256 tokens) for multi-hop reasoning
 
----
-
-## Pre-Computed Quality Presets
-
-These are named presets for LLM calls, specifying temperature (`temp`), `top_p`, and acceptable variance.
-
-| Preset | Temperature / Top P | Variance |
-|--------|---------------------|----------|
-| G1 | 0.85 / 0.35 | ±2% |
-| G2 | 0.80 / 0.30 | ±5% |
-| G3 | 0.82 / 0.32 | ±2% |
-| G4 | 0.80 / 0.40 | ±2% |
-| G5 | 0.90 / 0.45 | ±2% |
-| G6 | 0.85 / 0.45 | ±2% |
-| G7 | 0.95 / 0.40 | ±2% |
-| G8 | 0.90 / 0.40 | ±2% |
 
 Use these directly when configuring model parameters in agent definitions.
 - Overlap of 10-20% recommended to maintain context continuity

@@ -1,4 +1,10 @@
-# Security implementation details
+---
+title: "Security Implementation Details"
+owner: "Security"
+status: "active"
+updated: "2026-04-26"
+canonical: "security-controls.yaml"
+---
 
 This document contains detailed security implementation specifications and configurations for the AI Command Center platform. For high-level security architecture, see [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md).
 
@@ -43,22 +49,14 @@ For the complete rule definitions, see [00-RULES.yaml](00-RULES.yaml).
 
 ## 12-Layer Security Architecture
 
-The platform implements defense in depth with 12 security layers:
+The platform implements defense in depth with 12 security layers (S1-S12). For the complete control registry including descriptions, mechanisms, test methods, and threat mappings, see [security-controls.yaml](./security-controls.yaml).
 
-| Layer | Control | Mechanism | Test Method | Owner/Evidence |
-| :--- | :--- | :--- | :--- | :--- |
-| L1 | Network isolation | Fly.io private network, Supabase peering | Port scanning | Platform: Network diagram |
-| L2 | Application security | CSP headers, nonce strategy, strict-dynamic, worker-src | CSP Report-Only monitoring | Security: CSP policy document |
-| L3 | API protection | FastAPI-Limiter, Upstash Redis, per-user/org limits | Load testing 1000 req/s | Platform: Rate limit logs |
-| L4 | Authentication | Custom access token hook, org_id JWT claim, 90d rotation | Token expiry testing | Security: Auth audit logs |
-| L5 | Data access | RLS with org_id required, role-based access | pgTAP 33 test cases | Data: pg_prove output |
-| L6 | Supply chain | Package pinning, cosign verification | Schemathesis CVE scan | Security: CI gate logs |
-| L7 | MCP security | MCPSec L2, Agent Passports (ECDSA P-256), signed envelopes | OWASP MCP Top10 audit | AI: MCPSec test suite |
-| L8 | AI guardrails | 3-layer: Input (PII/jailbreak/tox), Output (halluc/safety/schema), Runtime (tool auth) | DeepEval test suite | AI: Guardrail audit logs |
-| L9 | Secret management | Vault rotation: JWT 90d, Stripe 180d, MCP OAuth 90d, LLM keys 30d | Rotation script testing | Platform: Vault audit trail |
-| L10 | Compliance | SOC2 Type I | Vanta evidence pipeline, quarterly refresh | GRC: SOC2 report |
-| L11 | Privacy | GDPR compliance, allow_training flag, data segregation | Data deletion testing | GRC: PIA document |
-| L12 | Audit | Immutable WORM logs, hash chaining | Log integrity checks | Security: Audit trail export |
+**Key Layers:**
+
+- **L1-L3**: Infrastructure hardening (network isolation, CSP, rate limiting)
+- **L4-L5**: Identity and data access (JWT auth, RLS with org_id)
+- **L6-L8**: Supply chain and AI security (dependency verification, MCP guardrails)
+- **L9-L12**: Operations and compliance (secret rotation, SOC2, GDPR, audit logging)
 
 ---
 
@@ -73,111 +71,7 @@ The platform implements defense in depth with 12 security layers:
 
 ## SOC2 Automation
 
-### Vanta SOC2 Automation Effectiveness
-
-**Core Automation Capabilities:**
-
-- **Continuous Evidence Collection**: Automatically capture screenshots, logs, and configuration data from 300+ integrated systems
-- **Control Mapping and Monitoring**: Map organizational practices to specific SOC2 controls with real-time compliance tracking
-- **Policy Template Libraries**: Access customizable policy templates covering all major compliance frameworks
-- **Workflow Management**: Create task assignments, deadlines, and approval processes for compliance activities
-- **Audit Trail Generation**: Produce comprehensive audit documentation with timestamps and change tracking
-- **Dashboard Reporting**: Visualize compliance posture with executive-level reporting and trend analysis
-
-**Effectiveness Metrics:**
-
-- **Time Reduction**: 73% reduction in compliance preparation time compared to manual approaches (arXiv:2502.16344)
-- **Integration Ecosystem**: 300+ pre-built integrations with cloud infrastructure, identity management, development tools, monitoring systems, and communication platforms
-- **User Experience**: Consistently rated highest for ease of use among compliance automation platforms
-- **Cost Range**: $10,000-$45,000 annually depending on company size and features
-
-**Limitations and Expertise Gap:**
-
-Automation tools cannot replace human expertise in critical areas:
-- **Strategic Decision Making**: Determining appropriate security controls for specific risk profiles requires cybersecurity knowledge beyond templates
-- **Policy Customization**: Tailoring policies to business processes, technology stack, and risk tolerance demands compliance expertise
-- **Audit Preparation**: Managing auditor relationships, responding to complex findings, and presenting evidence requires audit process experience
-- **Architecture Design**: Identifying and implementing security controls that integrate with existing infrastructure needs technical expertise
-
-**Integration Reality:**
-
-- Modern B2B SaaS companies typically use 100+ different software tools (Okta 2025 Businesses at Work Report)
-- Vanta integrates with major categories: AWS/Azure/GCP, Okta/Azure AD/Google Workspace, GitHub/GitLab/Jira/Jenkins, DataDog/New Relic/Splunk, Slack/Microsoft Teams
-- 95% of organizations report integration challenges (e.g., Salesforce) requiring custom configuration or manual evidence collection workarounds
-
-### Evidence Collection
-
-**Automated Evidence Pipeline Architecture:**
-
-**Data Sources:**
-
-- **Infrastructure**: Cloud and virtual environments (config changes, audit logs)
-- **Identity & Access Management**: Provisioning, deprovisioning, role assignments, access reviews
-- **CI/CD and Deployment Tools**: Build logs, change events, deployment metadata
-- **Ticketing & Workflow Systems**: Incident reports, change requests, approval workflows
-- **Security Monitoring Systems**: SIEMs or log aggregation platforms for real-time event feeds
-- **Endpoint Controls**: Device posture, antivirus status, EDR alerts
-
-**Collection Pipelines:**
-
-- **APIs**: For structured, on-demand data pulls
-- **Webhooks**: For real-time event-driven updates
-- **Agents/Collectors**: For systems without API access
-
-**Centralized Storage:**
-
-Route all data into a secure, centralized repository with:
-- Strict access control and encryption at rest and in transit
-- Metadata tagging to map items to SOC2 criteria
-- Version controls and timestamping for traceability and audit readiness
-
-**Automation Benefits:**
-
-- **Real-time Monitoring**: Continuous oversight of systems, networks, and controls with instant deviation flagging
-- **Reduced Manual Effort**: Elimination of repetitive tasks (data entry, evidence gathering, document tracking)
-- **Greater Accuracy and Consistency**: Uniform rules and standards across departments, reducing human error
-- **Improved Audit Readiness**: Documentation, control logs, and evidence updated in real time
-- **Enhanced Visibility and Reporting**: Data-driven insights into compliance health through dashboards and analytics
-- **Continuous Improvement**: Pattern analysis for control failures enables corrective measures and process strengthening
-
-**Key Control Areas:**
-
-- **Access Controls**: User provisioning/deprovisioning logs, MFA enrollment, periodic access reviews with timestamps
-- **Change Management**: Commit logs, approvals, release metadata, pull requests linked to tickets, deployment records
-- **System Monitoring & Logging**: Ingest system/security logs, tag by control relevance, trigger alerts linked to incident response
-- **Policy Management**: Employee acknowledgments, security training completion, policy version changes with authorship
-- **Incident Response**: Full incident tickets with severity/timeline/resolution, linked logs/alerts/communications, tagged post-mortems
-- **Vendor Management**: Vendor risk assessment logs, contract status/scope/termination documentation
-
-### Control Mapping
-
-**Trust Services Criteria (TSC) Mapping:**
-
-**The 5 Trust Services Categories:**
-
-1. **Security** (Required for all SOC2 audits): Protects systems and data from unauthorized access, misuse, or changes. Controls include identity and access management, risk assessment, firewalls, intrusion detection, logging/monitoring, security awareness training, change management, incident response.
-
-2. **Availability** (Optional): Ensures in-scope system is available for operation as promised. Controls include disaster recovery, business continuity planning, backup processes, capacity planning, performance monitoring, incident handling for downtime.
-
-3. **Processing Integrity** (Optional): Ensures system processing is complete, valid, accurate, timely, and authorized. Controls include input/output validation, data processing accuracy checks, error detection/correction, monitoring, reconciliation processes. Note: This evaluates whether processes work as intended, not whether input data is accurate.
-
-4. **Confidentiality** (Optional): Protects information designated as confidential from unauthorized access, disclosure, or use. Controls include data classification/handling, access restrictions, data retention/disposal, encryption (at rest and in transit), contractual confidentiality obligations.
-
-5. **Privacy** (Optional): Focuses on how personal information is collected, used, and disclosed. Controls include privacy policies, consent management, data subject rights processing, privacy impact assessments.
-
-**TSC Selection Guidance:**
-
-- **No Checklist or Guidance**: There is no AICPA checklist or guidance on how to choose the right trust services categories
-- **Service Commitment-Based**: Selection should be predicated entirely on service commitments and system requirements
-- **Customer Requirements**: Inclusion beyond relevant categories doesn't make sense--there wouldn't be enough to speak to
-- **Industry Alignment**: Consider what customers expect (e.g., SaaS vendors often include availability for uptime commitments, payment processors include processing integrity, healthcare vendors include confidentiality and privacy)
-
-**Mapping Completeness:**
-
-- Security is the cornerstone and required for every SOC2 audit
-- Other categories are included based on specific service commitments and system requirements
-- Mapping organizational practices to TSC requires understanding which criteria apply to the in-scope system
-- Vanta provides automated control mapping to SOC2 criteria with real-time compliance tracking
+SOC2 automation via Vanta; see [compliance-soc2.md](compliance-soc2.md) for detailed evidence collection, control mapping, and TSC guidance.
 
 ---
 
@@ -245,5 +139,5 @@ The complete GitHub Actions workflow is maintained in a separate file for better
 ## Related Documentation
 
 - [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md) - High-level security architecture
-- [ADR_111](22-PLAN-ADR-INDEX.md#adr_111) - Grype replaces Trivy for Docker scanning
-- [ADR_119](22-PLAN-ADR-INDEX.md#adr_119) - Vanta as SOC2 automation platform
+- [ADR_111](01-PLAN-DECISIONS.md#adr_111) - Grype replaces Trivy for Docker scanning
+- [ADR_119](01-PLAN-DECISIONS.md#adr_119) - Vanta as SOC2 automation platform

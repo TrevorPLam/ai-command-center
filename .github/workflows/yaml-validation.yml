@@ -1,0 +1,94 @@
+name: YAML Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/plan/*.yaml'
+  pull_request:
+    paths:
+      - 'docs/plan/*.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Validate YAML syntax
+        run: |
+          for file in docs/plan/*.yaml; do
+            echo "Validating $file"
+            yq eval '.' "$file" > /dev/null || exit 1
+          done
+
+      - name: Validate versions.yaml structure
+        run: |
+          yq eval 'keys | sort' docs/plan/versions.yaml > /tmp/versions-keys.txt
+          echo "✓ versions.yaml has valid structure"
+
+      - name: Validate component-registry.yaml structure
+        run: |
+          yq eval '.components | length' docs/plan/component-registry.yaml > /dev/null
+          yq eval '.components[0] | keys' docs/plan/component-registry.yaml > /tmp/component-keys.txt
+          echo "✓ component-registry.yaml has valid structure"
+
+      - name: Validate security-controls.yaml structure
+        run: |
+          yq eval '.controls | length' docs/plan/security-controls.yaml > /dev/null
+          yq eval '.controls[0] | keys' docs/plan/security-controls.yaml > /tmp/controls-keys.txt
+          echo "✓ security-controls.yaml has valid structure"
+
+      - name: Validate pattern-tags.yaml structure
+        run: |
+          yq eval '.animation_tags | length' docs/plan/pattern-tags.yaml > /dev/null
+          yq eval '.data_tags | length' docs/plan/pattern-tags.yaml > /dev/null
+          yq eval '.specialized_tags | length' docs/plan/pattern-tags.yaml > /dev/null
+          echo "✓ pattern-tags.yaml has valid structure"
+
+      - name: Validate model-cards.yaml structure
+        run: |
+          if [ -f docs/plan/model-cards.yaml ]; then
+            yq eval '.' docs/plan/model-cards.yaml > /dev/null
+            echo "✓ model-cards.yaml has valid structure"
+          fi
+
+      - name: Validate ai-guardrails.yaml structure
+        run: |
+          if [ -f docs/plan/ai-guardrails.yaml ]; then
+            yq eval '.' docs/plan/ai-guardrails.yaml > /dev/null
+            echo "✓ ai-guardrails.yaml has valid structure"
+          fi
+
+      - name: Validate ai-evaluation-gates.yaml structure
+        run: |
+          if [ -f docs/plan/ai-evaluation-gates.yaml ]; then
+            yq eval '.' docs/plan/ai-evaluation-gates.yaml > /dev/null
+            echo "✓ ai-evaluation-gates.yaml has valid structure"
+          fi
+
+      - name: Validate tech-validation.yaml structure
+        run: |
+          if [ -f docs/plan/tech-validation.yaml ]; then
+            yq eval '.' docs/plan/tech-validation.yaml > /dev/null
+            echo "✓ tech-validation.yaml has valid structure"
+          fi
+
+      - name: Validate zustand-slices.yaml structure
+        run: |
+          if [ -f docs/plan/zustand-slices.yaml ]; then
+            yq eval '.' docs/plan/zustand-slices.yaml > /dev/null
+            echo "✓ zustand-slices.yaml has valid structure"
+          fi
+
+      - name: Report success
+        run: |
+          echo "::notice::All YAML files validated successfully"

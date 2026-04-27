@@ -1,26 +1,24 @@
-# AI SaaS Stack Blueprint (2026)
+---
+title: "AI SaaS Stack Blueprint"
+owner: "Architecture"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 > **TL;DR**: Six-domain architecture (Platform, Data, AI, Frontend, Security, Business) with LLM-first orchestration, local-default AI, and clear inter-domain dependencies. Design axioms: LLM-first rule-optimized, local-default cloud-fallback. Product vision, jobs, metrics, monetization, and personas in [10-STRAT-PRD.md](10-STRAT-PRD.md).
 
 ## Design Axiom: LLM‑First, Rule‑Optimized
 
-LLM-driven orchestration layer: AI agent decides actions/tools.
+LLM orchestrator interprets intent and selects deterministic tools for execution.
 
-Tools are deterministic code:
-
-- LLM orchestrator interprets intent, selects actions
-
-Result: intelligent assistant with low costs, high reliability, clear audit trails. Accommodates cheaper/local AI future.
+- **Why**: Low costs, high reliability, clear audit trails; accommodates cheaper/local AI future.
 
 ### Design Axiom: Local‑Default, Cloud‑Fallback
 
-Local/self-hosted models by default. Cloud APIs only when:
+Local/self-hosted models by default; cloud APIs only when authorized, capability-exceeded, or user-requested.
 
-- Subscription tier authorizes
-- Task exceeds local capabilities (verified by cascade)
-- User explicitly requests cloud model
-
-Inverts industry default → data sovereignty as feature. Free tier: full AI via local models (near-zero cost). Paid tiers: cloud AI as premium.
+- **Why**: Inverts industry default → data sovereignty as feature; free tier via local models (near-zero cost).
 
 ## Open Questions
 
@@ -50,76 +48,21 @@ Comprehensive tech component review confirms solid foundation. See **[36-ARCH-TE
 
 ---
 
-## Organization Analysis
-
-Original 18-pillar structure had weaknesses → six-domain reorganization. See **[docs/archive/ORGANIZATION-ANALYSIS.md](../archive/ORGANIZATION-ANALYSIS.md)** for detailed analysis and rationale.
-
----
-
 ## Six-Domain Framework
 
 Original 18 pillars → six cohesive domains representing team boundaries. Organized infrastructure→product, security as cross-cutting wrapper. Self-contained domains minimize inter-dependencies, eliminate redundancy.
 
-### Domain A: Platform Foundation & Dev Experience
+| Domain | Purpose | Lead | Key Services |
+| --- | --- | --- | --- |
+| A: Platform Foundation | Foundational tech stack, monorepo, CI/CD, infra deployment, observability | Platform Engineering | Ops, infra, mobile tooling |
+| B: Data & Sync | Offline-first sync, real-time streaming, vector storage, knowledge graph | Data Platform | Semantic layer, knowledge graph components |
+| C: AI Core & Agents | Multi-provider AI routing, agent protocols, orchestration, local model infra | AI/ML Engineering | Audio/vision AI, coordination, trust layer |
+| D: Frontend & UX | Responsive interfaces, real-time collaboration, multimodal I/O, agent interaction | Product Engineering | Mobile, voice, UX components |
+| E: Security & Compliance | Security controls, compliance frameworks, audit trails, AI ethics governance | Security/GRC | Cross-cutting across all domains |
+| F: Business Strategy | Monetization, revenue optimization, product positioning, market models | Product/GTM | Workflow, competitive analysis |
 
-**Ownership**: Platform Engineering / Dev Infrastructure
-**Absorbs**: Pillars 0, 5, 7 (ops), 9 (infra), 6 (mobile tooling)
-
-**Purpose**: Foundational tech stack, monorepo, CI/CD, infra deployment, observability for all domains.
-
-→ Implementation: [30-ARCH-OVERVIEW.md § Domain A](30-ARCH-OVERVIEW.md)
-
-### Domain B: Data, Sync & Knowledge
-
-**Ownership**: Data Platform / Data Engineering
-**Absorbs**: Pillar 2, semantic layer parts of 4/14, knowledge graph components
-
-**Purpose**: Offline-first sync, real-time streaming, vector storage for semantic search, knowledge graph infrastructure for cross-app AI reasoning.
-
-→ Implementation: [30-ARCH-OVERVIEW.md § Domain B](30-ARCH-OVERVIEW.md)
-
-### Domain C: AI Core & Agent Architecture
-
-**Ownership**: AI Platform / ML Engineering
-**Absorbs**: Pillars 1, 4, 17 (full), 10 (audio/vision AI), 15 (coordination), semantic trust layer
-
-**Purpose**: Multi-provider AI routing, agent protocols/identity verification, multi-agent orchestration, reliability engineering, local model infrastructure for safe, cost-effective, privacy-preserving AI.
-
-→ Implementation: [30-ARCH-OVERVIEW.md § Domain C](30-ARCH-OVERVIEW.md)
-
-### Domain D: Frontend, UX & Multimodal Interfaces
-
-**Ownership**: Product Engineering / Frontend
-**Absorbs**: Pillars 6, 10 (UX-related), mobile, voice
-
-**Purpose**: Responsive, accessible web/mobile interfaces with real-time collaboration, multimodal I/O, seamless agent interaction for premium UX.
-
-→ Implementation: [30-ARCH-OVERVIEW.md § Domain D](30-ARCH-OVERVIEW.md)
-
-### Domain E: Security, Compliance & Governance
-
-**Ownership**: Security / GRC
-**NOTE**: CROSS-CUTTING across all domains
-**Absorbs**: Pillars 3, 11, audit trail components of 17
-
-**Purpose**: Security controls, compliance frameworks (EU AI Act, GDPR), audit trails, AI ethics governance protecting platform, users, agents across all domains.
-
-→ Implementation: [30-ARCH-OVERVIEW.md § Domain E](30-ARCH-OVERVIEW.md) · CVEs: [36-ARCH-TECH-VALIDATION.md](36-ARCH-TECH-VALIDATION.md)
-
-### Domain F: Business Strategy & Monetization
-
-**Ownership**: Product / GTM / Executive
-**Absorbs**: Pillars 8, 12, 13, 14 (workflow/composable), 16 (competitive)
-
-**Purpose**: Monetization strategy, revenue optimization, product positioning, market models, ecosystem integration for sustainable growth and customer value.
-
-→ Implementation: [30-ARCH-OVERVIEW.md § Domain F](30-ARCH-OVERVIEW.md)
-
-### Horizon Scanning
-
-Emerging tech/standards/market trends tracked in **[12-STRAT-HORIZON.md](12-STRAT-HORIZON.md)**: Temporal API, WebGPU, quantum computing, R&D, patent strategy, competitive monitoring.
-
----
+**Implementation**: See [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md) for each domain.
+**CVEs**: [36-ARCH-TECH-VALIDATION.md](36-ARCH-TECH-VALIDATION.md) (Domain E).
 
 ## Inter-Domain Dependencies
 

@@ -1,0 +1,376 @@
+# Zustand Store Configuration
+# This YAML file is the authoritative source for Zustand slice configuration.
+# Source: 01-PLAN-ZUSTAND.md
+
+slices:
+  - slice: authSlice
+    persistence: reset
+    persisted_fields: []
+    notes: Cleared on logout
+
+  - slice: uiSlice
+    persistence: persistent
+    persisted_fields:
+      - cmdPaletteOpen
+    notes: Command palette visibility
+
+  - slice: orgSlice
+    persistence: persistent
+    persisted_fields:
+      - currentOrgId
+    notes: Current organization selection
+
+  - slice: dashboardSlice
+    persistence: persistent
+    persisted_fields:
+      - agentFilter
+    notes: Active agent filter
+
+  - slice: chatSlice
+    persistence: persistent
+    persisted_fields:
+      - activeThreadId
+    notes: Currently selected chat thread
+
+  - slice: workflowSlice
+    persistence: reset
+    persisted_fields: []
+    notes: Cleared on session end
+
+  - slice: projectSlice
+    persistence: persistent
+    persisted_fields:
+      - currentView
+      - filters
+    notes: Project view preferences
+
+  - slice: calendarSlice
+    persistence: persistent
+    persisted_fields:
+      - activeDate
+      - sidebarCal
+    notes: Calendar navigation state
+
+  - slice: emailSlice
+    persistence: persistent
+    persisted_fields:
+      - activeAccount
+      - selectedFolder
+    notes: Email client state
+
+  - slice: contactsSlice
+    persistence: reset
+    persisted_fields: []
+    notes: Cleared on logout
+
+  - slice: conferenceSlice
+    persistence: reset
+    persisted_fields: []
+    notes: Meeting state cleared after session
+
+  - slice: translationSlice
+    persistence: persistent
+    persisted_fields:
+      - languages
+    notes: Preferred translation languages
+
+  - slice: newsSlice
+    persistence: persistent
+    persisted_fields:
+      - feedFilter
+      - pausedFeeds
+    notes: News feed preferences
+
+  - slice: documentsSlice
+    persistence: persistent
+    persisted_fields:
+      - currentFolder
+    notes: Document browser location
+
+  - slice: researchSlice
+    persistence: persistent
+    persisted_fields:
+      - activeNotebook
+    notes: Current research notebook
+
+  - slice: mediaSlice
+    persistence: persistent
+    persisted_fields:
+      - selectedAlbum
+    notes: Media gallery selection
+
+  - slice: budgetSlice
+    persistence: persistent
+    persisted_fields:
+      - selectedAccount
+      - dateRange
+    notes: Budget view preferences
+
+  - slice: settingsSlice
+    persistence: localStorage
+    persisted_fields:
+      - all
+    notes: User settings persisted to localStorage
+
+  - slice: mcpSlice
+    persistence: persistent
+    persisted_fields:
+      - version
+    notes: Version for rehydration handling
+
+  - slice: agentStore
+    persistence: persistent
+    persisted_fields:
+      - version
+    notes: Version for rehydration handling
+
+  - slice: promptStore
+    persistence: localStorage
+    persisted_fields:
+      - all
+    notes: Prompt history in localStorage
+
+  - slice: canvasStore
+    persistence: reset
+    persisted_fields: []
+    notes: Canvas state cleared on exit
+
+  - slice: memoryStore
+    persistence: max 50 FIFO
+    persisted_fields:
+      - working
+      - episodic
+    notes: FIFO eviction at 50 items
+
+  - slice: triageSlice
+    persistence: reset
+    persisted_fields: []
+    notes: Triage state cleared after action
+
+  - slice: recurrenceStore
+    persistence: reset
+    persisted_fields: []
+    notes: Recurrence form state
+
+  - slice: notificationSlice
+    persistence: persistent
+    persisted_fields:
+      - unreadCount
+    notes: Notification badge count
+
+  - slice: searchSlice
+    persistence: persistent
+    persisted_fields:
+      - history (max 50)
+      - recentEntities (max 20)
+    notes: Search history with limits
+
+  - slice: analyticsSlice
+    persistence: persistent
+    persisted_fields:
+      - dateRange
+      - selectedMetrics
+    notes: Analytics view preferences
+
+  - slice: costSlice
+    persistence: persistent
+    persisted_fields:
+      - reset
+      - fetched
+    notes: Cost tracking state
+
+  - slice: specSlice
+    persistence: persistent
+    persisted_fields:
+      - activeSpec
+      - tierAssignments
+    notes: Active specification tracking
+
+  - slice: xctSlice
+    persistence: persistent
+    persisted_fields:
+      - motionPrefs
+      - optimisticUndoWindow
+    notes: Cross-cutting service preferences
+
+  - slice: flowcSlice
+    persistence: persistent
+    persisted_fields:
+      - workflowSMs
+    notes: Workflow state machines
+
+  - slice: apicSlice
+    persistence: persistent
+    persisted_fields:
+      - openApiVersion
+      - codegenConfig
+    notes: API client configuration
+
+  - slice: evntSlice
+    persistence: persistent
+    persisted_fields:
+      - eventSchemas
+      - ICs
+    notes: Event contract schemas
+
+  - slice: testcSlice
+    persistence: persistent
+    persisted_fields:
+      - coverageTargets
+      - gateThresholds
+    notes: Testing coverage thresholds
+
+  - slice: opsrSlice
+    persistence: persistent
+    persisted_fields:
+      - incidentSeverity
+      - roles
+    notes: Ops runbook configuration
+
+  - slice: fflgSlice
+    persistence: persistent
+    persisted_fields:
+      - flagStages
+      - killSwitch
+    notes: Feature flag states
+
+  - slice: migSlice
+    persistence: persistent
+    persisted_fields:
+      - strategy
+      - EBCsteps
+    notes: Migration strategy settings
+
+  - slice: obsSlice
+    persistence: persistent
+    persisted_fields:
+      - SLOs
+      - EBs
+      - BRs
+    notes: Observability thresholds
+
+  - slice: secmSlice
+    persistence: persistent
+    persisted_fields:
+      - controls
+      - evidence
+    notes: Security matrix data
+
+  - slice: mcp2Slice
+    persistence: persistent
+    persisted_fields:
+      - oauthConfig
+      - schemaAllowlists
+    notes: MCP security configuration
+
+  - slice: passSlice
+    persistence: persistent
+    persisted_fields:
+      - passkeyEnrollments
+      - recoveryCodes
+    notes: Passkey authentication state
+
+  - slice: taurSlice
+    persistence: persistent
+    persisted_fields:
+      - capabilities
+      - depAudit
+    notes: Tauri desktop capabilities
+
+  - slice: mobnSlice
+    persistence: persistent
+    persisted_fields:
+      - pushPermissions
+      - deepLinkRoutes
+    notes: Mobile notification settings
+
+  - slice: grdlSlice
+    persistence: persistent
+    persisted_fields:
+      - guardrailRules
+      - auditLogs
+    notes: AI guardrails configuration
+
+  - slice: ssrfSlice
+    persistence: persistent
+    persisted_fields:
+      - allowlistRules
+      - dnsValidation
+    notes: SSRF prevention rules
+
+  - slice: privSlice
+    persistence: persistent
+    persisted_fields:
+      - trainingOptOuts
+      - privacySettings
+    notes: Privacy preference settings
+
+  - slice: stkbSlice
+    persistence: persistent
+    persisted_fields:
+      - tokenMarkup
+      - usageRecords
+    notes: Stripe billing configuration
+
+  - slice: compSlice
+    persistence: persistent
+    persisted_fields:
+      - evidence
+      - controlMapping
+    notes: Compliance tracking data
+
+  - slice: yjsSlice
+    persistence: persistent
+    persisted_fields:
+      - gcEnabled
+      - undoStackSize
+      - snapshotVersions
+    notes: Yjs collaboration settings
+
+  - slice: nylsSlice
+    persistence: persistent
+    persisted_fields:
+      - webhookQueue
+      - SyncPolicy
+    notes: Nylas integration state
+
+  - slice: otelSlice
+    persistence: persistent
+    persisted_fields:
+      - rootSpanProp
+      - redactionRules
+    notes: OpenTelemetry configuration
+
+  - slice: crdbSlice
+    persistence: persistent
+    persisted_fields:
+      - tombstoneConfig
+      - idStrategy
+    notes: Offline-first data strategy
+
+  - slice: rlmtSlice
+    persistence: persistent
+    persisted_fields:
+      - channelLimits
+      - memThresholds
+    notes: Realtime limits configuration
+
+  - slice: upscSlice
+    persistence: persistent
+    persisted_fields:
+      - scanConfig
+      - cvePinning
+    notes: Upload security settings
+
+  - slice: rcllSlice
+    persistence: persistent
+    persisted_fields:
+      - recurrenceRules
+      - dstConfig
+    notes: Recurrence engine settings
+
+persistence_types:
+  reset: "Slice is cleared on logout/session end"
+  persistent: "Slice persists to configured storage (localStorage with version+migrate+partialize)"
+  localStorage: "All slice data stored in localStorage"
+  max_50_FIFO: "FIFO eviction when 50 item limit reached"

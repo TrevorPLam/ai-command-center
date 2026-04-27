@@ -1,0 +1,136 @@
+# Security Controls Registry
+# Authoritative source for S1-S28 security controls
+# For complete rule definitions, see 00-RULES.yaml
+
+controls:
+  - id: S1
+    name: Network isolation
+    layer: L1
+    description: Network-level isolation and peering
+    mechanism: Fly.io private network, Supabase peering
+    test_method: Port scanning
+    owner_evidence: Platform: Network diagram
+    threats:
+      - ASI: Network Security
+      - OWASP: A01:2021 - Broken Access Control
+
+  - id: S2
+    name: Application security
+    layer: L2
+    description: Content Security Policy with nonce strategy
+    mechanism: CSP headers, nonce strategy, strict-dynamic, worker-src
+    test_method: CSP Report-Only monitoring
+    owner_evidence: Security: CSP policy document
+    threats:
+      - ASI: Input Validation
+      - OWASP: A05:2021 - Security Misconfiguration
+
+  - id: S3
+    name: API protection
+    layer: L3
+    description: Rate limiting and API abuse prevention
+    mechanism: FastAPI-Limiter, Upstash Redis, per-user/org limits
+    test_method: Load testing 1000 req/s
+    owner_evidence: Platform: Rate limit logs
+    threats:
+      - ASI: API Security
+      - OWASP: A04:2021 - Insecure Design
+
+  - id: S4
+    name: Authentication
+    layer: L4
+    description: JWT-based authentication with org context
+    mechanism: Custom access token hook, org_id JWT claim, 90d rotation
+    test_method: Token expiry testing
+    owner_evidence: Security: Auth audit logs
+    threats:
+      - ASI: Authentication
+      - OWASP: A07:2021 - Identification and Authentication Failures
+
+  - id: S5
+    name: Data access
+    layer: L5
+    description: Row-Level Security with organization isolation
+    mechanism: RLS with org_id required, role-based access
+    test_method: pgTAP 33 test cases
+    owner_evidence: Data: pg_prove output
+    threats:
+      - ASI: Authorization
+      - OWASP: A01:2021 - Broken Access Control
+
+  - id: S6
+    name: Supply chain
+    layer: L6
+    description: Dependency verification and vulnerability scanning
+    mechanism: Package pinning, cosign verification
+    test_method: Schemathesis CVE scan
+    owner_evidence: Security: CI gate logs
+    threats:
+      - ASI: Supply Chain
+      - OWASP: A08:2021 - Software and Data Integrity Failures
+
+  - id: S7
+    name: MCP security
+    layer: L7
+    description: Model Context Protocol security controls
+    mechanism: MCPSec L2, Agent Passports (ECDSA P-256), signed envelopes
+    test_method: OWASP MCP Top10 audit
+    owner_evidence: AI: MCPSec test suite
+    threats:
+      - ASI: AI/ML Security
+      - OWASP: LLM:01 - Prompt Injection
+
+  - id: S8
+    name: AI guardrails
+    layer: L8
+    description: Three-layer AI input/output/runtime protection
+    mechanism: 3-layer: Input (PII/jailbreak/tox), Output (halluc/safety/schema), Runtime (tool auth)
+    test_method: DeepEval test suite
+    owner_evidence: AI: Guardrail audit logs
+    threats:
+      - ASI: AI/ML Security
+      - OWASP: LLM:03 - Training Data Poisoning
+
+  - id: S9
+    name: Secret management
+    layer: L9
+    description: Automated secret rotation with audit trail
+    mechanism: Vault rotation: JWT 90d, Stripe 180d, MCP OAuth 90d, LLM keys 30d
+    test_method: Rotation script testing
+    owner_evidence: Platform: Vault audit trail
+    threats:
+      - ASI: Secrets Management
+      - OWASP: A02:2021 - Cryptographic Failures
+
+  - id: S10
+    name: Compliance
+    layer: L10
+    description: SOC2 Type I compliance automation
+    mechanism: SOC2 Type I
+    test_method: Vanta evidence pipeline, quarterly refresh
+    owner_evidence: GRC: SOC2 report
+    threats:
+      - ASI: Compliance
+      - OWASP: Governance
+
+  - id: S11
+    name: Privacy
+    layer: L11
+    description: GDPR compliance and data protection
+    mechanism: GDPR compliance, allow_training flag, data segregation
+    test_method: Data deletion testing
+    owner_evidence: GRC: PIA document
+    threats:
+      - ASI: Privacy
+      - OWASP: A03:2021 - Injection
+
+  - id: S12
+    name: Audit
+    layer: L12
+    description: Immutable logging with integrity verification
+    mechanism: Immutable WORM logs, hash chaining
+    test_method: Log integrity checks
+    owner_evidence: Security: Audit trail export
+    threats:
+      - ASI: Logging and Monitoring
+      - OWASP: A09:2021 - Security Logging and Monitoring Failures

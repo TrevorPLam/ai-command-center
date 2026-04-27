@@ -1,4 +1,10 @@
-# Database Schema Documentation
+---
+title: "Database Schema Documentation"
+owner: "Data Platform"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 This document describes database design rules, patterns, and configuration. For the complete SQL DDL schema with all CREATE TABLE statements, RLS policies, indexes, and triggers, see [02-arch-database-schema.sql](02-arch-database-schema.sql).
 

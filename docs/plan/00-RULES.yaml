@@ -60,8 +60,8 @@ rules:
 
   - id: BE-10
     domain: backend
-    severity: hard
-    description: PowerSync is the primary offline sync mechanism (Phase 2); bucket YAML rules per orgId
+    severity: medium
+    description: PowerSync is the target primary offline sync mechanism. Phase 2 implements tombstone + outbox; Phase 4 delivers full bidirectional sync
     check: manual review
 
   - id: BE-11
@@ -103,7 +103,7 @@ rules:
   - id: BE-17
     domain: backend
     severity: hard
-    description: Every table that stores user data must have an org_id column and an active RLS policy
+    description: tenant-scoped application data; excludes identity/auth tables (users, organizations, connected_accounts)
     check: pgTAP test suite
 
   - id: BE-18
@@ -357,7 +357,7 @@ rules:
   - id: AI-04
     domain: ai
     severity: hard
-    description: Haiku 4.5 must never be used in agentic contexts (poor injection guard)
+    description: Haiku 4.5 must never be used under any circumstances
     check: lint-rule or manual review
 
   - id: AI-05
@@ -671,7 +671,7 @@ rules:
   - id: COLL-01
     domain: collaboration
     severity: hard
-    description: Y-Sweet self-hosted (Jamsocket shutdown); Docker deployment, 50 MB document limit, GC enabled, undo truncated to last 5 snapshots
+    description: default 50 MB document limit, configurable via Y_SWEET_MAX_BODY_SIZE
     check: configuration validation
 
   - id: COLL-02

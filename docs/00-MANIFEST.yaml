@@ -18,6 +18,13 @@ last_updated: "2026-04-26"
 
 files:
   # === GOVERNANCE ===
+  - path: "_agent-bundle.yaml"
+    type: governance
+    summary: Auto-generated agent context bundle with essential rules, decisions, and dependencies
+    load: always
+    tags: [agent, bundle, governance]
+    dependencies: []
+
   - path: "plan/00-RULES.md"
     type: governance
     summary: Human-readable rules document generated from 00-RULES.yaml
@@ -91,16 +98,16 @@ files:
 
   - path: "plan/22-PLAN-ADR-INDEX.md"
     type: plan
-    summary: Architecture Decision Record index with active/superseded ADRs
-    load: on-demand
-    tags: [adr, architecture]
+    summary: ARCHIVED - ADR index moved to unified decision log (01-PLAN-DECISIONS.md)
+    load: never
+    tags: [adr, architecture, archived]
     dependencies: ["plan/01-PLAN-DECISIONS.md"]
 
   - path: "plan/23-PLAN-QUESTIONS.md"
     type: plan
-    summary: Open questions and unresolved decisions
-    load: on-demand
-    tags: [questions, planning]
+    summary: ARCHIVED - Questions moved to unified decision log (01-PLAN-DECISIONS.md)
+    load: never
+    tags: [questions, planning, archived]
     dependencies: ["plan/01-PLAN-DECISIONS.md"]
 
   # === ARCHITECTURE ===
@@ -175,11 +182,11 @@ files:
     tags: [components, registry]
     dependencies: ["plan/30-ARCH-OVERVIEW.md"]
 
-  - path: "plan/50-XCT-SERVICES.md"
+  - path: "plan/50-XCT-INDEX.md"
     type: spec
-    summary: Cross-cutting services across architectural layers
+    summary: Index for cross-cutting services split by domain
     load: on-demand
-    tags: [services, cross-cutting]
+    tags: [services, cross-cutting, index]
     dependencies: ["plan/30-ARCH-OVERVIEW.md"]
 
   - path: "plan/51-XCT-DEPENDENCIES.md"
@@ -347,7 +354,7 @@ files:
 # - Planning work: plan/21-PLAN-MILESTONES.md, plan/22-PLAN-ADR-INDEX.md, plan/23-PLAN-QUESTIONS.md
 # - Dependencies: plan/51-XCT-DEPENDENCIES.md, plan/versions.yaml
 # - Components: plan/40-COMP-REGISTRY.md
-# - Services: plan/50-XCT-SERVICES.md
+# - Services: plan/50-XCT-INDEX.md
 # - Planning docs: planning-docs/*.md
 
 # Deep Reference (never):

@@ -1,0 +1,54 @@
+name: Regenerate Derived Documents
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/plan/*.yaml'
+  pull_request:
+    paths:
+      - 'docs/plan/*.yaml'
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Regenerate component overview table
+        run: |
+          node scripts/generate-component-table.js
+
+      - name: Regenerate pattern tags table
+        run: |
+          node scripts/generate-pattern-tags-table.js
+
+      - name: Regenerate security controls table
+        run: |
+          node scripts/generate-security-controls-table.js
+
+      - name: Regenerate versions table
+        run: |
+          node scripts/generate-versions-table.js
+
+      - name: Commit regenerated documents
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/plan/*.md
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-regenerate derived documents from YAML"
+          git push

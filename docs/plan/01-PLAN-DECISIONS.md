@@ -1,4 +1,10 @@
-# Unified Decision Log
+---
+title: "Unified Decision Log"
+owner: "Product/Architecture"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 **Single source of truth for all decisions, ADRs, and questions.** Append-only log. Check before new decisions.
 
@@ -32,10 +38,10 @@
 | ID | Date | Type | Domain | Decision | Rationale | Reversible? | Confidence | Status | Expiry | ADR_Ref | Linked Items | Session |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | DEC-2026-04-26-001 | 2026-04-26 | process | Process | All planning documents follow SPEC-TEMPLATE.md format | Standardization; rejected free-form markdown | Costly | High | active | none | -- | SPEC-TEMPLATE.md, ADR_054 | session-2026-04-26-claude-planning-framework |
-| DEC-2026-04-26-002 | 2026-04-26 | process | Process | `00-PLANNING-BACKLOG.md` is single source of truth for unresolved decisions | Prevents premature implementation | Yes | High | active | none | -- | 00-PLANNING-BACKLOG.md | session-2026-04-26-claude-planning-framework |
+| DEC-2026-04-26-002 | 2026-04-26 | process | Process | Unified decision log (01-PLAN-DECISIONS.md) is single source of truth for unresolved decisions | Prevents premature implementation | Yes | High | active | none | -- | -- | session-2026-04-26-claude-planning-framework |
 | DEC-2026-04-26-003 | 2026-04-26 | process | Process | Decision register uses append-only: new decisions get new rows; old ones marked `superseded` | Preserves decision history | Costly | High | active | none | -- | -- | session-2026-04-26-claude-planning-framework |
-| DEC-2026-04-26-004 | 2026-04-26 | process | Process | AI agents must read this register at session start + append new decisions before session end | Prevents decision loss | Yes | High | active | none | -- | -- | session-2026-04-26-claude-planning-framework |
 | DEC-2026-04-26-005 | 2026-04-26 | process | Process | Reversible decisions made by AI agents without Trevor approval. Costly/irreversible require explicit Trevor review | Prevents decision paralysis while protecting against costly mistakes | Yes | Medium | active | Review after 10 sessions | -- | -- | session-2026-04-26-claude-planning-framework |
+| DEC-2026-04-26-006 | 2026-04-26 | process | Process | AI agents follow tiered loading protocol defined in 00-MANIFEST.yaml; always load session starter set, expand on demand | Reduces token load at session start while enabling on-demand deep context | Yes | High | active | none | -- | 00-MANIFEST.yaml | session-2026-04-26-claude-planning-framework |
 | ADR_001 | 2026-04-26 | architecture | Platform | Use Vite SPA, not Next.js | SPA architecture preferred for client-side control | Costly | High | active | none | docs/adr/ADR_001.md | -- | -- |
 | ADR_002 | 2026-04-26 | architecture | Data | Prisma schema + migrations, Supabase runtime | Type-safe ORM with managed Postgres | Costly | High | active | none | docs/adr/ADR_002.md | -- | -- |
 | ADR_003 | 2026-04-26 | architecture | Frontend | Use Zustand v5 for state management | Lightweight state management for UI-only state | Costly | High | active | none | docs/adr/ADR_003.md | -- | -- |
@@ -125,6 +131,7 @@
 
 | ID | Date | Domain | Decision | Superseded By | Superseded Date | Linked Items | Session |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| DEC-2026-04-26-004 | 2026-04-26 | Process | AI agents must read this register at session start + append new decisions before session end | DEC-2026-04-26-006 | 2026-04-26 | -- | session-2026-04-26-claude-planning-framework |
 | ADR_005 | 2026-04-26 | Platform | Y-Sweet + Yjs for real-time collab (self-host mandatory) | ADR_083 | 2026-04-26 | -- | -- |
 | ADR_006 | 2026-04-26 | Frontend | LiveKit for real-time comm (v2.0 only per ADR_115) | ADR_115 | 2026-04-26 | -- | -- |
 | ADR_007 | 2026-04-26 | Platform | Edge Functions for webhooks (now Serverless/FastAPI per ADR_099) | ADR_099 | 2026-04-26 | -- | -- |
@@ -147,14 +154,14 @@
 
 | Metric | Count |
 | :--- | :--- |
-| Total decisions | 136 |
+| Total decisions | 137 |
 | Active | 129 |
-| Superseded | 7 |
+| Superseded | 8 |
 | Expired | 0 |
-| Reversible (Yes) | 5 |
+| Reversible (Yes) | 6 |
 | Costly to reverse | 130 |
 | Irreversible (No) | 1 |
-| High confidence | 135 |
+| High confidence | 136 |
 | Medium confidence | 1 |
 | Low confidence | 0 |
 
@@ -173,5 +180,6 @@
 - Configuration, UX copy, process decisions
 
 Examples:
+
 - **ADR-worthy:** "Use PostgreSQL not MongoDB," "Use Vite SPA not Next.js"
 - **Register-worthy:** "Default calendar view is Month," "Notification batch size is 20"

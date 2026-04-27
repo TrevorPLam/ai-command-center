@@ -1,0 +1,1939 @@
+# Component Registry
+# Authoritative data source for all component specifications
+# Schema: components list with id, module, type, tags, rules, dependencies, notes
+
+components:
+  # Dashboard components
+  - id: AmbientStatusBanner
+    module: Dashboard
+    type: Banner
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules:
+      - Liquid glass effect
+    dependencies:
+      - useAgentStatus
+    notes: Dismissal state persists in localStorage
+
+  - id: AgentFleetPanel
+    module: Dashboard
+    type: Grid
+    tags:
+      - MotionGuard
+      - StaggerChildren
+    rules: []
+    dependencies:
+      - LayoutGroup
+    notes: layoutId for morphing animations
+
+  - id: AgentCard
+    module: Dashboard
+    type: Card
+    tags:
+      - OptimisticMutation
+      - StaggerChildren
+    rules:
+      - Motion v12 tokens
+    dependencies: []
+    notes: role=button for accessibility
+
+  - id: ActivityFeed
+    module: Dashboard
+    type: Feed
+    tags:
+      - VirtualizeList
+    rules: []
+    dependencies: []
+    notes: role=log, aria-live=polite
+
+  - id: ActivityEntry
+    module: Dashboard
+    type: Entry
+    tags:
+      - MotionGuard
+      - StaggerChildren
+    rules: []
+    dependencies: []
+    notes: Individual feed item
+
+  - id: AttentionQueue
+    module: Dashboard
+    type: Queue
+    tags:
+      - PopLayout
+      - OptimisticMutation
+      - VirtualizeChildren
+      - AnimatePresence
+      - Stagger
+    rules: []
+    dependencies: []
+    notes: Injected into RightPanel
+
+  - id: DecisionPacket
+    module: Dashboard
+    type: Packet
+    tags:
+      - OptimisticMutation
+      - OpacityFade
+    rules: []
+    dependencies:
+      - useMotionValue
+    notes: skipInitialAnimation
+
+  - id: AgentDetailDrawer
+    module: Dashboard
+    type: Drawer
+    tags:
+      - MotionGuard
+      - AnimatePresence
+      - StaggerChildren
+    rules:
+      - Focus restoration in Zustand
+      - FocusTrap
+      - Zustand persist version+migrate+partialize
+    dependencies:
+      - stores/uiSlice
+    notes: layoutScroll container
+
+  # Chat components
+  - id: ChatPage
+    module: Chat
+    type: Page
+    tags:
+      - InfiniteScroll
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - ~/pages/ChatPage
+    notes: Lazy loaded with hover prefetch for performance
+
+  - id: ThinkingTracePanel
+    module: Chat
+    type: Panel
+    tags:
+      - AnimatePresence
+      - Spring
+    rules: []
+    dependencies: []
+    notes: Collapsible dual-pane layout for AI reasoning traces
+
+  - id: GenUIRenderer
+    module: Chat
+    type: Renderer
+    tags:
+      - GenUI
+    rules: []
+    dependencies: []
+    notes: Renders agent-driven UI components safely
+
+  - id: ThreadList
+    module: Chat
+    type: List
+    tags:
+      - OpacityFade
+      - InfiniteScroll
+    rules:
+      - P2 (Performance rule 2)
+    dependencies: []
+    notes: Uses useTransition for smooth filtering
+
+  - id: ThreadListItem
+    module: Chat
+    type: Item
+    tags: []
+    rules: []
+    dependencies: []
+    notes: 200ms hover prefetch for thread content
+
+  - id: MessageList
+    module: Chat
+    type: List
+    tags:
+      - VirtualizeList
+      - SSEStream
+    rules: []
+    dependencies: []
+    notes: role="log" with aria-live for screen readers
+
+  - id: MessageBubble
+    module: Chat
+    type: Bubble
+    tags:
+      - Spring/AG
+      - MotionGuard
+    rules: []
+    dependencies: []
+    notes: Client-side message ID for optimistic updates
+
+  - id: TypingIndicator
+    module: Chat
+    type: Indicator
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Skips reduced motion for subtle animations
+
+  - id: ChatInput
+    module: Chat
+    type: Input
+    tags:
+      - MotionGuard
+      - KeyboardShortcuts
+    rules:
+      - g4 (Global rule 4)
+    dependencies:
+      - Real-time audio (rta)
+    notes: Cmd+Enter for sending messages
+
+  - id: SlashMenu
+    module: Chat
+    type: Menu
+    tags:
+      - MotionGuard
+      - KeyboardShortcuts
+      - DebounceAutoSave
+    rules:
+      - FT (Feature rule)
+    dependencies:
+      - ~/data/slashCommands
+    notes: Built-in commands plus MCP tool integration
+
+  - id: ToolCallDisclosure
+    module: Chat
+    type: Disclosure
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Reverse-measure viewport for performance
+
+  - id: CheckpointBanner
+    module: Chat
+    type: Banner
+    tags:
+      - OptimisticMutation
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: aria-live="assertive" for important notifications
+
+  - id: CollabCanvas
+    module: Chat
+    type: Canvas
+    tags:
+      - SandboxIframe
+      - OptimisticMutation
+      - SSEStream
+    rules: []
+    dependencies:
+      - mco
+      - yjs
+      - yml
+      - ymp
+      - ~/stores/canvasStore
+    notes: Y-Sweet token integration, layoutId for shared animations
+
+  - id: ArtifactSandbox
+    module: Chat
+    type: Sandbox
+    tags:
+      - SandboxIframe
+      - AnimatePresence
+    rules:
+      - g4+dp (Global rule 4 + DOMPurify)
+    dependencies: []
+    notes: BlobURL CSP handling with automatic revocation
+
+  - id: KnowledgeBase
+    module: Chat
+    type: Panel
+    tags:
+      - VirtualizeList
+    rules: []
+    dependencies:
+      - FastAPI /v1/embed
+    notes: Context injection for RAG operations
+
+  - id: MemoryManager
+    module: Chat
+    type: Manager
+    tags:
+      - TieredMemory
+    rules:
+      - B9 (Backend rule 9)
+    dependencies:
+      - ~/stores/memoryStore
+    notes: Episodic and semantic memory with FIFO eviction
+
+  - id: MCPSettings
+    module: Chat
+    type: Settings
+    tags: []
+    rules:
+      - B10 (Backend rule 10)
+    dependencies:
+      - ~/stores/mcpStore
+    notes: MCP server configuration management
+
+  - id: AgentStudio
+    module: Chat
+    type: Studio
+    tags:
+      - OptimisticMutation
+    rules:
+      - B10 (Backend rule 10)
+    dependencies:
+      - ~/stores/agentStore
+    notes: Browse and clone agent configurations
+
+  - id: A2AFlowEditor
+    module: Chat
+    type: Editor
+    tags:
+      - A2AFlow
+      - AnimatePresence
+    rules:
+      - B11 (Backend rule 11)
+    dependencies:
+      - DAG
+      - React Flow
+    notes: Keyboard accessibility support
+
+  - id: PromptLibrary
+    module: Chat
+    type: Library
+    tags:
+      - InfiniteScroll
+      - OptimisticMutation
+    rules: []
+    dependencies:
+      - ~/stores/promptStore
+    notes: Version history for prompt management
+
+  - id: A2ATranscriptViewer
+    module: Chat
+    type: Viewer
+    tags:
+      - A2AFlow
+    rules: []
+    dependencies: []
+    notes: View inter-agent message transcripts
+
+  - id: AgentPlayground
+    module: Chat
+    type: Playground
+    tags:
+      - PLAY
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Live trace viewing in sandboxed environment
+
+  # Projects components
+  - id: ProjectsPage
+    module: Projects
+    type: Page
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules:
+      - B1 + P2
+    dependencies:
+      - projectSlice
+      - ProjectsPage
+    notes: ViewSwitcher with layoutId
+
+  - id: ViewSwitcher
+    module: Projects
+    type: Switcher
+    tags:
+      - MotionGuard
+      - DebounceAutoSave
+    rules:
+      - g9
+    dependencies:
+      - projectSlice
+    notes: Active state via Zustand
+
+  - id: FilterBar
+    module: Projects
+    type: Bar
+    tags: []
+    rules:
+      - P2
+    dependencies:
+      - projectSlice
+    notes: Clear button, useTransition
+
+  - id: ProjectListView
+    module: Projects
+    type: List
+    tags:
+      - VirtualizeList
+      - InlineEdit
+      - HoverPrefetch
+    rules:
+      - B1
+    dependencies: []
+    notes: 10-column layout
+
+  - id: ProjectKanbanView
+    module: Projects
+    type: Kanban
+    tags:
+      - OptimisticMutation
+      - StaggerChildren
+    rules:
+      - dnd + B3
+    dependencies:
+      - projectSlice
+    notes: pointerWithin detection
+
+  - id: ProjectTimelineView
+    module: Projects
+    type: Timeline
+    tags: []
+    rules:
+      - g4 + LCP
+    dependencies:
+      - svg
+    notes: Zoom: Day/Week/Month/Quarter
+
+  - id: MyWeekView
+    module: Projects
+    type: View
+    tags:
+      - OptimisticMutation
+    rules:
+      - dnd + B3
+    dependencies:
+      - projectSlice
+    notes: Colleague week view
+
+  - id: WorkloadView
+    module: Projects
+    type: View
+    tags: []
+    rules:
+      - P2
+    dependencies: []
+    notes: Click bar to show task list
+
+  - id: TriagePage
+    module: Projects
+    type: Page
+    tags:
+      - VirtualizeList
+      - TriageColor
+      - TRIAGE
+    rules: []
+    dependencies:
+      - triageSlice
+    notes: Swipe gestures, kbd (E,A,P)
+
+  - id: TriageActionTray
+    module: Projects
+    type: Tray
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies:
+      - triageSlice
+    notes: Comment blue/white
+
+  - id: TriageIntegrationHub
+    module: Projects
+    type: Hub
+    tags: []
+    rules: []
+    dependencies:
+      - useTriage
+    notes: Type icons
+
+  - id: ProjectDetailPage
+    module: Projects
+    type: Page
+    tags:
+      - InlineEdit
+      - OptimisticMutation
+      - MotionGuard
+      - AnimatePresence
+    rules:
+      - FocusTrap
+    dependencies:
+      - projectSlice
+    notes: Tab nav URL (g27)
+
+  - id: TaskList
+    module: Projects
+    type: List
+    tags:
+      - VirtualizeList
+      - InlineEdit
+      - OptimisticMutation
+    rules:
+      - dnd + B3
+    dependencies: []
+    notes: Subtask count display
+
+  - id: TaskDetailDrawer
+    module: Projects
+    type: Drawer
+    tags:
+      - MotionGuard
+      - InlineEdit
+      - OptimisticMutation
+      - DebounceAutoSave
+      - AnimatePresence
+    rules:
+      - B1 + FocusTrap
+    dependencies:
+      - projectSlice
+    notes: Tabs lazy, @mention, debounce 500ms
+
+  - id: TaskChecklist
+    module: Projects
+    type: Checklist
+    tags:
+      - OptimisticMutation
+      - StaggerChildren
+    rules:
+      - dnd + B3
+    dependencies: []
+    notes: Live percentage in tab
+
+  - id: TaskComments
+    module: Projects
+    type: Comments
+    tags:
+      - OptimisticMutation
+    rules:
+      - DOMPurify + react-textarea-autosize
+    dependencies: []
+    notes: Internal/external comments
+
+  - id: QuickPeekOverlay
+    module: Projects
+    type: Overlay
+    tags:
+      - MotionGuard
+      - DebounceAutoSave
+    rules:
+      - FocusTrap aria-modal
+    dependencies:
+      - projectSlice
+    notes: Cached data
+
+  - id: ProjectTemplateLibrary
+    module: Projects
+    type: Library
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Save as template
+
+  - id: RecurringWorkDialog
+    module: Projects
+    type: Dialog
+    tags:
+      - Recurring
+    rules:
+      - zod
+    dependencies:
+      - shared/recurrence
+    notes: Preview next 5 occurrences
+
+  - id: ClientTaskConfig
+    module: Projects
+    type: Config
+    tags:
+      - InlineEdit
+    rules: []
+    dependencies: []
+    notes: Badge display
+
+  - id: AutomationRulesPanel
+    module: Projects
+    type: Panel
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies:
+      - projectSlice
+    notes: Triggered = strikethrough
+
+  - id: TimeBudgetPanel
+    module: Projects
+    type: Panel
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies:
+      - projectSlice
+    notes: Green <75%, amber <100%, red
+
+  - id: PracticeIntelligence
+    module: Projects
+    type: Dashboard
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Agent log
+
+  - id: GlobalSearchDialog
+    module: Projects
+    type: Dialog
+    tags:
+      - KeyboardShortcuts
+    rules:
+      - FocusTrap
+    dependencies: []
+    notes: type:, before:, after: filters
+
+  # Calendar components
+  - id: CalendarPage
+    module: Calendar
+    type: Page
+    tags:
+      - MotionGuard
+      - TimezoneAware
+      - AnimatePresence
+    rules:
+      - g10
+    dependencies:
+      - calendarSlice
+    notes: Sheet on mobile
+
+  - id: MonthView
+    module: Calendar
+    type: View
+    tags:
+      - MotionGuard
+      - TimezoneAware
+    rules:
+      - g10
+    dependencies:
+      - react-big-calendar
+    notes: ARIA grid, keyboard navigation
+
+  - id: WeekDayView
+    module: Calendar
+    type: View
+    tags:
+      - OptimisticMutation
+      - AnimatePresence
+    rules:
+      - dnd + B3
+    dependencies:
+      - react-big-calendar
+    notes: Ctrl+Shift+Arrow navigation
+
+  - id: ResourceWeekView
+    module: Calendar
+    type: View
+    tags:
+      - MotionGuard
+    rules: []
+    dependencies:
+      - react-big-calendar
+    notes: ""
+
+  - id: AgendaView
+    module: Calendar
+    type: View
+    tags:
+      - VirtualizeList
+    rules: []
+    dependencies:
+      - react-big-calendar
+    notes: role=list for accessibility
+
+  - id: EventComposer
+    module: Calendar
+    type: Composer
+    tags:
+      - MotionGuard
+      - Recurring
+      - OptimisticMutation
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: Optimistic create
+
+  - id: EventDetailDrawer
+    module: Calendar
+    type: Drawer
+    tags:
+      - OptimisticMutation
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: Optimistic delete with undo
+
+  - id: RecurringEditModal
+    module: Calendar
+    type: Modal
+    tags:
+      - Recurring
+      - OptimisticMutation
+    rules: []
+    dependencies:
+      - shared/recurrence
+    notes: Exception storage
+
+  - id: TimezoneSelector
+    module: Calendar
+    type: Selector
+    tags:
+      - TimezoneAware
+    rules: []
+    dependencies: []
+    notes: Working hours configuration
+
+  - id: ReminderToast
+    module: Calendar
+    type: Toast
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Browser notifications
+
+  - id: ImportExportDialog
+    module: Calendar
+    type: Dialog
+    tags: []
+    rules: []
+    dependencies: []
+    notes: ICS format, partial import
+
+  - id: BulkActionBar
+    module: Calendar
+    type: Bar
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies: []
+    notes: Shift-click range selection
+
+  # Budget components
+  - id: BudgetPage
+    module: Budget
+    type: Page
+    tags:
+      - MotionGuard
+      - TimezoneAware
+      - AnimatePresence
+    rules:
+      - g10
+    dependencies:
+      - budgetSlice
+    notes: URL sync via nuqs
+
+  - id: BudgetDashboard
+    module: Budget
+    type: Dashboard
+    tags:
+      - VirtualizeList
+    rules:
+      - LCP
+    dependencies: []
+    notes: Chart and table views
+
+  - id: TransactionList
+    module: Budget
+    type: List
+    tags:
+      - VirtualizeList
+      - InfiniteScroll
+    rules: []
+    dependencies: []
+    notes: Past, scheduled, and planned transactions
+
+  - id: TransactionCalendarView
+    module: Budget
+    type: Calendar
+    tags:
+      - OptimisticMutation
+      - AnimatePresence
+    rules:
+      - dnd + B3
+    dependencies:
+      - react-big-calendar
+    notes: Future editable events
+
+  - id: GoalCard
+    module: Budget
+    type: Card
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies: []
+    notes: Feasibility indicators
+
+  - id: RecurringCalendar
+    module: Budget
+    type: Calendar
+    tags:
+      - Recurring
+      - OptimisticMutation
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - shared/recurrence
+    notes: Shared recurrence engine
+
+  - id: CashFlowForecast
+    module: Budget
+    type: Forecast
+    tags: []
+    rules:
+      - LCP
+    dependencies: []
+    notes: LCP-optimized loading
+
+  # Email components
+  - id: EmailPage
+    module: Email
+    type: Page
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - emailSlice
+      - react-resizable-panels
+    notes: Resizable panels
+
+  - id: UnifiedInbox
+    module: Email
+    type: List
+    tags:
+      - VirtualizeList
+    rules: []
+    dependencies: []
+    notes: Account color coding
+
+  - id: EmailListItem
+    module: Email
+    type: Item
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies: []
+    notes: Bulk selection support
+
+  - id: ThreadView
+    module: Email
+    type: View
+    tags:
+      - MotionGuard
+    rules:
+      - DOMPurify + g15
+    dependencies: []
+    notes: Expand/collapse older messages
+
+  - id: ComposeWindow
+    module: Email
+    type: Window
+    tags:
+      - MotionGuard
+      - DebounceAutoSave
+    rules:
+      - FocusTrap
+    dependencies:
+      - react-textarea-autosize
+      - DOMPurify
+    notes: Scheduled send, undo
+
+  - id: AccountSidebar
+    module: Email
+    type: Sidebar
+    tags:
+      - KeyboardShortcuts
+    rules:
+      - dnd + B3
+    dependencies: []
+    notes: Drag-to-folder functionality
+
+  - id: SnoozeModal
+    module: Email
+    type: Modal
+    tags:
+      - Recurring
+    rules: []
+    dependencies: []
+    notes: Snoozed folder management
+
+  - id: AttachmentViewer
+    module: Email
+    type: Viewer
+    tags: []
+    rules:
+      - DOMPurify
+    dependencies: []
+    notes: Size limit validation
+
+  - id: EmailRules
+    module: Email
+    type: Rules
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Import/export rules
+
+  - id: TemplatesSignatures
+    module: Email
+    type: Templates
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies: []
+    notes: Canned responses
+
+  - id: VacationResponder
+    module: Email
+    type: Responder
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Once-per-sender limit
+
+  - id: AgentEmailComposer
+    module: Email
+    type: Composer
+    tags: []
+    rules: []
+    dependencies: []
+    notes: POST /v1/email/send endpoint
+
+  # Contacts components
+  - id: ContactsPage
+    module: Contacts
+    type: Page
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - contactsSlice
+    notes: Quick add functionality
+
+  - id: ContactDetail
+    module: Contacts
+    type: Detail
+    tags:
+      - InlineEdit
+      - OptimisticMutation
+    rules: []
+    dependencies: []
+    notes: Privacy badges
+
+  - id: ContactField
+    module: Contacts
+    type: Field
+    tags:
+      - InlineEdit
+    rules: []
+    dependencies: []
+    notes: Field-level privacy controls
+
+  - id: QuickAddModal
+    module: Contacts
+    type: Modal
+    tags:
+      - MotionGuard
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: Auto-enrichment on create
+
+  - id: ContactAutocomplete
+    module: Contacts
+    type: Autocomplete
+    tags:
+      - KeyboardShortcuts
+    rules: []
+    dependencies: []
+    notes: Recent contacts first
+
+  - id: EnrichmentPanel
+    module: Contacts
+    type: Panel
+    tags:
+      - OpacityFade
+    rules: []
+    dependencies: []
+    notes: Bulk enrichment
+
+  - id: RelationshipGraph
+    module: Contacts
+    type: Graph
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Zoom, pan, WCAG alt text
+
+  - id: RelationshipGraphTableView
+    module: Contacts
+    type: Table
+    tags: []
+    rules: []
+    dependencies: []
+    notes: WCAG B11 compliance
+
+  - id: CommunicationTimeline
+    module: Contacts
+    type: Timeline
+    tags:
+      - VirtualizeList
+    rules: []
+    dependencies: []
+    notes: Quick actions per entry
+
+  - id: TagManager
+    module: Contacts
+    type: Manager
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Auto-tagging support
+
+  - id: ImportExportDialog
+    module: Contacts
+    type: Dialog
+    tags:
+      - Upload
+    rules: []
+    dependencies: []
+    notes: Duplicate handling
+
+  - id: WorkflowAutomation
+    module: Contacts
+    type: Workflow
+    tags:
+      - WorkflowExecution
+    rules: []
+    dependencies: []
+    notes: Pre-built templates
+
+  # Documents components
+  - id: DocumentsPage
+    module: Documents
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - documentsSlice
+    notes: Grid/list/gallery views
+
+  - id: DocumentCard
+    module: Documents
+    type: Card
+    tags:
+      - OptimisticMutation
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: Progressive loading
+
+  - id: DocumentGrid
+    module: Documents
+    type: Grid
+    tags:
+      - VirtualizeList
+    rules: []
+    dependencies: []
+    notes: Drag-and-drop upload
+
+  - id: UploadManager
+    module: Documents
+    type: Manager
+    tags:
+      - Upload
+    rules: []
+    dependencies: []
+    notes: Size validation
+
+  - id: FilePreview
+    module: Documents
+    type: Preview
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Keyboard navigation
+
+  - id: ShareDialog
+    module: Documents
+    type: Dialog
+    tags:
+      - MotionGuard
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: Sharing controls
+
+  - id: AIPanel
+    module: Documents
+    type: Panel
+    tags:
+      - SSEStream
+    rules: []
+    dependencies: []
+    notes: Streaming AI responses
+
+  - id: VersionHistory
+    module: Documents
+    type: History
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Document versions
+
+  - id: RealTimeCoEdit
+    module: Documents
+    type: CoEdit
+    tags:
+      - ChatCache
+    rules: []
+    dependencies:
+      - yjs
+      - y-sweet
+    notes: Opt-in collaboration
+
+  # Media components
+  - id: MediaPage
+    module: Media
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - mediaSlice
+    notes: Grid/list/timeline views
+
+  - id: MediaCard
+    module: Media
+    type: Card
+    tags:
+      - OptimisticMutation
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: Progressive loading, alt text
+
+  - id: MediaGrid
+    module: Media
+    type: Grid
+    tags:
+      - VirtualizeList
+    rules: []
+    dependencies: []
+    notes: Infinite scroll
+
+  - id: GenerationPanel
+    module: Media
+    type: Panel
+    tags:
+      - OpacityFade
+      - SSEStream
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Cancel/retry controls
+
+  - id: MediaDetailDrawer
+    module: Media
+    type: Drawer
+    tags:
+      - MotionGuard
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: Image editor
+
+  - id: StorageAnalytics
+    module: Media
+    type: Analytics
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Quota warnings
+
+  # News components
+  - id: NewsPage
+    module: News
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - newsSlice
+    notes: Pause/dedup feeds
+
+  - id: NewsFeed
+    module: News
+    type: Feed
+    tags:
+      - VirtualizeList
+      - InfiniteScroll
+    rules: []
+    dependencies: []
+    notes: Filter tabs
+
+  - id: NewsCard
+    module: News
+    type: Card
+    tags:
+      - OptimisticMutation
+      - HoverPrefetch
+    rules: []
+    dependencies: []
+    notes: Expand/collapse, WebShare
+
+  - id: SentimentDot
+    module: News
+    type: Dot
+    tags:
+      - MotionGuard
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: WCAG 1.4.1 compliant
+
+  - id: ArticleReaderPanel
+    module: News
+    type: Panel
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Progress bar
+
+  - id: AudioPlayer
+    module: News
+    type: Player
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Voice selector
+
+  # Platform components
+  - id: EnvValidation
+    module: Platform
+    type: Util
+    tags: []
+    rules: []
+    dependencies:
+      - lib/env.ts
+    notes: No mount if invalid
+
+  - id: ErrorBoundary
+    module: Platform
+    type: Boundary
+    tags: []
+    rules: []
+    dependencies:
+      - lib/errorBoundary.ts
+    notes: logClientEvent
+
+  - id: AnalyticsPage
+    module: Platform
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - AnalyticsPage
+    notes: Agent analytics
+
+  - id: AuditLogPage
+    module: Platform
+    type: Page
+    tags:
+      - LazyMotion
+      - VirtualizeList
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Audit trail viewing
+
+  - id: PrivacyBanner
+    module: Platform
+    type: Banner
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Privacy notice
+
+  - id: LoginPage
+    module: Platform
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Authentication
+
+  - id: SignupPage
+    module: Platform
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: User registration
+
+  - id: OAuthCallbackPage
+    module: Platform
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: OAuth callback
+
+  - id: AgentStudioPage
+    module: Platform
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Agent library, playground
+
+  - id: AgentAnalyticsPage
+    module: Platform
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Per-agent metrics, cost
+
+  - id: AgentPlaygroundPage
+    module: Platform
+    type: Page
+    tags:
+      - LazyMotion
+      - PLAY
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Sandbox testing
+
+  # Conference components
+  - id: ConferencePage
+    module: Conference
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - livekit-client
+      - livekit-react
+    notes: LiveKit Provider wrapper
+
+  - id: RoundtableGrid
+    module: Conference
+    type: Grid
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: 4-16 participant layout
+
+  - id: ParticipantTile
+    module: Conference
+    type: Tile
+    tags:
+      - MotionGuard
+    rules: []
+    dependencies: []
+    notes: Quality indicator overlay
+
+  - id: RecordingControls
+    module: Conference
+    type: Controls
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Pulsing red indicator
+
+  - id: EngagementTools
+    module: Conference
+    type: Tools
+    tags: []
+    rules: []
+    dependencies: []
+    notes: LiveKit DataChannels
+
+  - id: ScenarioTemplates
+    module: Conference
+    type: Templates
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Role assignment
+
+  - id: BreakoutRooms
+    module: Conference
+    type: Rooms
+    tags:
+      - WorkflowExecution
+    rules: []
+    dependencies: []
+    notes: Auto-return to main room
+
+  # LiveKit components
+  - id: VoicePipeline
+    module: LiveKit
+    type: Pipeline
+    tags:
+      - Streaming
+      - InterruptHandling
+    rules: []
+    dependencies:
+      - livekit-agents
+      - STT/LLM/TTS providers
+    notes: Sequential pipeline with VAD→STT→LLM→TTS→Audio
+
+  - id: STTProcessor
+    module: LiveKit
+    type: Processor
+    tags:
+      - Streaming
+    rules: []
+    dependencies:
+      - Deepgram Nova
+      - OpenAI Whisper
+    notes: Emits partial transcripts <100ms
+
+  - id: LLMOrchestrator
+    module: LiveKit
+    type: Orchestrator
+    tags:
+      - Streaming
+      - TokenGeneration
+    rules: []
+    dependencies:
+      - Claude
+      - GPT
+      - Gemini
+    notes: 300-800ms first token, streaming output
+
+  - id: TTSSynthesizer
+    module: LiveKit
+    type: Synthesizer
+    tags:
+      - Streaming
+    rules: []
+    dependencies:
+      - Modern TTS providers
+    notes: 100-200ms first audio chunk
+
+  - id: BargeInHandler
+    module: LiveKit
+    type: Handler
+    tags:
+      - InterruptDetection
+    rules: []
+    dependencies:
+      - VAD integration
+    notes: Cancels TTS on user speech, flushes audio
+
+  - id: ChatContextManager
+    module: LiveKit
+    type: Manager
+    tags:
+      - StateManagement
+    rules: []
+    dependencies: []
+    notes: Accumulates turns, passes on handoffs
+
+  - id: AgentWorkerPool
+    module: LiveKit
+    type: Pool
+    tags:
+      - HorizontalScaling
+    rules: []
+    dependencies: []
+    notes: Stateful per-session workers, load-based scheduling
+
+  # Research components
+  - id: ResearchPage
+    module: Research
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - researchSlice
+    notes: Multi-format support
+
+  - id: MindMapEditor
+    module: Research
+    type: Editor
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - markmap
+      - yjs
+    notes: Collaborative, WCAG alt text
+
+  - id: FlashcardDeck
+    module: Research
+    type: Deck
+    tags:
+      - MotionGuard
+      - StaggerChildren
+    rules: []
+    dependencies: []
+    notes: FSRS spaced repetition
+
+  - id: LearningGuide
+    module: Research
+    type: Guide
+    tags:
+      - SSEStream
+    rules: []
+    dependencies: []
+    notes: Streaming content
+
+  - id: AudioOverview
+    module: Research
+    type: Overview
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Waveform visualization
+
+  - id: ReportGenerator
+    module: Research
+    type: Generator
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies: []
+    notes: PDF/Markdown export
+
+  # Settings components
+  - id: SettingsPage
+    module: Settings
+    type: Page
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - settingsSlice
+    notes: Keyboard navigation
+
+  - id: GeneralSettings
+    module: Settings
+    type: Form
+    tags:
+      - InlineEdit
+    rules: []
+    dependencies:
+      - react-hook-form
+      - react-helmet
+      - zod
+    notes: ""
+
+  - id: AppearanceSettings
+    module: Settings
+    type: Form
+    tags:
+      - MotionGuard
+    rules: []
+    dependencies: []
+    notes: Live preview
+
+  - id: NotificationSettings
+    module: Settings
+    type: Form
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Zod refinement
+
+  - id: ApiKeysSettings
+    module: Settings
+    type: Form
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Security controls
+
+  - id: MemorySettings
+    module: Settings
+    type: Form
+    tags:
+      - TieredMemory
+    rules: []
+    dependencies: []
+    notes: Memory management
+
+  - id: IntegrationsSettings
+    module: Settings
+    type: Form
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies: []
+    notes: Third-party integrations
+
+  - id: ExportImportPage
+    module: Settings
+    type: Page
+    tags:
+      - Upload
+    rules: []
+    dependencies: []
+    notes: GDPR notice
+
+  - id: DangerZone
+    module: Settings
+    type: Zone
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Typed confirmation
+
+  - id: StorageQuotaIndicator
+    module: Settings
+    type: Indicator
+    tags: []
+    rules: []
+    dependencies:
+      - useStorageQuota
+    notes: Quota display
+
+  - id: CostDashboard
+    module: Settings
+    type: Dashboard
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Budget and alerts
+
+  - id: MCPSettings
+    module: Settings
+    type: Settings
+    tags:
+      - MCPSecurity
+    rules: []
+    dependencies: []
+    notes: Discover, test, approve
+
+  # Shell components
+  - id: AppShell
+    module: Foundation
+    type: Layout
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules:
+      - Focus restoration
+      - VoiceShell + CommandPalette Zustand
+      - useRef + useCallback intervals
+    dependencies:
+      - lib/*
+      - providers/*
+    notes: SkipLink, AnimatePresence for page transitions
+
+  - id: Sidebar
+    module: Foundation
+    type: Navigation
+    tags:
+      - MotionGuard
+      - AnimatePresence
+      - StaggerChildren
+    rules:
+      - Noise-overlay glass
+      - keyboard shortcuts in kbd tags
+      - WCAG 2.2 AA
+      - Zustand persist version+migrate+partialize
+    dependencies:
+      - stores/orgSlice
+    notes: layoutId for active pill animation
+
+  - id: OrgSwitcher
+    module: Foundation
+    type: Control
+    tags: []
+    rules: []
+    dependencies:
+      - stores/orgSlice
+    notes: refreshSession on switch
+
+  - id: StatusBar
+    module: Foundation
+    type: Info
+    tags:
+      - MotionGuard
+    rules:
+      - useRef + useCallback intervals
+    dependencies: []
+    notes: Fixed bottom position
+
+  - id: RightPanel
+    module: Foundation
+    type: Panel
+    tags:
+      - MotionGuard
+      - OpacityFade
+    rules:
+      - Focus restoration stored in Zustand
+      - FocusTrap
+    dependencies:
+      - stores/uiSlice
+    notes: close returns focus to trigger
+
+  - id: CommandPalette
+    module: Foundation
+    type: Overlay
+    tags:
+      - MotionGuard
+      - StaggerChildren
+    rules:
+      - Focus restoration
+      - keyboard shortcuts in kbd tags
+      - VoiceShell + CommandPalette Zustand
+      - FocusTrap
+    dependencies:
+      - useIntentHandler
+      - cmdk
+    notes: Portal rendered, role=combobox
+
+  - id: VoiceShell
+    module: Foundation
+    type: Input
+    tags:
+      - MotionGuard
+      - StaggerChildren
+    rules:
+      - keyboard shortcuts
+      - WCAG 2.2 AA
+      - VoiceShell + CommandPalette Zustand
+      - Web Speech fallback
+      - FocusTrap
+    dependencies:
+      - useWebSpeech
+    notes: Ctrl+Space shortcut
+
+  - id: Toaster
+    module: Foundation
+    type: Feedback
+    tags: []
+    rules: []
+    dependencies:
+      - sonner
+      - g29
+    notes: sonner max 3 toasts
+
+  - id: MetaTitle
+    module: Foundation
+    type: Meta
+    tags: []
+    rules: []
+    dependencies:
+      - HelmetProvider
+      - react-helmet-async
+    notes: Per-route meta titles
+
+  - id: NuqsAdapter
+    module: Foundation
+    type: Util
+    tags: []
+    rules: []
+    dependencies:
+      - Router
+    notes: URL state management
+
+  - id: LiveKitProvider
+    module: Foundation
+    type: Provider
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Wraps conference routes
+
+  # Translation components
+  - id: TranslationPage
+    module: Translation
+    type: Page
+    tags:
+      - LazyMotion
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - translationSlice
+    notes: Mobile Sheet view
+
+  - id: SpeakerManager
+    module: Translation
+    type: Manager
+    tags:
+      - MotionGuard
+      - OptimisticMutation
+      - DebounceAutoSave
+    rules: []
+    dependencies: []
+    notes: Staggered speaker list
+
+  - id: SplitScreenView
+    module: Translation
+    type: View
+    tags:
+      - Static
+    rules: []
+    dependencies: []
+    notes: Language badges
+
+  - id: TranslationSegment
+    module: Translation
+    type: Segment
+    tags:
+      - MotionGuard
+      - StaggerChildren
+    rules: []
+    dependencies: []
+    notes: Streaming translation
+
+  - id: SessionControls
+    module: Translation
+    type: Controls
+    tags:
+      - OptimisticMutation
+      - AnimatePresence
+    rules: []
+    dependencies: []
+    notes: Optimistic status updates
+
+  - id: StreamingHook
+    module: Translation
+    type: Hook
+    tags:
+      - SSEStream
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - useStreaming
+    notes: Retry 3 times
+
+  # Workflow components
+  - id: WorkflowCanvas
+    module: Workflow
+    type: Canvas
+    tags:
+      - A2AFlow
+      - MotionGuard
+      - AnimatePresence
+    rules:
+      - FocusTrap + B3
+    dependencies:
+      - react-flow
+      - workflowSlice
+    notes: Snap-to-grid layout
+
+  - id: NodePalette
+    module: Workflow
+    type: Palette
+    tags: []
+    rules:
+      - B3
+    dependencies:
+      - react-flow
+    notes: Grouped node categories
+
+  - id: ExecutionViewer
+    module: Workflow
+    type: Viewer
+    tags:
+      - MotionGuard
+      - AnimatePresence
+    rules: []
+    dependencies:
+      - useMotionValue
+      - workflowSlice
+    notes: Blue pulse animation
+
+  - id: ExecutionLog
+    module: Workflow
+    type: Log
+    tags:
+      - VirtualizeList
+    rules: []
+    dependencies: []
+    notes: Filterable execution history
+
+  - id: ApprovalPanel
+    module: Workflow
+    type: Panel
+    tags:
+      - OptimisticMutation
+    rules: []
+    dependencies:
+      - workflowSlice
+    notes: Escalation workflows
+
+  - id: ManualInputDialog
+    module: Workflow
+    type: Dialog
+    tags:
+      - MotionGuard
+      - DebounceAutoSave
+    rules:
+      - FocusTrap + zod
+    dependencies: []
+    notes: Zod schema validation
+
+  - id: TemplateLibrary
+    module: Workflow
+    type: Library
+    tags: []
+    rules: []
+    dependencies: []
+    notes: Parameter substitution
+
+  - id: PerformanceMetrics
+    module: Workflow
+    type: Metrics
+    tags: []
+    rules:
+      - g26
+    dependencies: []
+    notes: Mock metrics display

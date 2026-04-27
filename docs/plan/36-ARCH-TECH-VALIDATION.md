@@ -1,4 +1,10 @@
-# Technical validation matrix
+---
+title: "Technical Validation Matrix"
+owner: "Architecture"
+status: "active"
+updated: "2026-04-26"
+canonical: "tech-validation.yaml"
+---
 
 This document validates the major technology components selected for the AI Command Center platform with evidence from real-world implementations, benchmarks, and industry research.
 
@@ -6,28 +12,7 @@ This document validates the major technology components selected for the AI Comm
 
 ## Core technology claims
 
-| Technology | Claim | Status | Source |
-|------------|-------|--------|--------|
-| TypeScript 7.0 `tsgo` | Microsoft ships native preview builds exposing `tsgo`, a Go-native compiler running alongside `tsc`. Benchmarks show 10x speed improvements, with projects reporting 9x faster typechecking. | VER | Microsoft TypeScript preview builds |
-| pgvectorscale with DiskANN | Timescale's extension achieves 28x lower p95 latency and 16x higher throughput vs. Pinecone's storage-optimized index on 50M Cohere embeddings. | VER | Timescale pgvectorscale benchmarks |
-| APS (Agent Passport System) IETF Draft | Defines Agent Passports (Ed25519), 7-dimension constraint lattice, 3-signature chain, cascade revocation, Bayesian reputation, institutional governance, signed message envelopes, tool integrity signatures, nonce replay protection, trust levels L0-L4. | DRAFT | IETF draft for Agent Passport System |
-| LiveKit Agents v1.0.0 | Production-ready framework for building real-time, multimodal voice and video AI agents using WebRTC. | PROD | LiveKit official release |
-| Playwright AI Agents | Three-agent architecture (Planner, Generator, Healer) for automated E2E test creation delivered in Playwright 1.56.0. | REL | Playwright 1.56.0 release notes |
-| Stripe Agent Toolkit | `@stripe/agent-toolkit`, `@stripe/ai-sdk`, and `@stripe/token-meter` provide metered billing, middleware, and MCP-based Stripe access. | AVAIL | Stripe developer documentation |
-| Orval CVE-2026-25141 | Critical CVSS 9.3 code injection via unsanitized `x-enum-descriptions`; fixed in 8.2.0. | FIXED | CVE database, Orval security advisory |
-| DOMPurify XSS | Versions 3.0.1-3.3.3 vulnerable to prototype pollution bypass (CVE-2026-41238). | VULN | CVE database, DOMPurify security advisory |
-| React 20 Compiler / Vite 8 / Rolldown | Vite 8 ships with Rust-based Rolldown as default bundler; React Compiler support via `@rolldown/plugin-babel`. | REL | Vite 8 release notes, React Compiler documentation |
-| Turborepo 2.x | `pipeline` renamed to `tasks`; task graph-based scheduling with topological ordering. | REL | Turborepo 2.0 migration guide |
-| A2A v1.0 | Google's protocol with Agent Cards, decentralized discovery, and cryptographic identity primitives. | REL | Google A2A protocol documentation |
-| Tailwind CSS v4 | CSS-first configuration via `@theme` directive for design tokens. | REL | Tailwind CSS v4 documentation |
-| Zustand v5 | Lightweight state management with improved comparison mechanisms and `useShallow`. | REL | Zustand v5 release notes |
-| Claude Opus 4.7 | Scores 87.6% on SWE-bench Verified, 94.2% on GPQA Diamond, 64.4% on Finance Agent. New xhigh effort level (coding default), task budgets in public beta, tokenizer multiplier 1.0-1.35×. | REL | Anthropic model card, benchmark results |
-| EU AI Act | Current statutory deadline August 2, 2026 for majority of rules. Proposed Digital Omnibus extension (pending Council approval as of April 2026) would delay high-risk obligations to December 2, 2027 (stand-alone high-risk) / August 2, 2028 (embedded high-risk). Articles 9-15 mandate extensive documentation. | LEG | EU AI Act official documentation |
-| OpenTelemetry `gen_ai` | Semantic conventions for agentic systems (agents, tasks, teams, artifacts) with Datadog native support. | REL | OpenTelemetry specification, Datadog documentation |
-| MACH Alliance | Microservices, API-first, Cloud-native, Headless principles; launched AI Exchange in April 2025. | ACT | MACH Alliance official announcements |
-| Decision Velocity | Defined as speed × accuracy × effectiveness; emerging metric for AI ROI. | CON | Industry research on AI ROI metrics |
-| Semantic Layer | MATRIX ontology for multi-agent shared memory; knowledge graph integration for cross-agent communication. | CON | Research on multi-agent systems |
-| TanStack DB 0.6 | SQLite-backed persistence, offline support, hierarchical data projection, query-driven sync with PowerSync and ElectricSQL. | REL | TanStack DB documentation |
+See `tech-validation.yaml` for the authoritative source of technology validation claims.
 
 **Status codes**: VER=Verified, DRAFT=Draft specification, PROD=Production-ready, REL=Released, AVAIL=Available, FIXED=Fixed, VULN=Vulnerability identified, LEG=Legislative process ongoing, ACT=Active, CON=Concept
 
@@ -63,6 +48,50 @@ This document validates the major technology components selected for the AI Comm
 | ASI05: Unexpected Code Execution | CVE-2025-59944 | Cursor Case-Sensitivity Bypass | - | - |
 | ASI05: Unexpected Code Execution | - | Claude Desktop RCE | 8.9 | - |
 | ASI05: Unexpected Code Execution | - | IDEsaster Research | - | 24 CVEs across multiple AI IDEs |
+
+---
+
+## Horizon
+
+Emerging technologies, standards, and market trends tracked for strategic planning.
+
+### Emerging technologies
+
+**Temporal API** (ES2027 proposal): Modern JavaScript API for date/time handling. Could simplify time zone handling across the platform.
+
+**ES2026 `match` Expression** (ES2026 proposal): Pattern matching syntax for JavaScript. Could simplify complex conditional logic in agent orchestration.
+
+**WebGPU Advancement** (Active development): Low-level GPU access for web applications. Could enhance local model execution and client-side AI processing.
+
+**Quantum Computing** (Early research): Long-term impact on cryptographic security and AI model architectures. Currently minimal but worth monitoring.
+
+### Internal R&D Pipeline
+
+**Active Research Areas**: Model distillation, federated learning, neural architecture search, explainable AI.
+
+**Research Partnerships**: Academic partnerships, industry collaborations, open source contributions.
+
+### Patent Strategy
+
+**Patent Areas**: Novel agent orchestration patterns, cross-application conflict detection, privacy-preserving AI techniques, real-time collaboration with AI agents.
+
+**IP Protection**: File patents for novel inventions, publish research defensively, monitor competitor filings.
+
+### Competitive Monitoring
+
+**Key Competitors**: Microsoft Copilot, Google Workspace AI, Anthropic Claude Enterprise, OpenAI Enterprise, Notion AI, Linear AI.
+
+**Monitoring Metrics**: Feature releases, pricing changes, market share, customer feedback, technical research.
+
+### Strategic Pivot Planning
+
+**Triggers**: Major technology disruption, competitive threat, regulatory changes, market shift, customer demand change.
+
+**Pivot Scenarios**:
+- Local models become dominant: Accelerate Domain C.7 (Local Model Infrastructure)
+- New AI protocol supersedes MCP/A2A: Evaluate adoption, plan migration
+- Regulatory requirements tighten: Enhance Domain E (Security & Compliance)
+- Major cloud provider launches competing product: Emphasize differentiation, consider partnerships
 
 ---
 

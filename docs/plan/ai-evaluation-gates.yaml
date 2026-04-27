@@ -1,0 +1,109 @@
+# AI Evaluation Gates Configuration
+# CI gate parameters for AI model evaluation
+
+evaluation_framework:
+  primary: "DeepEval"
+  secondary: "RAGAS"
+  purpose: "AI evaluation for RAG and general agent performance"
+
+performance_thresholds:
+  accuracy:
+    threshold: "base-2%"
+    severity: "blocking"
+    description: "Accuracy must be within 2% of baseline"
+
+  latency:
+    warning_threshold: "base+10%"
+    blocking_threshold: "base+20%"
+    severity: "warning_then_blocking"
+    description: "Latency warnings at 10% over baseline, blocks at 20%"
+
+  token_usage:
+    threshold: "base+15%"
+    severity: "warning"
+    description: "Token usage warning at 15% over baseline"
+
+  tool_precision:
+    blocking_threshold: 90
+    fail_threshold: 85
+    severity: "blocking"
+    description: "Tool-calling precision must be >=90%, fails if <85%"
+
+  hallucination_rate:
+    threshold: 2
+    severity: "blocking"
+    description: "Hallucination rate must be <=2%"
+
+ci_gate_configuration:
+  enabled: true
+  framework: "Vitest"
+  blocking_on_failure: true
+
+evaluator_llm:
+  routing: "LiteLLM proxy"
+  purpose: "Cost tracking for all LLM-as-judge calls"
+  attribution: "x-litellm-tags carry org_id, user_id, feature"
+
+dataset_guidelines:
+  modest_use_cases:
+    min_examples: 10
+    max_examples: 20
+
+  complex_applications:
+    min_examples: 100
+    max_examples: 200
+
+  quality_note: "High-quality data reduces required size"
+  selection_note: "Selection strategies regress to random beyond 30-40 examples"
+
+test_outcomes:
+  verdict_types:
+    pass:
+      condition: "Lower bound of confidence interval >= threshold"
+      action: "allow"
+
+    fail:
+      condition: "Upper bound of confidence interval < threshold"
+      action: "block"
+
+    inconclusive:
+      condition: "Confidence interval straddles threshold"
+      action: "manual_review"
+
+  inconclusive_handling:
+    exit_code: 2
+    configurable_as: "warning_or_hard_failure"
+    override_tracking: "Audit logs track all override decisions with justification"
+    recommended_max_trials: 30
+    sprt_enabled: true
+
+mitigation_strategies:
+  sequential_probability_ratio_test:
+    enabled: true
+    expected_trials_h0: 52
+    expected_trials_h1: 34
+    savings_vs_fixed: "52-69%"
+
+  adaptive_budget_optimization:
+    enabled: true
+    calibration_trials: "5-10"
+    variance_measurement: true
+    adaptive_trial_allocation: true
+
+  behavioral_fingerprinting:
+    enabled: true
+    extraction_targets:
+      - "Tool sequences"
+      - "State transitions"
+      - "Decision patterns"
+    detection_power: 0.86
+
+  trace_first_offline_analysis:
+    enabled: true
+    cost: "zero_additional_token_cost"
+    detection_power: 0.98
+    coverage_types:
+      - "Coverage metrics"
+      - "Contract checks"
+      - "Metamorphic relations"
+      - "Mutation analysis"

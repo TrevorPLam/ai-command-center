@@ -1,4 +1,10 @@
-# Architecture overview
+---
+title: "Architecture Overview"
+owner: "Architecture"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 ## TL;DR
 
@@ -34,51 +40,7 @@ graph TD
 
 ## Architecture rules
 
-These define how services interact, which libraries to use, and development boundaries.
-
-For the complete rule definitions, see [00-RULES.yaml](00-RULES.yaml).
-
-### Backend / API
-
-- #BE-01: All AI calls must go through the LiteLLM proxy
-- #BE-02: Prisma client never runs in the browser
-- #BE-03: Nylas API access is only from FastAPI
-- #BE-04: Vercel Edge Functions cannot connect to a database directly; use Vercel Serverless (300s) with Neon serverless driver, or route through FastAPI
-- #BE-05: /v1/* endpoints follow OpenAPI 3.1 contract; Schemathesis blocks merge on drift
-- #BE-06: PostgreSQL Row-Level Security (RLS) is enabled on all tables that contain tenant data
-- #BE-07: Supabase Realtime channels are limited to 100 total connections and 20 per user; memory alert at 40 MB per channel
-
-### Frontend
-
-- #FE-01: Vite SPA only; no Next.js (ADR_001)
-- #FE-02: Zustand v5 for global state (ADR_003)
-- #FE-03: react-big-calendar pinned to ^1.19.4 for React 19 compatibility
-- #FE-04: dnd-kit is the primary DnD library; no migration to PragmaticDnD (ADR_085)
-- #FE-05: react-helmet-async for document head
-- #FE-06: Use Temporal.ZonedDateTime for all calendar events (never PlainDateTime); rschedule + @rschedule/temporal-date-adapter replaces rrule.js on the frontend (ADR_109)
-- #FE-07: Tremor v3.18.x for charting (ADR_105)
-- #FE-08: OKLCH-based design tokens; no hardcoded colours
-
-### Collaboration & real-time
-
-- #COLL-01: Y-Sweet self-hosted (Jamsocket shutdown); Docker deployment, 50 MB document limit, GC enabled, undo truncated to last 5 snapshots
-- #COLL-02: LiveKit Agents v2.0 only; semantic turn detection mandatory
-- #COLL-03: Yjs collaboration is opt-in per document; disconnect cleanup ensures channel unsubscription
-
-### Data & offline
-
-- #BE-08: Offline-first pattern: soft deletes via deleted_at column (nullable millisecond timestamp); all primary keys are ULIDs
-- #BE-09: Every asynchronous operation is idempotent: key = actor_id + monotonic counter
-- #BE-10: PowerSync is the primary offline sync mechanism (Phase 2); bucket YAML rules per orgId
-- #BE-11: Supabase Realtime payload caps: Broadcast max 256 KB - 3 MB, Postgres Changes max 1 MB
-
-### CI / tooling
-
-- #BE-12: Orval >=8.2.0; generate TypeScript types from OpenAPI; never run on untrusted specs
-- #BE-13: LiteLLM >=1.83.7 with cosign verification
-- #BE-14: Grype (not Trivy) for Docker scanning; scanners isolated from CI credential store
-- #BE-15: TypeScript tsc --erasableSyntaxOnly --noEmit gate in CI; ban TypeScript enums
-- #BE-16: MSW handlers are generated from the OpenAPI spec via openapi-backend for testing
+All architecture rules defined in [00-RULES.yaml](00-RULES.yaml). Key rules: #BE-01 through #BE-16 (backend), #FE-01 through #FE-08 (frontend), #COLL-01 through #COLL-03 (collaboration).
 
 ---
 
@@ -104,18 +66,6 @@ The platform consists of these high-level containers:
 | Real-time Communication | LiveKit | Video conferencing and voice AI |
 
 ## 3. Deployment environments
-
-### 3.1 Production
-
-FastAPI on Fly.io (1-10 VMs), Web App on Vercel (global CDN), Database on Supabase (managed HA with RLS), Real-time via Supabase WebSockets, TimescaleDB for analytics, Upstash Redis for caching, LiveKit for conferencing, HashiCorp Vault for secrets, Doppler for environment variables.
-
-### 3.2 Staging
-
-FastAPI on Fly.io (single VM, manual deployment), Web App on Vercel preview deployments, Database on Supabase separate project.
-
-### 3.3 Development
-
-FastAPI via Docker Compose with mock LLM services, Web App via Vite Dev Server with HMR, Database via local Supabase Docker Compose.
 
 For detailed deployment configurations, see [38-ARCH-DEPLOYMENT.md](38-ARCH-DEPLOYMENT.md).
 

@@ -1,0 +1,58 @@
+name: Link Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**/*.md'
+  pull_request:
+    paths:
+      - 'docs/**/*.md'
+
+permissions:
+  contents: read
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install markdown-link-check
+        run: npm install -g markdown-link-check
+
+      - name: Check markdown links
+        run: |
+          find docs -name "*.md" -print0 | xargs -0 -n1 markdown-link-check -c .github/link-check-config.json || true
+
+      - name: Check for broken internal references
+        run: |
+          # Check for references to non-existent files
+          grep -r "\[.*\](.*\.md)" docs/ --include="*.md" | while read line; do
+            link=$(echo "$line" | sed -n 's/.*\]\([^)]*\).*/\1/p')
+            if [[ $link == *.md ]]; then
+              filepath=$(echo "$link" | sed 's/#.*//')
+              if [ ! -f "docs/$filepath" ] && [ ! -f "$filepath" ]; then
+                echo "::warning::Potential broken link: $link"
+              fi
+            fi
+          done
+
+      - name: Check for orphaned rule references
+        run: |
+          # Check for rule references like #RULE-ID or #AI-04
+          grep -r "#[A-Z][A-Z]-[0-9][0-9]" docs/plan/ --include="*.md" | while read line; do
+            rule=$(echo "$line" | grep -o "#[A-Z][A-Z]-[0-9][0-9]")
+            if ! grep -q "$rule" docs/plan/00-RULES.yaml; then
+              echo "::warning::Orphaned rule reference: $rule"
+            fi
+          done
+
+      - name: Report summary
+        run: |
+          echo "::notice::Link check completed. Review warnings above for potential issues."

@@ -1,4 +1,10 @@
-# Service deployment details
+---
+title: "Service Deployment Details"
+owner: "DevOps"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 This document contains detailed deployment configurations and implementation specifications for external services integrated into the AI Command Center platform. For high-level architecture, see [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md).
 
@@ -219,5 +225,5 @@ See [deployment-examples/livekit-redis.yaml](deployment-examples/livekit-redis.y
 ## Related Documentation
 
 - [30-ARCH-OVERVIEW.md](30-ARCH-OVERVIEW.md) - High-level architecture overview
-- [ADR_083](22-PLAN-ADR-INDEX.md#adr_083) - Y-Sweet self-hosting decision
-- [ADR_115](22-PLAN-ADR-INDEX.md#adr_115) - LiveKit Agents v2.0 decision
+- [ADR_083](01-PLAN-DECISIONS.md#adr_083) - Y-Sweet self-hosting decision
+- [ADR_115](01-PLAN-DECISIONS.md#adr_115) - LiveKit Agents v2.0 decision

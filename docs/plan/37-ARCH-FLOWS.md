@@ -1,4 +1,10 @@
-# Critical User Flows
+---
+title: "Critical User Flows"
+owner: "Architecture"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 This document describes the key user flows and system interactions in the AI Command Center platform.
 

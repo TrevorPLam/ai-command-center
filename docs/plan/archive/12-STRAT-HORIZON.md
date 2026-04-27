@@ -1,4 +1,10 @@
-# Horizon scanning
+---
+title: "Horizon Scanning"
+owner: "Architecture"
+status: "archived"
+updated: "2026-04-26"
+canonical: ""
+---
 
 This document tracks emerging technologies, standards, and market trends that may impact the AI Command Center platform. It supports strategic planning and technology roadmap decisions.
 

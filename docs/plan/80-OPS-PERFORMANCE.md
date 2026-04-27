@@ -1,4 +1,10 @@
-# Performance budgets & thresholds
+---
+title: "Performance Budgets & Thresholds"
+owner: "DevOps"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 These are concrete numbers that must be respected in every build.
 

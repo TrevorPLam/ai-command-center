@@ -1,80 +1,16 @@
-# Cross-cutting services
+---
+title: "Foundation Services"
+owner: "Platform Engineering"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
-This document describes all cross-cutting service implementations and supporting infrastructure including design system, security, observability, rate limiting, sanitisation, and secrets management.
+Authentication, secrets management, rate limiting, and content security policy.
 
 ---
 
 ## Services
-
-### Motion Service
-
-#### CrossCuttingMotion
-- **Module**: XCT (Cross-Cutting)
-- **Type**: Service
-- **Patterns**: `@MotionGuard`
-- **Rules**: P1, P2 (Performance rules)
-- **Dependencies**: ~/hooks/useShouldAnimate
-- **Purpose**: Ensures all animations use only transform and opacity properties
-- **Features**: Respects prefers-reduced-motion, disables animations when reduced motion is requested
-
-### Optimistic Mutation Service
-
-#### CrossCuttingOptimistic
-- **Module**: XCT (Cross-Cutting)
-- **Type**: Service
-- **Patterns**: `@OptimisticMutation`
-- **Rules**: g19 (Global rule 19)
-- **Dependencies**: useOptimistic, ~/hooks/useUndo
-- **Purpose**: Manages optimistic UI updates with rollback capability
-- **Features**:
-  - Pending state with opacity 0.5, italic styling, and pulse animation
-  - Automatic rollback on failure
-  - 5-second undo window for delete operations
-
-### Realtime Service
-
-#### CrossCuttingRealtime
-- **Module**: XCT (Cross-Cutting)
-- **Type**: Service
-- **Patterns**: `@SSEStream`, `@RealtimeLimits`
-- **Rules**: g37, g43 (Global rules 37, 43)
-- **Dependencies**: Supabase Realtime, Server-Sent Events
-- **Purpose**: Manages real-time data streaming and channel monitoring
-- **Features**:
-  - Channel authentication and authorization
-  - Memory usage monitoring
-  - 25 second heartbeat intervals (default)
-  - Channel limits enforcement
-
-### Search Service
-
-#### CrossCuttingSearch
-- **Module**: XCT (Cross-Cutting)
-- **Type**: Service
-- **Patterns**: None
-- **Rules**: g33 (Global rule 33)
-- **Dependencies**: nuqs, useInfiniteQuery
-- **Purpose**: Provides unified search functionality across the application
-- **Features**:
-  - 300ms debounce on search input
-  - 200ms hover prefetch for related data
-  - URL state synchronization
-  - Infinite scroll support
-
-### Offline Service
-
-#### CrossCuttingOffline
-- **Module**: XCT (Cross-Cutting)
-- **Type**: Service
-- **Patterns**: `@OfflineFirst`
-- **Rules**: B5 (Backend rule 5)
-- **Dependencies**: IndexedDB, ULID
-- **Purpose**: Manages offline-first data synchronization
-- **Features**:
-  - Outbox pattern for queuing operations
-  - Idempotency key generation
-  - Conflict resolution strategies
-  - Tombstone pattern for soft deletes
 
 ### Authentication & Organization Service
 
@@ -98,7 +34,7 @@ This document describes all cross-cutting service implementations and supporting
 - **Type**: Service
 - **Patterns**: `@Passkeys`
 - **Rules**: S8 (Security rule 8)
-- **Dependencies**: `@simplewebauthn`/server@^13.0.0, `@simplewebauthn`/browser, Supabase Auth
+- **Dependencies**: `@simplewebauthn/server@^13.0.0`, `@simplewebauthn/browser`, Supabase Auth
 - **Purpose**: Implements passkey-based authentication using SimpleWebAuthn library
 - **Implementation Guide**:
 
@@ -112,7 +48,7 @@ const origin = `https://${rpID}`;
 #### Registration flow
 1. Generate registration options (GET endpoint):
 ```typescript
-import { generateRegistrationOptions } from '`@simplewebauthn`/server';
+import { generateRegistrationOptions } from '@simplewebauthn/server';
 
 const user = getUserFromDB(loggedInUserId);
 const userPasskeys = getUserPasskeys(user);
@@ -138,7 +74,7 @@ return options;
 
 2. Verify registration response (POST endpoint):
 ```typescript
-import { verifyRegistrationResponse } from '`@simplewebauthn`/server';
+import { verifyRegistrationResponse } from '@simplewebauthn/server';
 
 const verification = await verifyRegistrationResponse({
   response: body,
@@ -157,7 +93,7 @@ if (verification.verified) {
 #### Authentication flow
 1. Generate authentication options (GET endpoint):
 ```typescript
-import { generateAuthenticationOptions } from '`@simplewebauthn`/server';
+import { generateAuthenticationOptions } from '@simplewebauthn/server';
 
 const user = getUserFromDB(username);
 const userPasskeys = getUserPasskeys(user);
@@ -176,7 +112,7 @@ return options;
 
 2. Verify authentication response (POST endpoint):
 ```typescript
-import { verifyAuthenticationResponse } from '`@simplewebauthn`/server';
+import { verifyAuthenticationResponse } from '@simplewebauthn/server';
 
 const passkey = getPasskeyFromDB(credentialID);
 const verification = await verifyAuthenticationResponse({
@@ -271,96 +207,6 @@ if (verification.verified) {
 - Test rate limiting with burst requests
 - Test error handling with various failure modes
 
-### API Contract Generation
-
-#### APIContractGen
-- **Module**: APIC (API Contract)
-- **Type**: Utility
-- **Patterns**: None
-- **Rules**: OAPI_01 (OpenAPI rule 1)
-- **Dependencies**: FastAPI, Orval, Schemathesis
-- **Purpose**: Generates TypeScript types and utilities from OpenAPI specifications
-- **Features**:
-  - OpenAPI 3.1 to TypeScript type generation
-  - React Query hooks generation
-  - MSW (Mock Service Worker) handlers
-  - CI drift detection and blocking
-
-### Resend Email Integration
-
-#### ResendEmailIntegration
-- **Module**: EMAIL (Email Service)
-- **Type**: Service
-- **Patterns**: None
-- **Dependencies**: Resend API, Webhook Ingester
-- **Purpose**: Manages transactional email delivery with webhook reliability
-- **Features**:
-  - Automatic retries with exponential backoff (immediately, 5s, 5min, 30min, 2hr, 5hr, 10hr, 10hr)
-  - Idempotency via svix-id header to prevent duplicate processing
-  - Manual replays available via dashboard for failed deliveries
-  - Event granularity: distinct events per recipient (improved Jan 22, 2026)
-  - Status monitoring via public status page (resend-status.com) with incident history
-
-### Nylas Webhook Handler
-
-#### NylasWebhookHandler
-- **Module**: NYLS (Nylas v3)
-- **Type**: Service
-- **Patterns**: `@NylasV3`
-- **Rules**: S3 (Security rule 3)
-- **Dependencies**: Nylas v3, queue system
-- **Purpose**: Processes incoming Nylas webhooks
-- **Features**:
-  - Upsert-first strategy (create or update)
-  - 10-second acknowledgment timeout
-  - Async queue processing
-  - Sync policy enforcement
-
-### OpenTelemetry GenAI Instrumenter
-
-#### OTelGenAIInstrumenter
-- **Module**: OTEL (OpenTelemetry)
-- **Type**: Service
-- **Patterns**: `@OTelGenAI`
-- **Rules**: SLO_02 (SLO rule 2)
-- **Dependencies**: OpenTelemetry 1.40, DataPrepper
-- **Purpose**: Instruments AI interactions for observability
-- **Features**:
-  - Root span propagation
-  - PII redaction at collector level
-  - GenAI-specific attributes and conventions
-  - Cost and usage tracking
-
-### Offline Sync Engine
-
-#### OfflineSyncEngine
-- **Module**: CRDB (Offline-First)
-- **Type**: Service
-- **Patterns**: `@OfflineFirst`
-- **Rules**: B5 (Backend rule 5)
-- **Dependencies**: cr-sqlite vs outbox pattern
-- **Purpose**: Synchronizes data between client and server
-- **Features**:
-  - Tombstone pattern for deleted items
-  - ULID primary keys
-  - Conflict resolution mechanisms
-  - Bidirectional sync support
-
-### Realtime Channel Monitor
-
-#### RealtimeChannelMonitor
-- **Module**: RLMT (Realtime Limits)
-- **Type**: Service
-- **Patterns**: `@RealtimeLimits`
-- **Rules**: g37, g43 (Global rules 37, 43)
-- **Dependencies**: Supabase Realtime
-- **Purpose**: Monitors and enforces realtime channel limits
-- **Features**:
-  - 100 channel ceiling per connection
-  - 200 concurrent peak connections (Free), 500 (Pro), $10/1,000 additional
-  - Payload size monitoring
-  - Memory usage alerts
-
 ### Upload Security Scanner
 
 #### UploadSecurityScanner
@@ -376,124 +222,9 @@ if (verification.verified) {
   - CVE monitoring
   - Version-pinned ClamAV
 
-### Recurrence Engine Service
-
-#### RecurrenceEngineService
-- **Module**: RCLL (Recurrence Engine)
-- **Type**: Service
-- **Patterns**: `@Recurring`
-- **Rules**: B-015 (Backend rule 15)
-- **Dependencies**: `@martinhipp`/rrule, Temporal adapter
-- **Purpose**: Handles recurring event and task scheduling
-- **Features**:
-  - DST-aware wall-clock time handling
-  - Three edit modes (single, following, all)
-  - Exception storage and management
-  - RFC5545 compliance
-
-### AI Guardrails Engine
-
-#### AIGuardrailsEngine
-- **Module**: GRDL (Guardrails)
-- **Type**: Service
-- **Patterns**: `@AIGuardrails`
-- **Rules**: EVAL_02 (Evaluation rule 2)
-- **Dependencies**: Guardrails-AI, DeepEval
-- **Purpose**: Enforces AI safety and compliance policies
-- **Features**:
-  - Three-layer protection (input, output, runtime)
-  - Full audit logging
-  - Configurable rule sets
-  - Real-time decision making
-
-### SSRF Prevention Middleware
-
-#### SSRFPreventionMiddleware
-- **Module**: SSRF (SSRF Prevention)
-- **Type**: Middleware
-- **Patterns**: `@SSRFPrevention`
-- **Rules**: MCPG_02 (MCP Gateway rule 2)
-- **Dependencies**: ipaddress library, DNS resolver
-- **Purpose**: Prevents Server-Side Request Forgery attacks
-- **Features**:
-  - Domain allowlist enforcement
-  - IP range validation
-  - Redirect blocking
-  - DNS validation
-
-### Stripe Token Meter
-
-#### StripeTokenMeter
-- **Module**: STKB (Stripe Billing)
-- **Type**: Service
-- **Patterns**: `@StripeBilling`
-- **Dependencies**: `@stripe`/ai-sdk, `@stripe`/token-meter
-- **Purpose**: Tracks and bills AI token usage through Stripe
-- **Features**:
-  - LiteLLM cost log integration
-  - 30% markup on base costs
-  - Real-time usage tracking
-  - Per-organization billing
-
-### Yjs Lifecycle Manager
-
-#### YjsLifecycleManager
-- **Module**: YJS (Yjs Lifecycle)
-- **Type**: Service
-- **Patterns**: `@YjsLifecycle`
-- **Rules**: YSW_01, YSW_02 (Y-Sweet rules 1, 2)
-- **Dependencies**: Yjs, Y-Sweet
-- **Purpose**: Manages collaborative document lifecycle
-- **Features**:
-  - Garbage collection enabled
-  - Undo stack truncation (last 5 snapshots)
-  - Document versioning through snapshots
-  - 50MB document size limit
-  - Compaction triggering
-
 ---
 
-## Section 2: Design System
-
-### Design Tokens
-
-- **Color System**: OKLCH-based three-layer architecture
-  - Brand tokens: Primary palette
-  - Semantic tokens: Functional colors (success, warning, error)
-  - Component tokens: Component-specific colors
-- **Constraint**: No hardcoded hex/RGB colors allowed (HARD rule DSNOKEYUI)
-- **Reference**: All colors use CSS custom properties
-
-### Motion System
-
-- **Spring Physics**: Tension ≥300, damping ≥30
-- **Stagger**: Maximum 3 children in any stagger animation
-- **Properties**: Transform and opacity only (no layout animations)
-- **Accessibility**: Respects prefers-reduced-motion (instant transitions when enabled)
-
-### Glass Effects
-
-- **Liquid Glass**: backdrop-blur with noise overlay
-- **Implementation**: CSS variables for tint control
-- **Usage**: Shell surfaces, modals, command palette
-
-### Dark Mode
-
-- **Source**: System preference detection
-- **Override**: Manual toggle available
-- **Persistence**: Stored in localStorage
-
-### Component Patterns
-
-- **SanitizedHTML**: Three profiles available
-  - STRICT: No SVG, minimal tags
-  - RICH: Div, span, lists allowed
-  - EMAIL: Links and images with rel=noopener
-- **EmptyState**: Required pattern for all empty data states
-
----
-
-## Section 3: Content Security Policy
+## Content Security Policy
 
 ### Overview
 
@@ -578,126 +309,7 @@ The Content Security Policy (CSP) defines approved sources of content to prevent
 
 ---
 
-## Section 4: Observability
-
-### Overview
-
-The observability system provides comprehensive monitoring, tracing, logging, and analytics across the platform. It integrates OpenTelemetry for distributed tracing, Sentry for error tracking, PostHog for product analytics, and Loki for log aggregation.
-
-### Components
-
-| Component | Module | Type | Patterns | Rules | Dependencies | Notes |
-|-----------|--------|------|----------|-------|--------------|-------|
-| OTelInstrumenter | OTEL | Service | - | OBSS_01, OBSS_02 | OTel v1.40, DataPrepper | GenAI traces, PII redaction |
-| SentryErrorTracker | OTEL | Service | - | OBSS_01 | Sentry SDK | Session replays, 0.1 sample rate in prod |
-| PostHogAnalytics | OTEL | Service | - | OBSS_01 | PostHog SDK | AI_CALL, FLAG_EVALUATED, COST_ALERT |
-| LogAggregator | OTEL | Service | - | OBSS_01 | Loki | 90-day retention, org_id labels |
-
-### Sentry Configuration
-
-| DSN | Environment | Sample Rate | Session Replay | Traces Sample Rate |
-|-----|-------------|-------------|----------------|---------------------|
-| ${SENTRY_DSN} | production | 0.1 | Yes | 0.05 |
-| ${SENTRY_DSN} | staging | 1.0 | Yes | 0.1 |
-| ${SENTRY_DSN} | development | 1.0 | No | 1.0 |
-
-### PostHog Configuration
-
-| API Key | Environment | Capture | Training | Retention |
-|---------|-------------|---------|----------|-----------|
-| ${POSTHOG_API_KEY} | production | AI_CALL, FLAG_EVALUATED, COST_ALERT, GUARDRAIL_BLOCK | false | 90 days |
-| ${POSTHOG_API_KEY} | staging | All events | true | 30 days |
-| ${POSTHOG_API_KEY} | development | All events | true | 7 days |
-
-### OpenTelemetry Configuration
-
-| Version | Exporter | Endpoint | Headers | Protocol |
-|---------|----------|----------|---------|----------|
-| v1.40.0 | OTLP | ${OTEL_ENDPOINT} | X-Honeycomb-Team:${TEAM} | HTTP/protobuf |
-| experimental | gen_ai | OTEL_SEMCONV_STABILITY_OPT_IN | N/A | N/A |
-
-### GenAI Attributes
-
-OpenTelemetry semantic conventions for GenAI monitoring:
-
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| gen_ai.system | string | AI provider (anthropic, openai, google) |
-| gen_ai.model | string | Model ID (claude-opus-4-7, gpt-5.5, gemini-3.1-pro) |
-| gen_ai.request.model | string | Requested model |
-| gen_ai.response.model | string | Actual model used |
-| gen_ai.usage.input_tokens | int | Input token count |
-| gen_ai.usage.output_tokens | int | Output token count |
-| gen_ai.usage.total_tokens | int | Total token count |
-| gen_ai.response.finish_reason | string | stop, length, tool_calls, error |
-| gen_ai.cost.usd | float | Cost in USD |
-| gen_ai.user.id | string | User ID |
-| gen_ai.org.id | string | Organization ID |
-| gen_ai.tool.name | string | Tool name if tool call |
-| gen_ai.tool.call.id | string | Tool call ID |
-
-### PII Redaction
-
-| Field | Method | Location | Pattern |
-|-------|--------|----------|---------|
-| gen_ai.request.messages | DataPrepper | Collector | redact_pii_processor |
-| gen_ai.response.content | DataPrepper | Collector | redact_pii_processor |
-| user.email | DataPrepper | Collector | email_pattern |
-| user.phone | DataPrepper | Collector | phone_pattern |
-| org.name | DataPrepper | Collector | name_pattern |
-
-### Loki Log Aggregation
-
-| Label | Retention | Index | Rate Limit |
-|-------|-----------|-------|------------|
-| org_id | 90 days | org_id, service, severity | 10MB/s |
-| service | 90 days | org_id, service, severity | 10MB/s |
-| severity | 90 days | org_id, service, severity | 10MB/s |
-
-### Alerting Rules
-
-| Metric | Threshold | Duration | Action | Channel |
-|--------|-----------|----------|--------|---------|
-| sentry_error_rate | >5% | 5min | Slack | #incidents |
-| sentry_p50_latency | >2s | 5min | Slack | #incidents |
-| posthog_event_drop | >1% | 5min | Slack | #incidents |
-| otel_trace_failure | >1% | 5min | PagerDuty | Platform on-call |
-| loki_error_rate | >10/min | 5min | Slack | #incidents |
-| data_prepper_lag | >10s | 5min | Slack | #incidents |
-
-### Dashboards
-
-| Dashboard | Panels | Refresh | Audience |
-|-----------|--------|---------|----------|
-| SLO Dashboard | TTFT, Availability, EB, BR | 1min | All engineers |
-| Error Dashboard | Error rate, p50 latency, top errors | 1min | All engineers |
-| Cost Dashboard | Token cost, forecast, budget | 5min | Product + Platform |
-| Guardrail Dashboard | Input/Output blocks, tool auth | 5min | AI + Security |
-| Rate Limit Dashboard | 429 rate, per-user/org | 1min | Platform |
-
-### Testing Scenarios
-
-| Scenario | Expected | Test Method |
-|----------|----------|-------------|
-| sentry_capture | Error sent to Sentry | Integration test |
-| posthog_event | Event captured | Integration test |
-| otel_trace | Trace exported | Integration test |
-| pii_redaction | PII redacted | Integration test |
-| loki_log | Log aggregated | Integration test |
-
-### Audit Schedule
-
-| Check | Frequency | Owner | Action |
-|-------|-----------|-------|--------|
-| sentry_quota | Monthly | Platform | Review usage, adjust plan |
-| posthog_quota | Monthly | Platform | Review usage, adjust plan |
-| otel_cost | Monthly | Platform | Review OTel endpoint costs |
-| loki_retention | Quarterly | Platform | Verify 90-day compliance |
-| redaction_rules | Monthly | Security | Review PII patterns |
-
----
-
-## Section 5: Rate Limiting
+## Rate Limiting
 
 ### Overview
 
@@ -732,8 +344,8 @@ The rate limiting system protects the API from abuse and ensures fair resource a
 
 ```typescript
 // Token Bucket Algorithm (burst tolerance)
-import { Ratelimit } from "`@upstash`/ratelimit";
-import { Redis } from "`@upstash`/redis";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -839,51 +451,7 @@ res.setHeader('X-RateLimit-Remaining', result.remaining);
 
 ---
 
-## Section 6: Sanitisation
-
-### Content Sanitization
-
-#### DOMPurify
-
-- **Version**: ≥3.4.0 required
-- **Component**: `SanitizedHTML` with profile prop
-  - **STRICT**: No SVG, no style, minimal allowed tags
-  - **RICH**: Div, span, strong, em, ul/li allowed, no SVG
-  - **EMAIL**: Links (a), images (img), paragraphs (p), line breaks (br); forces rel=noopener on all links
-
-### File Scanning
-
-#### ClamAV
-
-- **Version**: v1.4.x sidecar deployment
-- **Updates**: freshclam hourly for virus definitions
-- **Health Check**: Available on /health endpoint
-- **Caching**: No scan caching (fresh scan every time)
-
-### Input Validation
-
-#### Zod Schema Validation
-
-- **URL Parameters**: All validated with Zod schemas
-- **Output**: All output sanitized before rendering
-- **Coverage**: 100% of user inputs
-
-### MCP Security
-
-#### SSRF Protection
-
-- **Middleware**: Blocks all private IP ranges
-- **Allowlist**: Strict allowlist validation for outbound requests
-- **Redirects**: No redirects allowed (blocks open redirects)
-
-### Testing
-
-- **XSS Payload Matrix**: 10 test cases in TESTC04
-- **CSP Violations**: Automated CSP violation checks in CI
-
----
-
-## Section 7: Secrets Management
+## Secrets Management
 
 ### Overview
 
@@ -1255,7 +823,7 @@ jobs:
       contents: read
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials`@v4`
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::123456789012:role/github-actions-role
           aws-region: us-east-1
@@ -1504,4 +1072,3 @@ If rotation fails:
 | Access review | Quarterly | GRC | Review access, remove unused |
 | Rotation compliance | Monthly | Security | Verify all rotations |
 | Backup verification | Quarterly | Platform | Test recovery keys |
-| Cost review | Monthly | Platform | Review Vault costs |

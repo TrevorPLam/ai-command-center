@@ -1,4 +1,10 @@
-# PRD
+---
+title: "Product Requirements Document"
+owner: "Product"
+status: "active"
+updated: "2026-04-26"
+canonical: ""
+---
 
 > **TL;DR**: AI workspace with cross-app conflict detection, unified chat, and local-first AI for privacy. Core jobs: conflict detection, unified chat, proactive notifications. Success metrics: <30s resolution, >60% paid conversion, <1% hallucination. Monetization: Free (local), Pro ($20-30/mo cloud), Enterprise (custom). Design axioms and architecture in [11-STRAT-BLUEPRINT.md](11-STRAT-BLUEPRINT.md).
 
@@ -43,16 +49,6 @@ Sensitive data processed on-device/user-controlled, not sent to third-party clou
 |Free|Local models (Gemma 4, Qwen3.5)|~$0.00001/1K tokens|Free|
 |Pro|Cloud API (Sonnet 4.6)|$0.10-0.50/user/mo|$20-30/mo|
 |Enterprise|Full cloud (Opus 4.7), fine-tuning|$1-5/user/mo|Custom|
-
-## Personas
-
-|ID|Role|Goals|Pain Points|
-|---|---|---|---|
-|P1|PM|Ship faster, track AI usage|Manual tracking, unclear costs|
-|P2|Sr Engineer|Build agents, debug flows|Complex orchestration, security gaps|
-|P3|Data Scientist|Fine-tune models, evaluate|No eval framework, unclear metrics|
-|P4|Platform Owner|Ensure uptime, manage secrets|Manual rotation, slow incident response|
-|P5|UX Designer|Design agent UIs, prototype|No UI patterns, unclear motion specs|
 
 ## Outcomes
 

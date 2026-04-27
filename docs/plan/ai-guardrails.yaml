@@ -1,0 +1,78 @@
+# AI Guardrails Configuration
+# Three-layer protection system for AI safety and compliance
+
+guardrails:
+  input_layer:
+    name: "Input Guardrails"
+    severity: "HARD"
+    checks:
+      - name: "PII Detection"
+        description: "Detect and filter personally identifiable information"
+        action: "redact_or_block"
+        threshold: "strict"
+      - name: "Jailbreak Detection"
+        description: "Detect prompt injection and jailbreak attempts"
+        action: "block"
+        threshold: "strict"
+      - name: "Toxicity Screening"
+        description: "Filter toxic or harmful content"
+        action: "block"
+        threshold: "moderate"
+      - name: "Content Sanitization"
+        description: "Sanitize input content for safety"
+        action: "sanitize"
+        threshold: "moderate"
+
+  output_layer:
+    name: "Output Guardrails"
+    severity: "HARD"
+    checks:
+      - name: "Hallucination Detection"
+        description: "Detect and flag hallucinated content"
+        action: "flag_or_reroute"
+        threshold: "strict"
+      - name: "Safety Validation"
+        description: "Validate output safety"
+        action: "block_if_unsafe"
+        threshold: "strict"
+      - name: "Schema Compliance"
+        description: "Ensure output matches expected schema"
+        action: "validate"
+        threshold: "strict"
+      - name: "Content Filtering"
+        description: "Filter inappropriate output content"
+        action: "filter"
+        threshold: "moderate"
+
+  runtime_layer:
+    name: "Runtime Guardrails"
+    severity: "HARD"
+    checks:
+      - name: "Tool Authorization"
+        description: "Authorize tool calls before execution"
+        action: "authorize_or_block"
+        threshold: "strict"
+      - name: "Cost Threshold Enforcement"
+        description: "Enforce cost limits per request"
+        action: "block_if_exceeded"
+        threshold: "strict"
+      - name: "Resource Limits"
+        description: "Enforce resource usage limits"
+        action: "throttle_or_block"
+        threshold: "moderate"
+      - name: "Audit Logging"
+        description: "Log all guardrail decisions"
+        action: "log"
+        threshold: "always"
+
+logging:
+  destination: "audit_logs"
+  format: "structured"
+  retention: "90_days"
+  include:
+    - "guardrail_decision"
+    - "confidence_score"
+    - "user_id"
+    - "timestamp"
+    - "model_id"
+    - "action_taken"

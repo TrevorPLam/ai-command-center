@@ -1,0 +1,15 @@
+{
+  "name": "ai-command-center",
+  "version": "1.0.0",
+  "description": "AI Command Center Documentation",
+  "scripts": {
+    "generate:component-table": "node scripts/generate-component-table.js",
+    "generate:pattern-tags": "node scripts/generate-pattern-tags-table.js",
+    "generate:security-controls": "node scripts/generate-security-controls-table.js",
+    "generate:versions": "node scripts/generate-versions-table.js",
+    "generate:all": "npm run generate:component-table && npm run generate:pattern-tags && npm run generate:security-controls && npm run generate:versions"
+  },
+  "devDependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
