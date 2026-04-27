@@ -39,9 +39,10 @@ Each **Parent Task** is a deliverable. **Subtasks** are the discrete steps an AI
 | R‑AI‑03‑1 | Study LiteLLM ≥1.83.7 docs for budget limits, hard‑stop enforcement, and `x‑litellm‑tags` propagation. |
 | R‑AI‑03‑2 | Search GitHub issues for known bugs in budget enforcement with Claude/OpenAI backends. |
 | R‑AI‑03‑3 | Determine the exact configuration required to return 429s on budget exhaustion and emit cost headers. |
-| R‑AI‑03‑4 | Write a “how‑to‑configure” guide for the project’s proxy setup. |
+| R‑AI‑03‑4 | Write a "how‑to‑configure" guide for the project's proxy setup. |
 | **Expected output** | `research/litellm-budget-hard-stop-config.md` |
 | **Context** | Rules AI‑11–AI‑13; 60-AI-CORE.md cost section |
+| **Verdict** | COMPLETED - Critical finding: LiteLLM returns HTTP 400, not HTTP 429 for budget exhaustion. FastAPI middleware required to transform 400 → 429. Soft budget alerts require Enterprise license. Known bugs documented with workarounds. |
 
 #### R‑AI‑04: react‑big‑calendar + React Compiler Compatibility
 | Subtask | Action |
