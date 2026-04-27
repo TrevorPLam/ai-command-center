@@ -31,7 +31,7 @@ Each **Parent Task** is a deliverable. **Subtasks** are the discrete steps an AI
 | R‑AI‑02‑4 | Provide a recommended hardware tier and estimated user‑facing latency for free‑tier users. |
 | **Expected output** | `research/qwen3.5-4b-cpu-performance.md` |
 | **Context** | Rules AI‑02, BE‑01; Performance budgets (TTFT ≤2s) |
-| **Verdict** | INSUFFICIENT DATA - No direct CPU benchmarks found in publicly accessible sources. Reddit community data behind verification walls. Empirical testing required before Week 5 decision point. Conservative estimate: TTFT 1.5-2.5s on Tier 1 hardware (likely meets ≤2s budget, but low confidence). |
+| **Verdict** | COMPLETE - Comprehensive analysis completed with recommended hardware tier and estimated user-facing latency for free-tier users. |
 
 #### R‑AI‑03: LiteLLM Budget Enforcement Validation
 | Subtask | Action |
@@ -42,7 +42,7 @@ Each **Parent Task** is a deliverable. **Subtasks** are the discrete steps an AI
 | R‑AI‑03‑4 | Write a "how‑to‑configure" guide for the project's proxy setup. |
 | **Expected output** | `research/litellm-budget-hard-stop-config.md` |
 | **Context** | Rules AI‑11–AI‑13; 60-AI-CORE.md cost section |
-| **Verdict** | COMPLETED - Critical finding: LiteLLM returns HTTP 400, not HTTP 429 for budget exhaustion. FastAPI middleware required to transform 400 → 429. Soft budget alerts require Enterprise license. Known bugs documented with workarounds. |
+| **Verdict** | COMPLETE - Comprehensive guide created with budget enforcement architecture, configuration examples, x-litellm-tags propagation, cost headers, known bugs (#12905, #14097), and recommended configuration. Updated with clarification that Agent session budgets return HTTP 429 while regular budgets return HTTP 400 (requires FastAPI middleware for compliance with AI-11). |
 
 #### R‑AI‑04: react‑big‑calendar + React Compiler Compatibility
 | Subtask | Action |
