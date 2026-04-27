@@ -1,6 +1,6 @@
 # Qwen3.5 4B CPU Performance Research
 
-**Task ID:** R-AI-02  
+**Task ID:** R-AI-02
 **Date:** April 26, 2026  
 **Status:** INSUFFICIENT DATA - Requires empirical testing
 
@@ -19,11 +19,13 @@ This research investigates Qwen3.5 4B performance on consumer CPU hardware (Inte
 ### Official Documentation
 
 1. **Qwen Official Speed Benchmarks** (qwen.readthedocs.io)
+
    - Provides GPU/transformers benchmarks for Qwen3 series
    - No CPU-specific data for Qwen3.5 4B
    - Focuses on SGLang and Hugging Face Transformers backends
 
 2. **Ollama Library Page** (ollama.com/library/qwen3.5:4b)
+
    - Model size: ~2.5GB (Q4 quantization)
    - No CPU performance benchmarks provided
    - Benchmarks focus on language/vision capabilities, not inference speed
@@ -31,17 +33,20 @@ This research investigates Qwen3.5 4B performance on consumer CPU hardware (Inte
 ### Third-Party Benchmarks
 
 3. **Artificial Analysis** (artificialanalysis.ai)
+
    - Provides general performance metrics (tokens/sec, TTFT)
    - Data is for cloud APIs, not local CPU inference
    - Not applicable to local deployment scenario
 
 4. **Glukhov Ollama Benchmark** (glukhov.org)
+
    - Comprehensive GPU benchmark on RTX 4080 16GB
    - Tests Qwen3.5 9B, 27B, 35B (not 4B)
    - Shows CPU offloading penalties: 12-57 tokens/sec with 25-78% CPU offloading
    - Not pure CPU inference data
 
 5. **GitHub Issue #22001** (ggml-org/llama.cpp)
+
    - Reports Qwen3.5 slower than Qwen3 on Intel Arc iGPU (SYCL backend)
    - No specific CPU numbers provided
    - Indicates architectural differences may affect performance
@@ -49,6 +54,7 @@ This research investigates Qwen3.5 4B performance on consumer CPU hardware (Inte
 ### Community Discussions (Behind Verification)
 
 6. **Reddit r/LocalLLaMA** - Multiple threads
+
    - "Qwen 3 Performance: Quick Benchmarks Across" - Mentions Qwen3 4B running on iPhone
    - "Qwen3-30B-A3B runs at 12-15 tokens-per-second on CPU" - Ryzen 7 PRO 5875U, 64GB RAM
    - "Thread for CPU-only LLM performance comparison" - Contains CPU benchmark tables
@@ -56,18 +62,21 @@ This research investigates Qwen3.5 4B performance on consumer CPU hardware (Inte
    - **Status:** All threads behind Reddit verification, data not accessible
 
 7. **Reddit r/LocalLLM**
+
    - "Qwen3.5-35B-A3B-4bit 60 tokens/second on my Apple Mac" - MLX performance
    - **Status:** Behind verification
 
 ### Hardware Requirements
 
 8. **Techie007 Substack Guide**
+
    - Hardware requirements table:
      - Qwen3.5 4B: Minimum 6GB RAM, Recommended 8GB+ RAM for laptop
    - Ollama model size: ~2.5GB (Q4 quantization)
    - No CPU performance data
 
 9. **WillItRunAI Apple Silicon Guide**
+
    - Comprehensive MLX benchmarks for Qwen3.5 on Apple Silicon
    - Focuses on 9B, 27B, 35B-A3B models
    - No 4B model benchmarks

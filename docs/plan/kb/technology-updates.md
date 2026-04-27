@@ -8,7 +8,7 @@ canonical: ""
 
 ## TL;DR
 
-React 20 GA March 2026 with built-in compiler, TypeScript 6.0/7.0 with Go-native compiler, Prisma Next TypeScript-native ORM, Vercel Edge Functions no DB, Deno 2.0 full npm compatibility, OTel GenAI v1.40.0 experimental.
+React 20 GA March 2026 with built-in compiler, TypeScript 6.0/7.0 with Go-native compiler, SQLModel Python ORM with Alembic migrations, Vercel Edge Functions no DB, Deno 2.0 full npm compatibility, OTel GenAI v1.40.0 experimental.
 
 ## Key Facts
 
@@ -29,14 +29,14 @@ React 20 GA March 2026 with built-in compiler, TypeScript 6.0/7.0 with Go-native
 - Use eslint-plugin-react-compiler
 - Audit Q2 2026
 
-#### React Compiler ESLint
+#### React Compiler (Babel Plugin)
 
-**REACT_COMPILER_ESLINT**: eslint-plugin-react-compiler deprecated
+**REACT_COMPILER**: @babel/plugin-react-compiler for automatic React optimization
 
-- Users should use eslint-plugin-react-hooks@latest instead
-- Linting functionality integrated into eslint-plugin-react-hooks
+- Enabled globally via Babel plugin (ADR_034)
+- Carveouts: React Hook Form (use "use no memo" directive), Zustand persist (no Suspense) (ADR_094)
+- Linting via eslint-plugin-react-hooks@latest (replaces deprecated eslint-plugin-react-compiler)
 - New lint rules: set-state-in-render, set-state-in-effect, refs
-- Does not require compiler to be installed
 
 #### React Compiler Compatibility
 
@@ -59,15 +59,15 @@ React 20 GA March 2026 with built-in compiler, TypeScript 6.0/7.0 with Go-native
 - Go-native (tsgo) ~10x faster
 - CI-ready now
 
-### Prisma Next
+### SQLModel
 
-**PRISMA_NEXT**: TypeScript-native ORM
+**SQLMODEL**: Python ORM with Alembic
 
-- Postgres GA June-July 2026
-- Schema in TypeScript
+- Pydantic v2 integration
+- Schema in Python
 - pgvector extension
-- 12-month Prisma 7 LTS
-- Phase 3 evaluation
+- Alembic for migrations
+- Production-ready
 
 ### Vercel Edge
 
@@ -190,17 +190,18 @@ React 20 GA March 2026 with built-in compiler, TypeScript 6.0/7.0 with Go-native
 - 75% cheaper
 - Threshold reduced to 500K vectors
 
-### Prisma Savepoints
+### SQLModel Transactions
 
-**PRISMA_SAVEPOINT**: v7.8.0+ nested transaction savepoints
+**SQLMODEL_TX**: SQLAlchemy session management
 
-- Saga rollback via savepoint release
+- Nested transactions with savepoints
+- Saga rollback via session rollback
 
 ## Why It Matters
 
 - React 20 compiler changes optimization patterns
 - TypeScript 7.0 Go-native compiler improves CI speed
-- Prisma Next provides type-safe ORM
+- SQLModel provides type-safe ORM with Pydantic
 - Edge Functions have limitations requiring architecture adjustments
 - Deno 2.0 npm compatibility simplifies dependency management
 - OTel GenAI provides AI observability but still experimental
@@ -209,7 +210,7 @@ React 20 GA March 2026 with built-in compiler, TypeScript 6.0/7.0 with Go-native
 
 - React 20 release notes
 - TypeScript 6.0/7.0 release notes
-- Prisma documentation
+- SQLModel documentation
 - Vercel Edge Functions documentation
 - Deno 2.0 release notes
 - OTel GenAI documentation

@@ -534,6 +534,866 @@ components:
           description: Suggested modified content
       required: [passed, results, blocked_content]
 
+    # Event Schemas
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Event ID
+        org_id:
+          type: string
+          description: Organization ID
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Event title
+        start_time:
+          type: string
+          format: date-time
+          description: Event start time
+        end_time:
+          type: string
+          format: date-time
+          description: Event end time
+        timezone:
+          type: string
+          default: UTC
+          description: Event timezone
+        all_day_flag:
+          type: boolean
+          default: false
+          description: All-day event flag
+        recurrence_id:
+          type: string
+          nullable: true
+          description: Recurrence rule ID
+        category:
+          type: string
+          default: general
+          description: Event category
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required: [id, org_id, title, start_time, end_time, timezone]
+
+    EventCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+          default: UTC
+        all_day_flag:
+          type: boolean
+          default: false
+        recurrence_id:
+          type: string
+          nullable: true
+        category:
+          type: string
+          default: general
+      required: [title, start_time, end_time, timezone]
+
+    EventUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+        all_day_flag:
+          type: boolean
+        recurrence_id:
+          type: string
+          nullable: true
+        category:
+          type: string
+
+    # Task Schemas
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Task ID
+        project_id:
+          type: string
+          description: Project ID
+        parent_id:
+          type: string
+          nullable: true
+          description: Parent task ID for subtasks
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+        status:
+          type: string
+          enum: [todo, in_progress, completed, cancelled]
+          default: todo
+          description: Task status
+        assignee:
+          type: string
+          nullable: true
+          description: Assignee user ID
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: Task due date
+        estimated_time:
+          type: integer
+          minimum: 0
+          nullable: true
+          description: Estimated time in minutes
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          default: medium
+          description: Task priority
+        order:
+          type: integer
+          default: 0
+          description: Display order
+        checklist:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Task checklist as JSONB
+        category:
+          type: string
+          default: general
+          description: Task category
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required: [id, project_id, title, status, priority, order]
+
+    TaskCreate:
+      type: object
+      properties:
+        project_id:
+          type: string
+        parent_id:
+          type: string
+          nullable: true
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        status:
+          type: string
+          enum: [todo, in_progress, completed, cancelled]
+          default: todo
+        assignee:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        estimated_time:
+          type: integer
+          minimum: 0
+          nullable: true
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          default: medium
+        order:
+          type: integer
+          default: 0
+        checklist:
+          type: object
+          additionalProperties: true
+          nullable: true
+        category:
+          type: string
+          default: general
+      required: [project_id, title]
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        status:
+          type: string
+          enum: [todo, in_progress, completed, cancelled]
+        assignee:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        estimated_time:
+          type: integer
+          minimum: 0
+          nullable: true
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        order:
+          type: integer
+        checklist:
+          type: object
+          additionalProperties: true
+          nullable: true
+        category:
+          type: string
+
+    TaskBulkReorder:
+      type: object
+      properties:
+        task_orders:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              order:
+                type: integer
+            required: [id, order]
+          description: Array of task ID and order pairs
+      required: [task_orders]
+
+    # Project Schemas
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Project ID
+        org_id:
+          type: string
+          description: Organization ID
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Project name
+        description:
+          type: string
+          nullable: true
+          description: Project description
+        status:
+          type: string
+          enum: [active, completed, archived, on_hold]
+          default: active
+          description: Project status
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          default: medium
+          description: Project priority
+        start_date:
+          type: string
+          format: date
+          nullable: true
+          description: Project start date
+        end_date:
+          type: string
+          format: date
+          nullable: true
+          description: Project end date
+        budget:
+          type: number
+          format: decimal
+          nullable: true
+          description: Project budget
+        owner:
+          type: string
+          nullable: true
+          description: Project owner user ID
+        client_email:
+          type: string
+          format: email
+          nullable: true
+          description: Client email
+        tags:
+          type: array
+          items:
+            type: string
+          description: Project tags
+        category:
+          type: string
+          default: general
+          description: Project category
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required: [id, org_id, name, status, priority]
+
+    ProjectCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, completed, archived, on_hold]
+          default: active
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          default: medium
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        budget:
+          type: number
+          format: decimal
+          nullable: true
+        owner:
+          type: string
+          nullable: true
+        client_email:
+          type: string
+          format: email
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        category:
+          type: string
+          default: general
+      required: [name]
+
+    ProjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, completed, archived, on_hold]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        budget:
+          type: number
+          format: decimal
+          nullable: true
+        owner:
+          type: string
+          nullable: true
+        client_email:
+          type: string
+          format: email
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+        category:
+          type: string
+
+    # Chat/Thread/Message Schemas
+    Thread:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Thread ID
+        org_id:
+          type: string
+          description: Organization ID
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Thread title
+        category:
+          type: string
+          default: chat
+          description: Thread category
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required: [id, org_id, title, category]
+
+    ThreadCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        category:
+          type: string
+          default: chat
+      required: [title]
+
+    ThreadUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        category:
+          type: string
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Message ID
+        org_id:
+          type: string
+          description: Organization ID
+        thread_id:
+          type: string
+          description: Thread ID
+        user_id:
+          type: string
+          description: User ID
+        content:
+          type: string
+          minLength: 1
+          description: Message content
+        category:
+          type: string
+          default: general
+          description: Message category
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required: [id, org_id, thread_id, user_id, content, category]
+
+    MessageCreate:
+      type: object
+      properties:
+        thread_id:
+          type: string
+        content:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          default: general
+      required: [thread_id, content]
+
+    MessageUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+        category:
+          type: string
+
+    ChatStreamEvent:
+      type: object
+      properties:
+        event:
+          type: string
+          enum: [message, error, done]
+          description: SSE event type
+        data:
+          type: object
+          additionalProperties: true
+          description: Event data (varies by event type)
+      required: [event, data]
+
+    # Notification Schemas
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Notification ID
+        org_id:
+          type: string
+          description: Organization ID
+        user_id:
+          type: string
+          description: User ID
+        template:
+          type: string
+          description: Notification template
+        deeplink:
+          type: string
+          nullable: true
+          description: Deep link URL
+        read_status:
+          type: boolean
+          default: false
+          description: Read status
+        unsubscribed:
+          type: boolean
+          default: false
+          description: Unsubscribed status
+        category:
+          type: string
+          default: general
+          description: Notification category
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required: [id, org_id, user_id, template, read_status, unsubscribed, category]
+
+    NotificationMarkRead:
+      type: object
+      properties:
+        notification_ids:
+          type: array
+          items:
+            type: string
+          description: Array of notification IDs to mark as read
+      required: [notification_ids]
+
+    NotificationPreferences:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Preferences ID
+        org_id:
+          type: string
+          description: Organization ID
+        user_id:
+          type: string
+          description: User ID
+        channels:
+          type: object
+          additionalProperties: true
+          description: Channel preferences as JSONB
+        category:
+          type: string
+          default: general
+          description: Preferences category
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Soft delete timestamp
+      required: [id, org_id, user_id, channels, category]
+
+    NotificationPreferencesUpdate:
+      type: object
+      properties:
+        channels:
+          type: object
+          additionalProperties: true
+          description: Channel preferences as JSONB
+        category:
+          type: string
+      required: [channels]
+
+    # Cost Schemas
+    AICostLog:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cost log ID
+        org_id:
+          type: string
+          description: Organization ID
+        request_id:
+          type: string
+          description: Request ID
+        model:
+          type: string
+          description: AI model used
+        tokens_in:
+          type: integer
+          minimum: 0
+          default: 0
+          description: Input tokens
+        tokens_out:
+          type: integer
+          minimum: 0
+          default: 0
+          description: Output tokens
+        cost:
+          type: number
+          format: decimal
+          minimum: 0
+          default: 0.000000
+          description: Cost in USD
+        caller:
+          type: string
+          description: Caller identifier
+        category:
+          type: string
+          default: general
+          description: Cost log category
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+      required: [id, org_id, request_id, model, tokens_in, tokens_out, cost, caller, category]
+
+    CostForecast:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: Organization ID
+        period_start:
+          type: string
+          format: date-time
+          description: Forecast period start
+        period_end:
+          type: string
+          format: date-time
+          description: Forecast period end
+        forecasted_cost:
+          type: number
+          format: decimal
+          minimum: 0
+          description: Forecasted cost
+        actual_cost:
+          type: number
+          format: decimal
+          minimum: 0
+          nullable: true
+          description: Actual cost (if period ended)
+        model_breakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              model:
+                type: string
+              cost:
+                type: number
+                format: decimal
+                minimum: 0
+            required: [model, cost]
+          description: Cost breakdown by model
+      required: [org_id, period_start, period_end, forecasted_cost]
+
+    # Auth/Org Schemas
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Organization ID
+        slug:
+          type: string
+          description: Organization slug
+        name:
+          type: string
+          description: Organization name
+        plan:
+          type: string
+          enum: [free, pro, enterprise]
+          default: free
+          description: Organization plan
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        allow_training_flag:
+          type: boolean
+          default: false
+          description: Allow AI training flag
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+      required: [id, slug, name, plan]
+
+    OrganizationCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '^[a-z0-9-]+$'
+        plan:
+          type: string
+          enum: [free, pro, enterprise]
+          default: free
+      required: [name, slug]
+
+    OrganizationUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        plan:
+          type: string
+          enum: [free, pro, enterprise]
+        allow_training_flag:
+          type: boolean
+
+    OrganizationSwitch:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: Target organization ID
+      required: [org_id]
+
+    PasskeyEnrollment:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: User ID
+        credential_id:
+          type: string
+          description: WebAuthn credential ID
+        public_key:
+          type: string
+          description: Public key
+        counter:
+          type: integer
+          minimum: 0
+          description: Signature counter
+        transports:
+          type: array
+          items:
+            type: string
+          description: Allowed transports
+      required: [user_id, credential_id, public_key, counter]
+
+    PasskeyChallenge:
+      type: object
+      properties:
+        challenge:
+          type: string
+          description: WebAuthn challenge
+        timeout:
+          type: integer
+          minimum: 1
+          default: 60000
+          description: Challenge timeout in milliseconds
+        rp_id:
+          type: string
+          description: Relying party ID
+        user_id:
+          type: string
+          description: User ID
+      required: [challenge, rp_id, user_id]
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Session ID
+        user_id:
+          type: string
+          description: User ID
+        org_id:
+          type: string
+          description: Current organization ID
+        created_at:
+          type: string
+          format: date-time
+          description: Session creation timestamp
+        expires_at:
+          type: string
+          format: date-time
+          description: Session expiration timestamp
+        last_activity:
+          type: string
+          format: date-time
+          description: Last activity timestamp
+      required: [id, user_id, org_id, created_at, expires_at]
+
 paths:
   # Core Service Endpoints
   /livekit/token:
@@ -948,3 +1808,1382 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  # Event Endpoints
+  /events:
+    get:
+      tags: [Events]
+      summary: List events
+      description: List events with time range and recurrence filters
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: start_time
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter events starting after this time
+        - name: end_time
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter events ending before this time
+        - name: recurrence_id
+          in: query
+          schema:
+            type: string
+          description: Filter by recurrence rule ID
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter by category
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            nullable: true
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Items per page
+      responses:
+        '200':
+          description: Events retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags: [Events]
+      summary: Create event
+      description: Create a new event
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreate'
+      responses:
+        '201':
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid event data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /events/{id}:
+    get:
+      tags: [Events]
+      summary: Get event
+      description: Get a single event by ID
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags: [Events]
+      summary: Update event
+      description: Update an existing event
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventUpdate'
+      responses:
+        '200':
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid event data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Events]
+      summary: Delete event
+      description: Soft delete an event
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Event deleted successfully
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Task Endpoints
+  /tasks:
+    get:
+      tags: [Tasks]
+      summary: List tasks
+      description: List tasks with status, assignee, and project filters
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: project_id
+          in: query
+          schema:
+            type: string
+          description: Filter by project ID
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [todo, in_progress, completed, cancelled]
+          description: Filter by status
+        - name: assignee
+          in: query
+          schema:
+            type: string
+          description: Filter by assignee user ID
+        - name: parent_id
+          in: query
+          schema:
+            type: string
+          description: Filter by parent task ID (for subtasks)
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            nullable: true
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Items per page
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags: [Tasks]
+      summary: Create task
+      description: Create a new task
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid task data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /tasks/bulk-reorder:
+    post:
+      tags: [Tasks]
+      summary: Bulk reorder tasks
+      description: Reorder multiple tasks in a project
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskBulkReorder'
+      responses:
+        '200':
+          description: Tasks reordered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  updated_count:
+                    type: integer
+                required: [success, updated_count]
+        '400':
+          description: Invalid reorder data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /tasks/{id}:
+    get:
+      tags: [Tasks]
+      summary: Get task
+      description: Get a single task by ID
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags: [Tasks]
+      summary: Update task
+      description: Update an existing task
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid task data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Tasks]
+      summary: Delete task
+      description: Soft delete a task
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Task deleted successfully
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Project Endpoints
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List projects
+      description: List projects with status, priority, and owner filters
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, completed, archived, on_hold]
+          description: Filter by status
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+          description: Filter by priority
+        - name: owner
+          in: query
+          schema:
+            type: string
+          description: Filter by owner user ID
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            nullable: true
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Items per page
+      responses:
+        '200':
+          description: Projects retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Project'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags: [Projects]
+      summary: Create project
+      description: Create a new project
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          description: Invalid project data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /projects/{id}:
+    get:
+      tags: [Projects]
+      summary: Get project
+      description: Get a single project by ID
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags: [Projects]
+      summary: Update project
+      description: Update an existing project
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          description: Invalid project data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Projects]
+      summary: Delete project
+      description: Soft delete a project
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Project deleted successfully
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Chat/Thread/Message Endpoints
+  /chat/stream:
+    get:
+      tags: [Chat]
+      summary: Stream chat messages
+      description: Server-sent events stream for real-time chat messages
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: thread_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Thread ID to stream messages from
+      responses:
+        '200':
+          description: SSE stream established
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-sent events with ChatStreamEvent data
+        '400':
+          description: Invalid thread ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /threads:
+    get:
+      tags: [Chat]
+      summary: List threads
+      description: List all threads for the organization
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter by category
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            nullable: true
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Items per page
+      responses:
+        '200':
+          description: Threads retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Thread'
+    post:
+      tags: [Chat]
+      summary: Create thread
+      description: Create a new chat thread
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThreadCreate'
+      responses:
+        '201':
+          description: Thread created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+        '400':
+          description: Invalid thread data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /threads/{id}:
+    get:
+      tags: [Chat]
+      summary: Get thread
+      description: Get a single thread by ID
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Thread retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+        '404':
+          description: Thread not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags: [Chat]
+      summary: Update thread
+      description: Update an existing thread
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThreadUpdate'
+      responses:
+        '200':
+          description: Thread updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+        '400':
+          description: Invalid thread data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Thread not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Chat]
+      summary: Delete thread
+      description: Soft delete a thread
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Thread deleted successfully
+        '404':
+          description: Thread not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /threads/{thread_id}/messages:
+    get:
+      tags: [Chat]
+      summary: List messages
+      description: List messages in a thread
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: thread_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            nullable: true
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Items per page
+      responses:
+        '200':
+          description: Messages retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Message'
+        '404':
+          description: Thread not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags: [Chat]
+      summary: Create message
+      description: Create a new message in a thread
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: thread_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageCreate'
+      responses:
+        '201':
+          description: Message created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid message data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Thread not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /messages/{id}:
+    get:
+      tags: [Chat]
+      summary: Get message
+      description: Get a single message by ID
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Message retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '404':
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags: [Chat]
+      summary: Update message
+      description: Update an existing message
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageUpdate'
+      responses:
+        '200':
+          description: Message updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid message data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Chat]
+      summary: Delete message
+      description: Soft delete a message
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Message deleted successfully
+        '404':
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Notification Endpoints
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: List notifications
+      description: List notifications for the current user
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: read_status
+          in: query
+          schema:
+            type: boolean
+          description: Filter by read status
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            nullable: true
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Items per page
+      responses:
+        '200':
+          description: Notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Notification'
+
+  /notifications/mark-read:
+    post:
+      tags: [Notifications]
+      summary: Mark notifications as read
+      description: Mark multiple notifications as read
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationMarkRead'
+      responses:
+        '200':
+          description: Notifications marked as read
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  updated_count:
+                    type: integer
+                required: [success, updated_count]
+        '400':
+          description: Invalid notification IDs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /notifications/preferences:
+    get:
+      tags: [Notifications]
+      summary: Get notification preferences
+      description: Get notification preferences for the current user
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      responses:
+        '200':
+          description: Preferences retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreferences'
+    put:
+      tags: [Notifications]
+      summary: Update notification preferences
+      description: Update notification preferences for the current user
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferencesUpdate'
+      responses:
+        '200':
+          description: Preferences updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreferences'
+        '400':
+          description: Invalid preferences data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  # Cost Endpoints
+  /cost/forecast:
+    get:
+      tags: [Cost]
+      summary: Get cost forecast
+      description: Get AI cost forecast for a time period (TimescaleDB hypertable aware)
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: period_start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Forecast period start
+        - name: period_end
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Forecast period end
+      responses:
+        '200':
+          description: Cost forecast retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CostForecast'
+        '400':
+          description: Invalid date range
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /cost/logs:
+    get:
+      tags: [Cost]
+      summary: Get AI cost logs
+      description: Get AI cost logs from TimescaleDB hypertable
+      security:
+        - BearerAuth: []
+        - OrgHeader: []
+      parameters:
+        - name: model
+          in: query
+          schema:
+            type: string
+          description: Filter by model
+        - name: caller
+          in: query
+          schema:
+            type: string
+          description: Filter by caller
+        - name: period_start
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter logs after this time
+        - name: period_end
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter logs before this time
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            nullable: true
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Items per page
+      responses:
+        '200':
+          description: Cost logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AICostLog'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Auth/Org Endpoints
+  /organizations:
+    get:
+      tags: [Auth]
+      summary: List organizations
+      description: List organizations for the current user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Organizations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+    post:
+      tags: [Auth]
+      summary: Create organization
+      description: Create a new organization
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreate'
+      responses:
+        '201':
+          description: Organization created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: Invalid organization data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /organizations/{id}:
+    get:
+      tags: [Auth]
+      summary: Get organization
+      description: Get a single organization by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Organization retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags: [Auth]
+      summary: Update organization
+      description: Update an existing organization
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUpdate'
+      responses:
+        '200':
+          description: Organization updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: Invalid organization data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/switch-org:
+    post:
+      tags: [Auth]
+      summary: Switch organization
+      description: Switch the current organization context
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationSwitch'
+      responses:
+        '200':
+          description: Organization switched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Invalid organization ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not a member of target organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/passkey/challenge:
+    post:
+      tags: [Auth]
+      summary: Get passkey challenge
+      description: Generate WebAuthn challenge for passkey enrollment or authentication
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  description: User ID (for enrollment) or omit for authentication
+              required: []
+      responses:
+        '200':
+          description: Challenge generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasskeyChallenge'
+
+  /auth/passkey/enroll:
+    post:
+      tags: [Auth]
+      summary: Enroll passkey
+      description: Complete WebAuthn passkey enrollment
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasskeyEnrollment'
+      responses:
+        '200':
+          description: Passkey enrolled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required: [success]
+        '400':
+          description: Invalid enrollment data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /auth/session:
+    get:
+      tags: [Auth]
+      summary: Get current session
+      description: Get current session information
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Session retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+    delete:
+      tags: [Auth]
+      summary: Terminate session
+      description: Terminate the current session
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Session terminated successfully

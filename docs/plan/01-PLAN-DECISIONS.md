@@ -43,7 +43,7 @@ canonical: ""
 | DEC-2026-04-26-005 | 2026-04-26 | process | Process | Reversible decisions made by AI agents without Trevor approval. Costly/irreversible require explicit Trevor review | Prevents decision paralysis while protecting against costly mistakes | Yes | Medium | active | Review after 10 sessions | -- | -- | session-2026-04-26-claude-planning-framework |
 | DEC-2026-04-26-006 | 2026-04-26 | process | Process | AI agents follow tiered loading protocol defined in 00-MANIFEST.yaml; always load session starter set, expand on demand | Reduces token load at session start while enabling on-demand deep context | Yes | High | active | none | -- | 00-MANIFEST.yaml | session-2026-04-26-claude-planning-framework |
 | ADR_001 | 2026-04-26 | architecture | Platform | Use Vite SPA, not Next.js | SPA architecture preferred for client-side control | Costly | High | active | none | docs/adr/ADR_001.md | -- | -- |
-| ADR_002 | 2026-04-26 | architecture | Data | Prisma schema + migrations, Supabase runtime | Type-safe ORM with managed Postgres | Costly | High | active | none | docs/adr/ADR_002.md | -- | -- |
+| ADR_002 | 2026-04-26 | architecture | Data | SQLModel + Alembic migrations, Supabase runtime | Type-safe ORM with managed Postgres | Costly | High | active | none | docs/adr/ADR_002.md | -- | -- |
 | ADR_003 | 2026-04-26 | architecture | Frontend | Use Zustand v5 for state management | Lightweight state management for UI-only state | Costly | High | active | none | docs/adr/ADR_003.md | -- | -- |
 | ADR_004 | 2026-04-26 | architecture | AI-Core | LiteLLM as AI proxy/gateway | Unified API for multiple LLM providers | Costly | High | active | none | docs/adr/ADR_004.md | -- | -- |
 | ADR_008 | 2026-04-26 | architecture | Frontend | markmap for MindMapEditor | Markdown-based mind mapping | Costly | High | active | none | docs/adr/ADR_008.md | -- | -- |
@@ -94,7 +94,7 @@ canonical: ""
 | ADR_099 | 2026-04-26 | architecture | Platform | Vercel Serverless (not Edge) for DB-dependent webhooks | Webhook deployment target | Costly | High | active | none | docs/adr/ADR_099.md | ADR_007 | -- |
 | ADR_100 | 2026-04-26 | architecture | Data | Nylas grant.expired proactive re-auth within 72 hours | OAuth refresh handling | Costly | High | active | none | docs/adr/ADR_100.md | -- | -- |
 | ADR_101 | 2026-04-26 | architecture | Security | OWASP Agentic Top 10 (ASI 2026) compliance mapping for guardrails | AI security compliance | Costly | High | active | none | docs/adr/ADR_101.md | -- | -- |
-| ADR_102 | 2026-04-26 | architecture | Data | Prisma Next evaluation postponed to Phase 3 (Postgres GA mid-2026) | Prisma upgrade deferred | Costly | High | active | none | docs/adr/ADR_102.md | -- | -- |
+| ADR_102 | 2026-04-26 | architecture | Data | SQLModel production-ready (no evaluation needed) | Python ORM with Alembic | Costly | High | active | none | docs/adr/ADR_102.md | -- | -- |
 | ADR_103 | 2026-04-26 | architecture | AI-Core | OpenAI Responses API migration path (deadline Aug 26, 2026) | API migration planning | Costly | High | active | none | docs/adr/ADR_103.md | -- | -- |
 | ADR_104 | 2026-04-26 | architecture | Data | pgvectorscale threshold lowered to 500K vectors | Vector search scaling | Costly | High | active | none | docs/adr/ADR_104.md | -- | -- |
 | ADR_105 | 2026-04-26 | architecture | Frontend | Tremor v3.18.x as standard charting library | Chart library version pin | Costly | High | active | none | docs/adr/ADR_105.md | -- | -- |

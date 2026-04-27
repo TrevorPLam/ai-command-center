@@ -205,7 +205,7 @@ The CI pipeline runs on every PR and merge to main:
 4. **Component Tests:** test:component (Vitest, coverage ≥85%, axe-core checks)
 5. **RLS Tests:** test:rls (pgTAP)
 6. **E2E Tests:** test:e2e (Playwright)
-7. **Prisma Drift Check:** prisma:drift
+7. **SQLModel Drift Check:** alembic:check
 8. **Code Generation Check:** orval:codegen (integrity hash)
 9. **Docker Build:** docker:build
 10. **Contract Tests:** schemathesis (PR and main post-deploy)

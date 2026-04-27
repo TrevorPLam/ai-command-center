@@ -44,7 +44,7 @@ This directory contains atomic knowledge base files extracted from the monolithi
 
 ### Infrastructure
 
-- [infrastructure.md](infrastructure.md) - Terraform, Docker, secrets management, observability stack, CI/CD, Prisma migrations
+- [infrastructure.md](infrastructure.md) - Terraform, Docker, secrets management, observability stack, CI/CD, SQLModel migrations
 
 ### Backend Core
 
@@ -72,7 +72,7 @@ This directory contains atomic knowledge base files extracted from the monolithi
 
 ### Technology Updates
 
-- [technology-updates.md](technology-updates.md) - React 20, TypeScript 6.0/7.0, Prisma Next, Vercel Edge Functions, Deno 2.0, OTel GenAI, Temporal, Google A2A v1, Supabase Edge Functions
+- [technology-updates.md](technology-updates.md) - React 20, TypeScript 6.0/7.0, SQLModel, Vercel Edge Functions, Deno 2.0, OTel GenAI, Temporal, Google A2A v1, Supabase Edge Functions
 
 ### Webhooks
 

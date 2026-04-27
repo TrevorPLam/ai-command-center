@@ -43,10 +43,10 @@ technology_claims:
     status: "VULN"
     source: "CVE database, DOMPurify security advisory"
 
-  - technology: "React 20 Compiler / Vite 8 / Rolldown"
-    claim: "Vite 8 ships with Rust-based Rolldown as default bundler; React Compiler support via @rolldown/plugin-babel."
+  - technology: "React Compiler / Vite 7.3.1"
+    claim: "Vite 7.3.1 with React Compiler support via babel-plugin-react-compiler. Rolldown not required for Vite 7."
     status: "REL"
-    source: "Vite 8 release notes, React Compiler documentation"
+    source: "Vite 7.3.1 release notes, React Compiler documentation"
 
   - technology: "Turborepo 2.x"
     claim: "pipeline renamed to tasks; task graph-based scheduling with topological ordering."

@@ -18,7 +18,7 @@ This document contains operational runbooks for incident response, cross-cutting
 | 4.2 Cross-Cutting Issues | Motion Violations, Realtime Memory Issues |
 | 4.3 Testing Failures | Security RLS Failure, AI Evaluation Accuracy Drop |
 | 4.4 Operational Procedures | P0 Incident Trigger, Feature Flag Kill Switch, Cost Budget Exceeded |
-| 4.5 Migration Issues | Prisma Migration Drift, Y-Sweet Migration, LiteLLM Upgrade, Orval Upgrade, Claude 4.6 Migration, OpenAI Migration, TypeScript 7.0 CI, React 20 Migration, Expo 5.5 Migration |
+| 4.5 Migration Issues | SQLModel Migration Drift, Y-Sweet Migration, LiteLLM Upgrade, Orval Upgrade, Claude 4.6 Migration, OpenAI Migration, TypeScript 7.0 CI, React 20 Migration, Expo 5.5 Migration |
 | 4.6 Observability & Monitoring | Burn Rate Alerts |
 | 4.7 Security Incidents | SSRF Bypass, AI Guardrail Violations, MCP Inspector Isolation, DND Kit Audit, MCP Audit, Tauri Cap CI |
 | 4.8 Data Integrity | Offline Sync Issues, Upload Security, Y-Sweet Offline, Nylas Grant Expired |
@@ -211,7 +211,7 @@ This document contains operational runbooks for incident response, cross-cutting
 
 ## 4.5 Migration Issues
 
-### Prisma Migration Drift
+### SQLModel Migration Drift
 
 **Trigger**: CI detects schema drift
 

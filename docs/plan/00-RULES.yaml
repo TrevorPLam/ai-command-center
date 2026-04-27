@@ -13,7 +13,7 @@ rules:
   - id: BE-02
     domain: backend
     severity: hard
-    description: Prisma client never runs in the browser
+    description: SQLModel never runs in the browser
     check: lint-rule or manual review
 
   - id: BE-03
@@ -520,13 +520,13 @@ rules:
   - id: SEC-04
     domain: security
     severity: hard
-    description: Only supabase-js allowed in browser; Prisma never in frontend
+    description: Only supabase-js allowed in browser; SQLModel never in frontend
     check: lint-rule or manual review
 
   - id: SEC-05
     domain: security
     severity: hard
-    description: Prisma schema changes must update RLS policies
+    description: SQLModel schema changes must update RLS policies
     check: schema validation
 
   - id: SEC-06

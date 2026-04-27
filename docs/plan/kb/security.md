@@ -33,7 +33,7 @@ AES-256 encryption at rest, PII encrypted at app layer with Vault keys, JWT sign
 
 **AuditLog**: Immutable append-only audit_logs
 
-- Prisma middleware + CDC
+- SQLAlchemy event listeners + CDC
 - Queryable by admin
 - MCP, guardrail, privacy events logged
 

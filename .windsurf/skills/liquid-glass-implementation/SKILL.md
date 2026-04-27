@@ -53,7 +53,7 @@ This skill guides implementation of modern glassmorphism effects that go beyond 
 ### Tailwind Utility
 
 ```css
-/* In tailwind.config.ts or globals.css */
+/* In tokens.css */
 @layer utilities {
   .noise-overlay {
     @apply relative;

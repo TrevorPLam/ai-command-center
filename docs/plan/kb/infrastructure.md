@@ -8,7 +8,7 @@ canonical: ""
 
 ## TL;DR
 
-Terraform for Vercel, Fly.io, Supabase, Upstash with TF Cloud state, Docker for local dev with hot-reload, Doppler/Vault for secrets, Sentry/PostHog/OTel for observability, GitHub Actions with pnpm/turbo, Prisma EBC with drift detection.
+Terraform for Vercel, Fly.io, Supabase, Upstash with TF Cloud state, Docker for local dev with hot-reload, Doppler/Vault for secrets, Sentry/PostHog/OTel for observability, GitHub Actions with pnpm/turbo, SQLModel migrations with drift detection.
 
 ## Key Facts
 
@@ -55,14 +55,14 @@ Terraform for Vercel, Fly.io, Supabase, Upstash with TF Cloud state, Docker for 
 - Affected-only builds
 - Remote cache
 - Supabase migrations
-- Prisma RLS
+- SQLModel RLS
 - AI evaluation gate
 
-### Prisma Migrations
+### SQLModel Migrations
 
-**PrismaMig**: Database migrations
+**SQLModelMig**: Database migrations
 
-- EBC (Enterprise Backend Core) pattern
+- Alembic for schema management
 - migrate deploy to production
 - Drift check in CI
 - RLS versioning
@@ -75,7 +75,7 @@ Terraform for Vercel, Fly.io, Supabase, Upstash with TF Cloud state, Docker for 
 - Centralized secrets management prevents credential leakage
 - Observability stack enables debugging and performance monitoring
 - CI/CD automation ensures reliable deployments
-- Prisma migrations provide controlled database schema changes
+- SQLModel migrations provide controlled database schema changes
 
 ## Sources
 
@@ -84,4 +84,4 @@ Terraform for Vercel, Fly.io, Supabase, Upstash with TF Cloud state, Docker for 
 - Doppler/Vault documentation
 - Sentry/PostHog/OTel documentation
 - GitHub Actions documentation
-- Prisma documentation
+- SQLModel documentation

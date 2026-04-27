@@ -12,7 +12,7 @@ canonical: ""
 
 **Key decisions**: Vite SPA only (no Next.js), Zustand v5 for global state, LiteLLM proxy for all AI calls, PowerSync for offline sync, Y-Sweet for collaboration, LiveKit v2.0 for real-time.
 
-**Technology constraints**: See rule IDs below. All AI calls through LiteLLM (#BE-01), Prisma client never in browser (#BE-02), Nylas API only from FastAPI (#BE-03), Vercel Edge Functions no direct DB access (#BE-04).
+**Technology constraints**: See rule IDs below. All AI calls through LiteLLM (#BE-01), SQLModel never in browser (#BE-02), Nylas API only from FastAPI (#BE-03), Vercel Edge Functions no direct DB access (#BE-04).
 
 **Domain ownership**: Six-domain architecture (Platform foundation, Data & sync, AI core, Frontend/UX, Security/governance, Business strategy). See [11-STRAT-BLUEPRINT.md](11-STRAT-BLUEPRINT.md).
 

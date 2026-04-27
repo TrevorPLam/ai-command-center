@@ -187,7 +187,7 @@ canonical: ""
 | ID | Feature | Notes |
 |---|---|---|
 | P213 | Monorepo: Turborepo 2.x, pnpm catalogs | Strict: packages/ui no import from features |
-| P214 | Full CI: typecheck, lint, test:unit/component/rls/e2e, prisma:drift, orval:codegen, docker:build, schemathesis | AI eval no cache, base=main |
+| P214 | Full CI: typecheck, lint, test:unit/component/rls/e2e, alembic:check, orval:codegen, docker:build, schemathesis | AI eval no cache, base=main |
 | P215 | Offline: tombstone sync (deleted_at, ULID, IC), outbox MVP | PowerSync eval continues |
 | P216 | Schemathesis contract test CI gate | Main+PR, ignore SSE/WS endpoints |
 | P217 | DeepEval+RAGAS AI eval CI gates | LLM‑as‑judge LiteLLM proxy |

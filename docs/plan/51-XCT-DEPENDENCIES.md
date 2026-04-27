@@ -258,155 +258,382 @@ jobs:
 
 **Escape Hatch**: `ignoreDeprecations` mechanism available to temporarily silence deprecation warnings during migration
 
-## Prisma Next (`@prisma`/next)
+## SQLModel + Alembic (Python ORM)
 
 ### Current Status (April 26, 2026)
 
-**Prisma Next Roadmap**:
-- **Phase 1 -- Enable external contributions (April 2026)**: In progress. Establishing stable APIs for extension authors. Public call for contributors in April 2026.
-- **Phase 2 -- Early access (May 2026)**: Not started. Get Prisma Next into users' hands for real-world validation. Postgres + one additional SQL database (SQLite candidate) expected to be stable.
-- **Phase 3 -- General availability (June-July 2026)**: Not started. Bring Prisma Next Postgres support to GA as production-ready product. Prisma Next will become Prisma 8 at GA.
+**SQLModel**: Production-ready Python ORM built on Pydantic v2 and SQLAlchemy 2.0
+- Type-safe models with Pydantic validation
+- Full SQLAlchemy 2.0 async support
+- Native pgvector extension support
+- Production-ready with active maintenance
 
-**Prisma 7 Status**: Prisma 7 remains the recommended version for production applications and will continue to receive updates and long-term support for 12 months after Prisma Next GA. Teams can continue upgrading to Prisma 7 with confidence.
+**Alembic**: Industry-standard database migration tool for SQLAlchemy
+- Linear migration history
+- Automatic migration generation
+- Support for complex schema changes
+- Data migration capabilities
 
-### Feature Set Comparison: Prisma Next vs Prisma Current
+### Core Features
 
-#### What's Already Built in Prisma Next
+**Type Safety & Validation**:
+- Pydantic v2 integration for runtime validation
+- IDE autocomplete with full type hints
+- Automatic schema validation
+- Seamless FastAPI integration (Pydantic models shared)
 
-**Core Query API Improvements**:
-- New query API with custom collection methods for models
-- Streaming query results for large datasets (async iterables, lower memory usage)
-- Low-level, type-safe SQL query builder for complex or custom SQL
-- Aggregation & grouping support (addresses long-standing GROUP BY gap)
-- Model collections for domain-specific query methods
+**Query API**:
+- SQLAlchemy 2.0 async session support
+- Type-safe query building
+- Raw SQL execution with type safety
+- Aggregation and grouping support
 
-**Schema & Type System**:
-- TypeScript Prisma schemas as alternative to schema.prisma
-- Extension system for installing new behaviors and data types
-- First extension: pgvector for vector similarity search
+**Schema System**:
+- Python class-based models (no separate schema DSL)
+- Automatic table/column name mapping
+- Relationship definitions with cascade behavior
+- Index and constraint definitions
 
-**Agent-Centric Development**:
-- Compile-time guardrails (type errors before runtime)
-- Machine-readable errors with stable codes and suggested fixes
-- Structured output for AI agents (query plans, schema details, diagnostics)
-- Schema change preview before database impact
+**Migration System (Alembic)**:
+- Linear migration history (simple and predictable)
+- Automatic migration generation from model changes
+- Support for data migrations
+- Rollback capabilities
+- Branching support for parallel development
 
-**Middleware & Validation**:
-- Middleware for query inspection, blocking, and rewriting
-- Built-in query linting (block risky patterns like deletes without where)
-- Query budgeting (prevent expensive or unbounded queries)
-- Validation at every layer (editor, schema alignment, middleware)
+### Feature Comparison
 
-**Migration System**:
-- Graph-based migrations (like Git branches for database schema)
-- Handles branching histories for parallel development
-- Squashing old migrations to keep history manageable
-- Baselines for adopting existing databases
-- Data migrations coming (type-safe data transformations alongside schema changes)
-
-### Feature Comparison Table
-
-| Feature | Prisma 7 (Current) | Prisma Next | Notes |
-|---------|-------------------|-------------|-------|
-| Query API | GraphQL-inspired nested objects | Fluent method chaining + SQL builder | Prisma Next reduces nesting complexity |
-| Schema Language | schema.prisma only | schema.prisma OR TypeScript | TypeScript schemas enable full IDE integration |
-| GROUP BY | Not supported | Fully supported with combine() | Addresses GitHub issue #8744 |
-| Streaming | Not supported | Async iterables for large result sets | Lower memory usage for background jobs |
-| Extensions | Limited (built-in only) | Extensible plugin system | pgvector, ParadeDB, custom extensions |
-| MongoDB | Removed in Prisma 7 | Coming via Prisma Next | Architecture designed for non-SQL targets |
-| Agent Support | Basic | Structured output, guardrails, error codes | Designed for AI-assisted workflows |
-| Migrations | Linear file list | Graph-based (Git-like) | Handles parallel development better |
-| Data Migrations | Manual only | Type-safe data migrations coming | Long-standing gap being addressed |
-| TypeScript Schema | No | Yes | Schema in same language as application |
-| SQL Query Builder | Raw SQL only | Type-safe SQL builder | Drop to SQL when ORM doesn't fit |
-
-### Migration Complexity for Phase 3
-
-**Timeline Alignment**:
-- Prisma Next GA: June-July 2026
-- Project Phase 3: Aug-Sep 2026 (Advanced: Offline, Collab, Feature Flags)
-- Evaluation window: 1-2 months between Prisma Next GA and project Phase 3
-- ADR_102: Prisma Next evaluation postponed to Phase 3 (Postgres GA mid-2026)
-
-**Migration Path Design** (from Prisma roadmap):
-- **Parallel Operation**: Prisma Next and Prisma 7 can run side-by-side with gradual traffic shift
-- **Compatibility Layer**: Existing Prisma 7 queries don't need immediate rewrite
-- **Long-term Support**: Prisma 7 receives 12-month LTS after Prisma Next GA
-- **Incremental Adoption**: Teams can adopt at their own pace
-
-**Migration Complexity Assessment**: Low to Moderate
-
-**Low Complexity Factors**:
-- Compatibility layer prevents immediate query rewrite
-- Parallel operation allows gradual migration
-- 12-month Prisma 7 LTS provides comfortable transition window
-- Postgres support (primary target) aligns with project database choice
-- Graph-based migrations handle parallel development better
-
-**Moderate Complexity Factors**:
-- New query API requires learning curve (fluent chaining vs nested objects)
-- TypeScript schema option introduces new paradigm
-- Extension system may require custom implementations
-- Data migrations feature still in development
-- MongoDB support not yet available (if needed)
-
-**Estimated Migration Effort**:
-- Evaluation period: 2-4 weeks (parallel operation testing)
-- Schema migration: 1-2 weeks (optional TypeScript schema conversion)
-- Query migration: 4-8 weeks (gradual adoption using compatibility layer)
-- Extension integration: 2-4 weeks (if custom extensions needed)
-- Total timeline: 8-18 weeks for full migration (can be spread across Phase 3)
-
-**Migration Risks**:
-- Extension ecosystem maturity (early stage in Phase 1)
-- Data migrations feature not yet GA
-- Potential API changes during EA phase (May 2026)
-- Learning curve for team unfamiliar with new patterns
+| Feature | SQLModel + Alembic | Notes |
+|---------|-------------------|-------|
+| Query API | SQLAlchemy 2.0 async sessions | Mature, battle-tested |
+| Schema Language | Python classes (Pydantic) | Same language as application |
+| Type Safety | Pydantic v2 validation | Runtime + compile-time safety |
+| GROUP BY | Full SQLAlchemy support | Native SQL aggregation |
+| Streaming | Async yield for large result sets | Lower memory usage |
+| Extensions | pgvector, custom types | SQLAlchemy extension ecosystem |
+| Agent Support | Type-safe models, structured errors | Python-native tooling |
+| Migrations | Alembic (linear history) | Industry standard, reliable |
+| Data Migrations | Alembic operations | Type-safe data transformations |
+| SQL Query Builder | SQLAlchemy Core | Drop to SQL when needed |
+| FastAPI Integration | Native Pydantic models | Zero-copy validation |
 
 ### Phase 3 Suitability Analysis
 
 **Requirements Mapping**:
 
-| Project Phase 3 Requirement | Prisma Next Capability | Fit |
-|------------------------------|------------------------|-----|
-| Offline Sync (PowerSync) | Extension system supports custom sync logic | High |
-| Collaboration (Yjs) | Streaming queries for real-time data | High |
-| Feature Flags | Type-safe schema changes with preview | High |
-| Advanced AI (GraphRAG) | pgvector extension for vector similarity | Excellent |
-| Agent Workflows | Structured output, guardrails, error codes | Excellent |
-| Performance | Streaming, aggregation, query budgeting | High |
-| Type Safety | TypeScript schemas, compile-time guardrails | Excellent |
-| Multi-tenant | Extension system for tenant isolation | High |
-| Observability | Middleware for telemetry (Sentry, Datadog) | High |
+| Project Phase 3 Requirement | SQLModel + Alembic Capability | Fit |
+|------------------------------|-------------------------------|-----|
+| Offline Sync (PowerSync) | SQLAlchemy event listeners for CDC | High |
+| Collaboration (Yjs) | Async sessions for real-time data | High |
+| Feature Flags | Alembic migrations for schema changes | High |
+| Advanced AI (GraphRAG) | pgvector extension support | Excellent |
+| Agent Workflows | Type-safe models, structured errors | Excellent |
+| Performance | SQLAlchemy 2.0 async, connection pooling | High |
+| Type Safety | Pydantic v2 validation | Excellent |
+| Multi-tenant | Session scoping, row-level security | High |
+| Observability | SQLAlchemy event hooks for telemetry | High |
 
 **Suitability Verdict**: Highly Suitable for Phase 3
 
 **Rationale**:
-1. **Timing Alignment**: Prisma Next GA (June-July 2026) precedes project Phase 3 (Aug-Sep 2026), providing 1-2 month evaluation window
-2. **Feature Alignment**: New features (streaming, aggregation, pgvector, agent support) directly address Phase 3 requirements
-3. **Migration Safety**: Parallel operation and compatibility layer reduce risk
-4. **Future-Proofing**: Extension system provides flexibility for evolving requirements
-5. **Agent-Centric Design**: Built for AI-assisted workflows, aligning with project's AI-first approach
+1. **Production-Ready**: SQLModel and Alembic are mature, production-tested tools
+2. **Python Ecosystem**: Native integration with FastAPI, Pydantic, and Python tooling
+3. **Type Safety**: Pydantic v2 provides comprehensive validation and type safety
+4. **Migration Reliability**: Alembic is the industry standard for SQLAlchemy migrations
+5. **Performance**: SQLAlchemy 2.0 async sessions provide excellent performance
+6. **Agent-Friendly**: Python-native tooling aligns with AI agent workflows
 
-**Recommendation**: Proceed with Phase 3 evaluation as planned in ADR_102. Schedule evaluation for July 2026 (immediately after Prisma Next GA) to inform Phase 3 adoption decisions in Aug-Sep 2026.
-
-**Evaluation Checklist for Phase 3**:
-- [ ] Prisma Next GA release review (June-July 2026)
-- [ ] Parallel operation testing with existing Prisma 7 setup
-- [ ] TypeScript schema evaluation for team adoption
-- [ ] Extension system testing (pgvector, custom extensions)
-- [ ] Migration complexity validation with real project schema
-- [ ] Performance benchmarking (streaming, aggregation)
-- [ ] Agent workflow integration testing
-- [ ] Data migrations feature assessment
-- [ ] Cost/benefit analysis vs staying on Prisma 7
-- [ ] Go/no-go decision for Phase 3 adoption
+**No Evaluation Needed**: SQLModel + Alembic is the chosen stack (ADR_002), production-ready, and requires no evaluation phase.
 
 **Dependencies**:
-- Add ``@prisma`/next` horizon dep for Phase 3 evaluation (already noted in 51-XCT-DEPENDENCIES.md line 211)
 - Add `MCPSec` middleware to MCP security dependencies.
 - TASK INFORMATION INCORRECT: `es2026-shim` does not exist. Pattern matching (match/using) is Stage 1 proposal, NOT part of ES2026. No polyfill available.
 - Change OpenAI provider deps from Assistants/ChatCompletions to Responses API + Conversations.
+
+## Frontend Dependencies
+
+### Core Framework
+
+**React Ecosystem**:
+- `react` ^19.0.0 - Core UI library
+- `react-dom` ^19.0.0 - React DOM renderer
+- `react-router-dom` ^6.28.0 - Client-side routing
+- `@tanstack/react-query` ^5.59.0 - Server state management
+- `zustand` ^5.0.0 - UI-only state management (ADR_003)
+- `react-helmet-async` ^2.0.0 - Document head management (ADR_016)
+
+**TypeScript & Build**:
+- `typescript` ^6.0.0 - Type checking (tsc)
+- `@typescript/native-preview` @beta - TypeScript 7.0 beta (tsgo, experimental)
+- `vite` ^7.3.1 - Build tool and dev server
+- `@vitejs/plugin-react` ^4.3.0 - Vite React plugin
+
+### Motion & Animation
+
+**Motion Library**:
+- `motion` ^11.0.0 - Animation library (formerly framer-motion)
+- Note: Import from `motion/react`, not `framer-motion`
+
+**Motion Patterns**:
+- Spring physics for primary interactions (stiffness: 300, damping: 30)
+- Stagger children for list reveals (0.05-0.08s delay)
+- AnimatePresence for exit animations
+- LazyMotion for code splitting animation bundles
+- Respect prefers-reduced-motion media query
+
+### UI Components
+
+**Tailwind CSS**:
+- `tailwindcss` ^4.2.2 - Utility-first CSS
+- `@tailwindcss/vite` ^4.0.0 - Tailwind Vite plugin
+- Note: Use @theme/@source for configuration (Tailwind CSS 4 syntax)
+
+**shadcn/ui Components**:
+- `@radix-ui/react-dialog` - Dialog/Modal components
+- `@radix-ui/react-dropdown-menu` - Dropdown menus
+- `@radix-ui/react-select` - Select components
+- `@radix-ui/react-tabs` - Tab components
+- `@radix-ui/react-toast` - Toast notifications
+- `@radix-ui/react-tooltip` - Tooltips
+- `@radix-ui/react-popover` - Popovers
+- `@radix-ui/react-slot` - Slot composition
+- `class-variance-authority` - Component variants
+- `clsx` - Conditional className
+- `tailwind-merge` - Tailwind class merging
+
+**Charting**:
+- `@tremor/react` ^3.18.x - Dashboard charts (ADR_087, ADR_105)
+- Note: Tremor v4 beta not ready for migration
+
+**Calendar**:
+- `react-big-calendar` ^1.19.4 - Calendar component (pinned for React 19 compatibility, ADR_014)
+- `date-fns` - Date utilities
+
+### Drag & Drop
+
+**dnd-kit** (Primary DnD library, ADR_018, ADR_085):
+- `@dnd-kit/core` - Core drag and drop
+- `@dnd-kit/sortable` - Sortable lists
+- `@dnd-kit/utilities` - Utility functions
+- Note: No migration to PragmaticDnD
+
+### Virtualization
+
+**react-window**:
+- `react-window` - Virtualized lists for performance
+- Note: Use for lists >50 items (ActivityFeed, transaction lists, news feed)
+
+### Forms & Validation
+
+**React Hook Form**:
+- `react-hook-form` - Form state management
+- `@hookform/resolvers` - Validation resolvers
+- `zod` - Schema validation
+- Note: Use "use no memo" directive for RHF components (ADR_094)
+
+### Date & Time
+
+**Temporal Polyfill** (ADR_095, ADR_109):
+- `@js-temporal/polyfill` - Temporal API polyfill
+- `rschedule` - Recurrence engine
+- `@rschedule/temporal-date-adapter` - Temporal adapter for rschedule
+- Note: Mandatory until Safari supports Temporal natively
+- Note: Use Temporal.ZonedDateTime for all calendar events (never PlainDateTime)
+
+### Real-time & Collaboration
+
+**Yjs**:
+- `yjs` - CRDT for real-time collaboration
+- `y-sweet` - Yjs backend service
+- `y-websocket` - Yjs WebSocket provider
+- Note: Yjs lifecycle: GC on, undo truncation last 5, snapshot version history (ADR_076)
+
+**LiveKit**:
+- `livekit-client` - Real-time audio/video
+- `livekit-react` - React components for LiveKit
+- `livekit-agents` - Voice AI pipeline (backend)
+- Note: LiveKit Agents v2.0 only, semantic turn detection mandatory (ADR_115)
+
+### AI & GenUI
+
+**AI SDKs**:
+- `ai` - Vercel AI SDK
+- `@ai-sdk/react` - React components for AI SDK
+- `@stripe/ai-sdk` - Stripe AI integration
+- `@stripe/agent-toolkit` - Stripe agent tools
+
+### Code Editor
+
+**Monaco Editor**:
+- `@monaco-editor/react` - Monaco React wrapper
+- Note: Isolated in sandboxed iframe with separate CSP (ADR_022)
+- Note: Lazy-loaded with React.lazy + Suspense
+
+### Security & Sanitization
+
+**DOMPurify**:
+- `dompurify` ^3.4.0 - HTML sanitization (SEC-10)
+- Note: Three DOMPurify profiles for different security levels
+
+**React Textarea Autosize**:
+- `react-textarea-autosize` - Auto-resizing textarea
+
+### Resizable Panels
+
+**react-resizable-panels**:
+- `react-resizable-panels` - Resizable panel layouts
+
+### Storage & Persistence
+
+**Zustand Persistence**:
+- `zustand` - Built-in persist middleware
+- Note: Use version, migrate, and partialize functions (FE-32)
+- Note: Conditional rendering, not Suspense (FE-15)
+
+### Performance
+
+**React Compiler**:
+- `@babel/plugin-react-compiler` - React Compiler (ADR_034)
+- Note: Enabled globally, carveouts for RHF and Zustand persist (ADR_094)
+
+### Accessibility
+
+**react-aria**:
+- `@react-aria/*` - Accessible components (optional, shadcn/ui provides most)
+
+### Testing
+
+**Testing Tools**:
+- `@testing-library/react` - React testing utilities
+- `@testing-library/jest-dom` - Jest matchers
+- `@testing-library/user-event` - User event simulation
+- `vitest` - Unit test runner
+- `playwright` - E2E testing
+
+### Development Tools
+
+**ESLint**:
+- `eslint` - Linting
+- `eslint-plugin-react-hooks` - React hooks rules (replaces React Compiler ESLint plugin)
+- `@typescript-eslint/eslint-plugin` - TypeScript ESLint
+- `@typescript-eslint/parser` - TypeScript parser
+
+**Prettier**:
+- `prettier` - Code formatting
+- `prettier-plugin-tailwindcss` - Tailwind class sorting
+
+**Package Manager**:
+- `pnpm` ^10.29.1 - Package manager (pinned version)
+
+### Module-specific Dependencies
+
+**Dashboard**:
+- `@tremor/react` - Charts and metrics
+
+**Budget**:
+- `@tremor/react` - Financial charts
+
+**Calendar**:
+- `react-big-calendar` - Calendar views
+- `@js-temporal/polyfill` - Temporal polyfill
+- `rschedule` - Recurrence engine
+- `@rschedule/temporal-date-adapter` - Temporal adapter
+
+**Chat**:
+- `ai` - AI SDK
+- `@ai-sdk/react` - React AI components
+- `yjs` - Real-time collaboration
+- `y-sweet` - Yjs backend
+
+**Projects**:
+- `@dnd-kit/core` - Drag and drop
+- `@dnd-kit/sortable` - Sortable lists
+- `@dnd-kit/utilities` - DnD utilities
+
+**Email**:
+- `react-resizable-panels` - Resizable email view
+- `react-textarea-autosize` - Auto-resizing compose input
+
+**Conference**:
+- `livekit-client` - Real-time audio/video
+- `livekit-react` - React LiveKit components
+
+**Documents**:
+- `yjs` - Real-time collaboration
+- `y-sweet` - Yjs backend
+
+### Installation Commands
+
+```bash
+# Core dependencies
+pnpm add react react-dom react-router-dom @tanstack/react-query zustand react-helmet-async
+
+# Build tools
+pnpm add -D typescript vite @vitejs/plugin-react @typescript/native-preview@beta
+
+# Motion
+pnpm add motion
+
+# UI components
+pnpm add tailwindcss @tailwindcss/vite
+pnpm add @radix-ui/react-dialog @radix-ui/react-dropdown-menu @radix-ui/react-select @radix-ui/react-tabs @radix-ui/react-toast @radix-ui/react-tooltip @radix-ui/react-popover @radix-ui/react-slot
+pnpm add class-variance-authority clsx tailwind-merge
+
+# Charting
+pnpm add @tremor/react
+
+# Calendar
+pnpm add react-big-calendar date-fns
+
+# Drag & drop
+pnpm add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities
+
+# Virtualization
+pnpm add react-window
+
+# Forms
+pnpm add react-hook-form @hookform/resolvers zod
+
+# Date & time
+pnpm add @js-temporal/polyfill rschedule @rschedule/temporal-date-adapter
+
+# Real-time
+pnpm add yjs y-sweet y-websocket
+pnpm add livekit-client livekit-react
+
+# AI
+pnpm add ai @ai-sdk/react @stripe/ai-sdk @stripe/agent-toolkit
+
+# Code editor
+pnpm add @monaco-editor/react
+
+# Security
+pnpm add dompurify react-textarea-autosize
+
+# Resizable panels
+pnpm add react-resizable-panels
+
+# Testing
+pnpm add -D @testing-library/react @testing-library/jest-dom @testing-library/user-event vitest playwright
+
+# Linting
+pnpm add -D eslint eslint-plugin-react-hooks @typescript-eslint/eslint-plugin @typescript-eslint/parser
+
+# Formatting
+pnpm add -D prettier prettier-plugin-tailwindcss
+```
+
+### Dependency Notes
+
+- **React Compiler**: Enabled globally via Babel plugin, with carveouts for React Hook Form (use "use no memo" directive) and Zustand persist (no Suspense)
+- **dnd-kit**: Primary DnD library, no migration to PragmaticDnD (ADR_018, ADR_085)
+- **Tremor**: v3.18.x pinned, v4 beta not ready for migration
+- **Temporal**: Polyfill mandatory until Safari supports Temporal natively (ADR_095)
+- **rschedule**: Replaces rrule.js on frontend with Temporal date adapter (ADR_109)
+- **LiveKit**: v2.0 only, semantic turn detection mandatory (ADR_115)
+- **Monaco**: Isolated in sandboxed iframe with separate CSP (ADR_022)
+- **DOMPurify**: >=3.4.0 mandatory for XSS prevention (SEC-10)
+- **pnpm**: Pinned to 10.29.1 for consistency
 
 ## OpenAI Migration
 

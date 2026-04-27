@@ -15,7 +15,7 @@ The following table describes how data flows between system components at the in
 | Source | Destination | Protocol | Security Controls | Purpose |
 | :--- | :--- | :--- | :--- | :--- |
 | Browser | FastAPI | HTTPS | JWT+org_id | `/v1/*` API endpoints |
-| FastAPI | Supabase | TCP | Internal network, RLS enforced | Database queries (Prisma) |
+| FastAPI | Supabase | TCP | Internal network, RLS enforced | Database queries (SQLModel) |
 | FastAPI | LiteLLM | HTTPS | API key rot, cosign | LLM routing (Claude, GPT, Gemini) |
 | FastAPI | MCP Server | HTTP | MCPSec L2, OAuth tool auth | SSRF allowlist, nonce replay protection |
 | FastAPI | Stripe | HTTPS | API key 180d rotation | Billing (`@stripe`/ai-sdk) |

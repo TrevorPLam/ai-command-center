@@ -19,8 +19,8 @@ For the complete rule definitions, see [00-RULES.yaml](00-RULES.yaml).
 - #SEC-01: Use SanitizedHTML for all user-generated HTML (STRICT, RICH, EMAIL profiles)
 - #SEC-02: Supabase storage access only via StorageService wrapper
 - #SEC-03: Nylas API calls only from FastAPI backend
-- #SEC-04: Only supabase-js allowed in browser; Prisma never in frontend
-- #SEC-05: Prisma schema changes must update RLS policies
+- #SEC-04: Only supabase-js allowed in browser; SQLModel never in frontend
+- #SEC-05: SQLModel schema changes must update RLS policies
 - #SEC-06: Global CSP enforced in production (nonce-based, strict-dynamic)
 - #SEC-07: unsafe-eval only for Monaco/Babel in sandboxed iframes
 - #SEC-08: JWT stored only in httpOnly cookie, never in Zustand/localStorage

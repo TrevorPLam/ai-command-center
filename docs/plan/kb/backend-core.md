@@ -21,7 +21,7 @@ FastAPI project structure with Service-Repository pattern, WorkflowEngine with t
 
 ### Service Repository Pattern
 
-**ServiceRepo**: Route → Service → Repository (Prisma)
+**ServiceRepo**: Route → Service → Repository (SQLModel)
 
 - Dependency injection via FastAPI dependencies
 - Compensation queue + dead-letter queue

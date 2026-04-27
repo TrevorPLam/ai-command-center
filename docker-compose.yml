@@ -1,0 +1,195 @@
+version: '3.9'
+
+services:
+  # FastAPI Development Server
+  fastapi-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: ai-command-center-fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/ai_command_center
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - Y_SWEET_URL=http://y-sweet:8080
+      - NYLAS_MOCK_URL=http://nylas-mock:3001
+      - STRIPE_MOCK_URL=http://stripe-mock:12111
+      - CLAMAV_HOST=clamav
+      - CLAMAV_PORT=3310
+      - ENVIRONMENT=development
+    volumes:
+      - ./packages/backend:/app/packages/backend
+      - ./packages/shared:/app/packages/shared
+      - ./prisma:/app/prisma
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      ollama:
+        condition: service_started
+      y-sweet:
+        condition: service_started
+      clamav:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # PostgreSQL (Supabase Local)
+  postgres:
+    image: supabase/postgres:15.6.1.063
+    container_name: ai-command-center-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ai_command_center
+      - POSTGRES_USER=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./prisma/schema.prisma:/docker-entrypoint-initdb.d/schema.prisma
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: ai-command-center-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Ollama with Gemma 4 E2B and Qwen3.5 4B
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ai-command-center-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_MODELS=gemma4-e2b,qwen3.5-4b
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-c", "ollama serve & sleep 10 && ollama pull gemma4-e2b && ollama pull qwen3.5-4b && wait"]
+
+  # ClamAV Sidecar
+  clamav:
+    image: clamav/clamav:latest
+    container_name: ai-command-center-clamav
+    ports:
+      - "3310:3310"
+    volumes:
+      - clamav_data:/var/lib/clamav
+    healthcheck:
+      test: ["CMD", "clamdscan", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # Y-Sweet (Collaborative Editing)
+  y-sweet:
+    image: ghcr.io/jamsocket/y-sweet:latest
+    container_name: ai-command-center-y-sweet
+    ports:
+      - "8080:8080"
+    environment:
+      - Y_SWEET_MAX_BODY_SIZE=104857600
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-minioadmin}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-minioadmin}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - Y_SWEET_STORAGE=s3://y-sweet-documents
+    volumes:
+      - y_sweet_data:/data
+    depends_on:
+      - minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+  # MinIO (S3-compatible storage for Y-Sweet)
+  minio:
+    image: minio/minio:latest
+    container_name: ai-command-center-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Nylas Mock Server
+  nylas-mock:
+    image: wiremock/wiremock:latest
+    container_name: ai-command-center-nylas-mock
+    ports:
+      - "3001:8080"
+    volumes:
+      - ./mocks/nylas:/home/wiremock
+    command: --global-response-templating
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/__admin/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Stripe Mock Server
+  stripe-mock:
+    image: stripe/stripe-mock:latest
+    container_name: ai-command-center-stripe-mock
+    ports:
+      - "12111:12111"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:12111/v1/charges"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  ollama_data:
+  clamav_data:
+  y_sweet_data:
+  minio_data:
+
+networks:
+  default:
+    name: ai-command-center-network

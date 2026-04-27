@@ -1,0 +1,1490 @@
+// ============================================================================
+// AI Command Center - Prisma Schema
+// ============================================================================
+// Source: Derived from 32-arch-database-schema.sql
+// Created: 2026-04-26
+// Status: Complete Prisma schema for all 56 database tables
+// Database: PostgreSQL 15+ with TimescaleDB extension
+// ============================================================================
+
+// ============================================================================
+// Manual Migration Notes
+// ============================================================================
+// TimescaleDB Hypertable: ai_cost_log
+// Prisma cannot create TimescaleDB hypertables. Run this SQL manually after migration:
+// SELECT create_hypertable('ai_cost_log', 'created_at', chunk_time_interval => INTERVAL '1 day');
+//
+// Schema Organization:
+// - public schema: All application tables (users, organizations, messages, etc.)
+// - auth schema: Supabase auth tables (not managed by Prisma)
+// - extensions schema: pgcrypto, pgvector, timescaledb (not managed by Prisma)
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// Foundation Tables (public schema)
+// ============================================================================
+
+model User {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  email     String   @unique @map("email")
+  fullName  String?  @map("full_name")
+  avatarUrl String?  @map("avatar_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("users")
+  @@index([email])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Album {
+  id          String   @id @default(gen_random_ulid()) @map("id")
+  orgId       String   @map("org_id")
+  name        String   @map("name")
+  description String?  @map("description")
+  category    String   @default("general") @map("category")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("albums")
+  @@index([orgId])
+  @@index([category])
+}
+
+// ============================================================================
+// Core Application Tables (public schema)
+// ============================================================================
+
+model Message {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  orgId     String   @map("org_id")
+  threadId  String   @map("thread_id")
+  userId    String   @map("user_id")
+  content   String   @map("content")
+  category  String   @default("general") @map("category")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  thread Thread       @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+  @@index([orgId])
+  @@index([threadId])
+  @@index([userId])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model Thread {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  orgId     String   @map("org_id")
+  title     String   @map("title")
+  category  String   @default("chat") @map("category")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  org      Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@map("threads")
+  @@index([orgId])
+  @@index([category])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model Project {
+  id          String    @id @default(gen_random_ulid()) @map("id")
+  orgId       String    @map("org_id")
+  name        String    @map("name")
+  description String?   @map("description")
+  status      String    @default("active") @map("status")
+  priority    String    @default("medium") @map("priority")
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  budget      Decimal?  @map("budget") @db.Decimal(12, 2)
+  owner       String?   @map("owner")
+  clientEmail String?   @map("client_email")
+  tags        String[]  @map("tags")
+  category    String    @default("general") @map("category")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  tasks  Task[]
+
+  @@map("projects")
+  @@index([orgId])
+  @@index([status])
+  @@index([priority])
+  @@index([owner])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model Task {
+  id            String    @id @default(gen_random_ulid()) @map("id")
+  projectId     String    @map("project_id")
+  parentId      String?   @map("parent_id")
+  title         String    @map("title")
+  status        String    @default("todo") @map("status")
+  assignee      String?   @map("assignee")
+  dueDate       DateTime? @map("due_date")
+  estimatedTime Int?      @map("estimated_time")
+  priority      String    @default("medium") @map("priority")
+  order         Int       @default(0) @map("order")
+  checklist     Json?     @map("checklist")
+  category      String    @default("general") @map("category")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  parent    Task?      @relation("TaskHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Task[]     @relation("TaskHierarchy")
+
+  @@map("tasks")
+  @@index([projectId])
+  @@index([parentId])
+  @@index([status])
+  @@index([assignee])
+  @@index([dueDate])
+  @@index([priority])
+  @@index([order])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model Event {
+  id            String    @id @default(gen_random_ulid()) @map("id")
+  orgId         String    @map("org_id")
+  title         String    @map("title")
+  startTime     DateTime  @map("start_time")
+  endTime       DateTime  @map("end_time")
+  timezone      String    @default("UTC") @map("timezone")
+  allDayFlag    Boolean   @default(false) @map("all_day_flag")
+  recurrenceId  String?   @map("recurrence_id")
+  category      String    @default("general") @map("category")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  org           Organization     @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  recurrenceRule RecurrenceRule? @relation(fields: [recurrenceId], references: [id], onDelete: SetNull)
+
+  @@map("events")
+  @@index([orgId])
+  @@index([startTime])
+  @@index([endTime])
+  @@index([recurrenceId])
+  @@index([category])
+  @@index([updatedAt(sort: Desc)])
+}
+
+// ============================================================================
+// Communication & Content Tables (public schema)
+// ============================================================================
+
+model Email {
+  id            String    @id @default(gen_random_ulid()) @map("id")
+  orgId         String    @map("org_id")
+  accountId     String    @map("account_id")
+  nylasId       String    @map("nylas_id")
+  subject       String    @map("subject")
+  fromAddress   String    @map("from_address")
+  toAddresses   String[]  @map("to_addresses")
+  ccAddresses   String[]  @map("cc_addresses")
+  bccAddresses  String[]  @map("bcc_addresses")
+  body          String?   @map("body")
+  attachments   Json?     @map("attachments")
+  direction     String    @default("inbound") @map("direction")
+  category      String    @default("general") @map("category")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  org             Organization      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  connectedAccount ConnectedAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("emails")
+  @@index([orgId])
+  @@index([accountId])
+  @@index([nylasId])
+  @@index([fromAddress])
+  @@index([direction])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model Contact {
+  id              String    @id @default(gen_random_ulid()) @map("id")
+  orgId           String    @map("org_id")
+  name            String    @map("name")
+  email           String?   @map("email")
+  phone           String?   @map("phone")
+  company         String?   @map("company")
+  privacySettings Json?     @map("privacy_settings")
+  tags            String[]  @map("tags")
+  additionalData  Json?     @map("additional_data")
+  category        String    @default("general") @map("category")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, email])
+  @@map("contacts")
+  @@index([orgId])
+  @@index([email])
+  @@index([name])
+  @@index([company])
+  @@index([tags], type: Gin)
+  @@index([updatedAt(sort: Desc)])
+}
+
+model Document {
+  id          String   @id @default(gen_random_ulid()) @map("id")
+  orgId       String   @map("org_id")
+  name        String   @map("name")
+  type        String   @map("type")
+  size        BigInt   @map("size")
+  storagePath String   @map("storage_path")
+  isTrashed   Boolean  @default(false) @map("is_trashed")
+  category    String   @default("general") @map("category")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+  @@index([orgId])
+  @@index([type])
+  @@index([isTrashed])
+  @@index([category])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model Media {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  orgId     String   @map("org_id")
+  name      String   @map("name")
+  type      String   @map("type")
+  url       String   @map("url")
+  altText   String?  @map("alt_text")
+  blurhash  String?  @map("blurhash")
+  albumId   String?  @map("album_id")
+  category  String   @default("general") @map("category")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  album Album?       @relation(fields: [albumId], references: [id], onDelete: SetNull)
+
+  @@map("media")
+  @@index([orgId])
+  @@index([type])
+  @@index([albumId])
+  @@index([category])
+  @@index([updatedAt(sort: Desc)])
+}
+
+// ============================================================================
+// Financial & Planning Tables (public schema)
+// ============================================================================
+
+model Transaction {
+  id          String    @id @default(gen_random_ulid()) @map("id")
+  orgId       String    @map("org_id")
+  amount      Decimal   @map("amount") @db.Decimal(12, 2)
+  date        DateTime  @map("date")
+  description String    @map("description")
+  category    String    @default("general") @map("category")
+  type        String    @default("expense") @map("type")
+  isPlanned   Boolean   @default(false) @map("is_planned")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+  @@index([orgId])
+  @@index([date(sort: Desc)])
+  @@index([category])
+  @@index([type])
+  @@index([isPlanned])
+}
+
+model Goal {
+  id           String    @id @default(gen_random_ulid()) @map("id")
+  orgId        String    @map("org_id")
+  name         String    @map("name")
+  targetValue  Decimal   @map("target_value") @db.Decimal(12, 2)
+  currentValue Decimal   @default(0) @map("current_value") @db.Decimal(12, 2)
+  deadline     DateTime? @map("deadline")
+  category     String    @default("general") @map("category")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("goals")
+  @@index([orgId])
+  @@index([deadline])
+  @@index([category])
+  @@index([updatedAt(sort: Desc)])
+}
+
+// ============================================================================
+// Research & Learning Tables (public schema)
+// ============================================================================
+
+model ResearchNotebook {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  orgId     String   @map("org_id")
+  title     String   @map("title")
+  content   String?  @map("content")
+  category  String   @default("general") @map("category")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("research_notebooks")
+  @@index([orgId])
+  @@index([category])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model Flashcard {
+  id           String   @id @default(gen_random_ulid()) @map("id")
+  orgId        String   @map("org_id")
+  frontContent String   @map("front_content")
+  backContent  String   @map("back_content")
+  deckName     String   @map("deck_name")
+  fsrsState    Json?    @map("fsrs_state")
+  category     String   @default("general") @map("category")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("flashcards")
+  @@index([orgId])
+  @@index([deckName])
+  @@index([category])
+  @@index([updatedAt(sort: Desc)])
+}
+
+// ============================================================================
+// Collaboration & Communication Tables (public schema)
+// ============================================================================
+
+model ConferenceRoom {
+  id             String   @id @default(gen_random_ulid()) @map("id")
+  orgId          String   @map("org_id")
+  name           String   @map("name")
+  livekitRoomId  String   @map("livekit_room_id")
+  category       String   @default("general") @map("category")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([livekitRoomId])
+  @@map("conference_rooms")
+  @@index([orgId])
+  @@index([livekitRoomId])
+  @@index([category])
+}
+
+model TranslationSession {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  orgId           String   @map("org_id")
+  sourceLanguage  String   @map("source_language")
+  targetLanguage  String   @map("target_language")
+  speakers        Json?    @map("speakers")
+  segments        Json?    @map("segments")
+  status          String   @default("pending") @map("status")
+  category        String   @default("general") @map("category")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("translation_sessions")
+  @@index([orgId])
+  @@index([status])
+  @@index([sourceLanguage])
+  @@index([targetLanguage])
+}
+
+model NewsArticle {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  orgId     String   @map("org_id")
+  url       String   @map("url")
+  title     String   @map("title")
+  source    String   @map("source")
+  sentiment String?  @map("sentiment")
+  summary   String?  @map("summary")
+  category  String   @default("general") @map("category")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([url])
+  @@map("news_articles")
+  @@index([orgId])
+  @@index([source])
+  @@index([sentiment])
+  @@index([category])
+  @@index([updatedAt(sort: Desc)])
+}
+
+// ============================================================================
+// System & Administration Tables (public schema)
+// ============================================================================
+
+model WorkflowExecution {
+  id              String    @id @default(gen_random_ulid()) @map("id")
+  orgId           String    @map("org_id")
+  workflowId      String    @map("workflow_id")
+  stepId          String    @map("step_id")
+  status          String    @default("pending") @map("status")
+  inputData       Json?     @map("input_data")
+  outputData      Json?     @map("output_data")
+  startedAt       DateTime? @map("started_at")
+  finishedAt      DateTime? @map("finished_at")
+  category        String    @default("general") @map("category")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+  actorId         String    @map("actor_id")
+  idempotencyKey  String    @map("idempotency_key")
+
+  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  actor User         @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@unique([actorId, idempotencyKey])
+  @@map("workflow_executions")
+  @@index([orgId])
+  @@index([workflowId])
+  @@index([stepId])
+  @@index([status])
+  @@index([startedAt(sort: Desc)])
+  @@index([actorId])
+}
+
+model AuditLog {
+  id         String   @id @default(gen_random_ulid()) @map("id")
+  orgId      String   @map("org_id")
+  actorId    String?  @map("actor_id")
+  action     String   @map("action")
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  oldValue   Json?    @map("old_value")
+  newValue   Json?    @map("new_value")
+  category   String   @default("general") @map("category")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("audit_logs")
+  @@index([orgId])
+  @@index([actorId])
+  @@index([action])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model NotificationPreference {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  orgId     String   @map("org_id")
+  userId    String   @map("user_id")
+  channels  Json     @default("{}") @map("channels")
+  category  String   @default("general") @map("category")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, userId])
+  @@map("notification_preferences")
+  @@index([orgId])
+  @@index([userId])
+}
+
+// ============================================================================
+// Multi-Tenant Foundation Tables (public schema)
+// ============================================================================
+
+model OrganizationMember {
+  orgId      String   @map("org_id")
+  userId     String   @map("user_id")
+  roleId     String?  @map("role_id")
+  joinedDate DateTime @default(now()) @map("joined_date")
+
+  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role  UserRole?    @relation(fields: [roleId], references: [id], onDelete: SetNull)
+
+  @@id([orgId, userId])
+  @@map("organization_members")
+  @@index([orgId])
+  @@index([userId])
+  @@index([roleId])
+}
+
+model ConnectedAccount {
+  id           String    @id @default(gen_random_ulid()) @map("id")
+  orgId        String    @map("org_id")
+  provider     String    @map("provider")
+  grantId      String?   @map("grant_id")
+  accessToken  String?   @map("access_token")
+  expiresAt    DateTime? @map("expires_at")
+  grantStatus  String    @default("active") @map("grant_status")
+  category     String    @default("general") @map("category")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  emails Email[]
+
+  @@map("connected_accounts")
+  @@index([orgId])
+  @@index([provider])
+  @@index([grantStatus])
+  @@index([expiresAt])
+}
+
+model Organization {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  slug            String   @unique @map("slug")
+  name            String   @map("name")
+  plan            String   @default("free") @map("plan")
+  createdAt       DateTime @default(now()) @map("created_at")
+  allowTraining   Boolean  @default(false) @map("allow_training_flag")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  albums               Album[]
+  messages             Message[]
+  threads              Thread[]
+  projects             Project[]
+  events               Event[]
+  emails               Email[]
+  contacts             Contact[]
+  documents            Document[]
+  media                Media[]
+  transactions         Transaction[]
+  goals                Goal[]
+  researchNotebooks    ResearchNotebook[]
+  flashcards           Flashcard[]
+  conferenceRooms      ConferenceRoom[]
+  translationSessions  TranslationSession[]
+  newsArticles         NewsArticle[]
+  workflowExecutions   WorkflowExecution[]
+  auditLogs            AuditLog[]
+  notificationPreferences NotificationPreference[]
+  organizationMembers  OrganizationMember[]
+  connectedAccounts    ConnectedAccount[]
+  featureFlags         FeatureFlag[]
+  notifications        Notification[]
+  userRoles            UserRole[]
+  agentDefinitions     AgentDefinition[]
+  recurrenceRules      RecurrenceRule[]
+  aiCostLogs           AiCostLog[]
+  promptVersions       PromptVersion[]
+  evaluationDatasets   EvaluationDataset[]
+  evaluationRuns       EvaluationRun[]
+  graphEntities        GraphEntity[]
+  graphRelationships   GraphRelationship[]
+  ragIndexStatistics   RagIndexStatistic[]
+  mcpToolAuthorizations McpToolAuthorization[]
+  passkeys             Passkey[]
+  guardrailsAuditLogs  GuardrailsAuditLog[]
+  ssrfAllowlists       SsrfAllowlist[]
+  privacyTrainingOptouts PrivacyTrainingOptout[]
+  stripeUsageRecords   StripeUsageRecord[]
+  yjsDocumentLifecycles YjsDocumentLifecycle[]
+  nylasWebhookConfigurations NylasWebhookConfiguration[]
+  opentelemetrySpanDefinitions OpentelemetrySpanDefinition[]
+  offlineTombstoneConfigurations OfflineTombstoneConfiguration[]
+  realtimeLimitsConfigurations RealtimeLimitsConfiguration[]
+  uploadSecurityConfigurations UploadSecurityConfiguration[]
+  recurrenceRuleConfigurations RecurrenceRuleConfiguration[]
+  collabDocuments      CollabDocument[]
+  realtimeChannelMonitoring RealtimeChannelMonitoring[]
+  offlineOperationsQueues OfflineOperationsQueue[]
+  specificationMetadata SpecificationMetadata[]
+  incidentManagement   IncidentManagement[]
+  featureFlagRegistries FeatureFlagRegistry[]
+  costBudgets          CostBudget[]
+  sloDefinitions       SloDefinition[]
+  securityControlMappings SecurityControlMapping[]
+  webauthnChallenges   WebauthnChallenge[]
+  secretRotationLogs   SecretRotationLog[]
+  posthogEventTaxonomies PosthogEventTaxonomy[]
+  featureFlagEvidences FeatureFlagEvidence[]
+  testCoverageTargets  TestCoverageTarget[]
+  workflowStateAudits  WorkflowStateAudit[]
+  webhookDeduplications WebhookDeduplication[]
+  realtimeLimitsConfiguration RealtimeLimitsConfiguration[]
+  offlineTombstoneConfiguration OfflineTombstoneConfiguration[]
+  uploadSecurityConfiguration UploadSecurityConfiguration[]
+  recurrenceRuleConfiguration RecurrenceRuleConfiguration[]
+
+  @@map("organizations")
+  @@index([slug])
+  @@index([plan])
+  @@index([createdAt(sort: Desc)])
+}
+
+model FeatureFlag {
+  id          String   @id @default(gen_random_ulid()) @map("id")
+  orgId       String   @map("org_id")
+  flagName    String   @map("flag_name")
+  percentage  Decimal  @default(0.0) @map("percentage") @db.Decimal(5, 2)
+  enabled     Boolean  @default(false) @map("enabled")
+  category    String   @default("general") @map("category")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  org     Organization         @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  evidences FeatureFlagEvidence[]
+
+  @@unique([orgId, flagName])
+  @@map("feature_flags")
+  @@index([orgId])
+  @@index([flagName])
+  @@index([enabled])
+}
+
+model Notification {
+  id           String   @id @default(gen_random_ulid()) @map("id")
+  orgId        String   @map("org_id")
+  userId       String   @map("user_id")
+  template     String   @map("template")
+  deeplink     String?  @map("deeplink")
+  readStatus   Boolean  @default(false) @map("read_status")
+  unsubscribed Boolean  @default(false) @map("unsubscribed")
+  category     String   @default("general") @map("category")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+  @@index([orgId])
+  @@index([userId])
+  @@index([readStatus])
+  @@index([unsubscribed])
+  @@index([updatedAt(sort: Desc)])
+}
+
+// ============================================================================
+// Role-Based Access Control Tables (public schema)
+// ============================================================================
+
+model UserRole {
+  id          String   @id @default(gen_random_ulid()) @map("id")
+  orgId       String   @map("org_id")
+  name        String   @map("name")
+  permissions Json     @default("{}") @map("permissions")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  org                     Organization         @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  organizationMembers     OrganizationMember[]
+  rolePermissions         RolePermission[]
+
+  @@unique([orgId, name])
+  @@map("user_roles")
+  @@index([orgId])
+  @@index([name])
+}
+
+model RolePermission {
+  roleId     String @map("role_id")
+  resource   String @map("resource")
+  action     String @map("action")
+
+  role UserRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, resource, action])
+  @@map("role_permissions")
+  @@index([roleId])
+  @@index([resource])
+  @@index([action])
+}
+
+// ============================================================================
+// AI & Agent Tables (public schema)
+// ============================================================================
+
+model AgentDefinition {
+  id            String   @id @default(gen_random_ulid()) @map("id")
+  orgId         String   @map("org_id")
+  name          String   @map("name")
+  description   String?  @map("description")
+  tools         Json     @default("[]") @map("tools")
+  configuration Json     @default("{}") @map("configuration")
+  version       Int      @default(1) @map("version")
+  isPublic      Boolean  @default(false) @map("is_public")
+  category      String   @default("general") @map("category")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, name, version])
+  @@map("agent_definitions")
+  @@index([orgId])
+  @@index([name])
+  @@index([version])
+  @@index([isPublic])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model RecurrenceRule {
+  id             String   @id @default(gen_random_ulid()) @map("id")
+  orgId          String   @map("org_id")
+  entityId       String   @map("entity_id")
+  entityType     String   @map("entity_type")
+  rrule          String   @map("rrule")
+  startTimezone  String   @default("UTC") @map("start_timezone")
+  exceptionDates String[] @map("exception_dates")
+  overrides      Json     @default("{}") @map("overrides")
+  category       String   @default("general") @map("category")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  events Event[]
+
+  @@map("recurrence_rules")
+  @@index([orgId])
+  @@index([entityId])
+  @@index([entityType])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model AiCostLog {
+  id         String   @id @default(gen_random_ulid()) @map("id")
+  orgId      String   @map("org_id")
+  requestId  String   @map("request_id")
+  model      String   @map("model")
+  tokensIn   Int      @default(0) @map("tokens_in")
+  tokensOut  Int      @default(0) @map("tokens_out")
+  cost       Decimal  @default(0.000000) @map("cost") @db.Decimal(10, 6)
+  caller     String   @map("caller")
+  category   String   @default("general") @map("category")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("ai_cost_log")
+  @@index([orgId])
+  @@index([requestId])
+  @@index([model])
+  @@index([caller])
+  @@index([createdAt(sort: Desc)])
+}
+
+model PromptVersion {
+  id          String   @id @default(gen_random_ulid()) @map("id")
+  orgId       String   @map("org_id")
+  promptId    String   @map("prompt_id")
+  template    String   @map("template")
+  variables   Json     @default("{}") @map("variables")
+  version     Int      @default(1) @map("version")
+  isProduction Boolean  @default(false) @map("is_production")
+  category    String   @default("general") @map("category")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  org             Organization     @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  evaluationRuns  EvaluationRun[]
+
+  @@unique([orgId, promptId, version])
+  @@map("prompt_versions")
+  @@index([orgId])
+  @@index([promptId])
+  @@index([version])
+  @@index([isProduction])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model EvaluationDataset {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  orgId     String   @map("org_id")
+  name      String   @map("name")
+  testCases Json     @default("[]") @map("test_cases")
+  category  String   @default("general") @map("category")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  org               Organization     @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  evaluationRuns    EvaluationRun[]
+
+  @@map("evaluation_datasets")
+  @@index([orgId])
+  @@index([name])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model EvaluationRun {
+  id               String   @id @default(gen_random_ulid()) @map("id")
+  orgId            String   @map("org_id")
+  datasetId        String   @map("dataset_id")
+  promptVersionId  String   @map("prompt_version_id")
+  metrics          Json     @default("{}") @map("metrics")
+  passed           Boolean  @default(false) @map("passed")
+  category         String   @default("general") @map("category")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  deletedAt        DateTime? @map("deleted_at")
+
+  org             Organization      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  dataset         EvaluationDataset @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  promptVersion   PromptVersion     @relation(fields: [promptVersionId], references: [id], onDelete: Cascade)
+
+  @@map("evaluation_runs")
+  @@index([orgId])
+  @@index([datasetId])
+  @@index([promptVersionId])
+  @@index([passed])
+  @@index([updatedAt(sort: Desc)])
+}
+
+// ============================================================================
+// GraphRAG & Analytics Tables (public schema)
+// ============================================================================
+
+model GraphEntity {
+  id          String   @id @default(gen_random_ulid()) @map("id")
+  orgId       String   @map("org_id")
+  name        String   @map("name")
+  type        String   @map("type")
+  description String?  @map("description")
+  embedding    Unsupported("vector(1536)")?
+  sourceCount Int      @default(0) @map("source_count")
+  trustScore  Decimal  @default(0.0) @map("trust_score") @db.Decimal(3, 2)
+  category    String   @default("general") @map("category")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  org                 Organization         @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  sourceRelationships GraphRelationship[] @relation("GraphRelationshipsSource")
+  targetRelationships GraphRelationship[] @relation("GraphRelationshipsTarget")
+
+  @@map("graph_entities")
+  @@index([orgId])
+  @@index([name])
+  @@index([type])
+  @@index([trustScore(sort: Desc)])
+  @@index([embedding], type: Gin)
+}
+
+model GraphRelationship {
+  id               String   @id @default(gen_random_ulid()) @map("id")
+  orgId            String   @map("org_id")
+  sourceId         String   @map("source_id")
+  targetId         String   @map("target_id")
+  relationshipType String   @map("relationship_type")
+  weight           Decimal  @default(1.0) @map("weight") @db.Decimal(3, 2)
+  community        String?  @map("community")
+  category         String   @default("general") @map("category")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  deletedAt        DateTime? @map("deleted_at")
+
+  org    Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  source GraphEntity   @relation("GraphRelationshipsSource", fields: [sourceId], references: [id], onDelete: Cascade)
+  target GraphEntity   @relation("GraphRelationshipsTarget", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@map("graph_relationships")
+  @@index([orgId])
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([relationshipType])
+  @@index([weight(sort: Desc)])
+  @@index([community])
+}
+
+model RagIndexStatistic {
+  orgId                      String   @id @map("org_id")
+  chunkCount                 BigInt   @default(0) @map("chunk_count")
+  indexType                  String   @default("vector") @map("index_type")
+  contextualRetrievalActivated Boolean @default(false) @map("contextual_retrieval_activated")
+  graphragActive             Boolean  @default(false) @map("graphrag_active")
+  lastIndexed                DateTime? @map("last_indexed")
+  category                   String   @default("general") @map("category")
+  updatedAt                  DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("rag_index_statistics")
+  @@index([orgId])
+  @@index([indexType])
+  @@index([lastIndexed(sort: Desc)])
+}
+
+// ============================================================================
+// Security & Auth Tables (public schema)
+// ============================================================================
+
+model WebauthnChallenge {
+  id         String   @id @default(gen_random_ulid()) @map("id")
+  userId     String   @map("user_id")
+  challenge  String   @map("challenge")
+  type       String   @default("passkey") @map("type")
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("webauthn_challenges")
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([challenge])
+}
+
+model SecretRotationLog {
+  id         String   @id @default(gen_random_ulid()) @map("id")
+  secretName String   @map("secret_name")
+  rotatedAt  DateTime @default(now()) @map("rotated_at")
+  method     String   @map("method")
+  success    Boolean  @map("success")
+  evidence   String?  @map("evidence")
+
+  @@map("secret_rotation_log")
+  @@index([secretName])
+  @@index([rotatedAt(sort: Desc)])
+  @@index([success])
+}
+
+model PosthogEventTaxonomy {
+  id                String   @id @default(gen_random_ulid()) @map("id")
+  eventName         String   @unique @map("event_name")
+  requiredProperties Json    @default("{}") @map("required_properties")
+  owner             String   @map("owner")
+  category          String   @default("general") @map("category")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("posthog_event_taxonomy")
+  @@index([eventName])
+  @@index([owner])
+  @@index([category])
+}
+
+model FeatureFlagEvidence {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  flagId          String   @map("flag_id")
+  owner           String   @map("owner")
+  defaultBehavior String?  @map("default_behavior")
+  reviewDate      DateTime? @map("review_date")
+  category        String   @default("general") @map("category")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  flag FeatureFlag @relation(fields: [flagId], references: [id], onDelete: Cascade)
+
+  @@map("feature_flag_evidence")
+  @@index([flagId])
+  @@index([owner])
+  @@index([reviewDate(sort: Desc)])
+}
+
+model McpToolAuthorization {
+  id                String   @id @default(gen_random_ulid()) @map("id")
+  orgId             String   @map("org_id")
+  toolName          String   @map("tool_name")
+  authMethod        String   @default("oauth") @map("auth_method")
+  scope             String   @default("{}") @map("scope")
+  allowlistSchema   Json     @default("{}") @map("allowlist_schema")
+  elicitationRequired Boolean @default(false) @map("elicitation_required")
+  approvedBy        String?  @map("approved_by")
+  approvedAt        DateTime? @map("approved_at")
+  category          String   @default("general") @map("category")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("mcp_tool_authorizations")
+  @@index([orgId])
+  @@index([toolName])
+}
+
+model Passkey {
+  id                String   @id @default(gen_random_ulid()) @map("id")
+  orgId             String   @map("org_id")
+  userId            String   @map("user_id")
+  credentialId      String   @unique @map("credential_id")
+  authenticatorType String   @map("authenticator_type")
+  recoveryCodes     String[] @map("recovery_codes")
+  createdAt         DateTime @default(now()) @map("created_at")
+  lastUsed          DateTime? @map("last_used")
+  category          String   @default("general") @map("category")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("passkeys")
+  @@index([orgId])
+  @@index([userId])
+  @@index([credentialId])
+}
+
+model GuardrailsAuditLog {
+  id        String   @id @default(gen_random_ulid()) @map("id")
+  orgId     String   @map("org_id")
+  layer     String   @map("layer")
+  decision  String   @map("decision")
+  reason    String   @map("reason")
+  timestamp DateTime @default(now()) @map("timestamp")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("guardrails_audit_logs")
+  @@index([orgId])
+  @@index([layer])
+  @@index([decision])
+  @@index([timestamp(sort: Desc)])
+}
+
+model SsrfAllowlist {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  orgId           String   @map("org_id")
+  allowedDomain   String   @map("allowed_domain")
+  allowedIpRange  String?  @map("allowed_ip_range")
+  validationMethod String   @default("exact") @map("validation_method")
+  createdAt       DateTime @default(now()) @map("created_at")
+  category        String   @default("general") @map("category")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("ssrf_allowlists")
+  @@index([orgId])
+  @@index([allowedDomain])
+}
+
+model PrivacyTrainingOptout {
+  id                 String   @id @default(gen_random_ulid()) @map("id")
+  orgId              String   @map("org_id")
+  userId             String   @map("user_id")
+  allowTraining      Boolean  @default(true) @map("allow_training")
+  optedOut           Boolean  @default(false) @map("opted_out")
+  reason             String?  @map("reason")
+  segregationApplied Boolean  @default(false) @map("segregation_applied")
+  category           String   @default("general") @map("category")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, userId])
+  @@map("privacy_training_optouts")
+  @@index([orgId])
+  @@index([userId])
+}
+
+// ============================================================================
+// Monitoring & Cross-Cutting Service Tables (public schema)
+// ============================================================================
+
+model SpecificationMetadata {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  componentName   String   @unique @map("component_name")
+  tier            Int      @map("tier")
+  status          String   @default("draft") @map("status")
+  frontmatter     Json     @default("{}") @map("frontmatter")
+  sectionsRequired String[] @default("{}") @map("sections_required")
+  authors         String[] @default("{}") @map("authors")
+  dependencies    String[] @default("{}") @map("dependencies")
+  category        String   @default("general") @map("category")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [componentName], references: [slug], onDelete: Cascade)
+
+  @@map("specification_metadata")
+  @@index([componentName])
+  @@index([tier])
+  @@index([status])
+  @@index([updatedAt(sort: Desc)])
+}
+
+model RealtimeChannelMonitoring {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  orgId           String   @map("org_id")
+  channelName     String   @map("channel_name")
+  subscriberCount Int      @default(0) @map("subscriber_count")
+  memoryMb        Decimal  @default(0.0) @map("memory_mb") @db.Decimal(10, 2)
+  createdAt       DateTime @default(now()) @map("created_at")
+  lastActivity    DateTime? @map("last_activity")
+  category        String   @default("general") @map("category")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("realtime_channel_monitoring")
+  @@index([orgId])
+  @@index([channelName])
+  @@index([lastActivity(sort: Desc)])
+}
+
+model OfflineOperationsQueue {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  orgId           String   @map("org_id")
+  actorId         String   @map("actor_id")
+  entityId        String   @map("entity_id")
+  operation       String   @map("operation")
+  entityType      String   @map("entity_type")
+  idempotencyKey  String   @map("idempotency_key")
+  tombstone       Boolean  @default(false) @map("tombstone")
+  deletedAt       DateTime? @map("deleted_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  actor User         @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@unique([actorId, idempotencyKey])
+  @@map("offline_operations_queue")
+  @@index([orgId])
+  @@index([actorId])
+  @@index([entityId])
+  @@index([operation])
+  @@index([createdAt(sort: Desc)])
+}
+
+model WorkflowStateAudit {
+  id                String   @id @default(gen_random_ulid()) @map("id")
+  workflowId        String   @map("workflow_id")
+  stepId            String   @map("step_id")
+  state             String   @map("state")
+  transitionReason  String?  @map("transition_reason")
+  guardEvaluated    Boolean  @default(false) @map("guard_evaluated")
+  timestamp         DateTime @default(now()) @map("timestamp")
+
+  workflow WorkflowExecution @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  step     WorkflowExecution @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@map("workflow_state_audit")
+  @@index([workflowId])
+  @@index([stepId])
+  @@index([state])
+  @@index([timestamp(sort: Desc)])
+}
+
+model WebhookDeduplication {
+  id                String   @id @default(gen_random_ulid()) @map("id")
+  orgId             String   @map("org_id")
+  provider          String   @map("provider")
+  providerEventId   String   @map("provider_event_id")
+  processedStatus   String   @default("pending") @map("processed_status")
+  deduplicationKey  String   @unique @map("deduplication_key")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("webhook_deduplication")
+  @@index([orgId])
+  @@index([provider])
+  @@index([processedStatus])
+  @@index([createdAt(sort: Desc)])
+}
+
+model TestCoverageTarget {
+  id               String   @id @default(gen_random_ulid()) @map("id")
+  module           String   @unique @map("module")
+  unitTarget       Decimal  @default(0.80) @map("unit_target") @db.Decimal(3, 2)
+  componentTarget  Decimal  @default(0.85) @map("component_target") @db.Decimal(3, 2)
+  integrationTarget Decimal @default(0.70) @map("integration_target") @db.Decimal(3, 2)
+  e2eFlowsTarget   Int      @default(10) @map("e2e_flows_target")
+  a11yCriticalTarget Int    @default(0) @map("a11y_critical_target")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("test_coverage_targets")
+  @@index([module])
+}
+
+model IncidentManagement {
+  id          String   @id @default(gen_random_ulid()) @map("id")
+  orgId       String   @map("org_id")
+  severity    String   @map("severity")
+  title       String   @map("title")
+  description String?  @map("description")
+  status      String   @default("open") @map("status")
+  roles       String[] @default("{}") @map("roles")
+  sloImpact   Boolean  @default(false) @map("slo_impact")
+  createdAt   DateTime @default(now()) @map("created_at")
+  resolvedAt  DateTime? @map("resolved_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("incident_management")
+  @@index([orgId])
+  @@index([severity])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+}
+
+model FeatureFlagRegistry {
+  id               String   @id @default(gen_random_ulid()) @map("id")
+  orgId            String   @map("org_id")
+  flagName         String   @map("flag_name")
+  description      String?  @map("description")
+  owner            String   @map("owner")
+  defaultBehavior  String   @default("disabled") @map("default_behavior")
+  targetingRules   Json     @default("{}") @map("targeting_rules")
+  currentStage     String   @default("development") @map("current_stage")
+  cohortHash       String?  @map("cohort_hash")
+  reviewDate       DateTime? @map("review_date")
+  category         String   @default("general") @map("category")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("feature_flag_registry")
+  @@index([orgId])
+  @@index([flagName])
+  @@index([currentStage])
+  @@index([reviewDate(sort: Desc)])
+}
+
+model CostBudget {
+  id            String   @id @default(gen_random_ulid()) @map("id")
+  orgId         String   @map("org_id")
+  scopeId       String   @map("scope_id")
+  level         String   @map("level")
+  monthlyLimit  Decimal  @map("monthly_limit") @db.Decimal(12, 2)
+  currentUsage  Decimal  @default(0.0) @map("current_usage") @db.Decimal(12, 2)
+  alert15Percent Boolean @default(false) @map("alert_15_percent")
+  alert5Percent  Boolean @default(false) @map("alert_5_percent")
+  alert0Percent  Boolean @default(false) @map("alert_0_percent")
+  hardCap       Boolean  @default(false) @map("hard_cap")
+  category      String   @default("general") @map("category")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("cost_budgets")
+  @@index([orgId])
+  @@index([scopeId])
+  @@index([level])
+}
+
+model SloDefinition {
+  id                   String   @id @default(gen_random_ulid()) @map("id")
+  orgId                String   @map("org_id")
+  serviceId            String   @map("service_id")
+  metric               String   @map("metric")
+  target               Decimal  @map("target") @db.Decimal(5, 4)
+  window               String   @map("window")
+  currentValue         Decimal? @map("current_value") @db.Decimal(5, 4)
+  errorBudgetRemaining Decimal? @map("error_budget_remaining") @db.Decimal(5, 4)
+  category             String   @default("general") @map("category")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("slo_definitions")
+  @@index([orgId])
+  @@index([serviceId])
+  @@index([metric])
+}
+
+model SecurityControlMapping {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  ruleId          String   @map("rule_id")
+  controlDescription String @map("control_description")
+  mechanism       String   @map("mechanism")
+  testMethod      String   @map("test_method")
+  owner           String   @map("owner")
+  evidence        String?  @map("evidence")
+  lastVerified    DateTime? @map("last_verified")
+  category        String   @default("general") @map("category")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("security_control_mappings")
+  @@index([ruleId])
+  @@index([owner])
+  @@index([lastVerified(sort: Desc)])
+}
+
+// ============================================================================
+// Security & Compliance Tables (public schema)
+// ============================================================================
+
+model StripeUsageRecord {
+  id            String   @id @default(gen_random_ulid()) @map("id")
+  orgId         String   @map("org_id")
+  stripeMeterId String   @map("stripe_meter_id")
+  tokenCount    BigInt   @default(0) @map("token_count")
+  costUsd       Decimal  @default(0.000000) @map("cost_usd") @db.Decimal(10, 6)
+  recordedAt    DateTime @default(now()) @map("recorded_at")
+  stripeStatus  String   @default("pending") @map("stripe_status")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("stripe_usage_records")
+  @@index([orgId])
+  @@index([stripeMeterId])
+  @@index([recordedAt(sort: Desc)])
+}
+
+model YjsDocumentLifecycle {
+  id                String   @id @default(gen_random_ulid()) @map("id")
+  orgId             String   @map("org_id")
+  userId            String   @map("user_id")
+  documentNamespace String   @map("document_namespace")
+  gcEnabled         Boolean  @default(true) @map("gc_enabled")
+  undoStackLimit    Int      @default(5) @map("undo_stack_limit")
+  snapshotVersion   Int      @default(0) @map("snapshot_version")
+  sizeMb            Decimal  @default(0.0) @map("size_mb") @db.Decimal(10, 2)
+  compactionTriggered Boolean @default(false) @map("compaction_triggered")
+  category          String   @default("general") @map("category")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  org  Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("yjs_document_lifecycle")
+  @@index([orgId])
+  @@index([documentNamespace])
+}
+
+model NylasWebhookConfiguration {
+  id          String   @id @default(gen_random_ulid()) @map("id")
+  orgId       String   @map("org_id")
+  triggerType String   @map("trigger_type")
+  upsertFirst Boolean  @default(false) @map("upsert_first")
+  asyncQueue  Boolean  @default(true) @map("async_queue")
+  timeout     Int      @default(10) @map("timeout")
+  syncPolicy  String   @default("incremental") @map("sync_policy")
+  category    String   @default("general") @map("category")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("nylas_webhook_configuration")
+  @@index([orgId])
+  @@index([triggerType])
+}
+
+model OpentelemetrySpanDefinition {
+  id                String   @id @default(gen_random_ulid()) @map("id")
+  orgId             String   @map("org_id")
+  spanName          String   @map("span_name")
+  requiredAttributes Json    @default("{}") @map("required_attributes")
+  redactionRules    Json     @default("{}") @map("redaction_rules")
+  category          String   @default("general") @map("category")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("opentelemetry_span_definitions")
+  @@index([orgId])
+  @@index([spanName])
+}
+
+model OfflineTombstoneConfiguration {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  orgId           String   @map("org_id")
+  entityType      String   @map("entity_type")
+  deletedAtColumn String   @default("deleted_at") @map("deleted_at_column")
+  retentionDays   Int      @default(90) @map("retention_days")
+  compactionSchedule String @default("0 2 * * 0") @map("compaction_schedule")
+  category        String   @default("general") @map("category")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("offline_tombstone_configuration")
+  @@index([orgId])
+  @@index([entityType])
+}
+
+model RealtimeLimitsConfiguration {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  orgId           String   @map("org_id")
+  platformLimit   Int      @default(100) @map("platform_limit")
+  selfServiceLimit Int     @default(20) @map("self_service_limit")
+  currentUsage    Int      @default(0) @map("current_usage")
+  alertThreshold  Int      @default(15) @map("alert_threshold")
+  alertTriggered  Boolean  @default(false) @map("alert_triggered")
+  category        String   @default("general") @map("category")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("realtime_limits_configuration")
+  @@index([orgId])
+}
+
+model UploadSecurityConfiguration {
+  id             String   @id @default(gen_random_ulid()) @map("id")
+  orgId          String   @map("org_id")
+  scanner        String   @default("clamd") @map("scanner")
+  versionPinned  String   @default("1.4.x") @map("version_pinned")
+  cveMonitoring  Boolean  @default(true) @map("cve_monitoring")
+  chunkedScanning Boolean  @default(true) @map("chunked_scanning")
+  preScanValidation Boolean @default(true) @map("pre_scan_validation")
+  category       String   @default("general") @map("category")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("upload_security_configuration")
+  @@index([orgId])
+}
+
+model RecurrenceRuleConfiguration {
+  id              String   @id @default(gen_random_ulid()) @map("id")
+  orgId           String   @map("org_id")
+  entityType      String   @map("entity_type")
+  rrule           String   @map("rrule")
+  rdate           String[] @map("rdate")
+  exdate          String[] @map("exdate")
+  timezoneId      String   @default("UTC") @map("timezone_id")
+  editMode        String   @default("this_and_future") @map("edit_mode")
+  exceptionStorage Json     @default("{}") @map("exception_storage")
+  category        String   @default("general") @map("category")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("recurrence_rule_configuration")
+  @@index([orgId])
+  @@index([entityType])
+}
+
+// ============================================================================
+// Collaboration Tables (public schema)
+// ============================================================================
+
+model CollabDocument {
+  id                String   @id @default(gen_random_ulid()) @map("id")
+  orgId             String   @map("org_id")
+  entityId         String   @map("entity_id")
+  ysweetDocumentId  String   @unique @map("ysweet_document_id")
+  entityType        String   @map("entity_type")
+  permissions       Json     @default("{}") @map("permissions")
+  creatorId         String   @map("creator_id")
+  category          String   @default("general") @map("category")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  org    Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  creator User         @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@map("collab_documents")
+  @@index([orgId])
+  @@index([entityId])
+  @@index([ysweetDocumentId])
+  @@index([entityType])
+}

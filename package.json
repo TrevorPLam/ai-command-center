@@ -2,6 +2,7 @@
   "name": "ai-command-center",
   "version": "1.0.0",
   "description": "AI Command Center Documentation",
+  "packageManager": "pnpm@10.29.1",
   "scripts": {
     "generate:component-table": "node scripts/generate-component-table.js",
     "generate:pattern-tags": "node scripts/generate-pattern-tags-table.js",

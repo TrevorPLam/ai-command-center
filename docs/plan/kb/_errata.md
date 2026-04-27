@@ -114,11 +114,11 @@ This file documents corrections for "TASK INFORMATION INCORRECT" notes that were
 
 **Applied to**: [dependencies.md](dependencies.md)
 
-### React Compiler ESLint (Technology Updates)
+### React Compiler (Technology Updates)
 
 **Original Claim**: Use eslint-plugin-react-compiler.
 
-**Correction**: eslint-plugin-react-compiler has been DEPRECATED. Users should now use eslint-plugin-react-hooks@latest instead.
+**Correction**: eslint-plugin-react-compiler has been DEPRECATED. React Compiler is now implemented via @babel/plugin-react-compiler Babel plugin. Linting is handled by eslint-plugin-react-hooks@latest.
 
 **Accurate Information**:
 
