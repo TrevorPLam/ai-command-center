@@ -31,6 +31,7 @@ Each **Parent Task** is a deliverable. **Subtasks** are the discrete steps an AI
 | R‑AI‑02‑4 | Provide a recommended hardware tier and estimated user‑facing latency for free‑tier users. |
 | **Expected output** | `research/qwen3.5-4b-cpu-performance.md` |
 | **Context** | Rules AI‑02, BE‑01; Performance budgets (TTFT ≤2s) |
+| **Verdict** | INSUFFICIENT DATA - No direct CPU benchmarks found in publicly accessible sources. Reddit community data behind verification walls. Empirical testing required before Week 5 decision point. Conservative estimate: TTFT 1.5-2.5s on Tier 1 hardware (likely meets ≤2s budget, but low confidence). |
 
 #### R‑AI‑03: LiteLLM Budget Enforcement Validation
 | Subtask | Action |
